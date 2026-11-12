@@ -100,6 +100,7 @@
 </div>
 <div id="err">This painting needs WebGL, which this browser could not start.</div>
 
+<script src="../common/sound.js"></script>
 <script>
 (() => {
 'use strict';
@@ -259,82 +260,23 @@ let moved = false, floated = false, touchy = matchMedia('(pointer: coarse)').mat
 
 function ripple(x, y, s) { const r = rip[ripI++ % 4]; r.x = x; r.y = y; r.t = time; r.s = s; }
 
-/* ---------- sound ----------
-   Nothing is recorded: the music is played live. Slow chords drift underneath, single notes fall on top of them
-   like dots, and her footsteps are drawn from the same scale, so walking joins in with the tune. */
-let ac = null, master = null, bus = null, wind = null, muted = false;
-let nextChord = 0, nextDot = 0, chordI = 0, walkI = 4;
-const hz = m => 440 * Math.pow(2, (m - 69) / 12);
-const CHORDS = [[41, 48, 57, 60, 64, 67], [38, 50, 53, 57, 60, 64], [34, 46, 53, 57, 62, 65], [36, 48, 52, 55, 57, 62]];
-const SCALE = [53, 55, 57, 60, 62, 65, 67, 69, 72, 74, 77, 79, 81].map(hz);   // F pentatonic
+/* ---------- sound ---------- (the instrument itself is in ../common/sound.js) */
+const SND = window.Sound;
+let muted = false, stepN = 0;
 function audioOn() {
-  if (ac) { ac.resume(); return; }
-  const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
-  ac = new AC();
-  master = ac.createGain(); master.gain.value = muted ? 0 : 0.9;
-  const comp = ac.createDynamicsCompressor(); comp.threshold.value = -18; comp.ratio.value = 3;
-  master.connect(comp); comp.connect(ac.destination);
-  // A room for the notes to ring in: a burst of fading noise used as the echo of a hall.
-  const len = Math.floor(ac.sampleRate * 3.4), ir = ac.createBuffer(2, len, ac.sampleRate);
-  for (let c = 0; c < 2; c++) { const d = ir.getChannelData(c); for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.8); }
-  const hall = ac.createConvolver(); hall.buffer = ir;
-  const wet = ac.createGain(); wet.gain.value = 0.6; const dry = ac.createGain(); dry.gain.value = 0.7;
-  bus = ac.createBiquadFilter(); bus.type = 'lowpass'; bus.frequency.value = 1500; bus.Q.value = 0.3;
-  bus.connect(wet); wet.connect(hall); hall.connect(master); bus.connect(dry); dry.connect(master);
-  const buf = ac.createBuffer(1, ac.sampleRate * 2, ac.sampleRate), d = buf.getChannelData(0);
-  let g = 0; for (let i = 0; i < d.length; i++) { g = g * 0.96 + (Math.random() * 2 - 1) * 0.2; d[i] = g; }
-  const src = ac.createBufferSource(); src.buffer = buf; src.loop = true;
-  const bp = ac.createBiquadFilter(); bp.type = 'bandpass'; bp.frequency.value = 480; bp.Q.value = 0.7;
-  wind = ac.createGain(); wind.gain.value = 0;
-  src.connect(bp); bp.connect(wind); wind.connect(bus); src.start();
-  nextChord = ac.currentTime + 0.2; nextDot = ac.currentTime + 3;
-}
-function voice(f, t, dur, vol, type, attack, pan) {
-  const o = ac.createOscillator(), g = ac.createGain();
-  o.type = type; o.frequency.value = f; o.detune.value = (Math.random() - 0.5) * 8;
-  g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + attack);
-  g.gain.setValueAtTime(vol, t + Math.max(attack, dur * 0.45)); g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
-  let out = g;
-  if (pan && ac.createStereoPanner) { const p = ac.createStereoPanner(); p.pan.value = pan; g.connect(p); out = p; }
-  o.connect(g); out.connect(bus); o.start(t); o.stop(t + dur + 0.1);
-}
-function music() {                         // called every frame; schedules a little ahead
-  if (!ac || ac.state !== 'running') return;
-  const now = ac.currentTime;
-  if (now > nextChord - 0.3) {
-    const ch = CHORDS[chordI++ % CHORDS.length];
-    ch.forEach((m, i) => voice(hz(m), nextChord + i * 0.35, 15, i < 2 ? 0.05 : 0.028, i < 2 ? 'sine' : 'triangle', 4.5, (i - 2.5) * 0.18));
-    nextChord += 11;
-  }
-  if (now > nextDot - 0.1) {
-    // Single notes wander up and down the scale; there are more of them when she is up in the air.
-    walkI = Math.max(3, Math.min(12, walkI + Math.floor(Math.random() * 5) - 2));
-    const t = Math.max(now, nextDot), pan = Math.random() * 1.4 - 0.7;
-    voice(SCALE[walkI], t, 3.2, 0.06, 'sine', 0.012, pan);
-    if (Math.random() < 0.3) voice(SCALE[Math.max(0, walkI - 2)], t + 0.28, 2.6, 0.04, 'sine', 0.012, -pan);
-    nextDot = t + (state === 'play' ? 0.5 + Math.random() * (2.4 - me.a * 1.3) : 0.9 + Math.random() * 2.2);
-  }
-}
-function note(i, dur, vol, type, when) {
-  if (!ac) return;
-  voice(SCALE[Math.max(0, Math.min(SCALE.length - 1, i))], ac.currentTime + (when || 0), dur, vol, type || 'sine', 0.01, 0);
-}
-function hueAt(x, y) {
-  if (!pix) return 0;
-  const i = (Math.max(0, Math.min(pixH - 1, Math.floor(y / H * pixH))) * pixW + Math.max(0, Math.min(pixW - 1, Math.floor(x / W * pixW)))) * 4;
-  const r = pix[i] / 255, g = pix[i + 1] / 255, b = pix[i + 2] / 255, mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
-  if (d < 0.02) return 0;
-  let h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
-  return ((h * 60 + 360) % 360) / 360;
+  SND.start({ chords: [[41, 60, 64, 67, 69], [38, 57, 60, 65, 69], [34, 58, 62, 65, 69], [36, 55, 60, 64, 67]],
+              scale: [65, 67, 69, 72, 74, 77, 79, 81, 84, 86, 89] });        // F major, five-note scale
 }
 function stepSound() {
-  // Steps climb the scale as she nears what she is looking for; the colour underfoot adds a little variation.
-  let near = 0.4;
-  if (stage < TARGETS.length) { const t = TARGETS[stage]; near = 1 - Math.min(1, Math.hypot(me.x - t.u * W, me.y - t.v * H) / (W * 0.45)); }
-  note(Math.floor(near * 8) + Math.floor(hueAt(me.x, me.y) * 2.99), 1.1, 0.05, 'triangle');
+  // A soft footfall. Close to what she is looking for, every other step also rings, higher the nearer she is.
+  SND.puff(0.03); stepN++;
+  if (stage < TARGETS.length && stepN % 2 === 0) {
+    const t = TARGETS[stage], d = Math.hypot(me.x - t.u * W, me.y - t.v * H) / (W * 0.22);
+    if (d < 1) SND.bell(2 + Math.floor((1 - d) * 8), 0.03);
+  }
 }
-function foundSound() { [5, 7, 8, 10, 12].forEach((n, i) => note(n, 2.6, 0.085, 'triangle', i * 0.12)); }
-function endSound() { [2, 5, 7, 8, 10, 12].forEach((n, i) => note(n, 4.5, 0.07, 'sine', i * 0.42)); }
+function foundSound() { [3, 5, 6, 8, 10].forEach((n, i) => SND.bell(n, 0.075, i * 0.1)); }
+function endSound() { [0, 2, 3, 5, 6, 8, 10].forEach((n, i) => SND.bell(n, 0.07, 0.6 + i * 0.32)); }
 
 /* ---------- lockets ---------- */
 function crop(cv, t) {
@@ -388,7 +330,7 @@ function capView() { return stage < CAPS.length ? CAPS[stage] * W : fitView(); }
 const ease = t => t * t * (3 - 2 * t);
 
 function update(dt) {
-  time += dt; music();
+  time += dt; SND.update(state === 'play' ? me.a : 0.3, state === 'play' || state === 'ending' ? me.a : 0);
   if (state === 'title') {                 // drift slowly over the dots
     cam.x = HOME.u * W + Math.sin(time * 0.11) * 70; cam.y = HOME.v * H + 60 + Math.cos(time * 0.09) * 40;
     cam.view = GROUND_VIEW * W * 1.25; me.x = -999; me.y = -999; return;
@@ -414,7 +356,6 @@ function update(dt) {
       if (me.a < 0.04) { stepClock -= dt; if (stepClock <= 0) { stepClock = 0.27; ripple(me.x, me.y, 0.8); stepSound(); } }
     }
     if (me.a > 0.5 && !floated) { floated = true; tip(); }
-    if (wind) wind.gain.value = me.a * 0.05;
     if (stage < TARGETS.length) {
       const t = TARGETS[stage];
       if (me.a < 0.2 && Math.hypot(me.x - t.u * W, me.y - t.v * H) < W * 0.05) found();
@@ -430,7 +371,6 @@ function update(dt) {
     me.x = endFrom.x + (HOME.u * W - endFrom.x) * k; me.y = endFrom.y + (HOME.v * H + 22 - endFrom.y) * k;
     me.a = 1 - ease(Math.min(1, Math.max(0, (endT - 2) / 5)));
     me.alpha = 1 - Math.min(1, Math.max(0, (endT - 6.4) / 1.4)); me.moving = false;
-    if (wind) wind.gain.value = muted ? 0 : me.a * 0.05;
     if (endT > 8.2) { state = 'done'; $('end').classList.remove('hidden'); }
     return;
   }
@@ -641,7 +581,7 @@ function hold(btn, key) {
 hold($('bFloat'), 'float'); hold($('bSquint'), 'squint');
 $('bMute').addEventListener('click', () => {
   muted = !muted; $('waves').style.display = muted ? 'none' : '';
-  if (master) master.gain.value = muted ? 0 : 0.9;
+  SND.setMuted(muted);
 });
 $('start').addEventListener('click', begin); $('again').addEventListener('click', begin);
 document.addEventListener('gesturestart', e => e.preventDefault());

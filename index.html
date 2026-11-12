@@ -9,7 +9,8 @@
     justify-content:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-align:center; padding:32px 16px; box-sizing:border-box; }
   h1 { font-weight:400; font-size:clamp(30px,6vw,56px); margin:0 0 .1em; }
   p { font-style:italic; opacity:.75; margin:0 0 2em; }
-  a.room { display:block; width:min(520px,92vw); color:inherit; text-decoration:none; }
+  .rooms { display:flex; flex-wrap:wrap; gap:48px 40px; justify-content:center; align-items:flex-end; }
+  a.room { display:block; width:min(440px,92vw); color:inherit; text-decoration:none; }
   a.room img { width:100%; display:block; border:14px solid #f4efe2; box-sizing:border-box; box-shadow:10px 14px 30px rgba(0,0,0,.4); }
   a.room span { display:block; margin-top:1em; font-size:clamp(18px,3vw,24px); }
   a.room small { display:block; opacity:.7; font-style:italic; margin-top:.2em; }
@@ -18,10 +19,17 @@
 <body>
   <h1>Painting Rooms</h1>
   <p>short games set inside paintings</p>
+  <div class="rooms">
+  <a class="room" href="rousseau/">
+    <img src="rousseau/painting.jpg" alt="Tropical Forest with Monkeys by Henri Rousseau">
+    <span>Five Monkeys</span>
+    <small>inside a painting by Henri Rousseau</small>
+  </a>
   <a class="room" href="seurat/">
     <img src="seurat/painting.jpg" alt="A Sunday on La Grande Jatte by Georges Seurat">
     <span>Sunday on the Island</span>
     <small>inside a painting by Georges Seurat</small>
   </a>
+  </div>
 </body>
 </html>

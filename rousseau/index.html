@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Five Monkeys</title>
+<style>
+  :root { --ink:#22301f; --paper:#f4efe2; --go:#b3202a; }
+  html, body { margin:0; height:100%; background:#30383a; overflow:hidden; overscroll-behavior:none;
+    -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; touch-action:none;
+    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; color:var(--ink); }
+  canvas { position:fixed; inset:0; width:100%; height:100%; display:block; }
+  .screen { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; transition:opacity 1.2s ease; padding:24px; box-sizing:border-box; }
+  .screen.hidden { opacity:0; pointer-events:none; }
+  #title { background:radial-gradient(ellipse at center, rgba(244,239,226,.86) 0%, rgba(244,239,226,.6) 45%, rgba(244,239,226,0) 75%); }
+  #title h1 { font-weight:400; font-size:clamp(34px,7vw,76px); letter-spacing:.02em; margin:0 0 .15em; }
+  #title p { font-size:clamp(15px,2.2vw,21px); margin:.2em 0; font-style:italic; opacity:.8; }
+  button.go { margin-top:1.6em; font:inherit; font-size:clamp(17px,2.4vw,23px); color:var(--paper); background:var(--go);
+    border:0; border-radius:999px; padding:.65em 1.7em; cursor:pointer; box-shadow:0 6px 18px rgba(20,30,10,.3); }
+  button.go:active { transform:translateY(1px); }
+  #end { justify-content:flex-end; padding-bottom:max(2.5vh, env(safe-area-inset-bottom)); pointer-events:none; }
+  #end .card { color:var(--paper); padding:0 20px; max-width:min(640px,92vw); pointer-events:auto; }
+  #end h2 { font-weight:400; font-size:clamp(19px,3vw,27px); margin:0 0 .2em; font-style:italic; }
+  #end p { margin:.15em 0; font-size:clamp(13px,1.8vw,16px); line-height:1.4; opacity:.85; }
+  #end button.go { margin-top:.8em; font-size:15px; padding:.5em 1.4em; }
+  #album { position:fixed; left:max(14px, env(safe-area-inset-left)); top:max(14px, env(safe-area-inset-top)); display:flex; gap:8px;
+    transition:opacity .8s; pointer-events:none; }
+  #album.hidden { opacity:0; }
+  .locket { width:54px; height:54px; border-radius:50%; border:3px solid var(--paper); background:var(--paper); overflow:hidden;
+    box-shadow:0 3px 12px rgba(0,0,0,.35); opacity:.4; filter:grayscale(1); transition:opacity .5s, filter .5s, transform .5s cubic-bezier(.3,1.7,.5,1); }
+  .locket.found { opacity:1; filter:none; transform:scale(1.12); }
+  .locket canvas { position:static; width:100%; height:100%; }
+  #bMute { position:fixed; right:max(14px, env(safe-area-inset-right)); top:max(14px, env(safe-area-inset-top)); width:40px; height:40px;
+    border-radius:50%; border:0; background:rgba(244,239,226,.6); display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; transition:opacity .8s; }
+  #bMute.hidden { opacity:0; pointer-events:none; }
+  #bMute svg { width:20px; height:20px; }
+  #tip { position:fixed; left:0; right:0; bottom:max(26px, env(safe-area-inset-bottom)); text-align:center; pointer-events:none;
+    font-size:clamp(14px,2vw,18px); font-style:italic; color:var(--paper); text-shadow:0 1px 6px rgba(0,0,0,.75); transition:opacity 1s; padding:0 24px; }
+  #tip.hidden { opacity:0; }
+  #err { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:var(--paper); padding:30px; text-align:center; }
+</style>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="album" class="hidden"></div>
+<div id="tip" class="hidden"></div>
+<button id="bMute" class="hidden" aria-label="Sound">
+  <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+</button>
+
+<div id="title" class="screen">
+  <h1>Five Monkeys</h1>
+  <p>inside a painting by Henri Rousseau</p>
+  <button class="go" id="start">Swing in</button>
+</div>
+<div id="end" class="screen hidden">
+  <div class="card">
+    <h2>Tropical Forest with Monkeys</h2>
+    <p>Henri Rousseau painted it in 1910. It hangs in the National Gallery of Art in Washington.</p>
+    <p>He never left France. His jungle grew in the glasshouses of the Paris botanical garden, where he went to draw.</p>
+    <p style="font-size:11px;opacity:.55">Image: National Gallery of Art, Washington, public domain (CC0)</p>
+    <button class="go" id="again">Swing in again</button>
+  </div>
+</div>
+<div id="err">The painting could not be loaded. Check the connection and reload.</div>
+
+<script src="../common/sound.js"></script>
+<script>
+(() => {
+'use strict';
+/* ---------- the painting ---------- */
+// Places in the painting, as fractions of its width and height.
+const MONKEYS = [
+  { u: 0.255, v: 0.365 },   // the small grey one in the tree
+  { u: 0.415, v: 0.575 },   // the black one with the white ruff
+  { u: 0.675, v: 0.42 },    // the orange one hanging by both hands
+  { u: 0.752, v: 0.325 },   // the orange one higher up
+  { u: 0.672, v: 0.77 },    // the brown one by the water
+];
+const FLOWERS = [[0.09, 0.525], [0.185, 0.61], [0.305, 0.62], [0.45, 0.67], [0.735, 0.51], [0.78, 0.545], [0.89, 0.565], [0.935, 0.55]];
+const SNAKE = { u: 0.28, v: 0.73 };
+const VIEW = 0.5;                 // share of the painting's width on screen
+const G = 1700, RANGE = 640;      // gravity and the reach of a vine, in painting pixels
+
+const $ = id => document.getElementById(id);
+const cv = $('cv'), c = cv.getContext('2d'), SND = window.Sound;
+let img = null, W = 1, H = 1, ground = 1;
+let state = 'title', time = 0, found = [], allT = 0, endT = 0, endFrom = null, swings = 0, muted = false;
+const me = { x: 0, y: 0, vx: 0, vy: 0, mode: 'ground', ax: 0, ay: 0, L: 0, face: 1, spin: 0, walk: 0, alpha: 1 };
+const cam = { x: 0, y: 0, view: 1 };
+const keys = new Set(), parts = [], rings = [];
+const cool = { flowers: FLOWERS.map(() => 0), snake: 0 };
+let pointer = null, walkTo = null;
+
+/* ---------- album ---------- */
+function buildAlbum() {
+  const a = $('album'); a.innerHTML = '';
+  MONKEYS.forEach(m => {
+    const d = document.createElement('div'); d.className = 'locket';
+    const k = document.createElement('canvas'); k.width = k.height = 108; d.appendChild(k);
+    const r = W * 0.06; k.getContext('2d').drawImage(img, m.u * W - r, m.v * H - r, 2 * r, 2 * r, 0, 0, 108, 108);
+    a.appendChild(d);
+  });
+}
+
+/* ---------- flow ---------- */
+function reset() {
+  found = MONKEYS.map(() => false); allT = 0; swings = 0; parts.length = 0; rings.length = 0;
+  Object.assign(me, { x: W * 0.52, y: ground, vx: 0, vy: 0, mode: 'ground', face: 1, spin: 0, alpha: 1 });
+  cam.x = me.x; cam.y = me.y - 200; cam.view = VIEW * W; buildAlbum();
+}
+function begin() {
+  SND.start({ chords: [[33, 52, 55, 60, 64], [29, 48, 53, 57, 64], [36, 52, 55, 59, 62], [31, 50, 55, 59, 62]],
+              scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] });        // A minor going round to C
+  SND.setMuted(muted); reset(); state = 'play';
+  $('title').classList.add('hidden'); $('end').classList.add('hidden');
+  ['album', 'bMute', 'tip'].forEach(i => $(i).classList.remove('hidden')); tip();
+}
+function tip() {
+  const t = $('tip');
+  if (state !== 'play' || swings >= 3) { t.classList.add('hidden'); return; }
+  t.classList.remove('hidden');
+  t.textContent = matchMedia('(pointer: coarse)').matches
+    ? 'touch and hold above the monkey to throw a vine, let go to fly'
+    : 'hold the mouse above the monkey to throw a vine, let go to fly (or hold space)';
+}
+function grab(wx, wy) {
+  if (state !== 'play') return;
+  if (wy > me.y - 50) { if (me.mode === 'ground') walkTo = wx; return; }    // not above her: on the ground, walk that way
+  let dx = wx - me.x, dy = wy - me.y; const d = Math.hypot(dx, dy);
+  if (d > RANGE) { dx *= RANGE / d; dy *= RANGE / d; }
+  me.ax = Math.max(20, Math.min(W - 20, me.x + dx)); me.ay = Math.max(20, me.y + dy);
+  me.L = Math.max(130, Math.hypot(me.ax - me.x, me.ay - me.y));
+  if (me.mode === 'ground') { me.y -= 8; me.vx += Math.sign(dx || me.face) * 220; me.vy = -260; }
+  me.mode = 'swing'; walkTo = null; if (Math.abs(dx) > 10) me.face = Math.sign(dx);
+  SND.puff(0.05);
+}
+function release() {
+  if (me.mode !== 'swing') return;
+  me.mode = 'air'; me.vx *= 1.08; me.vy = me.vy * 1.08 - 140; swings++; tip();
+  SND.whoosh(Math.min(0.1, 0.03 + Math.hypot(me.vx, me.vy) / 20000));
+}
+function burst(x, y, cols, n) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * 6.28, s = 80 + Math.random() * 260;
+    parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s - 120, life: 1.2 + Math.random() * 0.8, r: 7 + Math.random() * 9, rot: Math.random() * 6.28, col: cols[i % cols.length] });
+  }
+}
+function meet(i) {
+  found[i] = true; const m = MONKEYS[i];
+  rings.push({ x: m.u * W, y: m.v * H, t: time, i });
+  burst(m.u * W, m.v * H, ['#f6e7b0', '#e9a23b', '#fff6dc'], 16);
+  [2, 4, 5, 7, 9].forEach((n, k) => SND.bell(n + i, 0.075, k * 0.09));
+  $('album').children[i].classList.add('found');
+  if (found.every(Boolean)) allT = time;
+}
+
+function step(dt) {
+  const left = keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ'), right = keys.has('ArrowRight') || keys.has('KeyD');
+  const dir = (right ? 1 : 0) - (left ? 1 : 0);
+  if (dir) { me.face = dir; walkTo = null; }
+  if (me.mode === 'ground') {
+    let want = dir;
+    if (walkTo !== null) { want = Math.abs(walkTo - me.x) < 14 ? 0 : Math.sign(walkTo - me.x); if (!want) walkTo = null; else me.face = want; }
+    me.vx += (want * 440 - me.vx) * Math.min(1, dt * 12); me.vy = 0; me.y = ground; me.x += me.vx * dt;
+    if (Math.abs(me.vx) > 40) me.walk += dt * 11;
+    if (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ')) { me.mode = 'air'; me.vy = -900; SND.puff(0.05); }
+  } else {
+    me.vy += G * dt; me.vx += dir * (me.mode === 'swing' ? 760 : 320) * dt;
+    if (me.mode === 'swing') {                         // a gentle push in the direction she is already going
+      const s = Math.hypot(me.vx, me.vy); if (s > 60 && s < 1500) { me.vx += me.vx / s * 150 * dt; me.vy += me.vy / s * 150 * dt; }
+    }
+    me.vx *= 1 - 0.12 * dt; me.vy *= 1 - 0.12 * dt;
+    const sp = Math.hypot(me.vx, me.vy); if (sp > 2000) { me.vx *= 2000 / sp; me.vy *= 2000 / sp; }
+    me.x += me.vx * dt; me.y += me.vy * dt;
+    if (me.mode === 'swing') {                         // the vine: she may not be further from its top than its length
+      const rx = me.x - me.ax, ry = me.y - me.ay, d = Math.hypot(rx, ry);
+      if (d > me.L) {
+        const nx = rx / d, ny = ry / d; me.x = me.ax + nx * me.L; me.y = me.ay + ny * me.L;
+        const vr = me.vx * nx + me.vy * ny; if (vr > 0) { me.vx -= vr * nx; me.vy -= vr * ny; }
+      }
+      if (me.y > ground) { me.y = ground; me.vy = Math.min(0, me.vy); }
+    } else {
+      me.spin += me.vx * dt * 0.006;
+      if (me.y >= ground) { me.y = ground; me.mode = 'ground'; me.spin = 0; SND.puff(0.06); }
+    }
+  }
+  if (me.x < 40) { me.x = 40; me.vx = Math.abs(me.vx) * 0.4; } if (me.x > W - 40) { me.x = W - 40; me.vx = -Math.abs(me.vx) * 0.4; }
+  if (me.y < 60) { me.y = 60; me.vy = Math.abs(me.vy) * 0.3; }
+}
+
+function update(dt) {
+  time += dt;
+  const speed = Math.hypot(me.vx, me.vy);
+  SND.update(state === 'play' ? Math.min(1, speed / 1200) : 0.2, state === 'play' && me.mode !== 'ground' ? Math.min(1, speed / 1500) : 0);
+  for (let i = parts.length - 1; i >= 0; i--) {
+    const p = parts[i]; p.life -= dt; if (p.life <= 0) { parts.splice(i, 1); continue; }
+    p.vy += 500 * dt; p.vx *= 1 - 1.5 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.rot += dt * 3;
+  }
+  if (state === 'title') {
+    cam.view = VIEW * W; cam.x = W * 0.5 + Math.sin(time * 0.1) * W * 0.2; cam.y = H * 0.52 + Math.cos(time * 0.13) * H * 0.12; clampCam(); return;
+  }
+  if (state === 'play') {
+    if (keys.has('Space') && me.mode !== 'swing' && !pointer && !update.spaceUsed) { update.spaceUsed = true; grab(me.x + me.face * 300, me.y - 400); }
+    const n = 4; for (let i = 0; i < n; i++) step(dt / n);
+    MONKEYS.forEach((m, i) => { if (!found[i] && Math.hypot(me.x - m.u * W, me.y - 30 - m.v * H) < 165) meet(i); });
+    FLOWERS.forEach((f, i) => {
+      if (time > cool.flowers[i] && Math.hypot(me.x - f[0] * W, me.y - 30 - f[1] * H) < 120) {
+        cool.flowers[i] = time + 1.4; SND.bell(i + 1, 0.07);
+        burst(f[0] * W, f[1] * H, i < 4 ? ['#f3e9f4', '#d9c3e6', '#ffffff'] : ['#f2b233', '#f7d25a', '#e8872b'], 9);
+      }
+    });
+    if (time > cool.snake && Math.hypot(me.x - SNAKE.u * W, me.y - SNAKE.v * H) < 150) {
+      cool.snake = time + 4; SND.hiss();
+      if (me.mode !== 'swing') { me.mode = 'air'; me.vy = -820; me.vx = (me.x < SNAKE.u * W ? -1 : 1) * 380; }
+    }
+    if (allT && time - allT > 2.6) {
+      state = 'ending'; endT = 0; endFrom = { x: cam.x, y: cam.y, v: cam.view }; me.mode = me.mode === 'swing' ? 'air' : me.mode;
+      ['album', 'tip'].forEach(i => $(i).classList.add('hidden'));
+      [0, 2, 4, 5, 7, 9, 10].forEach((k, i) => SND.bell(k, 0.07, 0.5 + i * 0.3));
+    }
+    const lead = 0.22, k = Math.min(1, dt * 4.5);
+    cam.x += (me.x + me.vx * lead - cam.x) * k; cam.y += (me.y - 120 + me.vy * 0.08 - cam.y) * k; cam.view = VIEW * W; clampCam();
+    return;
+  }
+  if (state === 'ending') {
+    endT += dt; const n = 4; for (let i = 0; i < n; i++) step(dt / n);
+    let k = Math.min(1, endT / 6); k = k * k * (3 - 2 * k);
+    cam.x = endFrom.x + (W / 2 - endFrom.x) * k; cam.y = endFrom.y + (H * 0.62 - endFrom.y) * k; cam.view = endFrom.v + (fitView() - endFrom.v) * k;
+    me.alpha = 1 - Math.min(1, Math.max(0, (endT - 4) / 1.5));
+    if (endT > 6.6) { state = 'done'; $('end').classList.remove('hidden'); }
+    return;
+  }
+  cam.x = W / 2; cam.y = H * 0.62; cam.view = fitView(); me.alpha = 0;
+}
+function fitView() { return Math.max(W * 1.2 / cv.width, H * 1.62 / cv.height) * Math.max(cv.width, cv.height); }
+function scale() { return cam.view / Math.max(cv.width, cv.height); }
+function clampCam() {
+  const sc = scale(), hw = cv.width * sc / 2, hh = cv.height * sc / 2;
+  cam.x = hw * 2 >= W ? W / 2 : Math.max(hw, Math.min(W - hw, cam.x));
+  cam.y = hh * 2 >= H ? H / 2 : Math.max(hh, Math.min(H - hh, cam.y));
+}
+
+/* ---------- drawing ---------- */
+function leaf(x, y, len, wid, ang, col) {
+  c.save(); c.translate(x, y); c.rotate(ang); c.fillStyle = col; c.beginPath();
+  c.moveTo(0, 0); c.quadraticCurveTo(len * 0.5, -wid, len, 0); c.quadraticCurveTo(len * 0.5, wid, 0, 0); c.fill(); c.restore();
+}
+function drawMonkey(hx, hy, hanging, ang) {
+  // Drawn about 120 units tall around her middle. In a swing, 'up' is turned to point along the vine.
+  const fur = '#8f4a22', dark = '#693317', face = '#e0b184';
+  c.save(); c.rotate(ang); c.scale(me.face, 1); c.lineCap = 'round'; c.lineJoin = 'round';
+  const sway = Math.sin(time * 5) * (me.mode === 'ground' ? 0 : 0.25), wk = me.mode === 'ground' ? Math.sin(me.walk) : 0;
+  c.strokeStyle = dark; c.lineWidth = 7; c.beginPath(); c.moveTo(-10, 26); c.bezierCurveTo(-44, 30, -46, -8 + sway * 20, -30, -6 + sway * 20); c.stroke();   // tail
+  c.strokeStyle = fur; c.lineWidth = 10;
+  c.beginPath(); c.moveTo(-7, 24); c.lineTo(-13 + wk * 10 - sway * 12, 50); c.moveTo(7, 24); c.lineTo(13 - wk * 10 - sway * 18, 50); c.stroke();           // legs
+  c.fillStyle = fur; c.beginPath(); c.ellipse(0, 6, 19, 26, 0, 0, 7); c.fill();
+  c.fillStyle = '#b06a3a'; c.beginPath(); c.ellipse(2, 10, 10, 15, 0, 0, 7); c.fill();
+  c.lineWidth = 9; c.strokeStyle = fur; c.beginPath();
+  if (hanging) { c.moveTo(4, -12); c.lineTo(0, -62); c.moveTo(-8, -8); c.lineTo(-22, 16 + sway * 10); }
+  else { c.moveTo(8, -8); c.lineTo(24, 6 + wk * 8); c.moveTo(-8, -8); c.lineTo(-20, 10 - wk * 8); }
+  c.stroke();
+  c.fillStyle = fur; c.beginPath(); c.arc(-15, -26, 6, 0, 7); c.arc(15, -26, 6, 0, 7); c.fill();
+  c.beginPath(); c.arc(0, -24, 16, 0, 7); c.fill();
+  c.fillStyle = face; c.beginPath(); c.ellipse(2, -21, 11, 10, 0, 0, 7); c.fill();
+  c.fillStyle = '#2a1a10'; c.beginPath(); c.arc(-2, -24, 2, 0, 7); c.arc(7, -24, 2, 0, 7); c.fill();
+  c.strokeStyle = '#2a1a10'; c.lineWidth = 1.6; c.beginPath(); c.arc(3, -18, 4.5, 0.25, 2.6); c.stroke();
+  c.restore();
+}
+function draw() {
+  const w = cv.width, h = cv.height, sc = scale();
+  const X = x => (x - cam.x) / sc + w / 2, Y = y => (y - cam.y) / sc + h / 2;
+  c.fillStyle = '#343c3e'; c.fillRect(0, 0, w, h);
+  const fw = W * 0.034 / sc;
+  if (X(0) > 0 || Y(0) > 0 || X(W) < w || Y(H) < h) {
+    c.fillStyle = 'rgba(0,0,0,.3)'; c.fillRect(X(0) - fw + 18 / sc, Y(0) - fw + 26 / sc, W / sc + 2 * fw, H / sc + 2 * fw);
+    c.fillStyle = '#c9a24a'; c.fillRect(X(0) - fw, Y(0) - fw, W / sc + 2 * fw, H / sc + 2 * fw);
+    c.fillStyle = '#a8842f'; c.fillRect(X(0) - fw * 0.35, Y(0) - fw * 0.35, W / sc + 0.7 * fw, H / sc + 0.7 * fw);
+  }
+  const x0 = Math.max(0, cam.x - w / 2 * sc), y0 = Math.max(0, cam.y - h / 2 * sc), x1 = Math.min(W, cam.x + w / 2 * sc), y1 = Math.min(H, cam.y + h / 2 * sc);
+  if (x1 > x0 && y1 > y0) c.drawImage(img, x0, y0, x1 - x0, y1 - y0, X(x0), Y(y0), (x1 - x0) / sc, (y1 - y0) / sc);
+  // a ring opens round each monkey as she meets it, and a small glow stays
+  for (const r of rings) {
+    const a = time - r.t, m = MONKEYS[r.i];
+    if (a < 1.6) { c.strokeStyle = 'rgba(255,244,205,' + (0.8 * (1 - a / 1.6)) + ')'; c.lineWidth = 8 / sc; c.beginPath(); c.arc(X(r.x), Y(r.y), (60 + a * 260) / sc, 0, 7); c.stroke(); }
+    if (state !== 'done') { c.fillStyle = 'rgba(255,240,190,' + (0.5 + 0.3 * Math.sin(time * 3 + r.i)) + ')'; c.beginPath(); c.arc(X(m.u * W), Y(m.v * H - 0.085 * H), 9 / sc, 0, 7); c.fill(); }
+  }
+  for (const p of parts) {
+    c.save(); c.globalAlpha = Math.min(1, p.life); c.translate(X(p.x), Y(p.y)); c.rotate(p.rot); c.fillStyle = p.col;
+    c.beginPath(); c.ellipse(0, 0, p.r / sc, p.r * 0.45 / sc, 0, 0, 7); c.fill(); c.restore();
+  }
+  if (state === 'title' || me.alpha <= 0) return;
+  c.save(); c.globalAlpha = me.alpha;
+  let ang = 0, hx = me.x, hy = me.y - 40;
+  if (me.mode === 'swing') {
+    ang = Math.atan2(me.ax - me.x, -(me.ay - (me.y - 40)));
+    const d = Math.hypot(me.ax - me.x, me.ay - (me.y - 40)), ux = (me.ax - me.x) / d, uy = (me.ay - (me.y - 40)) / d;
+    const handX = me.x + ux * 62, handY = me.y - 40 + uy * 62;
+    c.strokeStyle = '#33401e'; c.lineWidth = 6 / sc; c.lineCap = 'round'; c.beginPath(); c.moveTo(X(handX), Y(handY));
+    const slack = Math.max(0, me.L - d) * 0.5; c.quadraticCurveTo(X((handX + me.ax) / 2 - uy * slack), Y((handY + me.ay) / 2 + slack), X(me.ax), Y(me.ay)); c.stroke();
+    c.save(); c.translate(X(me.ax), Y(me.ay)); c.scale(1 / sc, 1 / sc);
+    leaf(0, 0, 46, 13, -0.5, '#2f4a24'); leaf(0, 0, 46, 13, 0.4, '#41602c'); leaf(0, 0, 42, 12, 2.7, '#2f4a24'); leaf(0, 0, 40, 12, 3.6, '#4d6d33'); c.restore();
+  } else if (me.mode === 'air') ang = me.spin;
+  c.translate(X(hx), Y(hy)); c.scale(1 / sc, 1 / sc);
+  if (me.mode === 'ground') { c.fillStyle = 'rgba(10,25,10,.3)'; c.beginPath(); c.ellipse(0, 52, 26, 7, 0, 0, 7); c.fill(); }
+  c.translate(0, me.mode === 'ground' ? -10 + Math.abs(Math.sin(me.walk)) * -4 : 0);
+  drawMonkey(0, 0, me.mode === 'swing', ang);
+  c.restore();
+}
+
+let last = 0;
+function frame(ms) {
+  const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms;
+  const dpr = Math.min(window.devicePixelRatio || 1, 2), w = Math.round(innerWidth * dpr), h = Math.round(innerHeight * dpr);
+  if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+  update(dt); draw(); requestAnimationFrame(frame);
+}
+
+/* ---------- input ---------- */
+function world(e) {
+  const dpr = cv.width / innerWidth, sc = scale();
+  return [(e.clientX * dpr - cv.width / 2) * sc + cam.x, (e.clientY * dpr - cv.height / 2) * sc + cam.y];
+}
+cv.addEventListener('pointerdown', e => {
+  if (state !== 'play' || pointer !== null) return;
+  pointer = e.pointerId; try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+  const p = world(e); grab(p[0], p[1]);
+});
+const up = e => { if (e.pointerId === pointer) { pointer = null; release(); } };
+cv.addEventListener('pointerup', up); cv.addEventListener('pointercancel', up);
+addEventListener('keydown', e => {
+  if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+  keys.add(e.code);
+  if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin();
+});
+addEventListener('keyup', e => { keys.delete(e.code); if (e.code === 'Space') { update.spaceUsed = false; if (!pointer) release(); } });
+addEventListener('blur', () => { keys.clear(); pointer = null; release(); });
+$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
+$('start').addEventListener('click', begin); $('again').addEventListener('click', begin);
+document.addEventListener('gesturestart', e => e.preventDefault());
+
+img = new Image();
+img.onload = () => { W = img.naturalWidth; H = img.naturalHeight; ground = H * 0.935; reset(); state = 'title'; requestAnimationFrame(frame); };
+img.onerror = () => { $('err').style.display = 'flex'; };
+img.src = 'painting.jpg';
+
+// For testing from the console.
+window.__monkeys = { get state() { return state; }, get found() { return found.slice(); }, me, cam, grab, release, begin,
+  go(i) { const m = MONKEYS[i]; me.x = m.u * W; me.y = m.v * H + 30; me.vx = me.vy = 0; me.mode = 'air'; } };
+})();
+</script>
+</body>
+</html>
