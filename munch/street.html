@@ -189,6 +189,7 @@ function house(cx, cz, w, d, ang, i, big) {
   }
   g.position.set(cx, y0 + 0.75, cz); g.rotation.y = -ang; scene.add(g); houses.push({ x: cx, z: cz, w: w / 2 + 0.5, d: d / 2 + 0.5, c: Math.cos(ang), s: Math.sin(ang), top: y0 + 0.75 + wallH });
 }
+const blocked = (x, z) => inHouse(x, z) || floorAt(x, z) === null;
 const inHouse = (x, z) => houses.some(h => { const dx = x - h.x, dz = z - h.z, u = dx * h.c + dz * h.s, v = -dx * h.s + dz * h.c; return Math.abs(u) < h.w && Math.abs(v) < h.d; });
 map.buildings.forEach((b, i) => {
   const p = b.p; let cx = 0, cz = 0; for (const q of p) { cx += q[0]; cz += q[1]; } cx /= p.length; cz /= p.length;
@@ -214,6 +215,14 @@ function tree(x, z, k) {
   g.position.set(x, y, z); scene.add(g); sway.push(g);
 }
 tree(27, -40, 1.7);
+// white paling fences along both sides of the road, as in his village pictures: they keep her to the street and the gardens to themselves
+{ const pal = [], rail = [], fm = lam({ color: '#ddd8cc' }), D = new THREE.Object3D();
+  for (const sd of [-1, 1]) for (let q = 0; q < S_PIER - 5; q += 2.4) { const p = at(q), x = p.x - p.dz * 8 * sd, z = p.z + p.dx * 8 * sd, y = ground(x, z);
+    if (y < 0.15 || inHouse(x, z) || nearest(x, z).d < 7.4) continue; const ry = Math.atan2(-p.dz, p.dx);
+    for (const h of [0.34, 0.78]) rail.push([x, y + h, z, ry]); for (let k = -2; k <= 2; k++) pal.push([x + p.dx * k * 0.48, y + 0.5 + ((k + q) % 2 ? 0 : 0.03), z + p.dz * k * 0.48, ry]);
+    houses.push({ x, z, w: 1.3, d: 0.3, c: p.dx, s: p.dz, top: y + 1 }); }
+  const inst = (geo, list) => { const m = new THREE.InstancedMesh(geo, fm, list.length); list.forEach(([x, y, z, ry], i) => { D.position.set(x, y, z); D.rotation.set(0, ry, 0); D.updateMatrix(); m.setMatrixAt(i, D.matrix); }); m.frustumCulled = false; scene.add(m); };
+  inst(new THREE.BoxGeometry(2.46, 0.07, 0.04), rail); inst(new THREE.BoxGeometry(0.1, 1.0, 0.035), pal); }
 for (let i = 0; i < 90; i++) { const s = rnd(S_VILLAGE * 0.5, S_PIER), p = at(s), side = Math.random() < 0.5 ? -1 : 1, off = rnd(9, 46); tree(p.x - p.dz * off * side, p.z + p.dx * off * side, rnd(0.7, 1.25)); }
 for (let i = 0; i < 26; i++) { const s = rnd(0, S_VILLAGE * 0.5), p = at(s), off = rnd(16, 60); tree(p.x + p.dz * off, p.z - p.dx * off, rnd(0.8, 1.4)); }       // the landward side of the road above
 const lamps = [], glowTex = canvasTex(128, 128, (g, w, h) => { const r = g.createRadialGradient(64, 64, 2, 64, 64, 64); r.addColorStop(0, 'rgba(255,225,150,1)'); r.addColorStop(0.3, 'rgba(255,190,90,.55)'); r.addColorStop(1, 'rgba(255,170,60,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); });
@@ -282,9 +291,9 @@ function girl(o) {               // o: dress, hair, hat colour or null, size
   const cap = new THREE.Mesh(new THREE.SphereGeometry(0.116, 14, 10), hairM); cap.scale.set(1.0, 1.08, 1.0); cap.position.set(0, 0.025, -0.03); hd.add(cap);
   const tail = new THREE.Group(); for (const [x, w] of [[0, 0.12], [-0.07, 0.07], [0.07, 0.07]]) { const t = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), hairM); t.scale.set(w, 0.3, 0.045); t.position.set(x, -0.3, 0); tail.add(t); } tail.position.set(0, 0.02, -0.105); hd.add(tail);
   if (o.hat) { const hm = lam({ color: o.hat }), b = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.22, 0.02, 16), hm); b.position.y = 0.1; b.rotation.x = -0.12; hd.add(b); const c = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.115, 0.09, 12), hm); c.position.y = 0.15; hd.add(c); }
-  const arm = () => { const a = limb(0.46, 0.042, 0.03, dress), h = new THREE.Mesh(new THREE.SphereGeometry(0.036, 8, 6), skin); h.position.y = -0.48; a.add(h); return a; };
+  const arm = () => { const a = limb(0.46, 0.052, 0.038, dress), h = new THREE.Mesh(new THREE.SphereGeometry(0.036, 8, 6), skin); h.position.y = -0.48; a.add(h); return a; };
   const aL = arm(), aR = arm(); aL.position.set(-0.185, 1.27, 0); aR.position.set(0.185, 1.27, 0); rig.add(aL, aR);
-  const lL = limb(0.6, 0.048, 0.036, dark), lR = limb(0.6, 0.048, 0.036, dark); lL.position.set(-0.075, 0.62, 0); lR.position.set(0.075, 0.62, 0); rig.add(lL, lR);
+  const lL = limb(0.6, 0.062, 0.044, dark), lR = limb(0.6, 0.062, 0.044, dark); lL.position.set(-0.075, 0.62, 0); lR.position.set(0.075, 0.62, 0); rig.add(lL, lR);
   for (const l of [lL, lR]) { const sh = new THREE.Mesh(new THREE.BoxGeometry(0.085, 0.07, 0.2), dark); sh.position.set(0, -0.6, 0.05); l.add(sh); }
   const sh = new THREE.Mesh(new THREE.CircleGeometry(0.36, 14), shadowM); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; g.add(sh);
   g.userData = { rig, skirt, hd, tail, aL, aR, legs: [lL, lR], sh, girl: true }; g.scale.setScalar(o.size || 1.05); scene.add(g); return g;
@@ -345,8 +354,10 @@ function update(dt) {
     const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw), slope = (ground(me.x, me.z) - ground(me.x + fx * 2, me.z + fz * 2)) / 2, top = 9.5 + clamp(slope * 60, 0, 7);
     me.speed += (go * top - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2));
     let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
-    if (inHouse(nx, nz)) { if (!inHouse(nx, me.z)) nz = me.z; else if (!inHouse(me.x, nz)) nx = me.x; else { nx = me.x; nz = me.z; me.speed *= 0.4; } }
-    let f = floorAt(nx, nz); if (f === null) { f = floorAt(nx, me.z); if (f !== null) nz = me.z; else { f = floorAt(me.x, nz); if (f !== null) nx = me.x; else { nx = me.x; nz = me.z; f = floorAt(nx, nz) ?? me.y; me.speed *= 0.5; } } }
+    if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;      // slide along whatever is in the way
+      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
+      if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
+    let f = floorAt(nx, nz) ?? me.y;
     me.x = nx; me.z = nz;
     const jump = (keys.has('Space') || held.jump) && state === 'play';
     if (jump && !me.air) { me.vy = 6.2 + Math.abs(me.speed) * 0.22; me.air = true; SND.whoosh(0.04); }
@@ -423,7 +434,7 @@ function update(dt) {
   for (const m of twoMen) { m.s += 0.55 * dt; if (m.s > S_SCREAM + 52) m.s = S_SCREAM + 16; const p = at(m.s), x = p.x - p.dz * m.off, z = p.z + p.dx * m.off; m.g.position.set(x, ground(x, z), z); m.g.rotation.y = Math.atan2(p.dx, p.dz); m.ph += dt * 3.4; pose(m.g, m.ph, 0.4); }
   { const u = screamer.userData, k = 1 + dread; screamer.rotation.z = Math.sin(time * 1.7) * 0.05 * k; u.body.scale.set(1 + Math.sin(time * 2.3) * 0.06 * k, 1 + Math.sin(time * 1.1) * 0.02, 1 + Math.cos(time * 2.0) * 0.06 * k); u.hd.rotation.z = Math.sin(time * 1.3) * 0.08 * k; u.hd.scale.y = 1 + Math.sin(time * 2.9) * 0.04 * k;
     if (state !== 'title') faceTo(screamer, me.x, me.z, dt * 1.5); else screamer.rotation.y = Math.atan2(camera.position.x - screamer.position.x, camera.position.z - screamer.position.z); }
-  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; if (v.z > 1) bubble.classList.remove('show'); } }
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; const cp = camera.position, bp = bubbleG.position; let hid = v.z > 1; for (let k = 0.12; k < 0.9 && !hid; k += 0.07) hid = inHouse(cp.x + (bp.x - cp.x) * k, cp.z + (bp.z - cp.z) * k); bubble.classList.toggle('show', !hid); } }
 
   // the hour
   const n = state === 'title' ? 0 : night; uni.uNight.value = n; uni.uDread.value = dread; post.uniforms.uDread.value = dread;

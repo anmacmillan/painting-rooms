@@ -230,6 +230,12 @@ bridge(BR_N, BR_C, 9.4, false);
 }
 // the river wall along the Lungarno, with its parapet
 for (let s = S_RIVER + 4; s < S_BRIDGE - 5; s += 2.5) { const p = at(s); let v = 2; while (v < 26 && !isWater(...sideR(p, 0, v))) v += 0.5; if (v >= 26) continue; const [x, z] = sideR(p, 0, v - 0.6); bake(boxUV(2.6, 1.0, 0.55, 5), M4(x, LAND + 0.5, z, -Math.atan2(p.dz, p.dx)), stoneM); bake(boxUV(2.6, 3.4, 0.6, 5), M4(...sideR(p, 0, v + 0.1).reduce((a, q, i) => (i ? [a[0], LAND - 1.75, q] : [q]), []), -Math.atan2(p.dz, p.dx)), stoneM); houses.push({ x, z, w: 1.4, d: 0.45, c: p.dx, s: p.dz }); }
+// stone posts hung with chain across every opening off the way, so that the edge of the walk can be seen
+{ const ironM = lam({ color: '#2c2824' });
+  for (const sd of [-1, 1]) for (let q = 2; q < S_BRIDGE - 2; q += 2.6) { const p = at(q), [x, z] = side(p, 0, 15 * sd);
+    if (inHouse(x, z) || isWater(x, z) || onBridge(x, z) || nearest(x, z).d < 14.2 || floorAt(x, z) === null) continue; const ry = -Math.atan2(p.dz, p.dx);
+    bake(boxUV(0.36, 0.95, 0.36, 5), M4(x - p.dx * 1.3, LAND + 0.47, z - p.dz * 1.3, ry), stoneM); bake(boxUV(0.36, 0.95, 0.36, 5), M4(x + p.dx * 1.3, LAND + 0.47, z + p.dz * 1.3, ry), stoneM);
+    bake(new THREE.BoxGeometry(2.4, 0.06, 0.06), M4(x, LAND + 0.66, z, ry), ironM); houses.push({ x, z, w: 1.5, d: 0.3, c: p.dx, s: p.dz }); } }
 flush();
 
 /* ================= people: Florentines in long gowns, with the painted faces ================= */
@@ -376,7 +382,7 @@ function update(dt) {
     if (d < 3.4 && state === 'play' && time > w.said && time > bubbleT) { w.said = time + 30; say(w.g, LINES[Math.floor(rnd(0, LINES.length))], 3); }
   }
   pigeons.forEach((b, i) => { b.position.y = LAND + 0.12 + Math.abs(Math.sin(time * 6 + i)) * 0.03; b.rotation.x = Math.max(0, Math.sin(time * 2.2 + i * 1.7)) * 0.5; });
-  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; if (v.z > 1) bubble.classList.remove('show'); } }
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; const cp = camera.position, bp = bubbleG.position; let hid = v.z > 1; for (let k = 0.12; k < 0.9 && !hid; k += 0.07) hid = inHouse(cp.x + (bp.x - cp.x) * k, cp.z + (bp.z - cp.z) * k); bubble.classList.toggle('show', !hid); } }
   // the hour: the sun sinks towards the west as he follows her to the river
   const dk = state === 'title' ? 0.35 : dusk; uni.uDusk.value = dk; hemi.color.copy(C('#f2e6cf')).lerp(C('#e6b9a0'), dk); hemi.intensity = mix(1.2, 0.95, dk); sunL.color.copy(C('#ffe2b0')).lerp(C('#ff9a5a'), dk); sunL.intensity = mix(2.2, 1.9, dk);
   sunL.position.set(camera.position.x - 160, mix(110, 38, dk), camera.position.z + 60); sunL.target.position.set(camera.position.x, 0, camera.position.z); sunL.target.updateMatrixWorld(); scene.fog.color.copy(C('#e6d2b0')).lerp(C('#e0a070'), dk);
