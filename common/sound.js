@@ -7,11 +7,11 @@
      Sound.puff(vol), Sound.hiss(), Sound.whoosh(vol), Sound.setMuted(bool) */
 window.Sound = (() => {
   let ac = null, master, wet, dry, pads, windGain, windBand, noise, muted = false;
-  let chords = [], scale = [], nextChord = 0, nextBell = 0, chordI = 0, walk = 4, track = null, trackBuf = null, nextTrack = 0, trackGain;
+  let chords = [], scale = [], nextChord = 0, nextBell = 0, chordI = 0, walk = 4, track = null, trackBuf = null, nextTrack = 0, trackGain = null, first = true;
   const hz = m => 440 * Math.pow(2, (m - 69) / 12);
   function start(opts) {
     chords = opts.chords; scale = opts.scale;
-    if (ac) { ac.resume(); return; }
+    if (ac) { ac.resume(); if (opts.track && opts.track !== track) setTrack(opts.track, 2); return; }
     const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
     ac = new AC();
     master = ac.createGain(); master.gain.value = muted ? 0 : 0.9;
@@ -33,12 +33,17 @@ window.Sound = (() => {
     src.connect(windBand); windBand.connect(windGain); windGain.connect(dry); windGain.connect(wet); src.start();
     nextChord = ac.currentTime + 0.1; nextBell = ac.currentTime + 2.5;
     // A recorded score (opts.track) replaces the pads and the wandering bells; it loops with a slow cross-fade. If it fails to load, the pads carry on.
-    trackGain = ac.createGain(); trackGain.gain.value = opts.trackVol || 0.5; trackGain.connect(master);
-    if (opts.track) { track = opts.track; fetch(track).then(r => r.arrayBuffer()).then(b => new Promise((ok, no) => ac.decodeAudioData(b, ok, no))).then(b => { trackBuf = b; nextTrack = ac.currentTime + 0.05; }).catch(() => { track = null; }); }
+    if (opts.track) setTrack(opts.track, 0);
+  }
+  // Change the recorded score: the old one fades out over `fade` seconds while the new one loads and comes in.
+  function setTrack(url, fade) {
+    if (!ac) return; const old = trackGain; if (old) { old.gain.setTargetAtTime(0.0001, ac.currentTime, Math.max(0.05, (fade || 0) / 3)); setTimeout(() => old.disconnect(), ((fade || 0) + 1) * 1000); }
+    trackGain = ac.createGain(); trackGain.gain.value = 0.5; trackGain.connect(master); const mine = trackGain; track = url; trackBuf = null; first = true;
+    fetch(url).then(r => r.arrayBuffer()).then(b => new Promise((ok, no) => ac.decodeAudioData(b, ok, no))).then(b => { if (trackGain === mine) { trackBuf = b; nextTrack = ac.currentTime + 0.05; } }).catch(() => { if (trackGain === mine) track = null; });
   }
   function playTrack(t) {
     const X = 5, s = ac.createBufferSource(), g = ac.createGain(), d = trackBuf.duration; s.buffer = trackBuf;
-    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(1, t + (nextTrack < 1 ? 1.5 : X)); g.gain.setValueAtTime(1, t + d - X); g.gain.linearRampToValueAtTime(0.0001, t + d);
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(1, t + (first ? 2.5 : X)); first = false; g.gain.setValueAtTime(1, t + d - X); g.gain.linearRampToValueAtTime(0.0001, t + d);
     s.connect(g); g.connect(trackGain); s.start(t); nextTrack = t + d - X;
   }
   function pad(f, t, dur, vol, type) {
@@ -94,6 +99,7 @@ window.Sound = (() => {
     puff(vol) { burst(vol || 0.03, 0.09, 'lowpass', 900, 250, 1); },
     whoosh(vol) { burst(vol || 0.08, 0.32, 'bandpass', 260, 800, 0.9); },
     hiss() { burst(0.09, 0.7, 'highpass', 3200, 5200, 3); },
+    setTrack,
     setMuted(m) { muted = m; if (ac) master.gain.setTargetAtTime(m ? 0 : 0.9, ac.currentTime, 0.08); },
   };
 })();
