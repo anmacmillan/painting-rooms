@@ -31,10 +31,11 @@
 
 <script src="../common/sound.js"></script>
 <script type="module">
-import { THREE, createWorld, canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
+import { THREE, createWorld, loadFigures, canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
 const SND = window.Sound;
 const map = await (await fetch('map.json')).json();
-const B = map.bounds;
+const B = [-292, -392, 172, 206];            // the old village and the road down into it: small enough to be full of people
+const F = await loadFigures('figures');      // the figures, cut from his own paintings
 
 /* ---------- the lie of the land ----------
    The shore as it ran before the modern marina, traced from the map, north to south. The sea is to the east; the village climbs to the west. */
@@ -52,7 +53,7 @@ const street = name => map.streets.filter(s => s.n === name).sort((a, b) => b.l.
 const ROAD = street('Grev Wedels gate').slice().sort((a, b) => a[0] - b[0]);      // the road above: it comes down into the village from the west
 const HIGH = street('Edvard Munchs gate');
 const along = (line, t) => { const f = clamp(t, 0, 0.999) * (line.length - 1), i = Math.floor(f); return [mix(line[i][0], line[i + 1][0], f - i), mix(line[i][1], line[i + 1][1], f - i)]; };
-const SCREAM = along(ROAD, 0.36), PIER = { a: [44, 2], b: [112, -16], w: 5.5, y: 1.0 }, DANCE = { x: 124, z: 104, r: 12 }, WOOD = { x: -96, z: -338 }, SHORE = { x: -60, z: -236 };
+const SCREAM = along(ROAD, 0.58), PIER = { a: [44, 2], b: [112, -16], w: 5.5, y: 1.0 }, DANCE = { x: 124, z: 104, r: 12 }, WOOD = { x: -96, z: -338 }, SHORE = { x: -60, z: -236 };
 const MOON = { x0: 108, z: -15, len: 330, w: 8 };
 
 /* ---------- paint ---------- */
@@ -151,8 +152,7 @@ const T = {
     g.fillStyle = '#16301f'; for (const [x, y, rx, ry] of [[128, 110, 118, 62], [80, 170, 70, 36], [176, 190, 74, 34], [128, 60, 80, 44]]) { g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, 7); g.fill(); }
   }),
 };
-const girlRed = [T.girl('#c9352b', '#7a4a22', -9), T.girl('#c9352b', '#7a4a22', 9), T.girl('#c9352b', '#7a4a22', 0)];
-const sitterTex = [T.sitter(false), T.sitter(true)];
+
 const pic = (file, title, year, where, note) => ({ img: 'paintings/' + file, title, year, where, note });
 
 /* ---------- the hour and the mood ---------- */
@@ -162,18 +162,16 @@ const fSunset = new THREE.Color('#a8674a'), fNight = new THREE.Color('#1c2c58'),
 const roadPath = (t0, t1) => { const a = []; for (let i = 0; i <= 12; i++) a.push(along(ROAD, mix(t0, t1, i / 12))); return a; };
 
 const figures = [
-  { id: 'screamer', tex: T.screamer, x: SCREAM[0] + 2.2, z: SCREAM[1] + 0.6, h: 2.9, say: ['Do you hear it? The whole sky is crying out.', 'It goes through everything. Through me.'] },
-  { id: 'despair', tex: T.despair, x: along(ROAD, 0.44)[0] + 3.2, z: along(ROAD, 0.44)[1] + 1.2, h: 2.3, say: ['The sun went down and the clouds turned red. My friends walked on.'] },
-  ...[0, 1].map(i => ({ id: 'men' + i, tex: T.hatBack, x: 0, z: 0, h: 2.3, path: roadPath(0.5, 0.95), speed: 0.9, s0: 0.02 + i * 0.01, off: i * 1.2 - 1, loop: false, say: i ? null : ['A fine evening. Don\'t dawdle on the road, child.'] })),
-  ...[0, 1, 2, 3, 4, 5, 6].map(i => ({ id: 'anx' + i, tex: T.crowd[i % 5], x: 0, z: 0, h: 2.2, path: roadPath(0.97, 0.52), speed: 0.8 + (i % 3) * 0.12, s0: i / 7, off: (i % 3) - 1.2, say: i === 2 ? ['We are all going the same way.'] : i === 5 ? ['Good evening.'] : null })),
-  ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => ({ id: 'street' + i, tex: T.crowd[(i * 2 + 1) % 5], x: 0, z: 0, h: 2.2, path: i % 2 ? HIGH : HIGH.slice().reverse(), speed: 0.8 + (i % 4) * 0.13, s0: i / 10, off: (i % 2 ? 2.2 : -2.2), say: i === 3 ? ['Everyone walks out in the evening. Nobody looks at anyone.'] : i === 6 ? ['Summer guests from Kristiania, the lot of them.'] : null })),
-  { id: 'sitter', frames: sitterTex, x: SHORE.x + 4, z: SHORE.z, h: 2.2, wide: 300 / 512, frame: () => (sitDone ? 1 : 0), say: ['I am waiting for a boat that has already gone.', 'She rowed out with someone else. Look, by the jetty.'] },
-  { id: 'sis1', tex: T.girl('#f1ece0', '#c9a23a', 0), x: PIER.b[0] - 6, z: PIER.b[1] + 2.9, h: 1.95, lift: 0.75, say: ['There you are! Look how the moon lies on the water.', 'They say you can walk on it, if you are brave.'] },
-  { id: 'sis2', tex: T.girl('#3f7a52', '#5a3a26', 0), x: PIER.b[0] - 8, z: PIER.b[1] + 3.4, h: 2.0, lift: 0.75 },
-  { id: 'voice', tex: T.voice, x: WOOD.x + 6, z: WOOD.z + 4, h: 2.3, say: ['Listen. The sea is breathing.', 'On these nights it never gets properly dark.'] },
-  { id: 'white', tex: T.lone('#f4efe2', '#d8b04a'), x: DANCE.x - 15, z: DANCE.z + 3, h: 2.2, say: ['Come and dance! It is midsummer.'] },
-  { id: 'black', tex: T.lone('#15151f', '#5a2a22'), x: DANCE.x + 15, z: DANCE.z + 2, h: 2.2, say: ['I danced here once. Go on, while you can.'] },
-  ...[0, 1, 2].map(i => ({ id: 'dancer' + i, tex: T.couple(['#f4efe2', '#c23a2e', '#f0e2c0'][i]), x: DANCE.x, z: DANCE.z, h: 2.3, wide: 300 / 512, a: i * 2.1, r: 4 + i * 2.6,
+  { id: 'screamer', tex: F.screamer, x: SCREAM[0] + 2.2, z: SCREAM[1] + 0.6, h: 2.9, say: ['Do you hear it? The whole sky is crying out.', 'It goes through everything. Through me.'] },
+  { id: 'despair', tex: F.despair, x: along(ROAD, 0.66)[0] + 3.2, z: along(ROAD, 0.66)[1] + 1.2, h: 2.3, say: ['The sun went down and the clouds turned red. My friends walked on.'] },
+  ...[0, 1].map(i => ({ id: 'men' + i, tex: i ? F.kj_hat2 : F.kj_hat, x: 0, z: 0, h: 2.4, path: roadPath(0.7, 0.97), speed: 0.9, s0: 0.02 + i * 0.01, off: i * 1.2 - 1, loop: false, say: i ? null : ['A fine evening. Don\'t dawdle on the road, child.'] })),
+  ...[0, 1, 2, 3, 4, 5, 6].map(i => ({ id: 'anx' + i, tex: [F.anx_woman, F.anx_hat, F.anx_beard, F.kj_hat, F.kj_woman][i % 5], x: 0, z: 0, h: 2.4, path: roadPath(0.98, 0.72), speed: 0.8 + (i % 3) * 0.12, s0: i / 7, off: (i % 3) - 1.2, say: i === 2 ? ['We are all going the same way.'] : i === 5 ? ['Good evening.'] : null })),
+  { id: 'sitter', tex: F.melancholy, x: SHORE.x + 4, z: SHORE.z, h: 1.45, say: ['I am waiting for a boat that has already gone.', 'She rowed out with someone else. Look, by the jetty.'] },
+  { id: 'sis1', tex: F.sisters, x: PIER.b[0] - 6, z: PIER.b[1] + 2.9, h: 2.0, lift: 0.75, say: ['There you are! Look how the moon lies on the water.', 'They say you can walk on it, if you are brave.'] },
+  { id: 'voice', tex: F.voice, x: WOOD.x + 6, z: WOOD.z + 4, h: 2.3, say: ['Listen. The sea is breathing.', 'On these nights it never gets properly dark.'] },
+  { id: 'white', tex: F.dance_white, x: DANCE.x - 15, z: DANCE.z + 3, h: 2.2, say: ['Come and dance! It is midsummer.'] },
+  { id: 'black', tex: F.dance_black, x: DANCE.x + 15, z: DANCE.z + 2, h: 2.2, say: ['I danced here once. Go on, while you can.'] },
+  ...[0, 1, 2].map(i => ({ id: 'dancer' + i, tex: [F.dance_couple, F.dance_couple2, F.dance_couple][i], x: DANCE.x, z: DANCE.z, h: 2.4, a: i * 2.1, r: 4 + i * 2.6,
     place: (w, f, dt) => { f.a += dt * 0.55; f.sp.scale.x = f.sp.userData.w * (Math.sin(f.a * 3 + w.time * 2) > 0 ? 1 : -1); return [DANCE.x + Math.cos(f.a) * f.r, DANCE.z + Math.sin(f.a) * f.r]; } })),
   { id: 'fisher', tex: T.fisher, x: 26, z: -42, h: 2.2, say: ['Herring is poor this summer. The painter pays me to sit still instead.', 'Steamer from Kristiania ties up at the pier twice a day.'] },
   { id: 'landlady', tex: T.landlady, x: -12, z: -2, h: 2.1, say: ['Grand Hotel, full to the attic. Painters, mostly, and they pay late.'] },
@@ -182,8 +180,8 @@ const figures = [
 ];
 const places = [
   { id: 'scream', name: 'The Road Above', kind: 'the scream', x: SCREAM[0], z: SCREAM[1], r: 11, card: pic('../scream.jpg', 'The Scream', '1893', 'National Museum, Oslo', 'A figure on a road above the fjord, under a red sky. The real road is on Ekeberg hill, above Oslo.') },
-  { id: 'despair', name: 'The Railing', kind: 'despair', x: along(ROAD, 0.44)[0], z: along(ROAD, 0.44)[1], r: 9, card: pic('despair.jpg', 'Despair', '1894', 'Munch Museum, Oslo', 'The same road and the same sky, with a man turned away at the railing.') },
-  { id: 'anxiety', name: 'The Walkers', kind: 'anxiety', x: along(ROAD, 0.72)[0], z: along(ROAD, 0.72)[1], r: 13, card: pic('anxiety.jpg', 'Anxiety', '1894', 'Munch Museum, Oslo', 'The crowd coming up the road has the faces of the people in the city street.') },
+  { id: 'despair', name: 'The Railing', kind: 'despair', x: along(ROAD, 0.66)[0], z: along(ROAD, 0.66)[1], r: 9, card: pic('despair.jpg', 'Despair', '1894', 'Munch Museum, Oslo', 'The same road and the same sky, with a man turned away at the railing.') },
+  { id: 'anxiety', name: 'The Walkers', kind: 'anxiety', x: along(ROAD, 0.86)[0], z: along(ROAD, 0.86)[1], r: 13, card: pic('anxiety.jpg', 'Anxiety', '1894', 'Munch Museum, Oslo', 'The crowd coming up the road has the faces of the people in the city street.') },
   { id: 'street', name: 'The Evening Street', kind: 'evening on karl johan', x: along(HIGH, 0.7)[0], z: along(HIGH, 0.7)[1], r: 14, card: pic('karl_johan.jpg', 'Evening on Karl Johan', '1892', 'KODE, Bergen', 'Painted of the main street in the capital. Here its crowd walks the village street.') },
   { id: 'house', name: 'The Painter\'s House', kind: 'his summer house', x: -152, z: -256, r: 13, card: pic('starry_night.jpg', 'Starry Night', '1922–24', 'Munch Museum, Oslo', 'He bought a small house here in 1898. It is still there and is a museum. This night sky he painted years later.') },
   { id: 'wood', name: 'The Pine Wood', kind: 'the voice', x: WOOD.x, z: WOOD.z, r: 15, card: pic('summer_night.jpg', 'Summer Night\'s Dream (The Voice)', '1893', 'Museum of Fine Arts, Boston', 'A woman among the pines on the Åsgårdstrand shore, with the moon\'s column on the water behind her.') },
@@ -208,14 +206,16 @@ world = createWorld({
   floor: (x, z) => (Math.abs(z - MOON.z) < MOON.w / 2 && x > MOON.x0 - 2 && x < MOON.x0 + MOON.len + 14 ? 0.14 : null),      // the moonlight on the water is solid
   walkable: (x, z, h) => h > -0.25,
   mapColors: { land: '#3f5a44', water: '#2a3d70', street: '#c79a6a', house: '#e9e2d0' },
-  player: { frames: girlRed, height: 1.9, start: { x: along(ROAD, 0.28)[0], z: along(ROAD, 0.28)[1] + 1, yaw: Math.atan2(along(ROAD, 0.34)[0] - along(ROAD, 0.28)[0], -(along(ROAD, 0.34)[1] - along(ROAD, 0.28)[1])) }, speed: 9.5, downhill: 9 },
+  player: { frames: [F.girl_white, F.girl_white, F.girl_white], height: 2.0, fly: true, start: { x: along(ROAD, 0.5)[0], z: along(ROAD, 0.5)[1] + 1, yaw: Math.atan2(along(ROAD, 0.56)[0] - along(ROAD, 0.5)[0], -(along(ROAD, 0.56)[1] - along(ROAD, 0.5)[1])) }, speed: 10.5, downhill: 8 },
+  crowd: { n: 75, cast: [F.kj_hat, F.kj_woman, F.anx_hat, F.kj_hat2, F.anx_woman, F.kj_woman2, F.anx_beard, F.dance_black, F.kj_hat, F.dance_white], h: [2.25, 2.55], where: l => l[0][0] > -215,
+    say: ['Good evening.', 'Everyone walks out in the evening. Nobody looks at anyone.', 'Summer guests from Kristiania, the lot of them.', 'The steamer is late.', 'Such a light night. Nobody can sleep.'] },
   figures, places, bookSub: 'the paintings this night is made from',
   carry(w, nx, nz, dt) {            // joining the dance: the ring carries her round
     const dd = Math.hypot(nx - DANCE.x, nz - DANCE.z); dance += ((dd < DANCE.r ? 1 : 0) - dance) * dt * 1.5;
     if (dd < DANCE.r && dd > 1) { const a = 0.55 * dance * dt, cx = nx - DANCE.x, cz = nz - DANCE.z; nx = DANCE.x + cx * Math.cos(a) - cz * Math.sin(a); nz = DANCE.z + cx * Math.sin(a) + cz * Math.cos(a); w.me.yaw += a; }
     return [nx, nz];
   },
-  titleCamera(w) { const p = along(ROAD, 0.3); w.camera.position.set(p[0], w.ground(p[0], p[1]) + 1.7, p[1]); w.camera.lookAt(SCREAM[0] + 30, w.ground(SCREAM[0], SCREAM[1]) + 1.2, SCREAM[1] + 8); },
+  titleCamera(w) { const p = along(ROAD, 0.52); w.camera.position.set(p[0], w.ground(p[0], p[1]) + 1.7, p[1]); w.camera.lookAt(SCREAM[0] + 30, w.ground(SCREAM[0], SCREAM[1]) + 1.2, SCREAM[1] + 8); },
   tint(w) {
     const n = w.state === 'title' ? 0 : night; cT.copy(cSunset).lerp(cNight, n).lerp(cDay, sun); fT.copy(fSunset).lerp(fNight, n).lerp(fDay, sun);
     skyMat.uniforms.uNight.value = n; skyMat.uniforms.uSun.value = sun; return { color: cT, fog: fT, near: mix(140, 50, n), far: mix(1300, 620, n) + sun * 700 };
@@ -224,13 +224,13 @@ world = createWorld({
   update(w, dt) {
     const me = w.me;
     if (w.state === 'title') { dread += (0.8 - dread) * dt; w.uni.uDread.value = dread; return; }
-    night += (sstep(-255, -125, me.x) - night) * dt * 0.8;            // sunset on the road above, night down in the village
+    night += (sstep(-240, -150, me.x) - night) * dt * 0.8;            // sunset on the road above, night down in the village
     const onMoon = Math.abs(me.z - MOON.z) < MOON.w && me.x > MOON.x0;
     if (w.state === 'play' && onMoon && me.x > MOON.x0 + MOON.len * 0.8) { w.state = 'sunrise'; endT = 0; me.auto = { yaw: Math.PI / 2, go: 0.3 }; }
     if (w.state === 'sunrise') { endT += dt; sun = sstep(0, 9, endT); w.lookUp = sun * 6; if (endT > 12) { me.auto = null; w.lookUp = 0; w.end(); } }
     // dread rises near the figure on the road and in the crowds; it settles by her sisters, in the dance and on the moonlight
     let want = sstep(60, 6, Math.hypot(me.x - SCREAM[0], me.z - SCREAM[1])) * 0.9;
-    for (const f of w.figs) if (f.id.startsWith('anx') || f.id.startsWith('street')) want = Math.max(want, sstep(13, 3, Math.hypot(me.x - f.sp.position.x, me.z - f.sp.position.z)) * 0.5);
+    for (const f of w.figs) if (f.id.startsWith('anx') || f.id.startsWith('crowd')) want = Math.max(want, sstep(13, 3, Math.hypot(me.x - f.sp.position.x, me.z - f.sp.position.z)) * 0.5);
     const sis = w.figs.find(f => f.id === 'sis1').sp.position, calm = Math.max(sstep(30, 8, Math.hypot(me.x - sis.x, me.z - sis.z)), dance, onMoon ? 1 : 0, sun);
     dread += (want * (1 - calm) - dread) * dt * 1.2; w.uni.uDread.value = dread;
     const scr = w.figs.find(f => f.id === 'screamer').sp; scr.scale.x = scr.userData.w * (1.0 + Math.sin(w.time * 2.3) * 0.05 * (1 + dread));
@@ -276,7 +276,7 @@ world = createWorld({
     const mp = new THREE.Mesh(new THREE.PlaneGeometry(MOON.len + 900, MOON.w), moonMat); mp.rotation.x = -Math.PI / 2; mp.position.set(MOON.x0 + (MOON.len + 900) / 2, 0.1, MOON.z); scene.add(mp);
     /* the railing of the road above, on the fjord side */
     const railM = w.bend(w.mat({ color: '#8a5234' }), 1.3);
-    for (let t = 0.2; t < 0.62; t += 0.014) {
+    for (let t = 0.45; t < 0.84; t += 0.014) {
       const a = along(ROAD, t), b = along(ROAD, t + 0.014), n = [-(b[1] - a[1]), b[0] - a[0]], L2 = Math.hypot(n[0], n[1]) || 1, o = 3.7;
       const A = new THREE.Vector3(a[0] + n[0] / L2 * o, w.ground(a[0], a[1]) + 0.1, a[1] + n[1] / L2 * o), Bv = new THREE.Vector3(b[0] + n[0] / L2 * o, w.ground(b[0], b[1]) + 0.1, b[1] + n[1] / L2 * o);
       w.boxBetween(A, A.clone().setY(A.y + 1.25), 0.2, railM); for (const hgt of [0.45, 0.85, 1.25]) w.boxBetween(A.clone().setY(A.y + hgt), Bv.clone().setY(Bv.y + hgt), 0.14, railM);

@@ -28,6 +28,12 @@ export function strokes(g, w, h, cols, n, wid, wave, vertical) {
 function inPoly(p, x, z) { let c = false; for (let i = 0, j = p.length - 1; i < p.length; j = i++) { const a = p[i], b = p[j]; if ((a[1] > z) !== (b[1] > z) && x < (b[0] - a[0]) * (z - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; }
 function segDist(x, z, a, b) { const dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz || 1), 0, 1); return Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t); }
 
+// the painted figures cut from the paintings: <dir>/figures.json lists them, each a PNG with transparency
+export async function loadFigures(dir) {
+  const man = await (await fetch(dir + '/figures.json')).json(), L = new THREE.TextureLoader(), out = {};
+  await Promise.all(Object.keys(man).map(async n => { const t = await L.loadAsync(`${dir}/${n}.png`); t.colorSpace = THREE.SRGBColorSpace; out[n] = { tex: t, wide: man[n].w / man[n].h }; }));
+  return out;
+}
 export function createWorld(cfg) {
   const SND = window.Sound, B = cfg.bounds, uni = { uTime: { value: 0 }, uDread: { value: 0 } }, tinted = [];
   let renderer;
@@ -49,16 +55,17 @@ export function createWorld(cfg) {
   };
 
   /* ----- the ground, sampled once on a grid ----- */
-  const CELL = cfg.cell || 4, gx = Math.ceil((B[2] - B[0]) / CELL), gz = Math.ceil((B[3] - B[1]) / CELL), H = new Float32Array((gx + 1) * (gz + 1));
-  for (let j = 0; j <= gz; j++) for (let i = 0; i <= gx; i++) H[j * (gx + 1) + i] = cfg.height(B[0] + i * CELL, B[1] + j * CELL);
+  const MARGIN = cfg.margin ?? 160, G = [B[0] - MARGIN, B[1] - MARGIN, B[2] + MARGIN, B[3] + MARGIN];      // the land is built this far beyond where she can walk
+  const CELL = cfg.cell || 4, gx = Math.ceil((G[2] - G[0]) / CELL), gz = Math.ceil((G[3] - G[1]) / CELL), H = new Float32Array((gx + 1) * (gz + 1));
+  for (let j = 0; j <= gz; j++) for (let i = 0; i <= gx; i++) H[j * (gx + 1) + i] = cfg.height(G[0] + i * CELL, G[1] + j * CELL);
   function ground(x, z) {
-    const fx = clamp((x - B[0]) / CELL, 0, gx - 0.001), fz = clamp((z - B[1]) / CELL, 0, gz - 0.001), i = Math.floor(fx), j = Math.floor(fz), u = fx - i, v = fz - j, k = j * (gx + 1) + i;
+    const fx = clamp((x - G[0]) / CELL, 0, gx - 0.001), fz = clamp((z - G[1]) / CELL, 0, gz - 0.001), i = Math.floor(fx), j = Math.floor(fz), u = fx - i, v = fz - j, k = j * (gx + 1) + i;
     return (H[k] * (1 - u) + H[k + 1] * u) * (1 - v) + (H[k + gx + 1] * (1 - u) + H[k + gx + 2] * u) * v;
   }
   {
     const pos = [], col = [], uv = [], idx = [], c = new THREE.Color();
     for (let j = 0; j <= gz; j++) for (let i = 0; i <= gx; i++) {
-      const x = B[0] + i * CELL, z = B[1] + j * CELL, h = H[j * (gx + 1) + i];
+      const x = G[0] + i * CELL, z = G[1] + j * CELL, h = H[j * (gx + 1) + i];
       pos.push(x, h, z); uv.push(x / (cfg.groundScale || 34), z / (cfg.groundScale || 34)); c.set(cfg.groundColor(x, z, h)); col.push(c.r, c.g, c.b);
     }
     for (let j = 0; j < gz; j++) for (let i = 0; i < gx; i++) { const a = j * (gx + 1) + i, b = a + 1, d = a + gx + 1, e = d + 1; idx.push(a, b, d, b, e, d); }
@@ -126,7 +133,7 @@ export function createWorld(cfg) {
         const k = sh * (0.8 + 0.2 * ((i * 53) % 7) / 7); rp.col.push(c.r * k, c.g * k, c.b * k, c.r * k, c.g * k, c.b * k, c.r * k * 1.1, c.g * k * 1.1, c.b * k * 1.1); rp.idx.push(n, n + 1, n + 2);
       }
       roofs.push(rp);
-      const h = { p, x0, x1, z0, z1, top: y1 + hs.roof, name: b.n }; houses.push(h);
+      const h = { p, x0, x1, z0, z1, eave: y1, top: y1 + hs.roof, name: b.n }; houses.push(h);
       for (let i = Math.floor(x0 / GC); i <= Math.floor(x1 / GC); i++) for (let j = Math.floor(z0 / GC); j <= Math.floor(z1 / GC); j++) { const k = key(i + 2048, j + 2048); if (!grid.has(k)) grid.set(k, []); grid.get(k).push(h); }
     });
     styles.forEach((st, i) => { if (walls[i].length) mergeMesh(walls[i], bend(mat({ map: st.wall, side: THREE.DoubleSide }), 1.0)); });
@@ -157,14 +164,25 @@ export function createWorld(cfg) {
 
   /* ----- people ----- */
   const sprites = [];
+  const texOf = t => (t && t.tex) || t;
   function sprite(tex, x, z, h, wide) {
+    if (tex && tex.tex) { wide = wide || tex.wide; tex = tex.tex; }
     const m = new THREE.SpriteMaterial({ map: tex, transparent: true, alphaTest: 0.3 }); m.userData.base = new THREE.Color(1, 1, 1); tinted.push(m);
     const s = new THREE.Sprite(m); s.center.set(0.5, 0); s.scale.set(h * (wide || 0.5), h, 1); s.position.set(x, floorAt(x, z) ?? ground(x, z), z); s.userData.w = h * (wide || 0.5); scene.add(s); sprites.push(s); return s;
   }
-  const figs = (cfg.figures || []).map(f => {
+  const cast = (cfg.figures || []).slice();
+  if (cfg.crowd) {
+    const ways = streets.filter(s => s.n && s.l.length > 1 && s.l.every(q => q[0] > B[0] + 4 && q[0] < B[2] - 4 && q[1] > B[1] + 4 && q[1] < B[3] - 4)).map(s => { let L = 0; for (let i = 0; i < s.l.length - 1; i++) L += Math.hypot(s.l[i + 1][0] - s.l[i][0], s.l[i + 1][1] - s.l[i][1]); return { l: s.l, L }; }).filter(s => s.L > 35 && (!cfg.crowd.where || cfg.crowd.where(s.l)));
+    const total = ways.reduce((a, s) => a + s.L, 0);
+    for (let i = 0; i < cfg.crowd.n && ways.length; i++) {
+      let r = Math.random() * total, w = ways[0]; for (const s of ways) { r -= s.L; if (r <= 0) { w = s; break; } }
+      cast.push({ id: 'crowd' + i, tex: cfg.crowd.cast[i % cfg.crowd.cast.length], x: 0, z: 0, h: rnd(cfg.crowd.h[0], cfg.crowd.h[1]), path: Math.random() < 0.5 ? w.l : w.l.slice().reverse(), speed: rnd(0.7, 1.5), loop: false, off: rnd(1.0, 2.6) * (Math.random() < 0.5 ? -1 : 1), say: cfg.crowd.say && Math.random() < 0.25 ? [cfg.crowd.say[Math.floor(rnd(0, cfg.crowd.say.length))]] : null });
+    }
+  }
+  const figs = cast.map(f => {
     const sp = sprite(f.frames ? f.frames[0] : f.tex, f.x, f.z, f.h || 2, f.wide);
     let len = 0; const segs = []; if (f.path) for (let i = 0; i < f.path.length - 1; i++) { const L = Math.hypot(f.path[i + 1][0] - f.path[i][0], f.path[i + 1][1] - f.path[i][1]); segs.push([len, L]); len += L; }
-    return Object.assign({ sp, s: f.s0 != null ? f.s0 * len : rnd(0, len), len, segs, lineI: 0, quiet: 0, lift: f.lift || 0 }, f);
+    return Object.assign({ sp, s: f.s0 != null ? f.s0 * len : rnd(0, len), len, segs, lineI: 0, quiet: 0, lift: f.lift || 0, sway: rnd(0, 6.28) }, f);
   });
   const bubble = el('div', { id: 'bubble' }); document.body.appendChild(bubble); let bubbleFig = null, bubbleT = 0;
   function say(fig, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleFig = fig; bubbleT = time + (secs || 4); }
@@ -175,11 +193,12 @@ export function createWorld(cfg) {
   hud.innerHTML = `<div id="pointer"><i>↑</i><span></span><b></b></div><div id="places"></div><canvas id="minimap" width="312" height="312"></canvas>
     <button id="bBook" aria-label="Sketchbook">✎ <span>0</span> of ${places.filter(p => p.card).length}</button>
     <button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+    <button id="bFly" aria-label="Fly" style="display:none"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20V5M5 11l7-7 7 7"/></svg></button>
     <div id="tip" class="hidden"></div>`;
   const card = el('div', { id: 'card' }), book = el('div', { id: 'book' }), stickEl = el('div', { id: 'stick' }, '<i></i>'); document.body.append(card, book, stickEl);
-  let cardT = 0, muted = false;
+  let cardT = 0, cardAt = 0, muted = false;
   const cardHTML = c => `<img src="${c.img}" alt=""><h3>${c.title}</h3><p class="w">${[c.year, c.where].filter(Boolean).join(' · ')}</p>${c.note ? `<p>${c.note}</p>` : ''}`;
-  function showCard(c) { card.innerHTML = cardHTML(c); card.classList.add('show'); cardT = time + 9; }
+  function showCard(c) { card.innerHTML = cardHTML(c) + (c.line ? `<p class="line">${c.line}</p>` : '') + (c.room ? '<p class="w">tap to step back outside</p>' : ''); card.classList.toggle('room', !!c.room); card.classList.add('show'); cardT = time + (c.room ? 16 : 9); cardAt = time; }
   card.addEventListener('click', () => card.classList.remove('show'));
   function gallery(into, all) {
     into.innerHTML = places.filter(p => p.card && (all || found.has(p.id))).map(p => `<figure class="${found.has(p.id) ? '' : 'no'}"><img src="${p.card.img}" alt=""><figcaption><i>${found.has(p.id) ? p.card.title : '?'}</i>${found.has(p.id) ? [p.card.year, p.card.where].filter(Boolean).join(' · ') : 'not found yet: ' + p.name}</figcaption></figure>`).join('');
@@ -189,6 +208,8 @@ export function createWorld(cfg) {
     book.classList.toggle('show', on);
   }
   book.addEventListener('click', () => openBook(false)); $('bBook').addEventListener('click', () => openBook(true));
+  if (cfg.player.fly) { const b = $('bFly'); b.style.display = ''; const on = e => { e.preventDefault(); held.fly = true; b.classList.add('down'); try { b.setPointerCapture(e.pointerId); } catch (_) {} }, off = () => { held.fly = false; b.classList.remove('down'); };
+    b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointercancel', off); b.addEventListener('contextmenu', e => e.preventDefault()); }
   $('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
   function find(p) {
     if (found.has(p.id)) return; found.add(p.id);
@@ -210,7 +231,7 @@ export function createWorld(cfg) {
   {
     const g = plan.getContext('2d'), T = p => [(p[0] - B[0]) * MS, (p[1] - B[1]) * MS], mc = Object.assign({ land: '#3d4a3f', water: '#2c3f6e', street: '#b9a88a', house: '#d8cdb8' }, cfg.mapColors || {});
     g.fillStyle = mc.land; g.fillRect(0, 0, plan.width, plan.height); g.fillStyle = mc.water;
-    for (let j = 0; j < gz; j++) for (let i = 0; i < gx; i++) if (H[j * (gx + 1) + i] < (cfg.waterLevel ?? -0.15)) g.fillRect(i * CELL * MS, j * CELL * MS, CELL * MS + 1, CELL * MS + 1);
+    for (let z = B[1]; z < B[3]; z += CELL) for (let x = B[0]; x < B[2]; x += CELL) if (ground(x + CELL / 2, z + CELL / 2) < (cfg.waterLevel ?? -0.15)) g.fillRect((x - B[0]) * MS, (z - B[1]) * MS, CELL * MS + 1, CELL * MS + 1);
     g.strokeStyle = mc.street; g.lineCap = 'round'; for (const s of streets) { g.lineWidth = Math.max(1.5, widthOf(s.t) * MS * 0.6); g.beginPath(); s.l.forEach((p, i) => { const q = T(p); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }); g.stroke(); }
     for (const d of decks) { g.lineWidth = d.w * MS; g.beginPath(); g.moveTo(...T(d.a)); g.lineTo(...T(d.b)); g.stroke(); }
     g.fillStyle = mc.house; for (const h of houses) { g.beginPath(); h.p.forEach((p, i) => { const q = T(p); i ? g.lineTo(q[0], q[1]) : g.moveTo(q[0], q[1]); }); g.fill(); }
@@ -227,12 +248,12 @@ export function createWorld(cfg) {
   /* ----- the player ----- */
   let state = 'title', time = 0;
   const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, step: 0, speed: 0, auto: null };
-  const keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, P = cfg.player, meSp = sprite(P.frames[2], P.start.x, P.start.z, P.height || 1.85);
+  const keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { fly: false }, P = cfg.player, WL = cfg.waterLevel ?? -0.15, meSp = sprite(P.frames[2], P.start.x, P.start.z, P.height || 1.85);
   function reset() { Object.assign(me, { x: P.start.x, z: P.start.z, yaw: P.start.yaw || 0, vy: 0, air: false, speed: 0, auto: null }); me.y = floorAt(me.x, me.z) ?? ground(me.x, me.z); camera.position.set(me.x - Math.sin(me.yaw) * 6, me.y + 3, me.z + Math.cos(me.yaw) * 6); }
   function begin() {
     SND.start(cfg.sound); SND.setMuted(muted); found.clear(); target = null; reset(); state = 'play'; $('bBook').querySelector('span').textContent = 0;
     $('title').classList.add('hidden'); $('end').classList.add('hidden'); hud.classList.remove('hidden'); card.classList.remove('show');
-    const t = $('tip'); t.textContent = cfg.tip || (matchMedia('(pointer: coarse)').matches ? 'drag to walk and turn' : 'arrow keys to walk and turn · space to jump · tab for the next place · B for the sketchbook'); t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 11000);
+    const t = $('tip'); t.textContent = cfg.tip || (matchMedia('(pointer: coarse)').matches ? (cfg.player.fly ? 'drag to run and turn · hold the arrow to fly' : 'drag to walk and turn') : (cfg.player.fly ? 'arrow keys to run and turn · hold space to fly · tab for the next place · B for the sketchbook' : 'arrow keys to walk and turn · space to jump · tab for the next place · B for the sketchbook')); t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 11000);
     if (cfg.onStart) cfg.onStart(api); listPlaces(true);
   }
   function end() { if (state === 'done') return; state = 'done'; hud.classList.add('hidden'); card.classList.remove('show'); bubble.classList.remove('show'); const g = $('gallery'); if (g) gallery(g, false); $('end').classList.remove('hidden'); }
@@ -246,19 +267,32 @@ export function createWorld(cfg) {
     if (me.auto) { turn = 0; go = me.auto.go; let d = me.auto.yaw - me.yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); me.yaw += d * Math.min(1, dt * 1.5); }
     if (state === 'done') { turn = 0; go = 0; }
     me.yaw += turn * 2.1 * dt;
-    const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw), slope = (ground(me.x, me.z) - ground(me.x + fx * 2, me.z + fz * 2)) / 2, top = (P.speed || 8.5) + clamp(slope * 45, 0, P.downhill ?? 8);
+    const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw), slope = (ground(me.x, me.z) - ground(me.x + fx * 2, me.z + fz * 2)) / 2, top = ((P.speed || 10) + clamp(slope * 45, 0, P.downhill ?? 8)) * (me.air && P.fly ? 1.8 : 1);
+    const flying = P.fly && state === 'play' && (keys.has('Space') || held.fly), wall = (x, z) => { const h = inHouse(x, z); return h && me.y < h.eave + 0.2; };
     me.speed += (go * top - me.speed) * Math.min(1, dt * 3.5);
     let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
     if (cfg.carry) [nx, nz] = cfg.carry(api, nx, nz, dt);
-    if (inHouse(nx, nz)) { if (!inHouse(nx, me.z)) nz = me.z; else if (!inHouse(me.x, nz)) nx = me.x; else { nx = me.x; nz = me.z; me.speed *= 0.4; } }
-    let f = floorAt(nx, nz);
+    if (wall(nx, nz)) { if (!wall(nx, me.z)) nz = me.z; else if (!wall(me.x, nz)) nx = me.x; else { nx = me.x; nz = me.z; me.speed *= 0.4; } }
+    let f = floorAt(nx, nz), wet = false; const roof = inHouse(nx, nz);
+    if (roof) f = roof.eave + 0.45;                                       // above the eaves she can cross the roofs and land on them
+    else if (f === null && me.air && P.fly && nx > G[0] + 20 && nx < G[2] - 20 && nz > G[1] + 20 && nz < G[3] - 20) { f = WL + 0.25; wet = true; }      // and fly out over the water
     if (f === null) { f = floorAt(nx, me.z); if (f !== null) nz = me.z; else { f = floorAt(me.x, nz); if (f !== null) nx = me.x; else { nx = me.x; nz = me.z; f = floorAt(nx, nz) ?? me.y; me.speed *= 0.5; } } }
     me.x = nx; me.z = nz;
-    if (keys.has('Space') && !me.air && state === 'play') { me.vy = 6.5; me.air = true; SND.puff(0.05); }
-    if (me.air) { me.vy -= 18 * dt; me.y += me.vy * dt; if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.05); } } else me.y += (f - me.y) * Math.min(1, dt * 18);
+    if (P.fly) {                                                         // hold to rise; let go and she drifts down
+      if (flying) { if (!me.air) { me.air = true; me.vy = 4; SND.whoosh(0.05); } me.vy = Math.min(me.vy + 24 * dt, 9); }
+      if (me.air) {
+        if (!flying) me.vy = Math.max(me.vy - 13 * dt, -6.5);
+        me.y += me.vy * dt; const lid = ground(me.x, me.z) + (P.ceiling || 48); if (me.y > lid) { me.y = lid; me.vy = Math.min(me.vy, 0); }
+        if (me.y <= f) { if (wet) { me.y = f; me.vy = 5.5; SND.puff(0.06); } else { me.y = f; me.air = false; me.vy = 0; SND.puff(0.05); } }
+      } else if (f < me.y - 1.2) me.air = true;                           // walked off a roof
+      else me.y += (f - me.y) * Math.min(1, dt * 18);
+    } else {
+      if (keys.has('Space') && !me.air && state === 'play') { me.vy = 6.5; me.air = true; SND.puff(0.05); }
+      if (me.air) { me.vy -= 18 * dt; me.y += me.vy * dt; if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.05); } } else me.y += (f - me.y) * Math.min(1, dt * 18);
+    }
     const moving = Math.abs(me.speed) > 0.6;
     if (moving && !me.air) { const before = Math.floor(me.step); me.step += dt * (2.2 + Math.abs(me.speed) * 0.22); if (Math.floor(me.step) !== before) SND.puff(0.022); }
-    meSp.material.map = me.air ? P.frames[2] : moving ? P.frames[Math.floor(me.step) % 2] : P.frames[2]; meSp.position.set(me.x, me.y, me.z);
+    meSp.material.map = texOf(me.air ? P.frames[2] : moving ? P.frames[Math.floor(me.step) % 2] : P.frames[2]); meSp.material.rotation = me.air ? clamp(-turn * 0.22, -0.3, 0.3) + Math.sin(time * 2.2) * 0.04 : moving ? Math.sin(me.step * Math.PI) * 0.035 : 0; meSp.position.set(me.x, me.y, me.z);
 
     for (const f of figs) {                          // people keep to their paths, part round her, and speak when she comes close
       let x = f.x, z = f.z;
@@ -272,7 +306,8 @@ export function createWorld(cfg) {
       if (f.path && d < 2.6 && d > 0.01) { const push = (2.6 - d) * 0.8; x += dx / d * push; z += dz / d * push; }
       const near = d < (f.hear || 6);
       f.sp.position.set(x, (floorAt(x, z) ?? ground(x, z)) + f.lift + (f.path || near ? Math.abs(Math.sin(time * (near ? 5 : 3) + f.x)) * (near ? 0.12 : 0.04) : 0), z);
-      if (f.frames) f.sp.material.map = f.frames[f.frame ? f.frame(api, f, near) : 0];
+      if (f.frames) f.sp.material.map = texOf(f.frames[f.frame ? f.frame(api, f, near) : 0]);
+      if (f.path) f.sp.material.rotation = Math.sin(time * 4.5 + f.sway) * 0.04;            // walkers sway as they go
       if (near && f.say && time > f.quiet && state === 'play') { say(f, f.say[f.lineI++ % f.say.length]); f.quiet = time + 14; if (f.onMeet) f.onMeet(api, f); }
     }
     if (bubbleFig) {
@@ -280,14 +315,15 @@ export function createWorld(cfg) {
       else { const v = bubbleFig.sp.position.clone(); v.y += bubbleFig.sp.scale.y + 0.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; if (v.z > 1) bubble.classList.remove('show'); }
     }
     if (state === 'play') for (const p of places) if (!found.has(p.id) && Math.hypot(p.x - me.x, p.z - me.z) < (p.r || 12) && !(p.hidden && p.hidden(api))) find(p);
-    if (cardT && time > cardT) { card.classList.remove('show'); cardT = 0; }
+    if (cardT && (time > cardT || (card.classList.contains('room') && time > cardAt + 2.5 && (Math.abs(go) > 0.3 || Math.abs(turn) > 0.3)))) { card.classList.remove('show'); cardT = 0; }      // a room closes when she walks on
     if (cfg.update) cfg.update(api, dt);
 
     // camera: behind her, pulled in if a house gets in the way
-    let dist = (P.camDist || 5.4) + Math.abs(me.speed) * 0.16, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.55; }
-    const cy = Math.max(me.y + 2.9, ground(cx, cz) + 1.3), k = Math.min(1, dt * 5);
+    const alt = Math.max(0, me.y - ground(me.x, me.z) - 0.5);
+    let dist = (P.camDist || 5.4) + Math.abs(me.speed) * 0.16 + alt * 0.32, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; const h = inHouse(cx, cz); if (!h || me.y + 2.9 + alt * 0.3 > h.top + 1) break; dist *= 0.55; }
+    const cy = Math.max(me.y + 2.9 + alt * 0.3, ground(cx, cz) + 1.3), k = Math.min(1, dt * 5);
     camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (cy - camera.position.y) * k;
-    camera.lookAt(me.x + fx * 5, me.y + 1.5 + (api.lookUp || 0), me.z + fz * 5); camera.rotation.z += Math.sin(time * 1.3) * 0.03 * uni.uDread.value;
+    camera.lookAt(me.x + fx * (5 + alt * 0.4), me.y + 1.5 - alt * 0.12 + (api.lookUp || 0), me.z + fz * (5 + alt * 0.4)); camera.rotation.z += Math.sin(time * 1.3) * 0.03 * uni.uDread.value;
     camera.fov += (60 + Math.abs(me.speed) * 1.25 - camera.fov) * k; camera.updateProjectionMatrix();
     if (water) water.material.map.offset.x = time * 0.004;
     // pointer, list, map
@@ -311,9 +347,9 @@ export function createWorld(cfg) {
     if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.code)) e.preventDefault(); keys.add(e.code);
     if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin();
     if (e.code === 'Tab' && state === 'play' && listPlaces.open && listPlaces.open.length) { const o = listPlaces.open, i = o.findIndex(q => q.p === target); target = o[(i + 1) % o.length].p; listPlaces(true); }
-    if (e.code === 'KeyB' && state === 'play') openBook(!book.classList.contains('show')); if (e.code === 'Escape') openBook(false);
+    if (e.code === 'KeyB' && state === 'play') openBook(!book.classList.contains('show')); if (e.code === 'Escape') { openBook(false); card.classList.remove('show'); }
   });
-  addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; });
+  addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); held.fly = false; stick.id = null; stick.dx = stick.dy = 0; });
   const cv = $('cv');
   cv.addEventListener('pointerdown', e => { if (state !== 'play' || stick.id !== null) return; stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {}
     stickEl.style.display = 'block'; stickEl.style.left = e.clientX + 'px'; stickEl.style.top = e.clientY + 'px'; stickEl.firstElementChild.style.transform = ''; });

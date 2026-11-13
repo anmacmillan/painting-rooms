@@ -1,0 +1,259 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>The Girl in Delft</title>
+<link rel="stylesheet" href="../common/world.css">
+<style> :root { --go:#2f5d8a; } #title > img, #end > img { background:#0e0d0b; } #end > img { border-color:#3a2a1c; max-height:46vh; } </style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="title" class="screen">
+  <img src="images/pearl.jpg" alt="Girl with a Pearl Earring by Johannes Vermeer">
+  <div class="words">
+    <h1>The Girl in Delft</h1>
+    <p>Delft, about 1665 · inside the paintings of Johannes Vermeer</p>
+    <button class="go" id="start">Step in</button>
+  </div>
+</div>
+<div id="end" class="screen hidden">
+  <img src="images/pearl.jpg" alt="Girl with a Pearl Earring by Johannes Vermeer">
+  <h2>Girl with a Pearl Earring</h2>
+  <p>Johannes Vermeer painted her in Delft about 1665. Nobody knows who she was. The museum that keeps her calls the picture a tronie: a painting of an imaginary figure, not a portrait.</p>
+  <p>He lived his whole life in this town and left only about thirty-four paintings. These are the ones you looked in on.</p>
+  <div class="cards" id="gallery" style="width:min(1000px,92vw)"></div>
+  <p class="small">Paintings: public domain, via Wikimedia Commons (Mauritshuis, Rijksmuseum, National Gallery of Art, the Met and others). Street plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors.</p>
+  <button class="go" id="again">Walk it again</button>
+</div>
+<div id="err">This world needs WebGL, which this browser could not start.</div>
+
+<script src="../common/sound.js"></script>
+<script type="module">
+import { THREE, createWorld, loadFigures, canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
+const SND = window.Sound;
+const map = await (await fetch('map.json')).json();
+const B = [-300, -270, 260, 790];            // the old town from the Old Church down to the harbour
+const F = await loadFigures('figures');      // the figures, cut from his own paintings
+
+/* ---------- land and water ----------
+   Delft is flat. The canals are drawn once into a hidden picture, one pixel to the metre; the ground is low wherever that picture is water. */
+const WW = B[2] - B[0], WH = B[3] - B[1], wc = document.createElement('canvas'); wc.width = WW; wc.height = WH;
+{
+  const g = wc.getContext('2d'); g.fillStyle = '#000'; g.fillRect(0, 0, WW, WH); g.fillStyle = '#fff'; g.strokeStyle = '#fff'; g.lineCap = 'round'; g.lineJoin = 'round';
+  for (const p of map.water) { if (p.length < 3) continue; g.beginPath(); p.forEach((q, i) => i ? g.lineTo(q[0] - B[0], q[1] - B[1]) : g.moveTo(q[0] - B[0], q[1] - B[1])); g.closePath(); g.fill(); }
+  g.lineWidth = 7; for (const c of map.canals) { g.beginPath(); c.l.forEach((q, i) => i ? g.lineTo(q[0] - B[0], q[1] - B[1]) : g.moveTo(q[0] - B[0], q[1] - B[1])); g.stroke(); }
+}
+const wd = wc.getContext('2d').getImageData(0, 0, WW, WH).data;
+const isWater = (x, z) => { const i = Math.floor(x - B[0]), j = Math.floor(z - B[1]); return i >= 0 && j >= 0 && i < WW && j < WH && wd[(j * WW + i) * 4] > 128; };
+const height = (x, z) => (isWater(x, z) ? -1.3 : 0.7);
+const area = p => { let a = 0; for (let i = 0; i < p.length; i++) a += p[i][0] * p[(i + 1) % p.length][1] - p[(i + 1) % p.length][0] * p[i][1]; return Math.abs(a) / 2; };
+const streetLine = name => map.streets.filter(s => s.n === name).sort((a, b) => b.l.length - a.l.length)[0].l;
+// bridges: every crossing on the modern map becomes a plank bridge
+const decks = []; const plank = canvasTex(256, 512, (g, w, h) => { g.fillStyle = '#8a6a4a'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#a07a52', '#6b4e36', '#b89068', '#7d5c40'], 120, 9, 3, true); }, true);
+for (const b of map.bridges) for (let i = 0; i < b.l.length - 1; i++) { const a = b.l[i], c = b.l[i + 1]; if (Math.hypot(c[0] - a[0], c[1] - a[1]) > 1.5) decks.push({ a, b: c, w: ['footway', 'path', 'cycleway'].includes(b.t) ? 4 : 7, y: 1.0, tex: plank }); }
+
+/* ---------- paint ---------- */
+const groundTex = canvasTex(1024, 1024, (g, w, h) => { g.fillStyle = '#c4c4c4'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#e2e2e2', '#a8a8a8', '#d4d4d4', '#989898', '#eeeeee'], 300, 9, 5); for (let i = 0; i < 2600; i++) { g.fillStyle = Math.random() < 0.5 ? 'rgba(255,255,255,.25)' : 'rgba(0,0,0,.12)'; g.fillRect(rnd(0, w), rnd(0, h), rnd(6, 14), rnd(4, 8)); } }, true);
+const waterTex = canvasTex(1024, 1024, (g, w, h) => { g.fillStyle = '#5c7186'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#4d6276', '#7b8fa0', '#3f5266', '#93a3ad', '#6a7f92', '#b9bfb6'], 300, 10, 5); }, true);
+const cobble = canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#b89a80'; g.fillRect(0, 0, w, h); for (let y = 0; y < h; y += 16) for (let x = (y / 16 % 2) * 12; x < w; x += 24) { g.fillStyle = ['#c9ab90', '#a88970', '#bd9d84', '#d2b79e', '#9d8068'][Math.floor(rnd(0, 5))]; g.fillRect(x + 1, y + 1, 22, 14); } }, true);
+// the brick houses of the town: narrow, tall-windowed, with shutters
+const brick = (base, cols, shutter) => canvasTex(512, 512, (g, w, h) => {
+  g.fillStyle = base; g.fillRect(0, 0, w, h);
+  for (let y = 0; y < h; y += 9) for (let x = (y / 9 % 2) * 11; x < w; x += 22) { g.fillStyle = cols[Math.floor(rnd(0, cols.length))]; g.fillRect(x + 1, y + 1, 20, 7); }
+  for (let r = 0; r < 2; r++) for (let c = 0; c < 2; c++) {
+    const x = 70 + c * 256, y = 70 + r * 250;
+    g.fillStyle = '#2b3138'; g.fillRect(x, y, 86, 140); g.fillStyle = 'rgba(220,225,215,.5)'; g.fillRect(x + 4, y + 4, 78, 56);      // dark glass, a lit upper light
+    g.strokeStyle = '#efe7d6'; g.lineWidth = 8; g.strokeRect(x, y, 86, 140); g.lineWidth = 4; g.beginPath(); g.moveTo(x + 43, y); g.lineTo(x + 43, y + 140); g.moveTo(x, y + 62); g.lineTo(x + 86, y + 62); g.stroke();
+    g.fillStyle = shutter; g.fillRect(x - 40, y + 66, 36, 74); g.fillRect(x + 90, y + 66, 36, 74);
+  }
+}, true);
+const houseStyles = [
+  { wall: brick('#9a5a44', ['#a5634c', '#8b4e3a', '#b06e56', '#7f4634'], '#3e5e44'), roof: '#b25a3c' }, { wall: brick('#8a4c3a', ['#96553f', '#7a4030', '#a3604a'], '#7a2e26'), roof: '#a34e34' },
+  { wall: brick('#b08060', ['#bb8c6c', '#a07252', '#c69a7a'], '#3e5e44'), roof: '#b96444' }, { wall: brick('#d9cdb4', ['#e4d9c2', '#cdbfa4', '#eee4d0'], '#35506a'), roof: '#4c5868' },
+  { wall: brick('#7a4436', ['#86503f', '#6c3a2e', '#925a48'], '#2f4a38'), roof: '#9c4a34' },
+  { wall: canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#b9ae9a'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#c9bfac', '#a89c88', '#d6cdbb', '#988c7a'], 120, 12, 3, true);
+      for (let c = 0; c < 3; c++) { const x = 60 + c * 160; g.fillStyle = '#2b3138'; g.beginPath(); g.moveTo(x, 420); g.lineTo(x, 150); g.quadraticCurveTo(x + 35, 90, x + 70, 150); g.lineTo(x + 70, 420); g.fill(); g.strokeStyle = '#e9e2d2'; g.lineWidth = 6; g.stroke(); } }, true), roof: '#4a5564', scale: 22 } ];      // 5: church stone
+
+/* ---------- people of Delft, about 1665 ---------- */
+const person = (draw, w) => canvasTex(w || 256, 512, draw);
+const body = (g, x, top, wt, wb, bot, col) => { g.fillStyle = col; g.beginPath(); g.moveTo(x - wt, top); g.bezierCurveTo(x - wt - 8, mix(top, bot, 0.4), x - wb, mix(top, bot, 0.7), x - wb, bot); g.lineTo(x + wb, bot); g.bezierCurveTo(x + wb, mix(top, bot, 0.7), x + wt + 8, mix(top, bot, 0.4), x + wt, top); g.closePath(); g.fill(); g.strokeStyle = 'rgba(30,20,15,.4)'; g.lineWidth = 4; g.stroke(); };
+const head = (g, x, y, col) => { g.fillStyle = col || '#ecd0b0'; g.beginPath(); g.ellipse(x, y, 21, 25, 0, 0, 7); g.fill(); g.strokeStyle = 'rgba(40,25,15,.4)'; g.lineWidth = 3; g.stroke(); };
+const face = (g, x, y) => { g.fillStyle = '#2a1f1a'; g.beginPath(); g.arc(x - 8, y - 3, 2.6, 0, 7); g.arc(x + 8, y - 3, 2.6, 0, 7); g.fill(); g.strokeStyle = '#8a4a40'; g.lineWidth = 2.5; g.beginPath(); g.arc(x, y + 8, 6, 0.3, 2.8); g.stroke(); };
+const legs = (g, x, y, sw, col) => { g.strokeStyle = col; g.lineWidth = 11; g.beginPath(); g.moveTo(x - 9, y); g.lineTo(x - 11 - sw, 498); g.moveTo(x + 9, y); g.lineTo(x + 11 + sw, 498); g.stroke(); };
+const cap = (g, x, y) => { g.fillStyle = '#f3efe4'; g.beginPath(); g.ellipse(x, y - 8, 25, 20, 0, Math.PI * 0.95, Math.PI * 2.05); g.lineTo(x + 26, y + 16); g.lineTo(x + 18, y + 2); g.lineTo(x - 18, y + 2); g.lineTo(x - 26, y + 16); g.closePath(); g.fill(); g.strokeStyle = 'rgba(90,90,90,.35)'; g.lineWidth = 2; g.stroke(); };
+const tallHat = (g, x, y) => { g.fillStyle = '#17161a'; g.beginPath(); g.moveTo(x - 17, y - 52); g.lineTo(x + 17, y - 52); g.lineTo(x + 21, y - 4); g.lineTo(x - 21, y - 4); g.closePath(); g.fill(); g.beginPath(); g.ellipse(x, y - 4, 40, 9, 0, 0, 7); g.fill(); };
+const collar = (g, x, y) => { g.fillStyle = '#f3efe4'; g.beginPath(); g.moveTo(x - 30, y); g.quadraticCurveTo(x, y + 26, x + 30, y); g.lineTo(x + 22, y - 10); g.lineTo(x - 22, y - 10); g.closePath(); g.fill(); };
+function woman(o) {            // o: dress, bodice, apron, trim, cap or hair, prop
+  return person(g => {
+    body(g, 128, 250, 34, 66, 504, o.dress); if (o.apron) { g.fillStyle = o.apron; g.beginPath(); g.moveTo(104, 262); g.lineTo(152, 262); g.lineTo(172, 496); g.lineTo(84, 496); g.closePath(); g.fill(); }
+    body(g, 128, 186, 34, 40, 268, o.bodice || o.dress);
+    if (o.trim) { g.strokeStyle = o.trim; g.lineWidth = 9; g.beginPath(); g.moveTo(128, 190); g.lineTo(128, 266); g.moveTo(90, 266); g.lineTo(166, 266); g.stroke(); }
+    g.strokeStyle = o.bodice || o.dress; g.lineWidth = 15; g.beginPath(); g.moveTo(98, 200); g.quadraticCurveTo(84, 250, 112, 270); g.moveTo(158, 200); g.quadraticCurveTo(172, 250, 144, 270); g.stroke();
+    g.fillStyle = '#ecd0b0'; g.beginPath(); g.arc(112, 272, 8, 0, 7); g.arc(144, 272, 8, 0, 7); g.fill(); collar(g, 128, 190); head(g, 128, 158); face(g, 128, 158);
+    if (o.hair) { g.fillStyle = o.hair; g.beginPath(); g.ellipse(128, 142, 24, 17, 0, Math.PI, 0); g.fill(); g.beginPath(); g.arc(128, 128, 9, 0, 7); g.fill(); } else cap(g, 128, 144);
+    if (o.prop) o.prop(g);
+  });
+}
+function man(o) {              // o: coat, hat ('tall' | 'beret' | none), hair, robe (long), prop
+  return person(g => {
+    if (!o.robe) legs(g, 128, 410, 3, o.hose || '#2a2622'); body(g, 128, 186, 38, o.robe ? 60 : 44, o.robe ? 504 : 424, o.coat);
+    if (o.sash) { g.strokeStyle = o.sash; g.lineWidth = 12; g.beginPath(); g.moveTo(96, 200); g.lineTo(160, 330); g.stroke(); }
+    g.strokeStyle = o.coat; g.lineWidth = 16; g.beginPath(); g.moveTo(94, 200); g.quadraticCurveTo(78, 260, 100, 300); g.moveTo(162, 200); g.quadraticCurveTo(178, 260, 156, 300); g.stroke();
+    g.fillStyle = '#e6c8a6'; g.beginPath(); g.arc(100, 302, 8, 0, 7); g.arc(156, 302, 8, 0, 7); g.fill(); collar(g, 128, 190); head(g, 128, 156, '#e6c8a6'); face(g, 128, 156);
+    g.fillStyle = o.hair || '#4a3424'; g.beginPath(); g.ellipse(128, 142, 24, 15, 0, Math.PI, 0); g.fill(); g.fillRect(103, 142, 9, 44); g.fillRect(144, 142, 9, 44);
+    if (o.hat === 'tall') tallHat(g, 128, 140); else if (o.hat === 'beret') { g.fillStyle = '#1c1a1e'; g.beginPath(); g.ellipse(124, 134, 32, 14, -0.15, 0, 7); g.fill(); } else if (o.hat === 'big') { g.fillStyle = '#17161a'; g.beginPath(); g.ellipse(128, 136, 58, 13, -0.1, 0, 7); g.fill(); g.beginPath(); g.ellipse(128, 124, 24, 18, 0, Math.PI, 0); g.fill(); }
+    if (o.prop) o.prop(g);
+  });
+}
+const jug = g => { g.fillStyle = '#a8603c'; g.beginPath(); g.ellipse(128, 290, 20, 17, 0, 0, 7); g.fill(); g.fillRect(118, 266, 20, 14); g.fillStyle = '#f6f2e6'; g.fillRect(124, 300, 5, 26); };
+const letter = g => { g.fillStyle = '#f3efe2'; g.save(); g.translate(128, 276); g.rotate(-0.25); g.fillRect(-16, -12, 34, 24); g.restore(); };
+const globe = g => { g.fillStyle = '#7a8a6a'; g.beginPath(); g.arc(128, 286, 20, 0, 7); g.fill(); g.strokeStyle = '#3a3222'; g.lineWidth = 3; g.stroke(); g.beginPath(); g.ellipse(128, 286, 20, 7, 0, 0, 7); g.stroke(); };
+const lute = g => { g.fillStyle = '#b07a3c'; g.beginPath(); g.ellipse(120, 292, 26, 19, -0.4, 0, 7); g.fill(); g.strokeStyle = '#5a3a1c'; g.lineWidth = 7; g.beginPath(); g.moveTo(140, 280); g.lineTo(182, 236); g.stroke(); };
+const scales = g => { g.strokeStyle = '#c9a84a'; g.lineWidth = 3; g.beginPath(); g.moveTo(104, 262); g.lineTo(152, 262); g.moveTo(128, 262); g.lineTo(128, 246); g.moveTo(104, 262); g.lineTo(104, 284); g.moveTo(152, 262); g.lineTo(152, 284); g.stroke(); g.beginPath(); g.arc(104, 286, 9, 0, Math.PI); g.arc(152, 286, 9, 0, Math.PI); g.stroke(); };
+const loaf = g => { g.fillStyle = '#c9954a'; g.beginPath(); g.ellipse(128, 288, 26, 13, 0, 0, 7); g.fill(); g.strokeStyle = '#8a5a24'; g.lineWidth = 3; g.stroke(); };
+const plate = g => { g.fillStyle = '#f4f2ea'; g.beginPath(); g.arc(128, 284, 22, 0, 7); g.fill(); g.strokeStyle = '#2f5d9a'; g.lineWidth = 4; g.beginPath(); g.arc(128, 284, 14, 0, 7); g.stroke(); g.beginPath(); g.arc(128, 284, 5, 0, 7); g.stroke(); };
+const broom = g => { g.strokeStyle = '#7a5a34'; g.lineWidth = 6; g.beginPath(); g.moveTo(170, 230); g.lineTo(196, 470); g.stroke(); g.fillStyle = '#c9a85a'; g.beginPath(); g.moveTo(184, 462); g.lineTo(212, 462); g.lineTo(222, 504); g.lineTo(176, 504); g.closePath(); g.fill(); };
+const lens = g => { g.strokeStyle = '#c9a84a'; g.lineWidth = 4; g.beginPath(); g.arc(160, 286, 9, 0, 7); g.stroke(); g.beginPath(); g.moveTo(160, 296); g.lineTo(160, 318); g.stroke(); };
+const T = {
+  milkmaid: woman({ dress: '#a8342c', bodice: '#d9b23c', apron: '#2f5d9a', prop: jug }), blue: woman({ dress: '#8a8f9a', bodice: '#5c86b8', prop: letter, hair: '#6a4a2a' }),
+  yellow: p => woman({ dress: '#3c4a6a', bodice: '#e2c044', trim: '#f4efe2', hair: '#7a5230', prop: p }), pitcher: woman({ dress: '#2c3e68', bodice: '#d9b23c', prop: jug }),
+  sweeper: woman({ dress: '#5a4a44', bodice: '#7a3a30', apron: '#e9e2d2', prop: broom }), goodwife: woman({ dress: '#1e1c22', bodice: '#1e1c22' }), goodwife2: woman({ dress: '#4a3a52', bodice: '#6a4a3a', apron: '#e9e2d2' }),
+  geographer: man({ coat: '#3a5f8f', robe: true, sash: '#d9843c', hair: '#5a4030', prop: globe }), astronomer: man({ coat: '#4a6a4a', robe: true, hair: '#5a4030', prop: globe }),
+  officer: man({ coat: '#b3362c', hat: 'big', sash: '#e9d8a0' }), burgher: man({ coat: '#1c1b20', hat: 'tall' }), burgher2: man({ coat: '#3a3530', hat: 'tall', hose: '#5a4a3a' }),
+  baker: man({ coat: '#d9cfb8', hair: '#8a6a44', prop: loaf }), potter: man({ coat: '#5a6a7a', hair: '#3a2a20', prop: plate }), draper: man({ coat: '#4a3a2c', hair: '#6a4a2a', prop: lens }),
+  boatman: man({ coat: '#6a5a3c', hat: 'beret', hose: '#3a3a44' }), keeper: man({ coat: '#5a2a26', hat: 'tall', sash: '#c9a84a' }), sexton: man({ coat: '#2a2a30', robe: true, hair: '#b9b4a8' }),
+  painter: man({ coat: '#1c1b20', hat: 'beret', hose: '#b3362c', hair: '#5a3a24' }), guildsman: man({ coat: '#5a3a5a', hat: 'beret', sash: '#c9a84a' }),
+  child: col => person(g => { legs(g, 128, 420, 3, '#3a302a'); body(g, 128, 270, 24, 40, 440, col); head(g, 128, 244); face(g, 128, 244); cap(g, 128, 232); }),
+  // the girl herself, seen from behind: the blue turban with its yellow tail
+  girl: sw => person(g => {
+    legs(g, 128, 440, sw, '#3a302a'); body(g, 128, 252, 30, 58, 462, '#5a4a3a'); body(g, 128, 190, 32, 38, 270, '#b08a3c');
+    g.strokeStyle = '#b08a3c'; g.lineWidth = 14; g.beginPath(); g.moveTo(100, 204); g.lineTo(88 - sw, 290); g.moveTo(156, 204); g.lineTo(168 + sw, 290); g.stroke();
+    head(g, 128, 166); g.fillStyle = '#3f6fb0'; g.beginPath(); g.ellipse(128, 154, 27, 24, 0, 0, 7); g.fill(); g.strokeStyle = '#2f5590'; g.lineWidth = 3; for (const k of [-10, 0, 10]) { g.beginPath(); g.moveTo(104, 152 + k); g.quadraticCurveTo(128, 142 + k, 152, 152 + k); g.stroke(); }
+    g.fillStyle = '#e2c044'; g.beginPath(); g.moveTo(120, 140); g.quadraticCurveTo(150, 150, 140 + sw * 0.4, 268); g.lineTo(120 + sw * 0.4, 266); g.quadraticCurveTo(128, 180, 112, 148); g.closePath(); g.fill();
+    g.fillStyle = '#f4f4f0'; g.beginPath(); g.arc(104, 178, 4, 0, 7); g.fill();
+  }),
+  linden: canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#4a3a2c'; g.fillRect(246, 300, 20, 210); g.fillStyle = '#5a7a44'; g.beginPath(); g.ellipse(256, 190, 190, 170, 0, 0, 7); g.fill(); strokes(g, w, 360, ['#6b8a4e', '#4a6a3a', '#7d9a5c', '#587840'], 70, 20, 14);
+    g.globalCompositeOperation = 'destination-in'; g.beginPath(); g.ellipse(256, 190, 190, 170, 0, 0, 7); g.rect(246, 300, 20, 212); g.fill(); g.globalCompositeOperation = 'source-over'; }),
+};
+const pic = (file, title, year, where, note, line) => ({ img: 'images/' + file, title, year, where, note, line, room: true });
+
+/* ---------- places: each of his interiors is behind a door in the town ---------- */
+const MARKT = [0, 0], HOME = [80, -6];
+const places = [
+  { id: 'view', name: 'The Harbour', kind: 'view of delft', x: 86, z: 742, r: 10, card: pic('view_of_delft.jpg', 'View of Delft', 'about 1660–61', 'Mauritshuis, The Hague', 'The town seen across the harbour, with its two gates and the tower of the New Church. Both gates were pulled down in the 1830s.') },
+  { id: 'gate', name: 'The Schiedam Gate', kind: 'the way into town', x: 96, z: 650, r: 12 },
+  { id: 'balance', name: 'The Goldweigher', kind: 'woman holding a balance', x: -112, z: 372, r: 11, card: pic('balance.jpg', 'Woman Holding a Balance', 'about 1664', 'National Gallery of Art, Washington', 'A woman waits for her scales to settle. The pans are empty.', '“Hush. Wait until it is still.”') },
+  { id: 'writing', name: 'The Writing Desk', kind: 'a lady writing', x: -8, z: 262, r: 11, card: pic('lady_writing.jpg', 'A Lady Writing', 'about 1665', 'National Gallery of Art, Washington', 'She wears the yellow jacket trimmed with fur that turns up in several of his pictures.', '“Do not look over my shoulder. It is a private letter.”') },
+  { id: 'geographer', name: 'The Scholar\'s House', kind: 'the geographer', x: -158, z: 96, r: 11, card: pic('geographer.jpg', 'The Geographer', '1669', 'Städel Museum, Frankfurt', 'Maps, a globe and a pair of dividers, in the years when Dutch ships were charting the world.', '“The whole world fits on this table, child.”') },
+  { id: 'astronomer', name: 'The Stargazer', kind: 'the astronomer', x: -196, z: 4, r: 11, card: pic('astronomer.jpg', 'The Astronomer', '1668', 'Louvre, Paris', 'The same scholar, it seems, with a globe of the heavens.', '“By night I chart the other world, the one overhead.”') },
+  { id: 'church', name: 'The Old Church', kind: 'its tower leans', x: -236, z: -86, r: 15 },
+  { id: 'pitcher', name: 'The Morning Window', kind: 'young woman with a water pitcher', x: -182, z: -52, r: 11, card: pic('water_pitcher.jpg', 'Young Woman with a Water Pitcher', 'about 1662', 'The Met, New York', 'She opens the window with one hand. The light comes in from the left, as it usually does in his rooms.', '“Good morning. Mind the wet step.”') },
+  { id: 'markt', name: 'The Market Square', kind: 'town hall and new church', x: MARKT[0], z: MARKT[1], r: 16 },
+  { id: 'lute', name: 'The Music Room', kind: 'young woman with a lute', x: -66, z: -34, r: 11, card: pic('lute.jpg', 'Young Woman with a Lute', 'about 1662–63', 'The Met, New York', 'She tunes the lute and looks out of the window. A map of Europe hangs behind her.', '“Wait. This string is flat.”') },
+  { id: 'inn', name: 'The Mechelen Inn', kind: 'officer and laughing girl', x: 27, z: -52, r: 11, card: pic('officer.jpg', 'Officer and Laughing Girl', 'about 1657', 'The Frick Collection, New York', 'Vermeer grew up in the Mechelen, his father\'s inn on this square. It was pulled down in 1885.', '“Sit, drink! The innkeeper\'s son paints, they say.”') },
+  { id: 'guild', name: 'The Painters\' Guild', kind: 'the art of painting', x: 12, z: -90, r: 11, card: pic('art_of_painting.jpg', 'The Art of Painting', 'about 1666–68', 'Kunsthistorisches Museum, Vienna', 'A painter at his easel, seen from behind. The guild of St Luke met on this canal.', '“Every painter in Delft pays his dues here.”') },
+  { id: 'love', name: 'The Open Door', kind: 'the love letter', x: 70, z: -124, r: 11, card: pic('love_letter.jpg', 'The Love Letter', 'about 1669–70', 'Rijksmuseum, Amsterdam', 'You look in from a dark passage, past a broom and a pair of shoes, at a maid handing her mistress a letter.', '“From him again, mevrouw.”') },
+  { id: 'street', name: 'The Little Street', kind: 'view of houses in delft', x: 171, z: -212, r: 12, card: pic('little_street.jpg', 'The Little Street', 'about 1658', 'Rijksmuseum, Amsterdam', 'In 2015 a historian proposed that these houses stood here, on the Vlamingstraat. It is a proposal, not a certainty.', '“Scrub the step, scrub the tiles. A Delft house must shine.”') },
+  { id: 'blue', name: 'The Letter', kind: 'woman reading a letter', x: 150, z: -48, r: 11, card: pic('woman_in_blue.jpg', 'Woman Reading a Letter', 'about 1663', 'Rijksmuseum, Amsterdam', 'A woman in a blue jacket reads by a window we cannot see.', '“…”') },
+  { id: 'milk', name: 'The Kitchen', kind: 'the milkmaid', x: 104, z: -18, r: 11, card: pic('milkmaid.jpg', 'The Milkmaid', 'about 1660', 'Rijksmuseum, Amsterdam', 'A maid pours milk, slowly. Vermeer lived on this street, the Oude Langendijk, with his mother-in-law.', '“Stale bread, milk and patience. That is a pudding.”') },
+  { id: 'studio', name: 'The Painter\'s Studio', kind: 'he is waiting for you', x: HOME[0], z: HOME[1], r: 9, hidden: w => [...w.found].filter(i => places.find(p => p.id === i && p.card)).length < 8 },
+];
+// Places and people are given roughly; each is moved to the nearest spot on a real street that is not in a house or a canal.
+const blocks = map.buildings.map(b => { let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9; for (const q of b.p) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); z0 = Math.min(z0, q[1]); z1 = Math.max(z1, q[1]); } return { p: b.p, x0, x1, z0, z1 }; });
+const inPoly = (p, x, z) => { let c = false; for (let i = 0, j = p.length - 1; i < p.length; j = i++) { const a = p[i], b = p[j]; if ((a[1] > z) !== (b[1] > z) && x < (b[0] - a[0]) * (z - a[1]) / (b[1] - a[1]) + a[0]) c = !c; } return c; };
+const blocked = (x, z) => isWater(x, z) || blocks.some(b => x > b.x0 - 1 && x < b.x1 + 1 && z > b.z0 - 1 && z < b.z1 + 1 && inPoly(b.p, x, z));
+const samples = []; for (const st of map.streets) { if (!st.n || ['footway', 'path', 'steps', 'cycleway', 'service'].includes(st.t)) continue; for (let i = 0; i < st.l.length - 1; i++) { const a = st.l[i], b = st.l[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); for (let t = 0; t < L; t += 3) samples.push([mix(a[0], b[0], t / L), mix(a[1], b[1], t / L)]); } }
+function snap(x, z, off) {
+  const near = samples.map(q => [Math.hypot(q[0] - x, q[1] - z), q]).sort((a, b) => a[0] - b[0]).slice(0, 80);
+  for (const [, q] of near) { const px = q[0] + (off || 0), pz = q[1] + (off || 0) * 0.6; if (!blocked(px, pz) && !blocked(px + 1.5, pz) && !blocked(px - 1.5, pz) && !blocked(px, pz + 1.5) && !blocked(px, pz - 1.5)) return [px, pz]; }
+  return [x, z];
+}
+for (const p of places) [p.x, p.z] = snap(p.x, p.z);
+const P = id => places.find(p => p.id === id), near = (id, dx, dz) => { const q = snap(P(id).x + dx, P(id).z + dz, 1.2); return { x: q[0], z: q[1] }; };
+const walk = (name, rev) => { const l = streetLine(name); return rev ? l.slice().reverse() : l; };
+const figures = [
+  { id: 'boatman', tex: T.boatman, ...near('view', 7, 3), h: 2.2, say: ['Barge for Rotterdam on the hour. A horse pulls it along the bank.', 'That is Delft across the water. Go in by the Schiedam Gate.'] },
+  { id: 'keeper', tex: T.keeper, ...near('gate', 5, 4), h: 2.2, say: ['Gates shut at dusk. Mind you are inside the walls by then.'] },
+  { id: 'gold', tex: F.balance, ...near('balance', 3, 2), h: 2.1, say: ['Hush. Wait until it is still.'] },
+  { id: 'writer', tex: F.writer, ...near('writing', 3, 2), h: 2.1, say: ['Do not look over my shoulder. It is a private letter.'] },
+  { id: 'geo', tex: F.geographer, ...near('geographer', 3, 2), h: 2.3, say: ['The whole world fits on this table, child. Our ships have measured it.'] },
+  { id: 'astro', tex: F.astronomer, ...near('astronomer', 3, 2), h: 2.3, say: ['By night I chart the other world, the one overhead.'] },
+  { id: 'sexton', tex: T.sexton, ...near('church', 6, 8), h: 2.2, say: ['The tower leans. It has leaned for three hundred years and not fallen yet.', 'Everyone in Delft ends up under this floor, sooner or later.'] },
+  { id: 'pitcher', tex: F.pitcher, ...near('pitcher', 3, 2), h: 2.1, say: ['Good morning. Mind the wet step.'] },
+  { id: 'baker', tex: T.baker, ...near('markt', 14, 10), h: 2.2, say: ['Master Vermeer owes me for bread again. I may take a painting instead.', 'I already have one of his. A Frenchman came all this way to look at it.'] },
+  { id: 'old', tex: T.burgher2, ...near('markt', -22, -8), h: 2.2, say: ['Eleven years since the powder store blew up. The whole town heard it as one clap of thunder.'] },
+  { id: 'luter', tex: F.lute, ...near('lute', 3, 2), h: 2.1, say: ['Wait. This string is flat.'] },
+  { id: 'draper', tex: T.draper, ...near('lute', -18, 22), h: 2.2, say: ['Antonie, draper. I count the threads in my cloth through a glass bead.', 'You would not believe what else a lens shows you.'] },
+  { id: 'officer', tex: F.officer, ...near('inn', 3, 3), h: 2.4, say: ['Sit, drink! The innkeeper\'s son paints, they say.'] },
+  { id: 'laughing', tex: F.laughing, ...near('inn', 5, 4), h: 2.1, say: ['He tells such stories. Half of them are true.'] },
+  { id: 'guildsman', tex: T.guildsman, ...near('guild', 3, 2), h: 2.2, say: ['Every painter in Delft pays his dues here. Even Vermeer, when he has it.'] },
+  { id: 'maid', tex: F.mistress, ...near('love', 3, 2), h: 2.1, say: ['From him again, mevrouw. Shall I wait for an answer?'] },
+  { id: 'sweeper', tex: T.sweeper, ...near('street', 3, 2), h: 2.1, say: ['Scrub the step, scrub the tiles. A Delft house must shine.'] },
+  { id: 'kid1', tex: T.child('#7a5a3a'), ...near('street', -3, 4), h: 1.5 }, { id: 'kid2', tex: T.child('#3a5a7a'), ...near('street', -4.5, 3), h: 1.45, say: ['We are playing knucklebones. You can watch.'] },
+  { id: 'blue', tex: T.blue, ...near('blue', 3, 2), h: 2.1, say: ['…'] },
+  { id: 'milkmaid', tex: F.milkmaid, ...near('milk', 3, 2), h: 2.2, say: ['Stale bread, milk and patience. That is a pudding.', 'The master is upstairs. He has been at one picture since Easter.'] },
+  { id: 'potter', tex: T.potter, ...near('geographer', 18, 74), h: 2.2, say: ['Blue and white, like the porcelain off the China ships. Half of Delft paints plates now.'] },
+  { id: 'model', tex: F.model, ...near('guild', 6, 3), h: 2.0, say: ['I am to be a Muse, with a trumpet and a book. My arm aches.'] },
+  { id: 'vermeer', tex: F.painter, ...near('studio', 3, 2), h: 2.3, say: ['There you are. I need a face for a picture.', 'Look in on eight of my rooms, then come back and sit for me.'] },
+];
+
+let skyMat, world, endT = 0;
+const cDay = new THREE.Color(1.03, 1.0, 0.94), fDay = new THREE.Color('#c8d2d6');
+world = createWorld({
+  bounds: B, map, cell: 2.5, height, bend: 0, groundTex, waterTex, streetTex: cobble, houseStyles, roofTex: groundTex, waterLevel: -0.5, groundScale: 26,
+  sound: { chords: [[43, 59, 62, 67, 71], [36, 55, 60, 64, 67], [38, 57, 62, 66, 69], [43, 55, 59, 62, 67]], scale: [67, 69, 71, 74, 76, 79, 81, 83, 86, 88, 91] },      // G major
+  groundColor: (x, z, h) => (h < 0 ? '#5a6a70' : ['#c2a88c', '#b89c80', '#c9b094', '#bca489'][Math.floor(Math.abs(Math.sin(x * 0.07) * Math.cos(z * 0.05)) * 3.99)]),
+  skipBuilding: b => { const a = area(b.p), c = b.p[0], kerk = b.n && /Kerk/.test(b.n); return a < 14 || (a > 2600 && !kerk) || (c[1] > 640 && !(c[1] > 748 && c[0] > -20 && c[0] < 150)); },
+  houseShape: (b, i, size) => (b.n && /Oude Kerk|Nieuwe Kerk/.test(b.n) ? { wall: 20, roof: 9, style: 5 } : b.n && /Stadhuis/.test(b.n) ? { wall: 13, roof: 5, style: 5, roofColor: '#4a5564' }
+    : { wall: 6 + ((i * 7) % 5) * 0.9, roof: 3.6 + (i % 3) * 0.7, style: (i * 13) % 5 }),
+  skipStreet: s => ['footway', 'path', 'steps', 'cycleway', 'service'].includes(s.t) || !s.n,
+  streetWidth: t => ({ pedestrian: 7, residential: 6, living_street: 6, tertiary: 7, secondary: 8, unclassified: 6 }[t] || 5),
+  decks, mapColors: { land: '#b9a084', water: '#4f6f8f', street: '#e2d2b6', house: '#8a4a3a' },
+  player: { frames: [F.pearl, F.pearl, F.pearl], height: 2.0, fly: true, start: { x: P('view').x, z: P('view').z + 3, yaw: 0 }, speed: 10.5, downhill: 0, camDist: 5.0 },
+  crowd: { n: 130, cast: [F.milkmaid, T.burgher, F.laughing, F.writer, T.goodwife, F.pitcher, T.burgher2, F.balance, F.officer, T.goodwife2, F.mistress, F.model], h: [2.0, 2.3], where: l => l[0][1] < 640,
+    say: ['Good day to you.', 'Mind the canal, child.', 'Fresh herring! Fresh this morning!', 'The barge from The Hague is late again.', 'Peat for your fire? Dry peat!', 'Have you seen the new blue plates? As fine as China ware.'] },
+  figures, places, bookTitle: 'The rooms of Delft', bookSub: 'every interior he painted is behind a door in this town',
+  tip: matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · hold the arrow to fly · go where the pointer shows' : 'arrow keys to run and turn · hold space to fly · tab for the next place · B for the rooms you have seen',
+  tint: () => ({ color: cDay, fog: fDay, near: 150, far: 1500 }),
+  titleCamera(w) { w.camera.position.set(86, 3.2, 752); w.camera.lookAt(100, 14, 600); },
+  onStart() { endT = 0; },
+  onFound(p, w) { if (p.id === 'studio') { endT = w.time + 5; w.say(w.figs.find(f => f.id === 'vermeer'), 'Sit there, by the window. Turn your head. Yes. Like that.', 6); w.me.auto = { yaw: w.me.yaw, go: 0 }; } },
+  update(w, dt) { if (endT && w.time > endT) { endT = 0; w.me.auto = null; w.end(); } SND.update(0.3, 0); },
+  build(w) {
+    const { scene } = w;
+    /* the sky of View of Delft, wrapped round the horizon, drifting */
+    skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: { uSky: { value: null }, uTime: w.uni.uTime },
+      vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: `uniform sampler2D uSky; uniform float uTime; varying vec3 vDir;
+        void main(){ vec3 d = normalize(vDir); float az = atan(d.z, d.x); vec2 uv = vec2(az / 3.14159 * 1.25 + uTime * 0.0025, clamp(d.y * 1.55 + 0.03, 0.0, 0.985));
+          vec3 c = texture2D(uSky, vec2(abs(fract(uv.x * 0.5) * 2.0 - 1.0), uv.y)).rgb; c = mix(vec3(0.80, 0.83, 0.82), c, smoothstep(-0.04, 0.05, d.y)); gl_FragColor = vec4(c, 1.0); }` });
+    const sky = new THREE.Mesh(new THREE.SphereGeometry(3200, 48, 24), skyMat); sky.renderOrder = -10; sky.frustumCulled = false; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
+    new THREE.TextureLoader().load('sky.jpg', t => { t.wrapS = THREE.MirroredRepeatWrapping; skyMat.uniforms.uSky.value = t; });
+    /* towers and gates: the things that make the skyline in View of Delft */
+    const stone = w.mat({ map: houseStyles[5].wall }), slate = w.mat({ color: '#4a5564' }), brickM = w.mat({ map: houseStyles[0].wall }), tile = w.mat({ color: '#b25a3c' });
+    const tower = (x, z, wd, h, spire, m, lean) => { const g = new THREE.Group(); const b = new THREE.Mesh(new THREE.BoxGeometry(wd, h, wd), m); b.position.y = h / 2; g.add(b);
+      const s = new THREE.Mesh(new THREE.ConeGeometry(wd * 0.62, spire, 8), slate); s.position.y = h + spire / 2; g.add(s); g.position.set(x, 0.5, z); g.rotation.z = lean || 0; scene.add(g); return g; };
+    tower(84, -72, 13, 62, 34, stone);                       // the New Church, on the market square
+    tower(-262, -108, 12, 50, 22, brickM, 0.035);            // the Old Church: its tower leans
+    for (const [dx, dz] of [[-5, -5], [5, -5], [-5, 5], [5, 5]]) tower(-262 + dx, -108 + dz, 2.4, 52, 9, brickM, 0.035);
+    tower(-52, 2, 8, 30, 12, stone);                         // the town hall
+    const gate = (x, z, twin) => { const g = new THREE.Group(); const b = new THREE.Mesh(new THREE.BoxGeometry(16, 11, 9), brickM); b.position.y = 5.5; g.add(b); const r = new THREE.Mesh(new THREE.ConeGeometry(11, 6, 4), tile); r.rotation.y = Math.PI / 4; r.scale.z = 0.6; r.position.y = 14; g.add(r);
+      for (const s of twin ? [-9, 9] : [0]) { const t = new THREE.Mesh(new THREE.CylinderGeometry(twin ? 3 : 2.2, twin ? 3 : 2.2, twin ? 17 : 21, 10), brickM); t.position.set(s, twin ? 8.5 : 10.5, twin ? 5 : 0); g.add(t); const c = new THREE.Mesh(new THREE.ConeGeometry(twin ? 3.6 : 2.8, 7, 10), slate); c.position.set(s, twin ? 20.5 : 24.5, twin ? 5 : 0); g.add(c); }
+      g.position.set(x, 0.6, z); scene.add(g); };
+    gate(76, 640, false); gate(140, 640, true);            // the Schiedam Gate and the Rotterdam Gate, as they stood at the harbour
+    /* lindens along the canals, and barges on the water */
+    let n = 0; for (const c of map.canals) for (let i = 0; i < c.l.length - 1; i++) { const a = c.l[i], b = c.l[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); for (let t = 12; t < L; t += 34) { for (const side of [-1, 1]) {
+      const x = mix(a[0], b[0], t / L) - (b[1] - a[1]) / L * 9.5 * side, z = mix(a[1], b[1], t / L) + (b[0] - a[0]) / L * 9.5 * side;
+      if (n < 260 && x > B[0] + 6 && x < B[2] - 6 && z > B[1] + 6 && z < 640 && !isWater(x, z) && !w.inHouse(x, z)) { w.sprite(T.linden, x, z, rnd(8, 11), 1); n++; } } } }
+    const hull = (x, z, rot, col) => { const b = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 8, 0, 6.3, Math.PI / 2, Math.PI / 2), w.mat({ color: col, side: THREE.DoubleSide })); b.scale.set(6.5, 1.3, 2.0); b.position.set(x, 0.25, z); b.rotation.y = rot; scene.add(b);
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.12, 8, 6), w.mat({ color: '#5a4030' })); m.position.set(x, 4, z); scene.add(m); };
+    for (const [x, z, r] of [[96, 700, 0.3], [122, 716, 1.2], [70, 690, -0.4], [108, 676, 0.1]]) if (isWater(x, z)) hull(x, z, r, ['#4a3a2c', '#6a4a30', '#3a3a34', '#7a5a3a'][Math.floor(rnd(0, 4))]);
+  },
+});
+window.__road = { get state() { return world.state; }, me: world.me, begin: world.begin, world, go(x, z) { world.me.x = x; world.me.z = z; world.me.speed = 0; }, face(a) { world.me.yaw = a; }, places: Object.fromEntries(places.map(p => [p.id, [p.x, p.z]])) };
+</script>
+</body>
+</html>
