@@ -254,12 +254,21 @@ function head(group, y, skin, face, r, hairCol) {
   if (hairCol) { const b = new THREE.Mesh(new THREE.SphereGeometry(r * 1.04, 12, 10, Math.PI / 2 + 1.0, Math.PI * 2 - 2.0), lam({ color: hairCol })); b.scale.set(0.92, 1.14, 0.96); hg.add(b); }
   group.add(hg); return hg;
 }
+const WRAP = {}; for (const n of ['girl', 'milkmaid', 'black', 'red', 'child', 'man']) { const t = await TL.loadAsync('tex/wrap_' + n + '.jpg'); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; t.repeat.set(0.66, n === 'red' ? 0.8 : 0.85); t.offset.set(0.17, n === 'red' ? 0.13 : 0.08); WRAP[n] = t; }      // each figure's clothes painted flat (tools/gen_delft.py) and wrapped round the body
+const wrapLathe = (pts, y0, H, tex) => { const m = new THREE.Mesh(new THREE.LatheGeometry(pts.map(q => new THREE.Vector2(q[0], q[1])), 24, Math.PI, Math.PI * 2), lam({ map: tex })), ps = m.geometry.attributes.position, uv = m.geometry.attributes.uv; for (let k = 0; k < uv.count; k++) uv.setY(k, (ps.getY(k) - y0) / H); m.castShadow = true; return m; };
+// a child kneeling at a game on the pavement, as the two in The Little Street: short spread skirt, bent back, big head, hands to the ground
+function child(i) { const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig); const skin = lam({ color: '#ecd0b0' }), white = lam({ color: '#f3efe4' });
+  const body = wrapLathe([[0.02, 0.01], [0.36, 0.01], [0.35, 0.06], [0.27, 0.2], [0.15, 0.36], [0.155, 0.48], [0.17, 0.6], [0.14, 0.7], [0.06, 0.75]], 0, 0.75, WRAP.child); rig.add(body);
+  const hd = head(rig, 0.87, skin, FACES[i % FACES.length], 0.118, null); const cap = new THREE.Mesh(new THREE.SphereGeometry(0.128, 12, 10, Math.PI / 2 + 0.9, Math.PI * 2 - 1.8), white); cap.scale.set(0.95, 1.16, 1.02); hd.add(cap); hd.rotation.x = 0.5;
+  for (const sx of [-1, 1]) { const a = limb(0.36, 0.05, 0.04, lam({ color: i ? '#8a7a5a' : '#c9b08a', map: strokeTex })), h = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), skin); h.position.y = -0.38; a.add(h); a.position.set(sx * 0.16, 0.63, 0.02); a.rotation.x = -0.75; a.rotation.z = sx * 0.12; rig.add(a); }
+  const sh = new THREE.Mesh(new THREE.CircleGeometry(0.4, 14), shadowM); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; g.add(sh); rig.rotation.x = 0.42; g.userData = { rig, hd }; scene.add(g); return g; }
 function person(o) {             // o: woman, skirt, bodice, apron, coat (men), hat ('tall' | 'beret' | 'cap' | 'turban'), face, size
   const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig); const skin = lam({ color: '#ecd0b0' }), dark = lam({ color: '#1c1a1c' }), white = lam({ color: '#f3efe4' });
   let body, legs = null;
-  if (o.woman) { body = lathe([[0.02, 0.02], [0.5, 0.02], [0.495, 0.1], [0.45, 0.42], [0.31, 0.86], [0.205, 1.0]], lam({ color: o.skirt, map: tDrape }), 20); rig.add(body); rig.add(lathe([[0.2, 0.98], [0.21, 1.14], [0.23, 1.3], [0.19, 1.41], [0.08, 1.47]], lam({ color: o.bodice, map: strokeTex })));
+  if (o.woman && o.wrap) { body = wrapLathe([[0.02, 0.02], [0.5, 0.02], [0.495, 0.1], [0.45, 0.42], [0.31, 0.86], [0.205, 1.0], [0.21, 1.14], [0.235, 1.3], [0.19, 1.41], [0.08, 1.47]], 0, 1.47, WRAP[o.wrap]); rig.add(body); }
+  else if (o.woman) { body = lathe([[0.02, 0.02], [0.5, 0.02], [0.495, 0.1], [0.45, 0.42], [0.31, 0.86], [0.205, 1.0]], lam({ color: o.skirt, map: tDrape }), 20); rig.add(body); rig.add(lathe([[0.2, 0.98], [0.21, 1.14], [0.23, 1.3], [0.19, 1.41], [0.08, 1.47]], lam({ color: o.bodice, map: strokeTex })));
     if (o.apron) { const a = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.44, 0.92, 12, 1, true, -0.9, 1.8), lam({ color: o.apron, map: strokeTex, side: THREE.DoubleSide })); a.position.set(0, 0.52, 0.015); rig.add(a); } }
-  else { body = lathe([[0.02, 0.62], [0.25, 0.62], [0.25, 0.9], [0.22, 1.1], [0.25, 1.3], [0.21, 1.42], [0.09, 1.48]], lam({ color: o.coat, map: strokeTex })); rig.add(body); const hose = lam({ color: o.hose || '#d9cfb8' });
+  else { body = lathe([[0.02, 0.62], [0.25, 0.62], [0.25, 0.9], [0.22, 1.1], [0.25, 1.3], [0.21, 1.42], [0.09, 1.48]], lam({ color: o.coat, map: strokeTex })); if (o.wrap) body = wrapLathe([[0.02, 0.62], [0.27, 0.62], [0.26, 0.9], [0.22, 1.1], [0.25, 1.3], [0.21, 1.42], [0.09, 1.48]], 0.62, 0.86, WRAP[o.wrap]); rig.add(body); const hose = lam({ color: o.hose || '#d9cfb8' });
     const lL = limb(0.62, 0.075, 0.05, hose), lR = limb(0.62, 0.075, 0.05, hose); lL.position.set(-0.1, 0.66, 0); lR.position.set(0.1, 0.66, 0); rig.add(lL, lR); legs = [lL, lR]; for (const l of legs) { const sh = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.07, 0.24), dark); sh.position.set(0, -0.62, 0.05); l.add(sh); } }
   if (o.collar !== false) { const col = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.25, 0.1, 12), white); col.position.y = 1.44; rig.add(col); }
   else { const nk = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.12, 8), skin); nk.position.y = 1.5; rig.add(nk); }
@@ -287,28 +296,30 @@ function pose(g, phase, pace, air, lean) {
   u.body.scale.set(1 + 0.04 * s * pace + (air ? 0.18 : 0), 1, 1 + 0.06 * c * pace + (air ? 0.18 : 0)); if (u.tail) u.tail.rotation.x = 0.1 + 0.55 * Math.min(1.4, pace) + 0.12 * s + (air ? 0.5 : 0);
 }
 const faceTo = (g, x, z, k) => { let d = Math.atan2(x - g.position.x, z - g.position.z) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * k; };
-const meG = person({ woman: true, skirt: '#5a4a3a', bodice: '#b08a3c', hat: 'turban', faceMat: PEARL, face: 0, size: 1.0, collar: false });
+const meG = person({ wrap: 'girl', woman: true, skirt: '#5a4a3a', bodice: '#a8843c', hat: 'turban', faceMat: PEARL, face: 0, size: 1.0, collar: false });
 // the people in the stages
-const sewer = person({ woman: true, skirt: '#3a3a44', bodice: '#2a2a30', apron: '#e9e2d2', hat: 'cap', face: 1, size: 0.95 }); { const [x, z] = side(LS.p, -1.6, 6.9); sewer.position.set(x, LAND - 0.55, z); sewer.rotation.y = Math.atan2(-(LS.p.dx * 0 - LS.p.dz * -1), -(LS.p.dz * 0 + LS.p.dx * -1)); sewer.userData.hd.rotation.x = 0.45; pose(sewer, 0, 0); }
-const alleyMaid = person({ woman: true, skirt: '#2f4a7a', bodice: '#a8342c', hat: 'cap', face: 3, size: 0.98 }); { const [x, z] = side(LS.p, -7.2, 8.6); alleyMaid.position.set(x, LAND, z); alleyMaid.rotation.y = Math.atan2(LS.p.dz, -LS.p.dx) + 1.2; alleyMaid.userData.rig.rotation.x = 0.5; }
-const kids = [0, 1].map(i => { const k = person({ woman: true, skirt: i ? '#3a5a7a' : '#7a5a3a', bodice: i ? '#7a5a3a' : '#c9b08a', hat: 'cap', face: i, size: 0.6 }); const [x, z] = side(LS.p, -4.2 - i * 0.9, 6.2 - i * 0.5); k.position.set(x, LAND - 0.25, z); k.rotation.y = rnd(0, 6); k.userData.rig.rotation.x = 0.7; return k; });
-const milkmaid = person({ woman: true, skirt: '#a8342c', bodice: '#d9b23c', apron: '#2f5d9a', hat: 'cap', face: 0, size: 1.06 }); { const k = KT, x = k.cx + (-0.1) * k.c - 1.25 * k.s, z = k.cz + (-0.1) * k.s + 1.25 * k.c; milkmaid.position.set(x, LAND + 0.08, z); milkmaid.rotation.y = Math.atan2(-k.c * 0.75 + k.s * 0.65, -k.s * 0.75 - k.c * 0.65); milkmaid.userData.hd.rotation.x = 0.35; pose(milkmaid, 0, 0); milkmaid.userData.aL.rotation.x = -0.9; milkmaid.userData.aR.rotation.x = -1.05;
+const sewer = person({ wrap: 'black', woman: true, skirt: '#3a3a44', bodice: '#2a2a30', apron: '#e9e2d2', hat: 'cap', face: 1, size: 0.95 }); { const [x, z] = side(LS.p, -1.6, 6.9); sewer.position.set(x, LAND - 0.55, z); sewer.rotation.y = Math.atan2(-(LS.p.dx * 0 - LS.p.dz * -1), -(LS.p.dz * 0 + LS.p.dx * -1)); sewer.userData.hd.rotation.x = 0.45; pose(sewer, 0, 0); }
+const alleyMaid = person({ wrap: 'red', woman: true, skirt: '#2f4a7a', bodice: '#a8342c', hat: 'cap', face: 3, size: 0.98 }); { const [x, z] = side(LS.p, -7.2, 8.6); alleyMaid.position.set(x, LAND, z); alleyMaid.rotation.y = Math.atan2(LS.p.dz, -LS.p.dx) + 1.2; alleyMaid.userData.rig.rotation.x = 0.5; }
+const kids = [0, 1].map(i => { const k = child(i); const [x, z] = side(LS.p, -4.2 - i * 0.95, 6.3 - i * 0.45); k.position.set(x, LAND, z); k.rotation.y = Math.atan2(LS.p.dz, -LS.p.dx) + Math.PI / 2 + (i ? -0.5 : 0.5); return k; });
+const milkmaid = person({ wrap: 'milkmaid', woman: true, skirt: '#a8342c', bodice: '#6a8a7a', apron: '#2f5d9a', hat: 'cap', face: 0, size: 1.06 }); { const k = KT, x = k.cx + (-0.1) * k.c - 1.25 * k.s, z = k.cz + (-0.1) * k.s + 1.25 * k.c; milkmaid.position.set(x, LAND + 0.08, z); milkmaid.rotation.y = Math.atan2(-k.c * 0.75 + k.s * 0.65, -k.s * 0.75 - k.c * 0.65); milkmaid.userData.hd.rotation.x = 0.35; pose(milkmaid, 0, 0); milkmaid.userData.aL.rotation.x = -0.9; milkmaid.userData.aR.rotation.x = -1.05;
   const jug = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 0.24, 10), lam({ color: '#a8603c' })); jug.position.set(0, -0.56, 0.08); jug.rotation.x = 1.1; milkmaid.userData.aR.add(jug); }
 const painter = person({ coat: '#1c1b20', hat: 'beret', hose: '#b3362c', face: 4, size: 1.08 }); { const k = ST, x = k.cx + 1.2 * k.c + 0.6 * k.s, z = k.cz + 1.2 * k.s - 0.6 * k.c; painter.position.set(x, LAND, z); painter.rotation.y = Math.atan2(k.c, k.s) + 2.2; pose(painter, 0, 0); painter.userData.aR.rotation.x = -1.1; }
 // the townspeople
-const KIT = [{ woman: true, skirt: '#2c3e68', bodice: '#d9b23c', hat: 'cap' }, { coat: '#1c1b20', hat: 'tall' }, { woman: true, skirt: '#5a4a44', bodice: '#7a3a30', apron: '#e9e2d2', hat: 'cap' }, { coat: '#3a3530', hat: 'tall', hose: '#8a7a64' }, { woman: true, skirt: '#1e1c22', bodice: '#1e1c22', hat: 'cap' }, { coat: '#5a2a26', hat: 'beret' }, { woman: true, skirt: '#7a3a30', bodice: '#3c5a8a', apron: '#e9e2d2', hat: 'cap' }, { coat: '#4a4a3a', hat: 'tall' }];
+const KIT = [{ woman: true, skirt: '#2c3e68', bodice: '#d9b23c', hat: 'cap' }, { wrap: 'man', coat: '#1c1b20', hat: 'tall' }, { wrap: 'red', woman: true, skirt: '#5a4a44', bodice: '#a8342c', hat: 'cap' }, { coat: '#3a3530', hat: 'tall', hose: '#8a7a64' }, { wrap: 'black', woman: true, skirt: '#1e1c22', bodice: '#1e1c22', hat: 'cap' }, { coat: '#5a2a26', hat: 'beret' }, { woman: true, skirt: '#7a3a30', bodice: '#3c5a8a', apron: '#e9e2d2', hat: 'cap' }, { coat: '#4a4a3a', hat: 'tall' }];
 const walkers = []; for (let i = 0; i < 52; i++) { const g = person(Object.assign({ face: i, size: rnd(0.98, 1.12) }, KIT[i % KIT.length])); const markt = i < 20;
   walkers.push({ g, s: markt ? rnd(S_MARKT - 20, LEN - 34) : rnd(14, S_MARKT - 20), dir: i % 2 ? 1 : -1, off: rnd(1.1, 3.0) * (i % 2 ? 1 : -1), v: rnd(0.9, 1.5), ph: rnd(0, 6), lo: 10, hi: LEN - 32, said: 0 }); }
 const LINES = ['Good day to you.', 'Mind the canal, child.', 'A magpie? It went that way, towards the Markt.', 'Fresh herring! Fresh this morning!', 'Running, in this town? On a Tuesday?'];
 // the thief: a magpie with her pearl in its beak
 const bird = new THREE.Group(); { const blk = lam({ color: '#16161c' }), wht = lam({ color: '#f4f2ea' }); const b = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), blk); b.scale.set(0.8, 0.8, 1.5); bird.add(b); const belly = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), wht); belly.scale.set(0.8, 0.7, 1.1); belly.position.set(0, -0.05, -0.02); bird.add(belly);
   const hd = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), blk); hd.position.set(0, 0.07, 0.22); bird.add(hd); const beak = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.12, 6), blk); beak.rotation.x = Math.PI / 2; beak.position.set(0, 0.06, 0.34); bird.add(beak);
-  const pearl = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), new THREE.MeshBasicMaterial({ color: '#ffffff' })); pearl.position.set(0, 0.05, 0.41); bird.add(pearl); const tail = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.02, 0.5), blk); tail.position.set(0, 0.02, -0.42); bird.add(tail);
+  const pearl = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), new THREE.MeshBasicMaterial({ color: '#ffffff' })); pearl.position.set(0, 0.05, 0.41); bird.add(pearl); const tail = new THREE.Mesh(new THREE.BoxGeometry(0.09, 0.02, 0.72), lam({ color: '#1f4652' })); tail.position.set(0, 0.03, -0.52); tail.rotation.x = -0.12; bird.add(tail);
+  for (const sx of [-1, 1]) { const sp = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 6), wht); sp.scale.set(0.5, 0.6, 1.3); sp.position.set(sx * 0.11, 0.05, 0.0); bird.add(sp); }      // the white shoulders
+  const glint = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(64, 64, (g, w, h) => { const r = g.createRadialGradient(32, 32, 0, 32, 32, 32); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.25, 'rgba(255,248,220,.55)'); r.addColorStop(1, 'rgba(255,240,200,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); }), blending: THREE.AdditiveBlending, depthWrite: false, fog: false })); glint.position.copy(pearl.position); pearl.add(glint); glint.position.set(0, 0, 0); pearl.scale.setScalar(1.5);
   const wing = sx => { const g = new THREE.Group(), w = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.26), lam({ color: '#16161c', side: THREE.DoubleSide })), t = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), lam({ color: '#f4f2ea', side: THREE.DoubleSide })); w.rotation.x = -Math.PI / 2; w.position.x = sx * 0.27; t.rotation.x = -Math.PI / 2; t.position.set(sx * 0.42, 0.002, 0); g.add(w, t); bird.add(g); return g; };
-  bird.userData = { wL: wing(-1), wR: wing(1), pearl }; bird.scale.setScalar(1.5); bird.traverse(o => { if (o.isMesh) o.castShadow = true; }); scene.add(bird); }
+  bird.userData = { wL: wing(-1), wR: wing(1), pearl, glint }; bird.scale.setScalar(2.1); bird.traverse(o => { if (o.isMesh) o.castShadow = true; }); scene.add(bird); }
 
 /* ================= play ================= */
-let state = 'title', time = 0, muted = false, endT = 0, birdS = S_START + 14, birdV = 0, birdY = 3, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, headTurn = 0;
+let state = 'title', time = 0, muted = false, endT = 0, birdS = S_START + 14, birdV = 0, birdY = 3, thT = 0, wasPerched = false, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, headTurn = 0;
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
 const plate = (title, line) => { $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
 const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
@@ -320,9 +331,8 @@ const WAY = {
 function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); birdS = S_START + 14; endT = 0; wp = null; seen = {}; headTurn = 0; meG.userData.pearl.visible = false; bird.userData.pearl.visible = true; meG.userData.hd.rotation.y = 0;
   camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
 function begin() {
-  SND.start({ track: 'music.mp3', chords: [[43, 59, 62, 67, 71], [36, 55, 60, 64, 67], [38, 57, 62, 66, 69], [43, 55, 59, 62, 67]], scale: [67, 69, 71, 74, 76, 79, 81, 83, 86, 88, 91] }); SND.setMuted(muted); reset(); state = 'play';
+  SND.start({ track: 'music.mp3', chords: [[43, 59, 62, 67, 71], [36, 55, 60, 64, 67], [38, 57, 62, 66, 69], [43, 55, 59, 62, 67]], scale: [67, 69, 71, 74, 76, 79, 81, 83, 86, 88, 91] }); SND.setMuted(muted); reset(); state = 'theft'; thT = 0; meG.userData.pearl.visible = true; bird.userData.pearl.visible = false;
   $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
-  setTimeout(() => { if (state === 'play') say(meG, 'My earring! Come back, you thief!', 4); }, 900);
 }
 function update(dt) {
   time += dt; uni.uTime.value = time; post.uniforms.uTime.value = time; for (const t of sway) t.rotation.z = Math.sin(time * 0.9 + t.position.x) * 0.012;
@@ -349,9 +359,20 @@ function update(dt) {
     if (state === 'play') { const gap = birdS - prog.s; let hold = false; for (const k in WAY) if (!seen[k] && birdS >= WAY[k].s) hold = true;
       const want = birdS >= sEnd || hold ? 0 : gap < 10 ? 14 : gap < 22 ? 9.5 : gap < 36 ? 4 : 0; birdV += (want - birdV) * Math.min(1, dt * 2.5); birdS = Math.min(sEnd, birdS + birdV * dt);
       if (want === 0 && !hold && birdS < sEnd && time > hop) { hop = time + 6; SND.bell(9, 0.05); SND.bell(10, 0.05, 0.12); } }
-    { const p = at(birdS), perched = birdV < 0.8; birdY += ((perched ? 2.3 : 3.6 + Math.sin(time * 2.2) * 0.5) - birdY) * Math.min(1, dt * 2.5);
+    if (state === 'theft') {       // the opening: she stands with the pearl at her ear; the magpie stoops from the gables, takes it and is away up the street
+      thT += dt; const T = thT, f0 = Math.sin(me.yaw), f1 = -Math.cos(me.yaw), rx = -f1, rz = f0, sm = x => { x = clamp(x, 0, 1); return x * x * (3 - 2 * x); };
+      meG.position.set(me.x, me.y, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = 0; pose(meG, 0, 0); meG.userData.hd.rotation.y = -0.75 * sm(T / 0.8) * (1 - sm((T - 2.3) / 0.9));
+      const E = new V3(me.x + rx * 0.3 + f0 * 0.1, LAND + 1.62, me.z + rz * 0.3 + f1 * 0.1), A = new V3(me.x - f0 * 13 - rx * 5, LAND + 7.5, me.z - f1 * 13 - rz * 5), q = at(birdS), N = new V3(q.x - q.dz * 1.2, LAND + 3.6, q.z + q.dx * 1.2);
+      if (T < 1.7) { bird.position.lerpVectors(A, E, sm(T / 1.7)); bird.rotation.y = Math.atan2(E.x - A.x, E.z - A.z); }
+      else { if (!bird.userData.pearl.visible) { bird.userData.pearl.visible = true; meG.userData.pearl.visible = false; SND.bell(10, 0.08); SND.bell(8, 0.06, 0.1); SND.whoosh(0.09); say(meG, 'My earring! Come back, you thief!', 3.6); }
+        bird.position.lerpVectors(E, N, sm((T - 1.7) / 1.9)); bird.position.y += Math.sin(sm((T - 1.7) / 1.9) * Math.PI) * 1.2; bird.rotation.y = Math.atan2(N.x - E.x, N.z - E.z); }
+      const flap = Math.sin(time * 24); bird.userData.wL.rotation.z = flap; bird.userData.wR.rotation.z = -flap; birdY = 3.6;
+      if (T < 2.4) { const k = Math.min(1, dt * 3); camera.position.lerp(new V3(me.x + f0 * 2.5 + rx * 1.5, LAND + 1.75, me.z + f1 * 2.5 + rz * 1.5), T < 0.1 ? 1 : k); camera.lookAt(me.x + rx * 0.2, LAND + 1.58, me.z + rz * 0.2); camera.fov += (38 - camera.fov) * (T < 0.1 ? 1 : k); camera.updateProjectionMatrix(); }
+      if (T > 3.6) { state = 'play'; meG.userData.hd.rotation.y = 0; } }
+    else { const p = at(birdS), perched = birdV < 0.8; birdY += ((perched ? 0.3 + Math.abs(Math.sin(time * 5)) * 0.12 : 3.6 + Math.sin(time * 2.2) * 0.5) - birdY) * Math.min(1, dt * 2.5);
+      if (wasPerched && !perched) { SND.puff(0.05); setTimeout(() => SND.puff(0.05), 130); setTimeout(() => SND.puff(0.04), 260); } wasPerched = perched;
       bird.position.set(p.x - p.dz * 1.2, LAND + birdY, p.z + p.dx * 1.2); if (perched) faceTo(bird, me.x, me.z, dt * 4); else bird.rotation.y = Math.atan2(p.dx, p.dz);
-      const flap = Math.sin(time * (perched ? 14 : 22)) * (perched ? 0.5 : 1.0); bird.userData.wL.rotation.z = flap; bird.userData.wR.rotation.z = -flap; }
+      const flap = perched && birdY < 0.6 ? 1.25 : Math.sin(time * 22); bird.userData.wL.rotation.z = flap; bird.userData.wR.rotation.z = -flap; }
 
     // waypoints: the view becomes the painting, melts into it, and lets her go
     for (const k in WAY) if (state === 'play' && !seen[k] && prog.s > WAY[k].s - 7 && prog.s < WAY[k].s + 4) { state = 'way'; wp = WAY[k]; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); SND.whoosh(0.07); }
@@ -373,7 +394,8 @@ function update(dt) {
       if (endT > 16.5) { state = 'done'; $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); } }
 
     // camera
-    if (state === 'way') { const [pos, look, fov] = wp.cam(), k = Math.min(1, dt * 1.5); camera.position.lerp(pos, k); camera.lookAt(look); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); }
+    if (state === 'theft' && thT < 2.4) { /* the opening has the camera */ }
+    else if (state === 'way') { const [pos, look, fov] = wp.cam(), k = Math.min(1, dt * 1.5); camera.position.lerp(pos, k); camera.lookAt(look); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); }
     else if (state === 'tableau' || state === 'done') { const kk = Math.min(1, dt * 1.1), hp = new V3(); meG.userData.hd.getWorldPosition(hp); if (update.cp) camera.position.lerp(update.cp, kk); camera.lookAt(hp.x, hp.y - 0.1, hp.z); camera.fov += (32 - camera.fov) * kk; camera.updateProjectionMatrix(); }
     else { const alt = Math.max(0, me.y - LAND); let dist = 5.6 + Math.abs(me.speed) * 0.2 + alt * 0.5, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
       const k = Math.min(1, dt * 5.5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (me.y + 2.45 + alt * 0.25 - camera.position.y) * k;
