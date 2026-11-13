@@ -39,6 +39,7 @@
 <script type="module">
 import * as THREE from 'three';
 import { canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
+import { makeGuide } from '../common/guide.js';
 const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
 const map = await (await fetch('map.json')).json();
 
@@ -294,6 +295,9 @@ const pigeons = [0, 1, 2, 3, 4, 5].map(i => { const b = birdOf(['#7a8494', '#9aa
 const dove = birdOf('#c9352b', '#e0553a'); dove.visible = false; dove.scale.setScalar(0.8);
 
 /* ================= play ================= */
+const guide = makeGuide({ THREE, scene, map, nearest: (x, z) => nearest(x, z), at, LEN, blocked, groundY: () => LAND, wet: isWater, bounds: B,
+  places: [{ n: 'Palazzo Vecchio', x: 62, z: 6 }, { n: 'Ponte Vecchio', x: PV_C[0], z: PV_C[1], s: S_TURN }, { n: 'Ponte Santa Trinita', x: BR_N[0], z: BR_N[1], s: S_BRIDGE }],
+  style: { board: '#e9e2d0', ink: '#3a2a20', post: '#8a8072', land: '#4a4034', water: '#5a7a80', house: '#7a6a54', street: '#e2d4b0' } });
 let progS = S_START, state = 'title', time = 0, muted = false, endT = 0, triS = S_START + 12, triV = 0, triPh = 0, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, dusk = 0, leg = 1;
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
 const plate = (title, line) => { $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
@@ -388,6 +392,7 @@ function update(dt) {
   // the hour: the sun sinks towards the west as he follows her to the river
   const dk = state === 'title' ? 0.35 : dusk; uni.uDusk.value = dk; hemi.color.copy(C('#f2e6cf')).lerp(C('#e6b9a0'), dk); hemi.intensity = mix(1.2, 0.95, dk); sunL.color.copy(C('#ffe2b0')).lerp(C('#ff9a5a'), dk); sunL.intensity = mix(2.2, 1.9, dk);
   sunL.position.set(camera.position.x - 160, mix(110, 38, dk), camera.position.z + 60); sunL.target.position.set(camera.position.x, 0, camera.position.z); sunL.target.updateMatrixWorld(); scene.fog.color.copy(C('#e6d2b0')).lerp(C('#e0a070'), dk);
+  guide.update(me, beatrice.position, state === 'play');
   SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
 }
 function draw() {

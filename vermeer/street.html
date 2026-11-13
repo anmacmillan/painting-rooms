@@ -39,6 +39,7 @@
 <script type="module">
 import * as THREE from 'three';
 import { canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
+import { makeGuide } from '../common/guide.js';
 const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
 const map = await (await fetch('map.json')).json();
 
@@ -319,6 +320,9 @@ const bird = new THREE.Group(); { const blk = lam({ color: '#16161c' }), wht = l
   bird.userData = { wL: wing(-1), wR: wing(1), pearl, glint }; bird.scale.setScalar(2.1); bird.traverse(o => { if (o.isMesh) o.castShadow = true; }); scene.add(bird); }
 
 /* ================= play ================= */
+const guide = makeGuide({ THREE, scene, map, nearest, at, LEN, blocked, groundY: () => LAND, wet: (x, z) => !dry(x, z), bounds: B,
+  places: [{ n: 'The Little Street', x: at(S_LITTLE).x, z: at(S_LITTLE).z, s: S_LITTLE }, { n: 'Markt', x: at(S_MARKT).x, z: at(S_MARKT).z, s: S_MARKT }, { n: 'The Milkmaid', x: at(S_MILK).x, z: at(S_MILK).z, s: S_MILK }, { n: 'The painter\'s house', x: at(LEN - 2).x, z: at(LEN - 2).z, s: LEN - 2 }],
+  style: { board: '#e8e0cc', ink: '#1c2a44', post: '#4a3a2c', land: '#4a3f36', water: '#5f8296', house: '#7a4a3a', street: '#d9c9a0' } });
 let state = 'title', time = 0, muted = false, endT = 0, birdS = S_START + 14, birdV = 0, birdY = 3, thT = 0, wasPerched = false, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, headTurn = 0;
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
 const plate = (title, line) => { $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
@@ -411,6 +415,7 @@ function update(dt) {
   milkmaid.userData.aR.rotation.x = -1.05 + Math.sin(time * 0.7) * 0.04;
   if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; const cp = camera.position, bp = bubbleG.position; let hid = v.z > 1; for (let k = 0.12; k < 0.9 && !hid; k += 0.07) hid = inHouse(cp.x + (bp.x - cp.x) * k, cp.z + (bp.z - cp.z) * k); bubble.classList.toggle('show', !hid); } }
   sunL.position.set(camera.position.x - 90, 150, camera.position.z + 70); sunL.target.position.set(camera.position.x, 0, camera.position.z); sunL.target.updateMatrixWorld();
+  guide.update(me, bird.position, state === 'play');
   SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
 }
 function draw() {
