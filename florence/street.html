@@ -47,15 +47,17 @@ const map = await (await fetch('map.json')).json();
    west along the Lungarno degli Acciaioli by the river, and out on to the Ponte Santa Trinita. */
 const seg = (name, a, b) => { const all = map.streets.filter(s => s.n === name); let best = null, bd = 1e9; for (const s of all) for (const l of [s.l, s.l.slice().reverse()]) { const d = Math.hypot(l[0][0] - a[0], l[0][1] - a[1]) + Math.hypot(l[l.length - 1][0] - b[0], l[l.length - 1][1] - b[1]); if (d < bd) { bd = d; best = l; } } return best; };
 const BR_N = [-400.1, -14.3], BR_C = [-422.4, 30.1], PV_N = [-173.3, 97.3], PV_C = [-197.3, 141.9];
-const raw = [[14, -27], ...seg('Via Vacchereccia', [-37.1, -16.4], [-98.2, -34.7]), ...seg('Via Por Santa Maria', [-98.2, -34.7], [-142.8, 39.8]), ...seg('Via Por Santa Maria', [-144.2, 42.3], [-171.0, 91.2]), ...seg('Lungarno degli Acciaioli', [-175.5, 89.1], [-396.7, -20.6]), BR_N, [mix(BR_N[0], BR_C[0], 0.95), mix(BR_N[1], BR_C[1], 0.95)]];
+const raw = [[14, -27], ...seg('Via Vacchereccia', [-37.1, -16.4], [-98.2, -34.7]), ...seg('Via Por Santa Maria', [-98.2, -34.7], [-142.8, 39.8]), ...seg('Via Por Santa Maria', [-144.2, 42.3], [-171.0, 91.2]), PV_N, PV_C, PV_N, ...seg('Lungarno degli Acciaioli', [-175.5, 89.1], [-396.7, -20.6]), BR_N, [mix(BR_N[0], BR_C[0], 0.95), mix(BR_N[1], BR_C[1], 0.95)]];
 const ROUTE = raw.filter((p, i, a) => !i || Math.hypot(p[0] - a[i - 1][0], p[1] - a[i - 1][1]) > 1.5);
 const cum = [0]; for (let i = 1; i < ROUTE.length; i++) cum.push(cum[i - 1] + Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]));
 const LEN = cum[cum.length - 1];
 function at(s) { s = clamp(s, 0, LEN - 0.01); let i = 1; while (cum[i] < s) i++; const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1]), a = ROUTE[i - 1], b = ROUTE[i], L = Math.hypot(b[0] - a[0], b[1] - a[1]); return { x: mix(a[0], b[0], t), z: mix(a[1], b[1], t), dx: (b[0] - a[0]) / L, dz: (b[1] - a[1]) / L }; }
-function nearest(x, z) { let best = 1e9, s = 0; for (let i = 1; i < ROUTE.length; i++) { const a = ROUTE[i - 1], b = ROUTE[i], dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz), 0, 1), d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t); if (d < best) { best = d; s = cum[i - 1] + t * (cum[i] - cum[i - 1]); } } return { s, d: best }; }
+// The route goes out along the Ponte Vecchio and back the same way, so a place on the bridge is on it twice: a hint says which pass is meant.
+function nearest(x, z, hint) { let best = 1e9, s = 0, bd = 1e9; for (let i = 1; i < ROUTE.length; i++) { const a = ROUTE[i - 1], b = ROUTE[i], dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz), 0, 1), d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t), si = cum[i - 1] + t * (cum[i] - cum[i - 1]), cost = d + (hint == null ? 0 : 0.04 * Math.abs(si - hint)); if (cost < best) { best = cost; s = si; bd = d; } } return { s, d: bd }; }
 const side = (p, u, v) => [p.x + p.dx * u - p.dz * v, p.z + p.dz * u + p.dx * v];      // u metres along the route, v metres to one side (on the Lungarno, negative v is towards the river)
 const sideR = (p, u, v) => side(p, u, -v);                                             // the same, with v measured towards the river
-const S_GREET = nearest(-142.8, 39.8).s - 12, S_RIVER = nearest(-175.5, 89.1).s, S_BRIDGE = nearest(BR_N[0], BR_N[1]).s, S_START = 3;
+const idx = (q, last) => { let k = -1; ROUTE.forEach((p, i) => { if (Math.hypot(p[0] - q[0], p[1] - q[1]) < 0.5 && (last || k < 0)) k = i; }); return k; };
+const S_TURN = cum[idx(PV_C)], S_GREET = S_TURN - 8, S_RIVER = cum[idx(PV_N, true)] + 3, S_BRIDGE = cum[idx(BR_N)], S_START = 3;
 const B = [-480, -140, 120, 200];
 
 /* ================= land and the Arno ================= */
@@ -65,7 +67,11 @@ const wd = wc.getContext('2d').getImageData(0, 0, WW, WH).data;
 const isWater = (x, z) => { const i = Math.floor(x - B[0]), j = Math.floor(z - B[1]); return i >= 0 && j >= 0 && i < WW && j < WH && wd[(j * WW + i) * 4] > 128; };
 const LAND = 2.4, DECK = 3.0;                                                             // the street stands well above the river, on its wall
 const brDir = (() => { const L = Math.hypot(BR_C[0] - BR_N[0], BR_C[1] - BR_N[1]); return [(BR_C[0] - BR_N[0]) / L, (BR_C[1] - BR_N[1]) / L]; })();
-const onBridge = (x, z) => { const dx = x - BR_N[0], dz = z - BR_N[1], u = dx * brDir[0] + dz * brDir[1], v = -dx * brDir[1] + dz * brDir[0]; return u > -4 && u < 100 && Math.abs(v) < 4.6; };
+const pvDir = (() => { const L = Math.hypot(PV_C[0] - PV_N[0], PV_C[1] - PV_N[1]); return [(PV_C[0] - PV_N[0]) / L, (PV_C[1] - PV_N[1]) / L, L * 2]; })();
+const onTrinita = (x, z) => { const dx = x - BR_N[0], dz = z - BR_N[1], u = dx * brDir[0] + dz * brDir[1], v = -dx * brDir[1] + dz * brDir[0]; return u > -4 && u < 100 && Math.abs(v) < 4.6; };
+// the Ponte Vecchio: a narrow street between its shops, opening to the parapets in the middle
+const onVecchio = (x, z) => { const dx = x - PV_N[0], dz = z - PV_N[1], u = dx * pvDir[0] + dz * pvDir[1], v = -dx * pvDir[1] + dz * pvDir[0]; return u > -5 && u < pvDir[2] + 5 && (Math.abs(v) < 3.1 || (Math.abs(u - pvDir[2] / 2) < 7.6 && Math.abs(v) < 8.4)); };
+const onBridge = (x, z) => onTrinita(x, z) || onVecchio(x, z);
 const ground = (x, z) => (isWater(x, z) ? -2.0 : LAND);
 const floorAt = (x, z) => (onBridge(x, z) ? (isWater(x, z) ? DECK : LAND + (DECK - LAND) * 0.6) : x < B[0] + 3 || x > B[2] - 3 || z < B[1] + 3 || z > B[3] - 3 || nearest(x, z).d > 30 || isWater(x, z) ? null : LAND);
 
@@ -196,7 +202,22 @@ function bridge(n, c, wid, shops) { const L_ = Math.hypot(c[0] - n[0], c[1] - n[
   for (const t of [-0.3, 0.0, 0.3]) bake(boxUV(5, 6, wid + 2, 5), M4(c[0] + d[0] * L_ * t, DECK - 3.6, c[1] + d[1] * L_ * t, -ang), stoneM);
   if (shops) for (let q = 0; q < 14; q++) for (const sd of [-1, 1]) { const u = -L_ / 2 + 6 + q * (L_ - 12) / 13, x = c[0] + d[0] * u - d[1] * sd * (wid / 2 + 1.2), z = c[1] + d[1] * u + d[0] * sd * (wid / 2 + 1.2), h = 5 + (q * 7 + (sd > 0 ? 3 : 0)) % 4;
     bake(new THREE.BoxGeometry(6.2, h, 4.2), M4(x, DECK + h / 2 - 1.2, z, -ang), SIDE[(q + (sd > 0 ? 1 : 0)) % 4]); bake(new THREE.BoxGeometry(6.8, 0.5, 5), M4(x, DECK + h - 1.0, z, -ang), roofM); } }
-bridge(BR_N, BR_C, 9.4, false); bridge(PV_N, PV_C, 13, true);
+bridge(BR_N, BR_C, 9.4, false);
+{ // the Ponte Vecchio: three arches' worth of stone, a street of shops along it with painted fronts, their backs hanging over the water, and an open terrace in the middle
+  const d = pvDir, L_ = d[2], ang = Math.atan2(d[1], d[0]), c = PV_C, at_ = (u, v) => [PV_N[0] + d[0] * u - d[1] * v, PV_N[1] + d[1] * u + d[0] * v];
+  bake(boxUV(L_ + 10, 1.4, 19, 5), M4(c[0], DECK - 0.72, c[1], -ang), stoneM);
+  for (const t of [-0.17, 0.17]) bake(boxUV(7, 7, 21, 5), M4(c[0] + d[0] * L_ * t, DECK - 4.2, c[1] + d[1] * L_ * t, -ang), stoneM);
+  for (const t of [-0.34, 0, 0.34]) bake(boxUV(L_ * 0.26, 2.6, 19.4, 5), M4(c[0] + d[0] * L_ * t, DECK - 1.9, c[1] + d[1] * L_ * t, -ang), stoneM);      // the heavy spandrels over each arch
+  let q = 0; for (let u = 4; u < L_ - 4; u += 6.2, q++) { if (Math.abs(u + 3.1 - L_ / 2) < 9.5) continue;
+    for (const sd of [-1, 1]) { const h = 6.2 + ((q * 5 + (sd > 0 ? 2 : 0)) % 4) * 0.9, [x, z] = at_(u + 3.1, sd * 6.1), k = (q + (sd > 0 ? 1 : 0)) % 2 ? 2 : 0, ry = -ang;
+      bake(new THREE.BoxGeometry(6.2, h + 2.4, 5.8), M4(x, DECK + h / 2 - 1.2, z, ry), SIDE[k]);
+      const [fx, fz] = at_(u + 3.1, sd * 3.16), [ox, oz] = at_(u + 3.1, sd * 9.04);
+      bake(new THREE.PlaneGeometry(6.2, h), M4(fx, DECK + h / 2, fz, ry + (sd > 0 ? Math.PI : 0)), FRONT[k]);                               // the shop front on the bridge street
+      bake(new THREE.PlaneGeometry(6.2, h + 2.2), M4(ox, DECK + h / 2 - 1.1, oz, ry + (sd > 0 ? 0 : Math.PI)), FRONT[(q + (sd > 0 ? 2 : 0)) % 2 ? 3 : 0]);    // its back, over the river
+      const rg = new THREE.BoxGeometry(6.8, 0.45, 7.0), ru = rg.attributes.uv; for (let i = 0; i < ru.count; i++) ru.setXY(i, ru.getX(i) * 1.6, ru.getY(i) * 1.6); bake(rg, M4(x, DECK + h + 0.2, z, ry), roofM);
+      houses.push({ x, z, w: 3.3, d: 3.0, c: d[0], s: d[1] }); } }
+  for (const sd of [-1, 1]) { const [x, z] = at_(L_ / 2, sd * 8.9); bake(boxUV(16, 1.0, 0.5, 5), M4(x, DECK + 0.5, z, -ang), stoneM); houses.push({ x, z, w: 8.2, d: 0.5, c: d[0], s: d[1] }); }      // the parapets of the middle terrace
+}
 // the river wall along the Lungarno, with its parapet
 for (let s = S_RIVER + 4; s < S_BRIDGE - 5; s += 2.5) { const p = at(s); let v = 2; while (v < 26 && !isWater(...sideR(p, 0, v))) v += 0.5; if (v >= 26) continue; const [x, z] = sideR(p, 0, v - 0.6); bake(boxUV(2.6, 1.0, 0.55, 5), M4(x, LAND + 0.5, z, -Math.atan2(p.dz, p.dx)), stoneM); bake(boxUV(2.6, 3.4, 0.6, 5), M4(...sideR(p, 0, v + 0.1).reduce((a, q, i) => (i ? [a[0], LAND - 1.75, q] : [q]), []), -Math.atan2(p.dz, p.dx)), stoneM); houses.push({ x, z, w: 1.4, d: 0.45, c: p.dx, s: p.dz }); }
 flush();
@@ -252,24 +273,24 @@ const pigeons = [0, 1, 2, 3, 4, 5].map(i => { const b = birdOf(['#7a8494', '#9aa
 const dove = birdOf('#c9352b', '#e0553a'); dove.visible = false; dove.scale.setScalar(0.8);
 
 /* ================= play ================= */
-let state = 'title', time = 0, muted = false, endT = 0, triS = S_START + 12, triV = 0, triPh = 0, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, dusk = 0, leg = 1;
+let progS = S_START, state = 'title', time = 0, muted = false, endT = 0, triS = S_START + 12, triV = 0, triPh = 0, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, dusk = 0, leg = 1;
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
 const plate = (title, line) => { $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
 const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
-const stand = (g, s, v, faceS, faceV) => { const p = at(s), [x, z] = side(p, 0, v), q = at(faceS), [fx, fz] = side(q, 0, faceV); g.position.set(x, floorAt(x, z) ?? LAND, z); faceTo(g, fx, fz, 1); pose(g, 0, 0); };
+const stand = (g, s, v, faceS, faceV) => { const p = at(s), [x, z] = side(p, 0, v), q = at(faceS), [fx, fz] = side(q, 0, faceV); g.position.set(x, floorAt(x, z) ?? (isWater(x, z) ? DECK : LAND), z); faceTo(g, fx, fz, 1); pose(g, 0, 0); };
 const P0 = at(S_BRIDGE - 12), WALL_V = (() => { let v = 1; while (v < 24 && !isWater(...sideR(P0, 0, v))) v += 0.25; return v - 0.6; })();      // how far to the left the river wall stands, at the bridge corner
 const WAY = {
-  // nine years after he first saw her, she greets him in the street
-  greet: { s: S_GREET, title: 'The Salutation of Beatrice', line: 'Dante Gabriel Rossetti, 1859 · National Gallery of Canada, Ottawa', img: 'images/salutation.jpg', after: [null, 'She greeted me. Me! I must see her again. To the river!'],
-    stage() { stand(beatrice, S_GREET + 4.6, 0.3, S_GREET + 1.6, 0); stand(vanna, S_GREET + 5.4, -0.9, S_GREET + 1.6, 0); stand(maid, S_GREET + 6.0, 1.1, S_GREET + 1.6, 0); beatrice.userData.aR.rotation.x = -0.9; return [S_GREET + 1.6, 0]; },
-    cam() { const p = at(S_GREET + 3.4), [x, z] = side(p, 0, 5.2), [tx, tz] = side(p, 0.3, 0); return [new V3(x, LAND + 1.75, z), new V3(tx, LAND + 1.4, tz), 40]; } },
+  // nine years after he first saw her, she greets him in the street: here, on the open middle of the Ponte Vecchio, with the river behind
+  greet: { s: S_GREET, title: 'The Salutation of Beatrice', line: 'Dante Gabriel Rossetti, 1859 · National Gallery of Canada, Ottawa', img: 'images/salutation.jpg', after: [null, 'She greeted me. Me! I must see her again. Back, and along the river to the next bridge!'],
+    stage() { stand(beatrice, S_GREET + 4.4, 0.3, S_GREET + 1.4, 0); stand(vanna, S_GREET + 5.2, -0.9, S_GREET + 1.4, 0); stand(maid, S_GREET + 5.8, 1.1, S_GREET + 1.4, 0); beatrice.userData.aR.rotation.x = -0.9; return [S_GREET + 1.4, 0]; },
+    cam() { const p = at(S_GREET + 3.0), [x, z] = side(p, 0, 6.6), [tx, tz] = side(p, 0.2, 0); return [new V3(x, DECK + 1.7, z), new V3(tx, DECK + 1.35, tz), 44]; } },
   // later, at the corner of the Santa Trinita bridge, she passes without a word: Holiday's picture, looking back along the river to the Ponte Vecchio
   bridge: { s: S_BRIDGE - 6, title: 'Dante and Beatrice', line: 'Henry Holiday, 1883 · Walker Art Gallery, Liverpool', img: 'images/holiday.jpg', after: [null, 'She would not look at me.'],
     // everything is placed from one point on the straight of the Lungarno, 12 m short of the bridge: u metres on towards the bridge, v metres towards the river
     stage() { const t = Math.min(2.6, wpT * 0.32), put = (g, u, v) => { const [x, z] = sideR(P0, u, v), [fx, fz] = sideR(P0, u + 20, v); g.position.set(x, LAND, z); faceTo(g, fx, fz, 1); };
       put(vanna, 0.6 + t, WALL_V - 5.8); put(beatrice, -0.2 + t, WALL_V - 4.5); put(maid, -2.2 + t, WALL_V - 3.7); for (const g of trio) pose(g, time * 3, 0.35); beatrice.userData.hd.rotation.y = 0.5; return [S_BRIDGE - 12 + 6.0, -(WALL_V - 1.3)]; },      // he stands at the river wall; she looks away
     cam() { const [x, z] = sideR(P0, 9.6, WALL_V - 3.3), [tx, tz] = sideR(P0, -30, WALL_V - 2.2); return [new V3(x, LAND + 1.6, z), new V3(tx, LAND + 2.2, tz), 56]; } } };
-function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); triS = S_START + 12; triV = 0; endT = 0; wp = null; seen = {}; leg = 1; dusk = 0; dove.visible = false; for (const g of trio) { g.userData.hd.rotation.set(0, 0, 0); g.userData.rig.position.y = 0; g.scale.setScalar(g === maid ? 1.0 : 1.04); }
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); triS = S_START + 12; triV = 0; endT = 0; wp = null; seen = {}; leg = 1; dusk = 0; progS = S_START; dove.visible = false; for (const g of trio) { g.userData.hd.rotation.set(0, 0, 0); g.userData.rig.position.y = 0; g.scale.setScalar(g === maid ? 1.0 : 1.04); }
   camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
 function begin() {
   SND.start({ chords: [[41, 60, 64, 67, 72], [38, 57, 60, 65, 69], [36, 55, 60, 64, 67], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); state = 'play';
@@ -278,7 +299,7 @@ function begin() {
 }
 function update(dt) {
   time += dt; uni.uTime.value = time;
-  if (state === 'title') { const p = at(S_RIVER + 30), q = at(S_RIVER + 90); camera.position.set(...side(p, 0, 1).reduce((a, v, i) => (i ? [a[0], LAND + 2.0, v] : [v]), [])); camera.lookAt(q.x, LAND + 4, q.z); meG.visible = false; for (const g of trio) g.visible = false; }
+  if (state === 'title') { const p = at(S_RIVER + 78), [x, z] = sideR(p, 0, 4); camera.position.set(x, LAND + 2.2, z); camera.lookAt(PV_C[0], DECK + 3, PV_C[1]); meG.visible = false; for (const g of trio) g.visible = false; }
   else {
     meG.visible = true; for (const g of trio) g.visible = true;
     let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.5 : 0) - stick.dy;
@@ -293,12 +314,12 @@ function update(dt) {
     const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.9); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
     me.lean += (turn * 0.2 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
     if (state === 'play') { meG.position.set(me.x, me.y, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; pose(meG, me.ph, me.air ? 0.4 : pace, me.air, 0.08 * Math.min(1, pace)); }
-    const prog = nearest(me.x, me.z), sEnd = LEN - 2; dusk += (sstep(S_RIVER - 40, LEN, prog.s) - dusk) * dt * 0.8;
+    const prog = nearest(me.x, me.z, progS), sEnd = LEN - 2; progS = prog.s; dusk += (sstep(S_RIVER - 40, LEN, prog.s) - dusk) * dt * 0.8;
 
     // Beatrice and her two companions: just ahead of him through the streets; then he hurries by the river to be at the bridge before her; then she goes out on to the bridge alone
     if (state === 'play') {
       const gap = triS - prog.s; let want;
-      if (leg === 1) want = triS >= S_GREET + 5 ? 0 : gap < 9 ? 12.5 : gap < 20 ? 8.5 : gap < 34 ? 3.5 : 0;
+      if (leg === 1) want = triS >= S_GREET + 4.4 ? 0 : gap < 9 ? 12.5 : gap < 20 ? 8.5 : gap < 34 ? 3.5 : 0;
       else if (leg === 2) want = triS >= S_BRIDGE - 22 ? 0 : 4.2;                              // they walk on along the river at their own pace; he must get ahead
       else want = triS >= sEnd ? 0 : gap < 8 ? 9 : gap < 18 ? 6 : gap < 30 ? 2.5 : 0;
       triV += (want - triV) * Math.min(1, dt * 2.5); triS = Math.min(sEnd, triS + triV * dt); triPh += dt * (2 + triV * 0.9);
@@ -313,7 +334,7 @@ function update(dt) {
       if (wpT > 2.6 && wpT < 2.7) plate(wp.title, wp.line); if (wpT > 3.8 && wpT < 7.8) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
       if (wpT > 7.8) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
       if (wpT > 10) { state = 'play'; me.yaw = Math.PI - meG.rotation.y; beatrice.userData.aR.rotation.x = 0; beatrice.userData.hd.rotation.y = 0; if (wp.after[1]) say(wp.after[0] || meG, wp.after[1], 4);
-        if (wp.key === 'greet') { leg = 2; triS = S_GREET + 6; } else { leg = 3; triS = S_BRIDGE + 6; } wp = null; hop = time + 6; } }
+        if (wp.key === 'greet') { leg = 2; triS = S_TURN + 4; progS = S_TURN + 1; } else { leg = 3; triS = S_BRIDGE + 6; } wp = null; hop = time + 6; } }
     // the end, out on the bridge at sunset: she kneels, her face lifted and her eyes closed, and a red dove comes to her hands
     if (state === 'play' && leg === 3 && prog.s > sEnd - 9) { state = 'tableau'; endT = 0; bubble.classList.remove('show'); $('melt').src = 'images/beata.jpg'; $('melt').classList.add('slow'); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.3)); }
     if (state === 'tableau') { endT += dt; const p = at(sEnd), k = Math.min(1, endT / 3); stand(beatrice, sEnd, 0, sEnd + 2, -12); beatrice.userData.rig.position.y = -0.42 * k; beatrice.userData.hd.rotation.x = -0.42 * k; beatrice.userData.aL.rotation.x = -0.7 * k; beatrice.userData.aR.rotation.x = -0.7 * k; beatrice.userData.aL.rotation.z = 0.35 * k; beatrice.userData.aR.rotation.z = -0.35 * k;
@@ -335,7 +356,7 @@ function update(dt) {
   for (const w of walkers) {
     w.s += w.dir * w.v * dt; if (w.s > w.hi) { w.s = w.hi; w.dir = -1; } if (w.s < w.lo) { w.s = w.lo; w.dir = 1; }
     const p = at(w.s); let [x, z] = side(p, 0, w.off); const dx = x - me.x, dz = z - me.z, d = Math.hypot(dx, dz); if (d < 2.4 && d > 0.01 && state !== 'title') { const k = (2.4 - d) * 0.9; x += dx / d * k; z += dz / d * k; }
-    w.g.visible = !(state === 'way' && Math.abs(w.s - wp.s) < 26); w.g.position.set(x, LAND, z); w.ph += dt * (2 + w.v * 2.6); pose(w.g, w.ph, w.v / 1.6); const heading = Math.atan2(p.dx * w.dir, p.dz * w.dir); let dy = heading - w.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); w.g.rotation.y += dy * Math.min(1, dt * 4);
+    w.g.visible = !(state === 'way' && Math.abs(w.s - wp.s) < 26); w.g.position.set(x, floorAt(x, z) ?? LAND, z); w.ph += dt * (2 + w.v * 2.6); pose(w.g, w.ph, w.v / 1.6); const heading = Math.atan2(p.dx * w.dir, p.dz * w.dir); let dy = heading - w.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); w.g.rotation.y += dy * Math.min(1, dt * 4);
     const hd = w.g.userData.hd; let look = 0; if (d < 9 && state !== 'title') { look = Math.atan2(me.x - x, me.z - z) - w.g.rotation.y; look = clamp(Math.atan2(Math.sin(look), Math.cos(look)), -1.2, 1.2); } hd.rotation.y += (look - hd.rotation.y) * Math.min(1, dt * 4);
     if (d < 3.4 && state === 'play' && time > w.said && time > bubbleT) { w.said = time + 30; say(w.g, LINES[Math.floor(rnd(0, LINES.length))], 3); }
   }
@@ -364,8 +385,8 @@ const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = 
 cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
 $('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
 $('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
-window.__road = { get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z) { me.x = x; me.z = z; me.speed = 0; const r = nearest(x, z); triS = Math.min(LEN - 2, r.s + 12); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; }, leg(n) { leg = n; },
-  places: {}, route: s => at(s), LEN, S: { greet: S_GREET, river: S_RIVER, bridge: S_BRIDGE }, probe: (x, z) => ({ w: isWater(x, z), f: floorAt(x, z), br: onBridge(x, z), d: +nearest(x, z).d.toFixed(1) }) };
+window.__road = { get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z, s) { me.x = x; me.z = z; me.speed = 0; progS = s != null ? s : nearest(x, z).s; triS = Math.min(LEN - 2, progS + 12); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; }, leg(n) { leg = n; },
+  places: {}, route: s => at(s), LEN, S: { greet: S_GREET, turn: S_TURN, river: S_RIVER, bridge: S_BRIDGE }, probe: (x, z) => ({ w: isWater(x, z), f: floorAt(x, z), br: onBridge(x, z), d: +nearest(x, z).d.toFixed(1) }) };
 </script>
 </body>
 </html>
