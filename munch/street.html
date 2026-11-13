@@ -10,14 +10,18 @@
   #end > img { max-height:52vh; }
   #bubble { font-size:17px; }
   #plate { position:fixed; left:50%; bottom:max(34px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2.5s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.9); z-index:9; }
-  #plate.show { opacity:1; } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.85; }
+  #plate.show { opacity:1; }
+  /* the last shot melts into the painting itself */
+  #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(16px) saturate(1.25); transition:opacity 5s ease, filter 6s ease; pointer-events:none; z-index:8; }
+  #melt.show { opacity:1; filter:none; } #melt.quick, body.quick #cv { transition-duration:2.4s, 2.8s; } #cv { transition:filter 5s ease; } body.melting #cv { filter:brightness(.3) blur(4px); } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.85; }
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head>
 <body>
 <canvas id="cv"></canvas>
 <div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
-<div id="plate"><i>The Girls on the Bridge</i><span>Edvard Munch, about 1901 · National Museum, Oslo</span></div>
+<img id="melt" src="paintings/girls_bridge.jpg" alt="">
+<div id="plate"></div>
 <button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
 <div id="title" class="screen">
   <img src="scream.jpg" alt="The Scream by Edvard Munch">
@@ -308,6 +312,7 @@ const screamer = new THREE.Group(); {
   screamer.userData = { body, hd }; const p = at(S_SCREAM); screamer.position.set(p.x - p.dz * 1.8, ground(p.x, p.z), p.z + p.dx * 1.8); screamer.scale.setScalar(1.25); scene.add(screamer);
 }
 const despair = adult({ coat: '#2a2a36', hat: 'none', face: 1 }); { const p = at(S_SCREAM + 26); despair.position.set(p.x - p.dz * 3.2, ground(p.x, p.z), p.z + p.dx * 3.2); despair.rotation.y = Math.atan2(-p.dz, p.dx); despair.userData.hd.rotation.x = 0.5; pose(despair, 0, 0); }
+const twoMen = [0, 1].map(i => { const g = adult({ coat: i ? '#22253a' : '#1b1d2c', hat: 'top', face: 3 + i, size: 1.1 }); return { g, s: S_SCREAM + 20 + i * 1.2, off: -2.2 - i * 0.9, ph: i * 2 }; });
 const COATS = ['#1d1f30', '#2a2238', '#191b2a', '#2b2a3a', '#1f2434', '#33242a', '#20262c'];
 const walkers = [];
 for (let i = 0; i < 46; i++) {
@@ -318,10 +323,11 @@ for (let i = 0; i < 46; i++) {
 const LINES = ['Good evening.', 'Mind yourself, child.', 'Were those your sisters? They went that way.', 'Such a light night. Nobody can sleep.', 'The steamer is late again.'];
 
 /* ================= play ================= */
-let state = 'title', time = 0, muted = false, dread = 0, night = 0, endT = 0, sisS = S_START + 16, sisPh = 0, sisV = 0, tagged = false, bubbleG = null, bubbleT = 0, hop = 0;
+let state = 'title', time = 0, muted = false, dread = 0, night = 0, endT = 0, sisS = S_START + 16, sisPh = 0, sisV = 0, tagged = false, railK = 0, wpT = 0, seenScream = false, bubbleG = null, bubbleT = 0, hop = 0;
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
+const plate = (title, line) => { $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
 const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
-function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0 }); me.y = ground(me.x, me.z); sisS = S_START + 16; tagged = false; endT = 0; night = 0; camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); }
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0 }); me.y = ground(me.x, me.z); sisS = S_START + 16; tagged = false; railK = 0; wpT = 0; seenScream = false; endT = 0; night = 0; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); }
 function begin() {
   SND.start({ chords: [[38, 57, 62, 65, 69], [34, 58, 62, 65, 70], [31, 55, 58, 62, 67], [33, 57, 61, 64, 69]], scale: [62, 65, 67, 69, 72, 74, 77, 79, 81, 84, 86] }); SND.setMuted(muted); reset(); state = 'play';
   $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
@@ -358,28 +364,45 @@ function update(dt) {
       if (want === 0 && sisS < sEnd && time > hop) { hop = time + 5; say(sisA, ['Come on, slowcoach!', 'We are waiting!', 'This way!'][Math.floor(rnd(0, 3))], 2.5); }
     }
     [sisA, sisB].forEach((g, i) => {
-      const s = sisS - i * 1.6, p = at(s), o = (i ? 1 : -1) * 0.8, x = p.x - p.dz * o, z = p.z + p.dx * o; g.position.set(x, floorAt(x, z) ?? ground(x, z), z);
+      if (sisS >= sEnd && !i) railK = Math.min(1, railK + dt * 0.5);                                     // at the end they go to the rail, one behind the other, as in the painting
+      const s = mix(sisS - i * 1.6, sEnd - 1.15 - i * 1.1, railK), p = at(s), o = mix((i ? 1 : -1) * 0.8, 2.05, railK), x = p.x - p.dz * o, z = p.z + p.dx * o; g.position.set(x, floorAt(x, z) ?? ground(x, z), z);
       if (sisS >= sEnd) { faceTo(g, x - p.dz * 5, z + p.dx * 5, dt * 3); pose(g, 0, 0); g.userData.rig.rotation.x = 0.22; }            // at the rail, looking down at the water
       else if (sisV < 0.6) { faceTo(g, me.x, me.z, dt * 5); pose(g, time * 9, 0.15); g.userData.aR.rotation.z = 2.4 + Math.sin(time * 9) * 0.4; }      // waiting: turn and wave
       else { g.rotation.y = Math.atan2(p.dx, p.dz); pose(g, sisPh + i, sisV / 6.5); }
     });
     if (state === 'play' && sisS >= sEnd && Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z) < 3.2) { state = 'tableau'; endT = 0; SND.bell(4, 0.08); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); bubble.classList.remove('show'); }
     if (state === 'tableau') {            // she takes her place at the rail, and the picture composes itself
-      endT += dt; const p = at(sEnd - 3.4), tx = p.x - p.dz * -0.8, tz = p.z + p.dx * -0.8; me.x += (tx - me.x) * dt * 2; me.z += (tz - me.z) * dt * 2; me.speed = 0; me.yaw += (Math.atan2(-p.dz, -p.dx) - me.yaw) * dt * 2;
+      endT += dt; const p = at(sEnd + 0.1), tx = p.x - p.dz * 2.05, tz = p.z + p.dx * 2.05; me.x += (tx - me.x) * dt * 2; me.z += (tz - me.z) * dt * 2; me.speed = 0; me.y = floorAt(me.x, me.z) ?? me.y; me.yaw += (Math.atan2(-p.dz, -p.dx) - me.yaw) * dt * 2;
       meG.rotation.y = Math.PI - me.yaw; pose(meG, 0, 0); meG.userData.rig.rotation.x = 0.2;
-      if (endT > 3.5) $('plate').classList.add('show'); if (endT > 13) { state = 'done'; $('plate').classList.remove('show'); $('end').classList.remove('hidden'); }
+      if (endT > 3.5 && endT < 3.6) plate('The Girls on the Bridge', 'Edvard Munch, about 1901 · National Museum, Oslo'); if (endT > 7.5) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (endT > 17) { state = 'done'; $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); }
     }
 
+    // the waypoint: as she comes up to the figure on the road, the view becomes The Scream, melts into the painting for a moment, and lets her go
+    if (state === 'play' && !seenScream && prog.s > S_SCREAM - 11 && prog.s < S_SCREAM + 2) { state = 'scream'; seenScream = true; wpT = 0; me.speed = 0; $('melt').src = 'scream.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.whoosh(0.1); }
+    if (state === 'scream') {
+      wpT += dt;
+      if (wpT > 2.4 && wpT < 2.5) plate('The Scream', 'Edvard Munch, 1893 · National Museum, Oslo');
+      if (wpT > 3.4 && wpT < 7.0) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (wpT > 7.0) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
+      if (wpT > 9.2) { state = 'play'; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').src = 'paintings/girls_bridge.jpg'; say(sisA, 'Don\'t look at him! Run!', 3); hop = time + 6; }
+    }
     // dread: near the figure on the road and in the thick of the crowd; it lifts by her sisters
     let want = sstep(48, 5, Math.hypot(me.x - screamer.position.x, me.z - screamer.position.z)), crowdN = 0;
     for (const w of walkers) if (Math.hypot(me.x - w.g.position.x, me.z - w.g.position.z) < 6) crowdN++;
-    want = Math.max(want, Math.min(0.5, crowdN * 0.12)) * (1 - sstep(26, 8, Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z))); dread += (want - dread) * dt * 1.4;
+    want = Math.max(want, Math.min(0.5, crowdN * 0.12)) * (1 - sstep(26, 8, Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z))); if (state === 'scream') want = 1; dread += (want - dread) * dt * 1.4;
 
     // camera
     if (state === 'tableau' || state === 'done') {
-      const p = at(LEN - 1), k = Math.min(1, dt * 0.9), cx = p.x + p.dx * 7.5 + p.dz * 2.6, cz = p.z + p.dz * 7.5 - p.dx * 2.6;        // from further out on the pier, looking back at the girls and the town
-      camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (PIER_Y + 2.5 - camera.position.y) * k;
-      const L = new V3(sisA.position.x - p.dx * 6, PIER_Y + 1.6, sisA.position.z - p.dz * 6); camera.lookAt(L); camera.fov += (46 - camera.fov) * k; camera.updateProjectionMatrix();
+      // from further out along the same rail, looking back to the shore: the rail runs up from the corner, the girls stand along it, the white house and the great tree behind
+      const p = at(LEN - 0.02), nx_ = -p.dz, nz_ = p.dx, k = Math.min(1, dt * 0.9), cx = p.x + p.dx * 6.2 + nx_ * 1.15, cz = p.z + p.dz * 6.2 + nz_ * 1.15;
+      camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (PIER_Y + 2.15 - camera.position.y) * k;
+      camera.lookAt(new V3(p.x - p.dx * 16 + nx_ * 4.6, PIER_Y + 1.9, p.z - p.dz * 16 + nz_ * 4.6)); camera.fov += (44 - camera.fov) * k; camera.updateProjectionMatrix();
+    } else if (state === 'scream') {
+      // standing where the painter stood: the figure in front, the railing running away on the right, two men walking off down the road, the fjord and the sky
+      const p = at(S_SCREAM - 4.2), q = at(S_SCREAM + 34), nx_ = -p.dz, nz_ = p.dx, k = Math.min(1, dt * 1.6), cx = p.x + nx_ * 0.6, cz = p.z + nz_ * 0.6;
+      camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (ground(cx, cz) + 1.62 - camera.position.y) * k;
+      camera.lookAt(new V3(q.x + nx_ * 9, ground(q.x, q.z) + 3.2, q.z + nz_ * 9)); camera.rotation.z += Math.sin(time * 1.3) * 0.03 * dread; camera.fov += (50 - camera.fov) * k; camera.updateProjectionMatrix();
     } else {
       const alt = Math.max(0, me.y - ground(me.x, me.z)); let dist = 3.9 + Math.abs(me.speed) * 0.2 + alt * 0.5, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
       const cy = Math.max(me.y + 2.0 + alt * 0.25, (floorAt(cx, cz) ?? 0) + 1.1), k = Math.min(1, dt * 5.5);
@@ -397,6 +420,7 @@ function update(dt) {
     const hd = w.g.userData.hd; let look = 0; if (d < 9 && state !== 'title') { look = Math.atan2(me.x - x, me.z - z) - w.g.rotation.y; look = clamp(Math.atan2(Math.sin(look), Math.cos(look)), -1.2, 1.2); } hd.rotation.y += (look - hd.rotation.y) * Math.min(1, dt * 4);      // their heads turn as she passes
     if (d < 3.4 && state === 'play' && time > w.said && time > bubbleT) { w.said = time + 30; say(w.g, LINES[Math.floor(rnd(0, LINES.length))], 3); }
   }
+  for (const m of twoMen) { m.s += 0.55 * dt; if (m.s > S_SCREAM + 52) m.s = S_SCREAM + 16; const p = at(m.s), x = p.x - p.dz * m.off, z = p.z + p.dx * m.off; m.g.position.set(x, ground(x, z), z); m.g.rotation.y = Math.atan2(p.dx, p.dz); m.ph += dt * 3.4; pose(m.g, m.ph, 0.4); }
   { const u = screamer.userData, k = 1 + dread; screamer.rotation.z = Math.sin(time * 1.7) * 0.05 * k; u.body.scale.set(1 + Math.sin(time * 2.3) * 0.06 * k, 1 + Math.sin(time * 1.1) * 0.02, 1 + Math.cos(time * 2.0) * 0.06 * k); u.hd.rotation.z = Math.sin(time * 1.3) * 0.08 * k; u.hd.scale.y = 1 + Math.sin(time * 2.9) * 0.04 * k;
     if (state !== 'title') faceTo(screamer, me.x, me.z, dt * 1.5); else screamer.rotation.y = Math.atan2(camera.position.x - screamer.position.x, camera.position.z - screamer.position.z); }
   if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; if (v.z > 1) bubble.classList.remove('show'); } }
