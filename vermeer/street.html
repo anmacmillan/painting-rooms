@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>The Girl in Delft: one street</title>
+<link rel="stylesheet" href="../common/world.css">
+<style>
+  :root { --go:#2f5d8a; } #title > img, #end > img { background:#0e0d0b; } #end > img { max-height:52vh; border-color:#3a2a1c; }
+  #bubble { font-size:17px; }
+  #plate { position:fixed; left:50%; bottom:max(34px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2.5s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.95); z-index:9; white-space:nowrap; }
+  #plate.show { opacity:1; } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.85; }
+  #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(16px) saturate(1.2); transition:opacity 2.4s ease, filter 2.8s ease; pointer-events:none; z-index:8; }
+  #melt.show { opacity:1; filter:none; } #melt.slow { transition-duration:5s, 6s; } #cv { transition:filter 2.6s ease; } body.melting #cv { filter:brightness(.28) blur(4px); }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
+<img id="melt" src="images/little_street.jpg" alt=""><div id="plate"></div>
+<button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+<div id="title" class="screen">
+  <img src="images/pearl.jpg" alt="Girl with a Pearl Earring by Johannes Vermeer">
+  <div class="words"><h1>The Girl in Delft</h1><p>one walk through Delft, about 1665 · after Johannes Vermeer</p><button class="go" id="start">Step in</button></div>
+</div>
+<div id="end" class="screen hidden">
+  <img src="images/pearl.jpg" alt="Girl with a Pearl Earring by Johannes Vermeer">
+  <h2>Girl with a Pearl Earring</h2>
+  <p>Johannes Vermeer painted her in Delft about 1665. Nobody knows who she was. The museum that keeps her calls the picture a tronie: a painting of an imaginary figure, not a portrait.</p>
+  <p>You ran past The Little Street and looked in on The Milkmaid. He lived on the Oude Langendijk, where you ended, and the streets are the real ones.</p>
+  <p class="small">Paintings: public domain, via Wikimedia Commons (Mauritshuis, Rijksmuseum). Street plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors.</p>
+  <button class="go" id="again">Run it again</button>
+</div>
+<div id="err">This world needs WebGL, which this browser could not start.</div>
+
+<script src="../common/sound.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
+const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
+const map = await (await fetch('map.json')).json();
+
+/* ================= the route =================
+   Real streets: west along the Vlamingstraat past the houses of The Little Street, down the Voldersgracht past the painters' guild,
+   through the alley by the Mechelen inn, across the Markt under the New Church, and round to the Oude Langendijk, where he lived. */
+const seg = (name, a, b) => { const all = map.streets.filter(s => s.n === name); let best = null, bd = 1e9; for (const s of all) for (const l of [s.l, s.l.slice().reverse()]) { const d = Math.hypot(l[0][0] - a[0], l[0][1] - a[1]) + Math.hypot(l[l.length - 1][0] - b[0], l[l.length - 1][1] - b[1]); if (d < bd) { bd = d; best = l; } } return best; };
+const vl = seg('Vlamingstraat', [308.8, -309.6], [94.9, -149.6]);
+const raw = [...vl, [85.0, -139.5], ...seg('Voldersgracht', [85.0, -139.5], [12.4, -88.0]), [16.4, -81.4], ...seg('Oude Manhuissteeg', [16.4, -81.4], [27.5, -60.9]), ...seg('Markt', [27.5, -60.9], [85.4, -41.5]), [92.3, -26.6], [80.5, -18.5]];
+let ROUTE = raw.filter((p, i, a) => !i || Math.hypot(p[0] - a[i - 1][0], p[1] - a[i - 1][1]) > 1.5);
+{ let d = 0, i = 1; while (d + Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]) < 70) { d += Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]); i++; } const a = ROUTE[i - 1], b = ROUTE[i], t = (70 - d) / Math.hypot(b[0] - a[0], b[1] - a[1]); ROUTE = [[mix(a[0], b[0], t), mix(a[1], b[1], t)], ...ROUTE.slice(i)]; }   // start part-way down the Vlamingstraat
+const cum = [0]; for (let i = 1; i < ROUTE.length; i++) cum.push(cum[i - 1] + Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]));
+const LEN = cum[cum.length - 1];
+function at(s) { s = clamp(s, 0, LEN - 0.01); let i = 1; while (cum[i] < s) i++; const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1]), a = ROUTE[i - 1], b = ROUTE[i], L = Math.hypot(b[0] - a[0], b[1] - a[1]); return { x: mix(a[0], b[0], t), z: mix(a[1], b[1], t), dx: (b[0] - a[0]) / L, dz: (b[1] - a[1]) / L }; }
+function nearest(x, z) { let best = 1e9, s = 0; for (let i = 1; i < ROUTE.length; i++) { const a = ROUTE[i - 1], b = ROUTE[i], dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz), 0, 1), d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t); if (d < best) { best = d; s = cum[i - 1] + t * (cum[i] - cum[i - 1]); } } return { s, d: best }; }
+const S_LITTLE = nearest(171.6, -215.4).s, S_MARKT = nearest(27.5, -60.9).s, S_MILK = LEN - 26, S_START = 4;
+const B = [-90, -360, 350, 60];
+
+/* ================= land and canals ================= */
+const WW = B[2] - B[0], WH = B[3] - B[1], wc = document.createElement('canvas'); wc.width = WW; wc.height = WH;
+{ const g = wc.getContext('2d'); g.fillStyle = '#000'; g.fillRect(0, 0, WW, WH); g.fillStyle = '#fff'; g.strokeStyle = '#fff'; g.lineCap = 'round'; g.lineJoin = 'round';
+  for (const p of map.water) { if (p.length < 3) continue; g.beginPath(); p.forEach((q, i) => i ? g.lineTo(q[0] - B[0], q[1] - B[1]) : g.moveTo(q[0] - B[0], q[1] - B[1])); g.closePath(); g.fill(); }
+  g.lineWidth = 7; for (const c of map.canals) { g.beginPath(); c.l.forEach((q, i) => i ? g.lineTo(q[0] - B[0], q[1] - B[1]) : g.moveTo(q[0] - B[0], q[1] - B[1])); g.stroke(); } }
+const wd = wc.getContext('2d').getImageData(0, 0, WW, WH).data;
+const isWater = (x, z) => { const i = Math.floor(x - B[0]), j = Math.floor(z - B[1]); return i >= 0 && j >= 0 && i < WW && j < WH && wd[(j * WW + i) * 4] > 128; };
+const LAND = 0.7, onRoute = (x, z) => nearest(x, z).d < 3.4;
+const ground = (x, z) => (isWater(x, z) && !onRoute(x, z) ? -1.3 : LAND);
+const floorAt = (x, z) => (x < B[0] + 3 || x > B[2] - 3 || z < B[1] + 3 || z > B[3] - 3 || nearest(x, z).d > 30 ? null : ground(x, z) > 0 ? LAND : null);      // she keeps to the street and what lies just off it
+
+/* ================= renderer and the oil-paint filter ================= */
+let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
+const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xc9d3d8, 140, 900);
+const camera = new THREE.PerspectiveCamera(58, 1, 0.2, 5000);
+const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
+const post = new THREE.ShaderMaterial({ uniforms: { tScene: { value: target.texture }, uPx: { value: new THREE.Vector2() }, uTime: { value: 0 } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+  fragmentShader: `uniform sampler2D tScene; uniform vec2 uPx; uniform float uTime; varying vec2 vUv;
+    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+    void main(){
+      vec2 uv = vUv; vec3 best = vec3(0.0); float bestVar = 1e9;
+      for (int q = 0; q < 4; q++) {                       // each pixel takes the mean of its most even neighbouring patch: edges hold, the rest becomes dabs of paint
+        vec2 dir = vec2(q == 0 || q == 3 ? -1.0 : 1.0, q < 2 ? -1.0 : 1.0); vec3 m = vec3(0.0), m2 = vec3(0.0);
+        for (int j = 0; j < 4; j++) for (int i = 0; i < 4; i++) { vec3 c = texture2D(tScene, uv + dir * vec2(float(i), float(j)) * uPx * 1.0).rgb; m += c; m2 += c * c; }
+        m /= 16.0; m2 = abs(m2 / 16.0 - m * m); float v = m2.r + m2.g + m2.b; if (v < bestVar) { bestVar = v; best = m; }
+      }
+      float grain = hash(floor(vUv / uPx / 2.0)) * 0.04 - 0.02, weave = sin(vUv.x / uPx.x * 1.6) * sin(vUv.y / uPx.y * 1.6) * 0.01;
+      vec3 col = best * (1.0 + grain + weave); col *= 1.0 - 0.3 * pow(length(vUv - 0.5) * 1.25, 2.6);
+      gl_FragColor = vec4(col, 1.0);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`, depthTest: false, depthWrite: false });
+const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
+
+/* ================= light: a bright Dutch afternoon, clouds passing ================= */
+const hemi = new THREE.HemisphereLight(C('#dfeaf5'), C('#8a7460'), 1.25), sunL = new THREE.DirectionalLight(C('#fff1d6'), 2.1); scene.add(hemi, sunL, sunL.target);
+sunL.castShadow = true; sunL.shadow.mapSize.set(2048, 2048); Object.assign(sunL.shadow.camera, { left: -70, right: 70, top: 70, bottom: -70, near: 1, far: 400 }); sunL.shadow.bias = -0.0006; sunL.shadow.normalBias = 0.6;
+const uni = { uTime: { value: 0 } };
+const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: uni,
+  vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `uniform float uTime; varying vec3 vDir;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
+    float fbm(vec2 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 5; i++) { s += a * noise(p); p *= 2.04; a *= 0.5; } return s; }
+    vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }
+    void main(){
+      vec3 d = normalize(vDir); float el = max(d.y, 0.0);
+      vec2 p = d.xz / (el + 0.28) * 1.1 + vec2(uTime * 0.006, uTime * 0.002);                 // clouds as a ceiling overhead, as in View of Delft
+      float c = fbm(p * 1.3), c2 = fbm(p * 2.9 + 7.0), cover = smoothstep(0.42, 0.68, c + 0.18 * c2);
+      vec3 blue = mix(lin(vec3(0.74, 0.84, 0.92)), lin(vec3(0.40, 0.60, 0.84)), smoothstep(0.0, 0.7, el));
+      vec3 cloud = mix(lin(vec3(0.60, 0.62, 0.66)), lin(vec3(0.99, 0.97, 0.92)), smoothstep(0.35, 0.95, c2 + 0.35 * el));      // grey beneath, white where the sun catches
+      vec3 col = mix(blue, cloud, cover); col = mix(col, lin(vec3(0.86, 0.88, 0.88)), smoothstep(0.12, 0.0, el));
+      gl_FragColor = vec4(col, 1.0);
+    }` });
+const sky = new THREE.Mesh(new THREE.SphereGeometry(4000, 48, 24), skyMat); sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
+
+/* ================= ground and water ================= */
+const lam = o => new THREE.MeshLambertMaterial(o);
+const cobble = canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#b89a80'; g.fillRect(0, 0, w, h); for (let y = 0; y < h; y += 16) for (let x = (y / 16 % 2) * 12; x < w; x += 24) { g.fillStyle = ['#c9ab90', '#a88970', '#bd9d84', '#d2b79e', '#9d8068', '#b4927a'][Math.floor(rnd(0, 6))]; g.fillRect(x + 1, y + 1, 22, 14); } }, true);
+const strokeTex = canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#c4c4c4'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#e2e2e2', '#a8a8a8', '#d4d4d4', '#989898', '#eeeeee'], 200, 9, 5); }, true);
+{
+  const n = 2, nx = Math.ceil(WW / n), nz = Math.ceil(WH / n), pos = [], uv = [], idx = [];
+  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = B[0] + i * n, z = B[1] + j * n; pos.push(x, ground(x, z), z); uv.push(x / 6, z / 6); }
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, d = a + nx + 1, e = d + 1; idx.push(a, d, b, b, d, e); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
+  const m = new THREE.Mesh(g, lam({ map: cobble })); m.receiveShadow = true; scene.add(m);
+  const sm = lam({ color: '#a89078' }); for (const [x, z, w, h] of [[B[0] - 750, -150, 1500, 3000], [B[2] + 750, -150, 1500, 3000], [130, B[1] - 750, WW, 1500], [130, B[3] + 750, WW, 1500]]) { const k = new THREE.Mesh(new THREE.PlaneGeometry(w, h), sm); k.rotation.x = -Math.PI / 2; k.position.set(x, LAND - 0.02, z); scene.add(k); }      // open country beyond the edge of the plan, left clear of the canals
+}
+const waterMat = new THREE.ShaderMaterial({ uniforms: uni, vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+  fragmentShader: `uniform float uTime; varying vec3 vW;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
+    vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }
+    void main(){ vec2 p = vW.xz; float w = noise(p * 0.25 + vec2(uTime * 0.12, 0.0)) * 3.0, band = sin(p.x * 0.9 + p.y * 0.5 + w + uTime * 0.5), band2 = sin(p.y * 2.3 - w * 2.0 + uTime * 0.7);
+      vec3 col = mix(lin(vec3(0.24, 0.33, 0.36)), lin(vec3(0.46, 0.56, 0.60)), smoothstep(-0.3, 0.9, band) * 0.7); col = mix(col, lin(vec3(0.84, 0.88, 0.88)), smoothstep(0.8, 1.0, band2) * 0.35); gl_FragColor = vec4(col, 1.0); }` });
+{ const w = new THREE.Mesh(new THREE.PlaneGeometry(WW + 200, WH + 200), waterMat); w.rotation.x = -Math.PI / 2; w.position.set((B[0] + B[2]) / 2, -0.35, (B[1] + B[3]) / 2); scene.add(w); }
+
+/* ================= a batcher: thousands of bricks-and-mortar parts drawn as a handful of meshes ================= */
+const batches = new Map();
+function bake(geo, matrix, material) {
+  const g = geo.index ? geo.toNonIndexed() : geo.clone(); g.applyMatrix4(matrix); let b = batches.get(material); if (!b) { b = { pos: [], nor: [], uv: [] }; batches.set(material, b); }
+  const p = g.attributes.position.array, n = g.attributes.normal.array, u = g.attributes.uv ? g.attributes.uv.array : null; for (let i = 0; i < p.length; i++) { b.pos.push(p[i]); b.nor.push(n[i]); } for (let i = 0; i < p.length / 3; i++) b.uv.push(u ? u[i * 2] : 0, u ? u[i * 2 + 1] : 0);
+}
+function flush() { for (const [m, b] of batches) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(b.nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(b.uv, 2)); const mesh = new THREE.Mesh(g, m); mesh.castShadow = !m.userData.flat; mesh.receiveShadow = true; scene.add(mesh); } batches.clear(); }
+const M4 = (x, y, z, ry, sx, sy, sz) => new THREE.Matrix4().compose(new V3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, ry || 0, 0)), new V3(sx || 1, sy || 1, sz || 1));
+const scaleUV = (g, su, sv) => { const u = g.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, u.getX(i) * su, u.getY(i) * sv); return g; };
+
+/* ================= the houses of Delft: brick, stepped gables to the street, tall windows with shutters ================= */
+const brick = (base, cols) => canvasTex(256, 256, (g, w, h) => { g.fillStyle = base; g.fillRect(0, 0, w, h); for (let y = 0; y < h; y += 10) for (let x = (y / 10 % 2) * 13; x < w + 13; x += 26) { g.fillStyle = cols[Math.floor(rnd(0, cols.length))]; g.fillRect(x - 12, y + 1, 24, 8); } }, true);
+const WALL = [brick('#9a5a44', ['#a5634c', '#8b4e3a', '#b06e56', '#7f4634']), brick('#8a4c3a', ['#96553f', '#7a4030', '#a3604a']), brick('#b08060', ['#bb8c6c', '#a07252', '#c69a7a']), brick('#7a4436', ['#86503f', '#6c3a2e', '#925a48']), brick('#e4dccb', ['#ece5d6', '#d8cfbc', '#f2ecde'])].map(t => lam({ map: t }));
+const TILE = ['#b25a3c', '#a34e34', '#bb6444', '#4c5868'].map(c => lam({ color: c, map: strokeTex })), stoneM = lam({ color: '#b9b0a0', map: strokeTex }), whiteM = lam({ color: '#efe9da' });
+const winTex = shutter => canvasTex(128, 160, (g, w, h) => { g.fillStyle = shutter; g.fillRect(0, 62, w, 98); g.fillStyle = '#efe7d6'; g.fillRect(26, 0, 76, h); g.fillStyle = '#2b3138'; g.fillRect(32, 6, 64, h - 12); g.fillStyle = 'rgba(200,215,225,.55)'; g.fillRect(34, 8, 60, 50);
+  g.strokeStyle = '#efe7d6'; g.lineWidth = 4; g.beginPath(); g.moveTo(64, 6); g.lineTo(64, h - 6); g.moveTo(32, 60); g.lineTo(96, 60); g.moveTo(32, 110); g.lineTo(96, 110); g.stroke(); g.strokeStyle = 'rgba(0,0,0,.25)'; g.lineWidth = 2; g.strokeRect(1, 63, 24, 96); g.strokeRect(103, 63, 24, 96); });
+const WIN = ['#3e5e44', '#7a2e26', '#35506a', '#2f4a38'].map(c => { const m = lam({ map: winTex(c) }); m.userData.flat = true; return m; }), doorM = lam({ map: canvasTex(64, 128, (g, w, h) => { g.fillStyle = '#efe7d6'; g.fillRect(0, 0, w, h); g.fillStyle = '#2f4a38'; g.fillRect(6, 6, w - 12, h - 6); g.fillStyle = '#243a2c'; g.fillRect(12, 12, w - 24, 46); g.fillRect(12, 66, w - 24, 54); }) }); doorM.userData.flat = true;
+const houses = [];
+const gableGeo = (w, h) => { const st = 4, pts = [new THREE.Vector2(-w / 2, 0)]; for (let k = 0; k < st; k++) { pts.push(new THREE.Vector2(-w / 2 + k * w / (2 * st + 1), (k + 1) * h / st)); pts.push(new THREE.Vector2(-w / 2 + (k + 1) * w / (2 * st + 1), (k + 1) * h / st)); } for (let k = st - 1; k >= 0; k--) { pts.push(new THREE.Vector2(w / 2 - (k + 1) * w / (2 * st + 1), (k + 1) * h / st)); pts.push(new THREE.Vector2(w / 2 - k * w / (2 * st + 1), (k + 1) * h / st)); } pts.push(new THREE.Vector2(w / 2, 0)); return new THREE.ExtrudeGeometry(new THREE.Shape(pts), { depth: 0.4, bevelEnabled: false }); };
+// one house in a row: w is its frontage along the row, d its depth; the roof ridge runs front to back, so a stepped gable faces each street
+function unit(cx, cz, w, d, ang, i, opts) {
+  opts = opts || {}; const wallH = opts.wallH || 5.2 + ((i * 7) % 4) * 0.8, roofH = Math.min(w * 0.75, 5.5), wm = opts.wall != null ? WALL[opts.wall] : WALL[(i * 5) % 4], rot = -ang, c = Math.cos(ang), s = Math.sin(ang);
+  const P = (u, y, v, ry) => M4(cx + u * c - v * s, LAND + y, cz + u * s + v * c, rot + (ry || 0));
+  bake(scaleUV(new THREE.BoxGeometry(w, wallH + 1, d), 1, 1), P(0, wallH / 2 - 0.5, 0), wm);
+  { const g = new THREE.BoxGeometry(w, wallH + 1, d), u = g.attributes.uv; }                                              // (uv scaling is handled by the texture repeat)
+  const sh = new THREE.Shape([new THREE.Vector2(-w / 2 - 0.15, 0), new THREE.Vector2(w / 2 + 0.15, 0), new THREE.Vector2(0, roofH)]);
+  bake(new THREE.ExtrudeGeometry(sh, { depth: d - 0.5, bevelEnabled: false }), P(0, wallH, -d / 2 + 0.25), TILE[i % TILE.length]);
+  for (const f of [1, -1]) {
+    bake(gableGeo(w, roofH + 0.5), P(0, wallH, f * d / 2 - (f > 0 ? 0.2 : 0.2)), wm);
+    const n = Math.max(1, Math.floor(w / 2.4)), rows = wallH > 6.4 ? 2 : 1, wg = new THREE.PlaneGeometry(1.75, 2.1), wn = WIN[i % WIN.length];
+    for (let r = 0; r < rows; r++) for (let k = 0; k < n; k++) { const u = (k + 0.5) / n * w - w / 2, door = r === 0 && k === (i % n) && !opts.noDoor;
+      bake(door ? new THREE.PlaneGeometry(1.2, 2.4) : wg, P(u * (f > 0 ? 1 : -1), door ? 1.2 : 1.9 + r * 2.9, f * (d / 2 + 0.22), f > 0 ? 0 : Math.PI), door ? doorM : wn);
+      if (door) bake(new THREE.BoxGeometry(1.7, 0.22, 0.6), P(u * (f > 0 ? 1 : -1), 0.05, f * (d / 2 + 0.5)), stoneM); }
+    bake(new THREE.PlaneGeometry(0.8, 1.0), P(0, wallH + roofH * 0.35, f * (d / 2 + 0.22), f > 0 ? 0 : Math.PI), wn);
+  }
+}
+const area = p => { let a = 0; for (let i = 0; i < p.length; i++) a += p[i][0] * p[(i + 1) % p.length][1] - p[(i + 1) % p.length][0] * p[i][1]; return Math.abs(a) / 2; };
+const SET = [at(S_LITTLE), at(S_MILK), at(LEN - 2)];                                    // the three places where a painting is staged: keep ordinary houses off them
+map.buildings.forEach((b, i) => {
+  const p = b.p; let cx = 0, cz = 0; for (const q of p) { cx += q[0]; cz += q[1]; } cx /= p.length; cz /= p.length;
+  const r = nearest(cx, cz), A = area(p); if (r.d > 85 || A < 16 || A > 2400 || (b.n && /Kerk/.test(b.n))) return;
+  let L = 0, ang = 0; for (let k = 0; k < p.length; k++) { const a = p[k], c = p[(k + 1) % p.length], l = Math.hypot(c[0] - a[0], c[1] - a[1]); if (l > L) { L = l; ang = Math.atan2(c[1] - a[1], c[0] - a[0]); } }
+  let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9; const ca = Math.cos(ang), sa = Math.sin(ang); for (const q of p) { const dx = q[0] - cx, dz = q[1] - cz, u = dx * ca + dz * sa, v = -dx * sa + dz * ca; u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v); }
+  let U = u1 - u0, V = v1 - v0, mx = cx + ((u0 + u1) / 2) * ca - ((v0 + v1) / 2) * sa, mz = cz + ((u0 + u1) / 2) * sa + ((v0 + v1) / 2) * ca; if (V > U) { ang += Math.PI / 2; [U, V] = [V, U]; }
+  const c2 = Math.cos(ang), s2 = Math.sin(ang), n = Math.max(1, Math.round(U / 6.6)), fw = U / n, dp = clamp(V, 5, 14);
+  for (let k = 0; k < n; k++) { const u = -U / 2 + (k + 0.5) * fw, x = mx + u * c2, z = mz + u * s2;
+    if (nearest(x, z).d < dp / 2 + 3.0 || isWater(x, z) || SET.some(q => Math.hypot(q.x - x, q.z - z) < 15)) continue;
+    unit(x, z, fw - 0.05, dp, ang, i * 3 + k); houses.push({ x, z, w: fw / 2 + 0.4, d: dp / 2 + 0.5, c: c2, s: s2 }); }
+});
+const inHouse = (x, z) => houses.some(h => { const dx = x - h.x, dz = z - h.z, u = dx * h.c + dz * h.s, v = -dx * h.s + dz * h.c; return Math.abs(u) < h.w && Math.abs(v) < h.d; });
+// the New Church on the Markt: nave and tower
+{ const stone = lam({ color: '#b3a894', map: strokeTex }), slate = lam({ color: '#4a5564', map: strokeTex }); bake(new THREE.BoxGeometry(62, 22, 24), M4(118, LAND + 11, -92, -Math.atan2(-34, 62)), stone); bake(new THREE.ConeGeometry(18, 12, 4), M4(118, LAND + 28, -92, -Math.atan2(-34, 62) + Math.PI / 4, 2.2, 1, 0.9), slate);
+  bake(new THREE.BoxGeometry(12, 58, 12), M4(84, LAND + 29, -72, 0.5), stone); bake(new THREE.ConeGeometry(7.5, 34, 8), M4(84, LAND + 75, -72), slate); houses.push({ x: 118, z: -92, w: 32, d: 13, c: Math.cos(Math.atan2(-34, 62)), s: Math.sin(Math.atan2(-34, 62)) }, { x: 84, z: -72, w: 6.5, d: 6.5, c: Math.cos(-0.5), s: Math.sin(-0.5) }); }
+
+/* ================= the three stages ================= */
+const side = (p, u, v) => [p.x + p.dx * u - p.dz * v, p.z + p.dz * u + p.dx * v];      // u metres along the route, v metres to its left
+// 1. The Little Street: the brick house with its stepped gable and whitewashed foot, the woman sewing in the doorway, the alley beside it
+const LS = (() => { const p = at(S_LITTLE), ang = Math.atan2(p.dz, p.dx), [hx, hz] = side(p, 0, 11.5), [ax, az] = side(p, -8.6, 11.5);
+  unit(hx, hz, 8.4, 8, ang, 2, { wallH: 8.2, wall: 0, noDoor: true }); unit(ax, az, 7.6, 7, ang, 5, { wallH: 3.4, wall: 4, noDoor: true });
+  const front = (u, y, w, h, m, dz) => { const [x, z] = side(p, u, 7.5 - (dz || 0)); bake(new THREE.BoxGeometry(w, h, 0.12), M4(x, LAND + y, z, -ang), m); };
+  front(0, 1.3, 8.5, 2.6, whiteM, 0.06); front(-1.6, 1.15, 1.25, 2.3, lam({ color: '#1c1814' }), 0.14); front(1.9, 1.7, 2.0, 1.5, lam({ color: '#2f4a38' }), 0.14); front(3.3, 1.7, 0.7, 1.5, lam({ color: '#8a2e26' }), 0.16);
+  front(-7.2, 1.1, 1.1, 2.2, lam({ color: '#1c1814' }), -0.42); front(-9.6, 1.1, 1.1, 2.2, lam({ color: '#3a4a3a' }), -0.42);
+  houses.push({ x: hx, z: hz, w: 4.6, d: 4.4, c: Math.cos(ang), s: Math.sin(ang) }, { x: ax, z: az, w: 4.2, d: 3.9, c: Math.cos(ang), s: Math.sin(ang) }); return { p, ang }; })();
+// 2. The kitchen: an open front on the Oude Langendijk, a window on the left, a table, bread, and a maid pouring milk
+const KT = (() => { const p = at(S_MILK), ang = Math.atan2(p.dz, p.dx), [cx, cz] = side(p, 0, 8.5), plaster = lam({ color: '#d9d2bf', map: strokeTex }), c = Math.cos(ang), s = Math.sin(ang);
+  const P = (u, y, v, ry) => M4(cx + u * c - v * s, LAND + y, cz + u * s + v * c, -ang + (ry || 0));               // v grows away from the street
+  bake(new THREE.BoxGeometry(5.4, 3.4, 0.25), P(0, 1.7, 2.3), plaster); bake(new THREE.BoxGeometry(0.25, 3.4, 4.6), P(-2.7, 1.7, 0), plaster); bake(new THREE.BoxGeometry(0.25, 3.4, 4.6), P(2.7, 1.7, 0), plaster);
+  bake(new THREE.BoxGeometry(5.6, 0.25, 4.8), P(0, 3.5, 0), lam({ color: '#5a4636' })); bake(new THREE.BoxGeometry(5.4, 0.1, 4.6), P(0, 0.06, 0), lam({ color: '#8a4a3a', map: cobble }));
+  const glow = new THREE.MeshBasicMaterial({ color: '#f4f2e2' }); glow.userData.flat = true; bake(new THREE.PlaneGeometry(1.5, 1.7), P(-2.56, 2.1, 0.2, Math.PI / 2), glow);
+  bake(new THREE.BoxGeometry(2.2, 0.85, 1.1), P(-0.9, 0.5, 0.6), lam({ color: '#2f5d8a', map: strokeTex })); bake(new THREE.SphereGeometry(0.34, 10, 8), P(-1.4, 1.05, 0.5), lam({ color: '#a8743c' })); bake(new THREE.SphereGeometry(0.2, 8, 6), P(-0.9, 1.0, 0.75), lam({ color: '#c9954a' })); bake(new THREE.CylinderGeometry(0.16, 0.2, 0.3, 10), P(-0.45, 1.08, 0.45), lam({ color: '#8a4a34' }));
+  unit(side(p, 0, 15)[0], side(p, 0, 15)[1], 8, 6, ang, 9, { wallH: 7, noDoor: true });
+  const l = new THREE.PointLight(C('#fff3d8'), 28, 9, 1.4); l.position.set(cx - 2.0 * c - 0.2 * s, LAND + 2.2, cz - 2.0 * s + 0.2 * c); scene.add(l);
+  houses.push({ x: cx, z: cz + 0, w: 3.0, d: 2.6, c, s }); return { p, ang, cx, cz, c, s }; })();
+// 3. The studio: a dark wall for her to stand against, and his easel
+const ST = (() => { const p = at(LEN - 1), ang = Math.atan2(p.dz, p.dx), [cx, cz] = side(p, 2.5, 5.2), c = Math.cos(ang), s = Math.sin(ang), dark = lam({ color: '#17140f' });
+  const P = (u, y, v, ry) => M4(cx + u * c - v * s, LAND + y, cz + u * s + v * c, -ang + (ry || 0));
+  bake(new THREE.BoxGeometry(7, 4.2, 0.25), P(0, 2.1, 1.6), dark); bake(new THREE.BoxGeometry(0.25, 4.2, 4), P(3.5, 2.1, 0), dark); bake(new THREE.BoxGeometry(7.2, 0.25, 4.2), P(0, 4.3, 0), dark);
+  const wood = lam({ color: '#6a4a30' }); bake(new THREE.BoxGeometry(0.08, 2.1, 0.08), P(1.6, 1.05, -0.6, 0), wood); bake(new THREE.BoxGeometry(0.08, 2.1, 0.08), P(2.4, 1.05, -0.6), wood); bake(new THREE.BoxGeometry(0.9, 1.1, 0.06), P(2.0, 1.5, -0.66), lam({ color: '#e9e0c8' }));
+  unit(side(p, 2.5, 12)[0], side(p, 2.5, 12)[1], 9, 7, ang, 4, { wallH: 7.4, noDoor: true }); houses.push({ x: cx, z: cz, w: 3.8, d: 1.4, c, s }); return { p, ang, cx, cz, c, s }; })();
+flush();
+
+/* ================= lindens by the water, and barges ================= */
+const blob = (() => { const g = new THREE.IcosahedronGeometry(1, 3), p = g.attributes.position; for (let i = 0; i < p.count; i++) { const v = new V3().fromBufferAttribute(p, i), k = 1 + 0.16 * Math.sin(v.x * 4.1 + v.y * 2.3) * Math.cos(v.z * 3.7) + 0.08 * Math.sin(v.y * 9.0); p.setXYZ(i, v.x * k, v.y * k * 0.92, v.z * k); } g.computeVertexNormals(); return g; })();
+const leafM = [lam({ color: '#5f8444', map: strokeTex }), lam({ color: '#7a9a52', map: strokeTex }), lam({ color: '#4a6e3a', map: strokeTex })], trunkM = lam({ color: '#5a4636' }), sway = [];
+function tree(x, z, k) { if (inHouse(x, z) || isWater(x, z) || nearest(x, z).d < 4.2) return; const g = new THREE.Group(); const t = new THREE.Mesh(new THREE.CylinderGeometry(0.2 * k, 0.32 * k, 4.2 * k, 7), trunkM); t.position.y = 2.1 * k; t.castShadow = true; g.add(t);
+  for (const [dx, dy, dz, s, m] of [[0, 5.6, 0, 2.9, 0], [1.2, 6.5, 0.7, 2.0, 1], [-1.1, 5.0, -0.6, 2.1, 2]]) { const b = new THREE.Mesh(blob, leafM[m]); b.scale.setScalar(s * k); b.position.set(dx * k, dy * k, dz * k); b.rotation.y = rnd(0, 6); b.castShadow = true; g.add(b); } g.position.set(x, LAND, z); scene.add(g); sway.push(g); }
+{ let n = 0; for (const c of map.canals) for (let i = 0; i < c.l.length - 1; i++) { const a = c.l[i], b = c.l[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); for (let t = 8; t < L; t += 19) for (const sd of [-1, 1]) { const x = mix(a[0], b[0], t / L) - (b[1] - a[1]) / L * 8.2 * sd, z = mix(a[1], b[1], t / L) + (b[0] - a[0]) / L * 8.2 * sd; if (n < 90 && nearest(x, z).d < 60 && x > B[0] + 8 && x < B[2] - 8 && z > B[1] + 8 && z < B[3] - 8) { tree(x, z, rnd(0.8, 1.15)); n++; } } }
+  const hullM = ['#4a3a2c', '#6a4a30', '#7a5a3a'].map(c => lam({ color: c, side: THREE.DoubleSide })); let k = 0;
+  for (let s = 20; s < LEN; s += 34) for (const v of [-9, 9, -13, 13]) { const p = at(s), [x, z] = side(p, 0, v); if (isWater(x, z) && isWater(x + 2, z) && isWater(x - 2, z) && k < 9) { const b = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 8, 0, 6.3, Math.PI / 2, Math.PI / 2), hullM[k % 3]); b.scale.set(5.5, 1.1, 1.7); b.position.set(x, 0.05, z); b.rotation.y = -Math.atan2(p.dz, p.dx); scene.add(b); k++; break; } } }
+// market stalls on the Markt
+{ const cloth = ['#b3362c', '#e9e0c8', '#2f5d8a', '#c9a23a'].map(c => lam({ color: c, map: strokeTex, side: THREE.DoubleSide })), wood = lam({ color: '#6a4a30' });
+  for (let k = 0; k < 6; k++) { const p = at(S_MARKT + 14 + k * 11), [x, z] = side(p, 0, (k % 2 ? -1 : 1) * 6.5); if (inHouse(x, z)) continue; const g = new THREE.Group(), t = new THREE.Mesh(new THREE.BoxGeometry(2.6, 0.9, 1.2), wood); t.position.y = 0.45; t.castShadow = true; g.add(t);
+    const aw = new THREE.Mesh(new THREE.PlaneGeometry(3.2, 1.9), cloth[k % 4]); aw.position.set(0, 2.35, 0); aw.rotation.x = -1.25; aw.castShadow = true; g.add(aw); for (const sx of [-1.4, 1.4]) { const po = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.04, 2.5, 5), wood); po.position.set(sx, 1.25, -0.5); g.add(po); }
+    for (let j = 0; j < 5; j++) { const f = new THREE.Mesh(new THREE.SphereGeometry(0.16, 8, 6), lam({ color: ['#c9954a', '#b3362c', '#7a9a52', '#e2c044'][j % 4] })); f.position.set(-0.9 + j * 0.45, 1.0, 0.1); g.add(f); } g.position.set(x, LAND, z); g.rotation.y = -Math.atan2(p.dz, p.dx); scene.add(g); houses.push({ x, z, w: 1.5, d: 0.9, c: p.dx, s: p.dz }); } }
+
+/* ================= people of Delft, jointed, with his painted faces ================= */
+const faceTex = await new THREE.TextureLoader().loadAsync('faces.jpg'); faceTex.colorSpace = THREE.SRGBColorSpace;
+const faceMat = i => { const t = faceTex.clone(); t.needsUpdate = true; t.wrapS = THREE.RepeatWrapping; t.repeat.set(-1 / 8, 1); t.offset.set((i + 1) / 8, 0); return lam({ map: t }); };
+const FACES = [0, 1, 2, 4, 5].map(faceMat), PEARL = faceMat(6), shadowM = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22, depthWrite: false });
+const lathe = (pts, m, seg) => { const me = new THREE.Mesh(new THREE.LatheGeometry(pts.map(p => new THREE.Vector2(p[0], p[1])), seg || 14), m); me.castShadow = true; return me; };
+const limb = (len, r0, r1, m) => { const g = new THREE.Group(), c = new THREE.Mesh(new THREE.CylinderGeometry(r0, r1, len, 7), m); c.position.y = -len / 2; c.castShadow = true; g.add(c); return g; };
+function head(group, y, skin, face, r, hairCol) {
+  const hg = new THREE.Group(); hg.position.y = y; const s = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), skin); s.scale.set(0.92, 1.14, 0.96); s.castShadow = true; hg.add(s);
+  const f = new THREE.Mesh(new THREE.SphereGeometry(r * 1.02, 12, 10, Math.PI / 2 - 1.0, 2.0, 0.5, 1.75), face); f.scale.set(0.92, 1.14, 0.96); hg.add(f);
+  if (hairCol) { const b = new THREE.Mesh(new THREE.SphereGeometry(r * 1.04, 12, 10, Math.PI / 2 + 1.0, Math.PI * 2 - 2.0), lam({ color: hairCol })); b.scale.set(0.92, 1.14, 0.96); hg.add(b); }
+  group.add(hg); return hg;
+}
+function person(o) {             // o: woman, skirt, bodice, apron, coat (men), hat ('tall' | 'beret' | 'cap' | 'turban'), face, size
+  const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig); const skin = lam({ color: '#ecd0b0' }), dark = lam({ color: '#1c1a1c' }), white = lam({ color: '#f3efe4' });
+  let body, legs = null;
+  if (o.woman) { body = lathe([[0.02, 0.03], [0.46, 0.04], [0.42, 0.3], [0.2, 1.0]], lam({ color: o.skirt, map: strokeTex }), 16); rig.add(body); rig.add(lathe([[0.2, 0.98], [0.21, 1.14], [0.23, 1.3], [0.19, 1.41], [0.08, 1.47]], lam({ color: o.bodice, map: strokeTex })));
+    if (o.apron) { const a = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.44, 0.92, 12, 1, true, -0.9, 1.8), lam({ color: o.apron, map: strokeTex, side: THREE.DoubleSide })); a.position.set(0, 0.52, 0.015); rig.add(a); } }
+  else { body = lathe([[0.02, 0.62], [0.25, 0.62], [0.25, 0.9], [0.22, 1.1], [0.25, 1.3], [0.21, 1.42], [0.09, 1.48]], lam({ color: o.coat, map: strokeTex })); rig.add(body); const hose = lam({ color: o.hose || '#d9cfb8' });
+    const lL = limb(0.62, 0.075, 0.05, hose), lR = limb(0.62, 0.075, 0.05, hose); lL.position.set(-0.1, 0.66, 0); lR.position.set(0.1, 0.66, 0); rig.add(lL, lR); legs = [lL, lR]; for (const l of legs) { const sh = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.07, 0.24), dark); sh.position.set(0, -0.62, 0.05); l.add(sh); } }
+  if (o.collar !== false) { const col = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.25, 0.1, 12), white); col.position.y = 1.44; rig.add(col); }
+  else { const nk = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.12, 8), skin); nk.position.y = 1.5; rig.add(nk); }
+  const hd = head(rig, 1.63, skin, o.faceMat || FACES[o.face % FACES.length], 0.135, o.hat === 'cap' || o.hat === 'turban' ? null : ['#5a3a24', '#3a2a1c', '#7a5a34'][o.face % 3]);
+  if (o.hat === 'tall') { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.135, 0.26, 12), dark); c.position.y = 0.24; hd.add(c); const b = new THREE.Mesh(new THREE.CylinderGeometry(0.27, 0.27, 0.025, 16), dark); b.position.y = 0.12; hd.add(b); }
+  else if (o.hat === 'beret') { const c = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 8), dark); c.scale.set(1.15, 0.45, 1.1); c.position.set(0.02, 0.13, 0); hd.add(c); }
+  else if (o.hat === 'cap') { const c = new THREE.Mesh(new THREE.SphereGeometry(0.146, 12, 10, Math.PI / 2 + 0.9, Math.PI * 2 - 1.8), white); c.scale.set(0.95, 1.16, 1.02); hd.add(c); const f = new THREE.Mesh(new THREE.ConeGeometry(0.15, 0.2, 10, 1, true), white); f.position.set(0, -0.14, -0.03); f.rotation.x = Math.PI; hd.add(f); }
+  else if (o.hat === 'turban') { const blue = lam({ color: '#3f6fb0', map: strokeTex }), c = new THREE.Mesh(new THREE.SphereGeometry(0.152, 14, 10, Math.PI / 2 + 0.95, Math.PI * 2 - 1.9), blue); c.scale.set(0.98, 1.1, 1.06); c.position.y = 0.02; hd.add(c);
+    const top = new THREE.Mesh(new THREE.SphereGeometry(0.15, 12, 8, 0, 6.3, 0, 1.25), blue); top.scale.set(0.98, 1.0, 1.04); top.position.y = 0.04; hd.add(top);
+    const tail = new THREE.Group(), tm = new THREE.Mesh(new THREE.BoxGeometry(0.11, 0.56, 0.035), lam({ color: '#e2c044', map: strokeTex })); tm.position.y = -0.3; tail.add(tm); tail.position.set(0.02, 0.1, -0.13); hd.add(tail); g.userData.tail = tail;
+    const pearl = new THREE.Mesh(new THREE.SphereGeometry(0.017, 8, 6), new THREE.MeshBasicMaterial({ color: '#f4f4f0' })); pearl.position.set(-0.112, -0.105, 0.03); hd.add(pearl); g.userData.pearl = pearl; }
+  const arm = () => { const a = limb(0.52, 0.05, 0.036, lam({ color: o.woman ? o.bodice : o.coat, map: strokeTex })), h = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 6), skin); h.position.y = -0.54; a.add(h); return a; };
+  const aL = arm(), aR = arm(); aL.position.set(-0.25, 1.36, 0); aR.position.set(0.25, 1.36, 0); rig.add(aL, aR);
+  const fL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.07, 0.24), dark), fR = fL.clone(); fL.position.set(-0.1, 0.035, 0); fR.position.set(0.1, 0.035, 0); if (o.woman) g.add(fL, fR);
+  const sh = new THREE.Mesh(new THREE.CircleGeometry(0.42, 14), shadowM); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; g.add(sh);
+  Object.assign(g.userData, { rig, body, hd, aL, aR, fL: o.woman ? fL : null, fR: o.woman ? fR : null, legs, woman: o.woman }); g.scale.setScalar(o.size || 1.06); scene.add(g); return g;
+}
+function pose(g, phase, pace, air, lean) {
+  const u = g.userData, s = Math.sin(phase), c = Math.cos(phase);
+  u.rig.position.y = Math.abs(c) * 0.035 * pace; u.rig.rotation.z = s * 0.035 * pace; u.rig.rotation.x = (lean || 0) + 0.05 * pace;
+  u.aL.rotation.x = s * 0.7 * pace; u.aR.rotation.x = -s * 0.7 * pace; u.aL.rotation.z = -0.1 - (air ? 0.9 : 0); u.aR.rotation.z = 0.1 + (air ? 0.9 : 0);
+  if (u.legs) { u.legs[0].rotation.x = -s * 0.6 * pace; u.legs[1].rotation.x = s * 0.6 * pace; }
+  if (u.fL) { u.fL.position.z = s * 0.22 * pace; u.fR.position.z = -s * 0.22 * pace; u.fL.position.y = 0.035 + Math.max(0, c) * 0.07 * pace; u.fR.position.y = 0.035 + Math.max(0, -c) * 0.07 * pace; }
+  u.body.scale.set(1 + 0.04 * s * pace + (air ? 0.18 : 0), 1, 1 + 0.06 * c * pace + (air ? 0.18 : 0)); if (u.tail) u.tail.rotation.x = 0.1 + 0.55 * Math.min(1.4, pace) + 0.12 * s + (air ? 0.5 : 0);
+}
+const faceTo = (g, x, z, k) => { let d = Math.atan2(x - g.position.x, z - g.position.z) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * k; };
+const meG = person({ woman: true, skirt: '#5a4a3a', bodice: '#b08a3c', hat: 'turban', faceMat: PEARL, face: 0, size: 1.0, collar: false });
+// the people in the stages
+const sewer = person({ woman: true, skirt: '#3a3a44', bodice: '#2a2a30', apron: '#e9e2d2', hat: 'cap', face: 1, size: 0.95 }); { const [x, z] = side(LS.p, -1.6, 6.9); sewer.position.set(x, LAND - 0.55, z); sewer.rotation.y = Math.atan2(-(LS.p.dx * 0 - LS.p.dz * -1), -(LS.p.dz * 0 + LS.p.dx * -1)); sewer.userData.hd.rotation.x = 0.45; pose(sewer, 0, 0); }
+const alleyMaid = person({ woman: true, skirt: '#2f4a7a', bodice: '#a8342c', hat: 'cap', face: 3, size: 0.98 }); { const [x, z] = side(LS.p, -7.2, 8.6); alleyMaid.position.set(x, LAND, z); alleyMaid.rotation.y = Math.atan2(LS.p.dz, -LS.p.dx) + 1.2; alleyMaid.userData.rig.rotation.x = 0.5; }
+const kids = [0, 1].map(i => { const k = person({ woman: true, skirt: i ? '#3a5a7a' : '#7a5a3a', bodice: i ? '#7a5a3a' : '#c9b08a', hat: 'cap', face: i, size: 0.6 }); const [x, z] = side(LS.p, -4.2 - i * 0.9, 6.2 - i * 0.5); k.position.set(x, LAND - 0.25, z); k.rotation.y = rnd(0, 6); k.userData.rig.rotation.x = 0.7; return k; });
+const milkmaid = person({ woman: true, skirt: '#a8342c', bodice: '#d9b23c', apron: '#2f5d9a', hat: 'cap', face: 0, size: 1.06 }); { const k = KT, x = k.cx + (-0.1) * k.c - 1.25 * k.s, z = k.cz + (-0.1) * k.s + 1.25 * k.c; milkmaid.position.set(x, LAND + 0.08, z); milkmaid.rotation.y = Math.atan2(-k.c * 0.75 + k.s * 0.65, -k.s * 0.75 - k.c * 0.65); milkmaid.userData.hd.rotation.x = 0.35; pose(milkmaid, 0, 0); milkmaid.userData.aL.rotation.x = -0.9; milkmaid.userData.aR.rotation.x = -1.05;
+  const jug = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.12, 0.24, 10), lam({ color: '#a8603c' })); jug.position.set(0, -0.56, 0.08); jug.rotation.x = 1.1; milkmaid.userData.aR.add(jug); }
+const painter = person({ coat: '#1c1b20', hat: 'beret', hose: '#b3362c', face: 4, size: 1.08 }); { const k = ST, x = k.cx + 1.2 * k.c + 0.6 * k.s, z = k.cz + 1.2 * k.s - 0.6 * k.c; painter.position.set(x, LAND, z); painter.rotation.y = Math.atan2(k.c, k.s) + 2.2; pose(painter, 0, 0); painter.userData.aR.rotation.x = -1.1; }
+// the townspeople
+const KIT = [{ woman: true, skirt: '#2c3e68', bodice: '#d9b23c', hat: 'cap' }, { coat: '#1c1b20', hat: 'tall' }, { woman: true, skirt: '#5a4a44', bodice: '#7a3a30', apron: '#e9e2d2', hat: 'cap' }, { coat: '#3a3530', hat: 'tall', hose: '#8a7a64' }, { woman: true, skirt: '#1e1c22', bodice: '#1e1c22', hat: 'cap' }, { coat: '#5a2a26', hat: 'beret' }, { woman: true, skirt: '#7a3a30', bodice: '#3c5a8a', apron: '#e9e2d2', hat: 'cap' }, { coat: '#4a4a3a', hat: 'tall' }];
+const walkers = []; for (let i = 0; i < 52; i++) { const g = person(Object.assign({ face: i, size: rnd(0.98, 1.12) }, KIT[i % KIT.length])); const markt = i < 20;
+  walkers.push({ g, s: markt ? rnd(S_MARKT - 20, LEN - 34) : rnd(14, S_MARKT - 20), dir: i % 2 ? 1 : -1, off: rnd(1.1, 3.0) * (i % 2 ? 1 : -1), v: rnd(0.9, 1.5), ph: rnd(0, 6), lo: 10, hi: LEN - 32, said: 0 }); }
+const LINES = ['Good day to you.', 'Mind the canal, child.', 'A magpie? It went that way, towards the Markt.', 'Fresh herring! Fresh this morning!', 'Running, in this town? On a Tuesday?'];
+// the thief: a magpie with her pearl in its beak
+const bird = new THREE.Group(); { const blk = lam({ color: '#16161c' }), wht = lam({ color: '#f4f2ea' }); const b = new THREE.Mesh(new THREE.SphereGeometry(0.16, 10, 8), blk); b.scale.set(0.8, 0.8, 1.5); bird.add(b); const belly = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), wht); belly.scale.set(0.8, 0.7, 1.1); belly.position.set(0, -0.05, -0.02); bird.add(belly);
+  const hd = new THREE.Mesh(new THREE.SphereGeometry(0.09, 8, 8), blk); hd.position.set(0, 0.07, 0.22); bird.add(hd); const beak = new THREE.Mesh(new THREE.ConeGeometry(0.03, 0.12, 6), blk); beak.rotation.x = Math.PI / 2; beak.position.set(0, 0.06, 0.34); bird.add(beak);
+  const pearl = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), new THREE.MeshBasicMaterial({ color: '#ffffff' })); pearl.position.set(0, 0.05, 0.41); bird.add(pearl); const tail = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.02, 0.5), blk); tail.position.set(0, 0.02, -0.42); bird.add(tail);
+  const wing = sx => { const g = new THREE.Group(), w = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.26), lam({ color: '#16161c', side: THREE.DoubleSide })), t = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), lam({ color: '#f4f2ea', side: THREE.DoubleSide })); w.rotation.x = -Math.PI / 2; w.position.x = sx * 0.27; t.rotation.x = -Math.PI / 2; t.position.set(sx * 0.42, 0.002, 0); g.add(w, t); bird.add(g); return g; };
+  bird.userData = { wL: wing(-1), wR: wing(1), pearl }; bird.scale.setScalar(1.5); bird.traverse(o => { if (o.isMesh) o.castShadow = true; }); scene.add(bird); }
+
+/* ================= play ================= */
+let state = 'title', time = 0, muted = false, endT = 0, birdS = S_START + 14, birdV = 0, birdY = 3, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, headTurn = 0;
+const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
+const plate = (title, line) => { $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
+const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
+const WAY = {
+  little: { s: S_LITTLE, title: 'The Little Street', line: 'Johannes Vermeer, about 1658 · Rijksmuseum, Amsterdam', img: 'images/little_street.jpg', after: [null, 'There it goes! After it!'],
+    cam() { const p = LS.p, [x, z] = side(p, -3.4, -8.5), [tx, tz] = side(p, -3.4, 8); return [new V3(x, LAND + 3.4, z), new V3(tx, LAND + 4.6, tz), 46]; } },
+  milk: { s: S_MILK, title: 'The Milkmaid', line: 'Johannes Vermeer, about 1660 · Rijksmuseum, Amsterdam', img: 'images/milkmaid.jpg', after: [milkmaid, 'A magpie? It flew in next door, at the painter\'s.'],
+    cam() { const k = KT, x = k.cx + 0.7 * k.c + 3.3 * k.s, z = k.cz + 0.7 * k.s - 3.3 * k.c; return [new V3(x, LAND + 1.75, z), new V3(k.cx - 0.5 * k.c - 1.4 * k.s, LAND + 1.45, k.cz - 0.5 * k.s + 1.4 * k.c), 40]; } } };
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); birdS = S_START + 14; endT = 0; wp = null; seen = {}; headTurn = 0; meG.userData.pearl.visible = false; bird.userData.pearl.visible = true; meG.userData.hd.rotation.y = 0;
+  camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
+function begin() {
+  SND.start({ chords: [[43, 59, 62, 67, 71], [36, 55, 60, 64, 67], [38, 57, 62, 66, 69], [43, 55, 59, 62, 67]], scale: [67, 69, 71, 74, 76, 79, 81, 83, 86, 88, 91] }); SND.setMuted(muted); reset(); state = 'play';
+  $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
+  setTimeout(() => { if (state === 'play') say(meG, 'My earring! Come back, you thief!', 4); }, 900);
+}
+function update(dt) {
+  time += dt; uni.uTime.value = time; post.uniforms.uTime.value = time; for (const t of sway) t.rotation.z = Math.sin(time * 0.9 + t.position.x) * 0.012;
+  if (state === 'title') { const p = at(S_LITTLE - 60), q = at(S_LITTLE - 20); camera.position.set(p.x, LAND + 2.2, p.z); camera.lookAt(q.x, LAND + 3.2, q.z); meG.visible = false; }
+  else {
+    meG.visible = true;
+    let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.5 : 0) - stick.dy;
+    turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (state !== 'play') { turn = 0; go = 0; }
+    me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1); const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
+    me.speed += (go * 10.5 - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2)); let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
+    if (inHouse(nx, nz)) { if (!inHouse(nx, me.z)) nz = me.z; else if (!inHouse(me.x, nz)) nx = me.x; else { nx = me.x; nz = me.z; me.speed *= 0.4; } }
+    let f = floorAt(nx, nz); if (f === null) { f = floorAt(nx, me.z); if (f !== null) nz = me.z; else { f = floorAt(me.x, nz); if (f !== null) nx = me.x; else { nx = me.x; nz = me.z; f = LAND; me.speed *= 0.5; } } }
+    me.x = nx; me.z = nz; const jump = (keys.has('Space') || held.jump) && state === 'play';
+    if (jump && !me.air) { me.vy = 6.0 + Math.abs(me.speed) * 0.2; me.air = true; SND.whoosh(0.04); }
+    if (me.air) { me.vy -= (jump && me.vy < 0 ? 5 : 15) * dt; me.y += me.vy * dt; if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.06); } } else me.y = f;
+    const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.9); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
+    me.lean += (turn * 0.2 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
+    meG.position.set(me.x, me.y, me.z); if (state !== 'tableau' && state !== 'done') meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; pose(meG, me.ph, me.air ? 0.4 : pace, me.air, 0.08 * Math.min(1, pace));
+    const prog = nearest(me.x, me.z), sEnd = LEN - 3;
+
+    // the magpie: always a little ahead, perching to wait if she falls behind, and at each place where a painting is staged
+    if (state === 'play') { const gap = birdS - prog.s; let hold = false; for (const k in WAY) if (!seen[k] && birdS >= WAY[k].s) hold = true;
+      const want = birdS >= sEnd || hold ? 0 : gap < 10 ? 14 : gap < 22 ? 9.5 : gap < 36 ? 4 : 0; birdV += (want - birdV) * Math.min(1, dt * 2.5); birdS = Math.min(sEnd, birdS + birdV * dt);
+      if (want === 0 && !hold && birdS < sEnd && time > hop) { hop = time + 6; SND.bell(9, 0.05); SND.bell(10, 0.05, 0.12); } }
+    { const p = at(birdS), perched = birdV < 0.8; birdY += ((perched ? 2.3 : 3.6 + Math.sin(time * 2.2) * 0.5) - birdY) * Math.min(1, dt * 2.5);
+      bird.position.set(p.x - p.dz * 1.2, LAND + birdY, p.z + p.dx * 1.2); if (perched) faceTo(bird, me.x, me.z, dt * 4); else bird.rotation.y = Math.atan2(p.dx, p.dz);
+      const flap = Math.sin(time * (perched ? 14 : 22)) * (perched ? 0.5 : 1.0); bird.userData.wL.rotation.z = flap; bird.userData.wR.rotation.z = -flap; }
+
+    // waypoints: the view becomes the painting, melts into it, and lets her go
+    for (const k in WAY) if (state === 'play' && !seen[k] && prog.s > WAY[k].s - 7 && prog.s < WAY[k].s + 4) { state = 'way'; wp = WAY[k]; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); SND.whoosh(0.07); }
+    if (state === 'way') { wpT += dt;
+      if (wpT > 2.6 && wpT < 2.7) plate(wp.title, wp.line); if (wpT > 3.8 && wpT < 7.6) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (wpT > 7.6) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
+      if (wpT > 9.8) { state = 'play'; if (wp.after[1]) say(wp.after[0] || meG, wp.after[1], 3.5); wp = null; hop = time + 6; } }
+    // the end: the magpie flies into the studio; she takes her place against the dark wall and turns her head
+    if (state === 'play' && prog.s > sEnd - 4 && seen.milk) { state = 'tableau'; endT = 0; bubble.classList.remove('show'); $('melt').src = 'images/pearl.jpg'; $('melt').classList.add('slow'); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); }
+    if (state === 'tableau') { endT += dt; const k = ST, tx = k.cx - 0.6 * k.c + 0.75 * k.s, tz = k.cz - 0.6 * k.s - 0.75 * k.c; me.x += (tx - me.x) * dt * 2; me.z += (tz - me.z) * dt * 2; me.speed = 0; me.y = LAND;
+      // the camera stands on the street side, looking in at her against the dark wall; she faces away to the left and looks back over her shoulder
+      const hp0 = new V3(); meG.userData.hd.getWorldPosition(hp0); const cp = new V3(hp0.x - 0.5 * k.c + 2.0 * k.s, hp0.y + 0.02, hp0.z - 0.5 * k.s - 2.0 * k.c), fwd = new V3(hp0.x - cp.x, 0, hp0.z - cp.z).normalize(), left = new V3(fwd.z, 0, -fwd.x);
+      const bodyDir = left.clone().multiplyScalar(0.9).addScaledVector(fwd, 0.45).normalize(), away = Math.atan2(bodyDir.x, bodyDir.z); let d = away - meG.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); meG.rotation.y += d * Math.min(1, dt * 2.5); pose(meG, 0, 0);
+      let rel = Math.atan2(-fwd.x, -fwd.z) - meG.rotation.y; rel = clamp(Math.atan2(Math.sin(rel), Math.cos(rel)), -1.35, 1.35); update.cp = cp; update.rel = rel;
+      if (endT > 1.2 && endT < 1.3) say(painter, 'So that is where my model went. Stand there. Now turn your head.', 5);
+      if (endT > 2.0) { bird.userData.pearl.visible = false; meG.userData.pearl.visible = true; headTurn = Math.min(1, headTurn + dt * 0.5); meG.userData.hd.rotation.y = update.rel * headTurn; }      // she looks back over her shoulder
+      if (endT > 5.0 && endT < 5.1) plate('Girl with a Pearl Earring', 'Johannes Vermeer, about 1665 · Mauritshuis, The Hague');
+      if (endT > 6.8) { $('melt').classList.add('show'); document.body.classList.add('melting'); bubble.classList.remove('show'); }
+      if (endT > 16.5) { state = 'done'; $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); } }
+
+    // camera
+    if (state === 'way') { const [pos, look, fov] = wp.cam(), k = Math.min(1, dt * 1.5); camera.position.lerp(pos, k); camera.lookAt(look); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); }
+    else if (state === 'tableau' || state === 'done') { const kk = Math.min(1, dt * 1.1), hp = new V3(); meG.userData.hd.getWorldPosition(hp); if (update.cp) camera.position.lerp(update.cp, kk); camera.lookAt(hp.x, hp.y - 0.1, hp.z); camera.fov += (32 - camera.fov) * kk; camera.updateProjectionMatrix(); }
+    else { const alt = Math.max(0, me.y - LAND); let dist = 4.0 + Math.abs(me.speed) * 0.2 + alt * 0.5, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
+      const k = Math.min(1, dt * 5.5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (me.y + 2.0 + alt * 0.25 - camera.position.y) * k;
+      camera.lookAt(me.x + fx * 6, me.y + 1.45, me.z + fz * 6); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 + Math.abs(me.speed) * 1.4 - camera.fov) * k; camera.updateProjectionMatrix(); }
+  }
+  for (const w of walkers) {
+    w.s += w.dir * w.v * dt; if (w.s > w.hi) { w.s = w.hi; w.dir = -1; } if (w.s < w.lo) { w.s = w.lo; w.dir = 1; }
+    const p = at(w.s); let x = p.x - p.dz * w.off, z = p.z + p.dx * w.off; const dx = x - me.x, dz = z - me.z, d = Math.hypot(dx, dz); if (d < 2.4 && d > 0.01 && state !== 'title') { const k = (2.4 - d) * 0.9; x += dx / d * k; z += dz / d * k; }
+    w.g.position.set(x, LAND, z); w.ph += dt * (2 + w.v * 2.6); pose(w.g, w.ph, w.v / 1.6); const heading = Math.atan2(p.dx * w.dir, p.dz * w.dir); let dy = heading - w.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); w.g.rotation.y += dy * Math.min(1, dt * 4);
+    const hd = w.g.userData.hd; let look = 0; if (d < 9 && state !== 'title') { look = Math.atan2(me.x - x, me.z - z) - w.g.rotation.y; look = clamp(Math.atan2(Math.sin(look), Math.cos(look)), -1.2, 1.2); } hd.rotation.y += (look - hd.rotation.y) * Math.min(1, dt * 4);
+    if (d < 3.4 && state === 'play' && time > w.said && time > bubbleT) { w.said = time + 30; say(w.g, LINES[Math.floor(rnd(0, LINES.length))], 3); }
+  }
+  milkmaid.userData.aR.rotation.x = -1.05 + Math.sin(time * 0.7) * 0.04;
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; if (v.z > 1) bubble.classList.remove('show'); } }
+  sunL.position.set(camera.position.x - 90, 150, camera.position.z + 70); sunL.target.position.set(camera.position.x, 0, camera.position.z); sunL.target.updateMatrixWorld();
+  SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
+}
+function draw() {
+  const w = innerWidth, h = innerHeight;
+  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); target.setSize(Math.round(w * PR), Math.round(h * PR)); post.uniforms.uPx.value.set(1 / (w * PR), 1 / (h * PR)); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); renderer.render(postScene, postCam);
+}
+let last = 0; function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(frame); }
+reset(); requestAnimationFrame(frame);
+
+/* ================= input ================= */
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
+addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
+const cv = $('cv'), sk = $('stick');
+cv.addEventListener('pointerdown', e => { if (state !== 'play') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
+const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === held.id) held.jump = false; };
+cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
+$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
+$('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
+window.__road = { get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z) { me.x = x; me.z = z; me.speed = 0; const r = nearest(x, z); birdS = Math.min(LEN - 3, r.s + 12); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; },
+  places: {}, route: s => at(s), LEN, S: { little: S_LITTLE, markt: S_MARKT, milk: S_MILK } };
+</script>
+</body>
+</html>
