@@ -1,0 +1,116 @@
+[
+ {
+  "name": "Piazza della Signoria",
+  "lon": 11.255962,
+  "lat": 43.769663,
+  "exists_today": true,
+  "note": "In 1283 an irregular open area: the Ghibelline (Uberti) houses here were demolished c.1268; not paved until 1385. No Palazzo Vecchio, no Loggia.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), way 23298643 centroid; history https://it.wikipedia.org/wiki/Piazza_della_Signoria"
+ },
+ {
+  "name": "Palazzo Vecchio",
+  "lon": 11.256434,
+  "lat": 43.769278,
+  "exists_today": true,
+  "note": "NOT there in 1283: begun 1299 (Arnolfo di Cambio) on the site of Uberti property.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), relation 1461712 outer-ring centroid; https://en.wikipedia.org/wiki/Palazzo_Vecchio"
+ },
+ {
+  "name": "Palazzo Vecchio tower (Torre d'Arnolfo)",
+  "lon": 11.256434,
+  "lat": 43.769278,
+  "exists_today": true,
+  "note": "NOT there in 1283: tower built c.1310, 94 m, off-centre on the main facade over the older Foraboschi tower ('La Vacca').",
+  "source": "https://it.wikipedia.org/wiki/Palazzo_Vecchio ; https://en.wikipedia.org/wiki/Palazzo_Vecchio",
+  "flag": "UNVERIFIED position: tower is not mapped separately in OSM; coordinates are the palazzo centroid"
+ },
+ {
+  "name": "Loggia dei Lanzi",
+  "lon": 11.255576,
+  "lat": 43.769169,
+  "exists_today": true,
+  "note": "NOT there in 1283: built 1376-1382.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), way 43284457 centroid; https://en.wikipedia.org/wiki/Loggia_dei_Lanzi"
+ },
+ {
+  "name": "Via Por Santa Maria",
+  "lon": 11.253823,
+  "lat": 43.76894,
+  "exists_today": true,
+  "note": "One of the oldest streets, on the axis of the Ponte Vecchio; in the Middle Ages lined with the houses and towers of the Amidei, Baldovinetti, Girolami etc. Buildings largely destroyed by German mines in August 1944 and rebuilt.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), mid-node of ways 893019533/1188117819; https://it.wikipedia.org/wiki/Via_Por_Santa_Maria"
+ },
+ {
+  "name": "Ponte Vecchio, north end",
+  "lon": 11.253444,
+  "lat": 43.76842,
+  "exists_today": true,
+  "note": "Junction with Via Por Santa Maria and the Lungarno.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), north endpoint of bridge way 24999532"
+ },
+ {
+  "name": "Ponte Vecchio",
+  "lon": 11.253146,
+  "lat": 43.768016,
+  "exists_today": true,
+  "note": "Present bridge c.1339-1345. In 1283 an earlier bridge stood here (rebuilt after the 1177 flood; swept away 4 Nov 1333).",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), midpoint of bridge way 24999532; https://it.wikipedia.org/wiki/Ponte_Vecchio"
+ },
+ {
+  "name": "Lungarno degli Acciaiuoli",
+  "lon": 11.251616,
+  "lat": 43.7691,
+  "exists_today": true,
+  "note": "North bank between Ponte Vecchio and Ponte Santa Trinita; earlier called 'dei Cappellai'; widened 1823; buildings destroyed 1944 and rebuilt in the 1950s. OSM spells it 'Lungarno degli Acciaioli'.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), middle node of way 24266841; https://it.wikipedia.org/wiki/Lungarno_degli_Acciaiuoli",
+  "flag": "Whether a continuous riverside street existed here in the 1280s is UNVERIFIED (Holiday believed so)"
+ },
+ {
+  "name": "Ponte Santa Trinita, north end (Holiday's corner)",
+  "lon": 11.250623,
+  "lat": 43.769429,
+  "exists_today": true,
+  "note": "Walker Art Gallery: Holiday 'decided to depict the scene at the Ponte Santa Trinita looking towards the Ponte Vecchio along the Lungarno'. In the picture Dante stands at the bridge parapet with the Ponte Vecchio upstream behind: i.e. this corner, looking east.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), north endpoint of bridge way 172666075; https://www.liverpoolmuseums.org.uk/artifact/dante-and-beatrice"
+ },
+ {
+  "name": "Ponte Santa Trinita",
+  "lon": 11.250345,
+  "lat": 43.769028,
+  "exists_today": true,
+  "note": "Present bridge 1567-69 (Ammannati), blown up 1944, rebuilt 1958. In 1283: the stone bridge built after the 1269 flood destroyed the 1252 wooden one (it fell in 1333).",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), midpoint of bridge way 172666075; https://en.wikipedia.org/wiki/Ponte_Santa_Trinita ; https://it.wikipedia.org/wiki/Ponte_Santa_Trinita"
+ },
+ {
+  "name": "Santa Trinita (church)",
+  "lon": 11.250725,
+  "lat": 43.770186,
+  "exists_today": true,
+  "note": "Present church constructed 1258-1280 on an 11th-century one: new in 1283. Facade later.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), way 478272186 centroid; https://en.wikipedia.org/wiki/Santa_Trinita"
+ },
+ {
+  "name": "Santo Stefano al Ponte",
+  "lon": 11.254368,
+  "lat": 43.768613,
+  "exists_today": true,
+  "note": "Romanesque church of the 11th-12th centuries, just off Via Por Santa Maria: standing in 1283; exterior renovated 14th century.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), way 253942619 centroid; https://en.wikipedia.org/wiki/Santo_Stefano_al_Ponte"
+ },
+ {
+  "name": "Casa di Dante (museum)",
+  "lon": 11.25705,
+  "lat": 43.771092,
+  "exists_today": true,
+  "note": "Inside the box. Via Santa Margherita. A 1911 medievalising restoration incorporating medieval houses; not certainly the Alighieri house, which is usually placed on Piazza San Martino opposite the Torre della Castagna.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), node 2934171474; https://it.wikipedia.org/wiki/Casa_di_Dante"
+ },
+ {
+  "name": "Palazzo Portinari-Salviati (site of the Portinari houses)",
+  "lon": 11.257281,
+  "lat": 43.771748,
+  "exists_today": true,
+  "note": "Inside the box (north-east corner). Via del Corso 6. Folco Portinari, Beatrice's father, had houses here; the palace itself dates from 1470-80.",
+  "source": "OpenStreetMap (Overpass, 2026-11-13), relation 4107742 outer-ring centroid; https://it.wikipedia.org/wiki/Palazzo_Portinari-Salviati"
+ }
+]

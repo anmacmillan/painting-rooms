@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>The New Life: one walk through Florence</title>
+<link rel="stylesheet" href="../common/world.css">
+<style>
+  :root { --go:#8a2e26; } #title > img, #end > img { background:#14100c; } #end > img { max-height:50vh; border-color:#b08a3c; }
+  #bubble { font-size:17px; }
+  #plate { position:fixed; left:50%; bottom:max(34px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2.5s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.95); z-index:9; white-space:nowrap; }
+  #plate.show { opacity:1; } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.85; }
+  #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(16px) saturate(1.2); transition:opacity 2.4s ease, filter 2.8s ease; pointer-events:none; z-index:8; }
+  #melt.show { opacity:1; filter:none; } #melt.slow { transition-duration:5s, 6s; } #cv { transition:filter 2.6s ease; } body.melting #cv { filter:brightness(.28) blur(4px); }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
+<img id="melt" src="images/salutation.jpg" alt=""><div id="plate"></div>
+<button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+<div id="title" class="screen">
+  <img src="images/holiday.jpg" alt="Dante and Beatrice by Henry Holiday">
+  <div class="words"><h1>The New Life</h1><p>one walk through Florence, as the Pre-Raphaelites imagined it · after Henry Holiday and Dante Gabriel Rossetti</p><button class="go" id="start">Step in</button></div>
+</div>
+<div id="end" class="screen hidden">
+  <img src="images/beata.jpg" alt="Beata Beatrix by Dante Gabriel Rossetti">
+  <h2>Beata Beatrix</h2>
+  <p>Dante wrote in the Vita Nuova, The New Life, that he first saw Beatrice when they were children, that nine years later she greeted him in the street, and that later still she passed him without a word. She died in 1290. He wrote about her for the rest of his life.</p>
+  <p>Rossetti and Holiday painted these scenes six hundred years afterwards. Their Florence is partly imagined: the Palazzo Vecchio you started beside was not begun until 1299. The streets and the river are the real ones.</p>
+  <p class="small">Paintings: public domain, via Wikimedia Commons (Walker Art Gallery, National Gallery of Canada, Art Institute of Chicago). House fronts and far bank painted with Google's image model. Street plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors.</p>
+  <button class="go" id="again">Walk it again</button>
+</div>
+<div id="err">This world needs WebGL, which this browser could not start.</div>
+
+<script src="../common/sound.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
+const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
+const map = await (await fetch('map.json')).json();
+
+/* ================= the route =================
+   Real streets: from Piazza della Signoria along Via Vacchereccia, down Via Por Santa Maria to the head of the Ponte Vecchio,
+   west along the Lungarno degli Acciaioli by the river, and out on to the Ponte Santa Trinita. */
+const seg = (name, a, b) => { const all = map.streets.filter(s => s.n === name); let best = null, bd = 1e9; for (const s of all) for (const l of [s.l, s.l.slice().reverse()]) { const d = Math.hypot(l[0][0] - a[0], l[0][1] - a[1]) + Math.hypot(l[l.length - 1][0] - b[0], l[l.length - 1][1] - b[1]); if (d < bd) { bd = d; best = l; } } return best; };
+const BR_N = [-400.1, -14.3], BR_C = [-422.4, 30.1], PV_N = [-173.3, 97.3], PV_C = [-197.3, 141.9];
+const raw = [[14, -27], ...seg('Via Vacchereccia', [-37.1, -16.4], [-98.2, -34.7]), ...seg('Via Por Santa Maria', [-98.2, -34.7], [-142.8, 39.8]), ...seg('Via Por Santa Maria', [-144.2, 42.3], [-171.0, 91.2]), ...seg('Lungarno degli Acciaioli', [-175.5, 89.1], [-396.7, -20.6]), BR_N, [mix(BR_N[0], BR_C[0], 0.95), mix(BR_N[1], BR_C[1], 0.95)]];
+const ROUTE = raw.filter((p, i, a) => !i || Math.hypot(p[0] - a[i - 1][0], p[1] - a[i - 1][1]) > 1.5);
+const cum = [0]; for (let i = 1; i < ROUTE.length; i++) cum.push(cum[i - 1] + Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]));
+const LEN = cum[cum.length - 1];
+function at(s) { s = clamp(s, 0, LEN - 0.01); let i = 1; while (cum[i] < s) i++; const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1]), a = ROUTE[i - 1], b = ROUTE[i], L = Math.hypot(b[0] - a[0], b[1] - a[1]); return { x: mix(a[0], b[0], t), z: mix(a[1], b[1], t), dx: (b[0] - a[0]) / L, dz: (b[1] - a[1]) / L }; }
+function nearest(x, z) { let best = 1e9, s = 0; for (let i = 1; i < ROUTE.length; i++) { const a = ROUTE[i - 1], b = ROUTE[i], dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz), 0, 1), d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t); if (d < best) { best = d; s = cum[i - 1] + t * (cum[i] - cum[i - 1]); } } return { s, d: best }; }
+const side = (p, u, v) => [p.x + p.dx * u - p.dz * v, p.z + p.dz * u + p.dx * v];      // u metres along the route, v metres to one side (on the Lungarno, negative v is towards the river)
+const sideR = (p, u, v) => side(p, u, -v);                                             // the same, with v measured towards the river
+const S_GREET = nearest(-142.8, 39.8).s - 12, S_RIVER = nearest(-175.5, 89.1).s, S_BRIDGE = nearest(BR_N[0], BR_N[1]).s, S_START = 3;
+const B = [-480, -140, 120, 200];
+
+/* ================= land and the Arno ================= */
+const WW = B[2] - B[0], WH = B[3] - B[1], wc = document.createElement('canvas'); wc.width = WW; wc.height = WH;
+{ const g = wc.getContext('2d'); g.fillStyle = '#000'; g.fillRect(0, 0, WW, WH); g.fillStyle = '#fff'; for (const p of map.water) { if (p.length < 3) continue; g.beginPath(); p.forEach((q, i) => i ? g.lineTo(q[0] - B[0], q[1] - B[1]) : g.moveTo(q[0] - B[0], q[1] - B[1])); g.closePath(); g.fill(); } }
+const wd = wc.getContext('2d').getImageData(0, 0, WW, WH).data;
+const isWater = (x, z) => { const i = Math.floor(x - B[0]), j = Math.floor(z - B[1]); return i >= 0 && j >= 0 && i < WW && j < WH && wd[(j * WW + i) * 4] > 128; };
+const LAND = 2.4, DECK = 3.0;                                                             // the street stands well above the river, on its wall
+const brDir = (() => { const L = Math.hypot(BR_C[0] - BR_N[0], BR_C[1] - BR_N[1]); return [(BR_C[0] - BR_N[0]) / L, (BR_C[1] - BR_N[1]) / L]; })();
+const onBridge = (x, z) => { const dx = x - BR_N[0], dz = z - BR_N[1], u = dx * brDir[0] + dz * brDir[1], v = -dx * brDir[1] + dz * brDir[0]; return u > -4 && u < 100 && Math.abs(v) < 4.6; };
+const ground = (x, z) => (isWater(x, z) ? -2.0 : LAND);
+const floorAt = (x, z) => (onBridge(x, z) ? (isWater(x, z) ? DECK : LAND + (DECK - LAND) * 0.6) : x < B[0] + 3 || x > B[2] - 3 || z < B[1] + 3 || z > B[3] - 3 || nearest(x, z).d > 30 || isWater(x, z) ? null : LAND);
+
+/* ================= renderer and the oil-paint filter ================= */
+let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
+const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xe6d2b0, 160, 1400);
+const camera = new THREE.PerspectiveCamera(58, 1, 0.2, 6000);
+const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
+const post = new THREE.ShaderMaterial({ uniforms: { tScene: { value: target.texture }, uPx: { value: new THREE.Vector2() } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+  fragmentShader: `uniform sampler2D tScene; uniform vec2 uPx; varying vec2 vUv;
+    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+    void main(){
+      vec3 best = vec3(0.0); float bestVar = 1e9;
+      for (int q = 0; q < 4; q++) {                       // each pixel takes the mean of its most even neighbouring patch: edges hold, the rest becomes dabs of paint
+        vec2 dir = vec2(q == 0 || q == 3 ? -1.0 : 1.0, q < 2 ? -1.0 : 1.0); vec3 m = vec3(0.0), m2 = vec3(0.0);
+        for (int j = 0; j < 3; j++) for (int i = 0; i < 3; i++) { vec3 c = texture2D(tScene, vUv + dir * vec2(float(i), float(j)) * uPx * 0.9).rgb; m += c; m2 += c * c; }
+        m /= 9.0; m2 = abs(m2 / 9.0 - m * m); float v = m2.r + m2.g + m2.b; if (v < bestVar) { bestVar = v; best = m; }
+      }
+      float grain = hash(floor(vUv / uPx / 2.0)) * 0.04 - 0.02, weave = sin(vUv.x / uPx.x * 1.6) * sin(vUv.y / uPx.y * 1.6) * 0.01;
+      vec3 col = best * (1.0 + grain + weave); col *= 1.0 - 0.32 * pow(length(vUv - 0.5) * 1.25, 2.6);
+      gl_FragColor = vec4(col, 1.0);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`, depthTest: false, depthWrite: false });
+const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
+
+/* ================= light: a golden afternoon going down to sunset as she leads him to the river ================= */
+const hemi = new THREE.HemisphereLight(C('#f2e6cf'), C('#8a6a4a'), 1.2), sunL = new THREE.DirectionalLight(C('#ffe2b0'), 2.2); scene.add(hemi, sunL, sunL.target);
+sunL.castShadow = true; sunL.shadow.mapSize.set(2048, 2048); Object.assign(sunL.shadow.camera, { left: -75, right: 75, top: 75, bottom: -75, near: 1, far: 500 }); sunL.shadow.bias = -0.0006; sunL.shadow.normalBias = 0.6;
+const uni = { uTime: { value: 0 }, uDusk: { value: 0 } };
+const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: uni,
+  vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `uniform float uTime, uDusk; varying vec3 vDir;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
+    float fbm(vec2 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 5; i++) { s += a * noise(p); p *= 2.04; a *= 0.5; } return s; }
+    vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }
+    void main(){
+      vec3 d = normalize(vDir); float el = max(d.y, 0.0), az = atan(d.z, d.x);
+      vec3 top = mix(lin(vec3(0.50, 0.66, 0.86)), lin(vec3(0.36, 0.42, 0.66)), uDusk), low = mix(lin(vec3(0.97, 0.88, 0.66)), lin(vec3(0.99, 0.62, 0.36)), uDusk);
+      vec3 col = mix(low, top, smoothstep(0.0, 0.55, el));
+      float c = fbm(vec2(az * 2.2 + uTime * 0.004, el * 9.0)), band = smoothstep(0.52, 0.72, c) * smoothstep(0.02, 0.2, el) * (1.0 - smoothstep(0.45, 0.8, el));     // long thin clouds lying along the horizon
+      col = mix(col, mix(lin(vec3(1.0, 0.95, 0.84)), lin(vec3(1.0, 0.66, 0.52)), uDusk), band * 0.8);
+      vec3 west = normalize(vec3(-0.9, 0.12 - 0.09 * uDusk, 0.35)); float sd = distance(d, west);                                                                    // the sun, low over the river to the west
+      col += lin(vec3(1.0, 0.72, 0.36)) * exp(-sd * 3.2) * (0.5 + 0.6 * uDusk); col = mix(col, lin(vec3(1.0, 0.95, 0.8)), 1.0 - smoothstep(0.035, 0.05, sd));
+      gl_FragColor = vec4(col, 1.0);
+    }` });
+const sky = new THREE.Mesh(new THREE.SphereGeometry(5000, 48, 24), skyMat); sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
+
+/* ================= painted materials (generated once with Google's image model; see tools/gen_florence.py) ================= */
+const L = new THREE.TextureLoader(), lam = o => new THREE.MeshLambertMaterial(o);
+const tex = async (f, rep) => { const t = await L.loadAsync('tex/' + f); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; if (rep) { t.wrapS = t.wrapT = THREE.RepeatWrapping; } return t; };
+const [tPave, tRoof, tStone, tA, tB, tC, tD, tFar] = await Promise.all([tex('paving.jpg', 1), tex('roof.jpg', 1), tex('stone.jpg', 1), tex('facade_a.jpg', 1), tex('facade_b.jpg', 1), tex('facade_c.jpg', 1), tex('facade_d.jpg', 1), tex('oltrarno.jpg')]);
+const strokeTex = canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#c4c4c4'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#e2e2e2', '#a8a8a8', '#d4d4d4', '#989898', '#eeeeee'], 200, 9, 5); }, true);
+const FRONT = [tA, tB, tC, tD].map(t => { const m = lam({ map: t }); m.userData.flat = true; return m; }), SIDE = ['#c9964a', '#8a8072', '#d9c9a8', '#c98a80'].map(c => lam({ color: c, map: strokeTex }));
+const roofM = lam({ map: tRoof }), stoneM = lam({ map: tStone }), paveM = lam({ map: tPave });
+
+/* ================= ground and river ================= */
+{
+  const n = 2, nx = Math.ceil(WW / n), nz = Math.ceil(WH / n), pos = [], uv = [], idx = [];
+  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = B[0] + i * n, z = B[1] + j * n; pos.push(x, ground(x, z), z); uv.push(x / 5, z / 5); }
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, d = a + nx + 1, e = d + 1; idx.push(a, d, b, b, d, e); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
+  const m = new THREE.Mesh(g, paveM); m.receiveShadow = true; scene.add(m);
+}
+const waterMat = new THREE.ShaderMaterial({ uniforms: uni, vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+  fragmentShader: `uniform float uTime, uDusk; varying vec3 vW;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
+    vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }
+    void main(){ vec2 p = vW.xz; float w = noise(p * 0.08 + vec2(uTime * 0.05, 0.0)) * 4.0, band = sin(p.x * 0.14 + p.y * 0.42 + w + uTime * 0.4), band2 = sin(p.y * 1.3 - p.x * 0.4 - w * 2.0 + uTime * 0.6);
+      vec3 deep = mix(lin(vec3(0.30, 0.36, 0.30)), lin(vec3(0.24, 0.20, 0.28)), uDusk), light = mix(lin(vec3(0.56, 0.58, 0.46)), lin(vec3(0.62, 0.40, 0.32)), uDusk);
+      vec3 col = mix(deep, light, smoothstep(-0.4, 0.9, band) * 0.75); col = mix(col, mix(lin(vec3(0.92, 0.86, 0.66)), lin(vec3(1.0, 0.72, 0.46)), uDusk), smoothstep(0.9, 1.0, band2) * 0.35);      // gold where the low sun lies on it
+      float g = smoothstep(0.0, 260.0, 130.0 - (p.x + 180.0)); col += lin(vec3(1.0, 0.7, 0.36)) * g * 0.10 * (0.4 + uDusk); gl_FragColor = vec4(col, 1.0); }` });
+{ const w = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), waterMat); w.rotation.x = -Math.PI / 2; w.position.set(-200, -0.6, 200); scene.add(w); }
+// the far bank: one painted panorama standing beyond the water, its sky faded into ours
+{ const rd = (() => { const a = map.water[0]; return [0.866, 0.5]; })(), ang = Math.atan2(0.52, 0.855), fm = new THREE.ShaderMaterial({ uniforms: { tMap: { value: tFar }, uDusk: uni.uDusk }, transparent: true, depthWrite: false, fog: false,
+    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: `uniform sampler2D tMap; uniform float uDusk; varying vec2 vUv; void main(){ vec2 uv = vec2(abs(fract(vUv.x * 0.5) * 2.0 - 1.0), vUv.y); vec4 c = texture2D(tMap, uv); float a = (1.0 - smoothstep(0.44, 0.58, vUv.y)) * smoothstep(0.0, 0.03, vUv.y);
+      vec3 col = pow(c.rgb, vec3(2.2)) * mix(vec3(1.0), vec3(1.25, 0.95, 0.8), uDusk); gl_FragColor = vec4(col, a); }` });
+  tFar.wrapS = THREE.MirroredRepeatWrapping; const W_ = 1500, H_ = W_ / 4 / (2400 / 1018), pl = new THREE.Mesh(new THREE.PlaneGeometry(W_, H_), fm); pl.geometry.attributes.uv.array.forEach((v, i, a) => { if (i % 2 === 0) a[i] = v * 4; });
+  const rv = [0.898, 0.439], ns = [-rv[1], rv[0]];                       // the river's run, and the direction across it to the south bank
+  pl.position.set(-290 + ns[0] * 250, H_ / 2 - 9, 40 + ns[1] * 250); pl.rotation.y = Math.atan2(-ns[0], -ns[1]); pl.renderOrder = -5; scene.add(pl); }
+
+/* ================= batcher ================= */
+const batches = new Map();
+function bake(geo, matrix, material) { const g = geo.index ? geo.toNonIndexed() : geo.clone(); g.applyMatrix4(matrix); let b = batches.get(material); if (!b) { b = { pos: [], nor: [], uv: [] }; batches.set(material, b); }
+  const p = g.attributes.position.array, n = g.attributes.normal.array, u = g.attributes.uv ? g.attributes.uv.array : null; for (let i = 0; i < p.length; i++) { b.pos.push(p[i]); b.nor.push(n[i]); } for (let i = 0; i < p.length / 3; i++) b.uv.push(u ? u[i * 2] : 0, u ? u[i * 2 + 1] : 0); }
+function flush() { for (const [m, b] of batches) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(b.nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(b.uv, 2)); const mesh = new THREE.Mesh(g, m); mesh.castShadow = !m.userData.flat; mesh.receiveShadow = true; scene.add(mesh); } batches.clear(); }
+const M4 = (x, y, z, ry, sx, sy, sz) => new THREE.Matrix4().compose(new V3(x, y, z), new THREE.Quaternion().setFromEuler(new THREE.Euler(0, ry || 0, 0)), new V3(sx || 1, sy || 1, sz || 1));
+const boxUV = (w, h, d, k) => { const g = new THREE.BoxGeometry(w, h, d), u = g.attributes.uv; for (let i = 0; i < u.count; i++) { const f = Math.floor(i / 4), su = f < 2 ? d : w, sv = f === 2 || f === 3 ? d : h; u.setXY(i, u.getX(i) * su / k, u.getY(i) * sv / k); } return g; };
+
+/* ================= the houses of Florence: painted fronts on the real footprints, low tiled roofs, a tower here and there ================= */
+const houses = [];
+function unit(cx, cz, w, d, ang, i) {
+  const tower = i % 7 === 3, k = tower ? 1 : [0, 2, 3, 0, 2, 3][i % 6], wallH = tower ? 17 + (i % 3) * 3 : w * 1.45 * (0.92 + (i % 4) * 0.05), c = Math.cos(ang), s = Math.sin(ang), rot = -ang;
+  const P = (u, y, v, ry) => M4(cx + u * c - v * s, LAND + y, cz + u * s + v * c, rot + (ry || 0));
+  bake(new THREE.BoxGeometry(w, wallH + 1, d), P(0, wallH / 2 - 0.5, 0), SIDE[k]);
+  for (const f of [1, -1]) bake(new THREE.PlaneGeometry(w, wallH), P(0, wallH / 2, f * (d / 2 + 0.04), f > 0 ? 0 : Math.PI), FRONT[k]);            // the painted front, on both street sides
+  const rp = Math.max(1, Math.round(d / 7)), eg = new THREE.PlaneGeometry(d, wallH), eu = eg.attributes.uv; for (let q = 0; q < eu.count; q++) eu.setX(q, eu.getX(q) * rp);
+  for (const f of [1, -1]) bake(eg, P(f * (w / 2 + 0.04), wallH / 2, 0, f > 0 ? Math.PI / 2 : -Math.PI / 2), FRONT[tower ? 1 : [3, 0, 2][i % 3]]);      // and on the ends, where a block turns its side to the street
+  if (tower) { for (let q = 0; q < 4; q++) bake(new THREE.BoxGeometry(w / 5, 1.1, 0.5), P(-w / 2 + w / 10 + q * w * 0.266, wallH + 0.5, d / 2 - 0.25), SIDE[1]); return; }
+  const rh = 1.5, sh = new THREE.Shape([new THREE.Vector2(-d / 2 - 0.7, 0), new THREE.Vector2(d / 2 + 0.7, 0), new THREE.Vector2(0, rh)]), rg = new THREE.ExtrudeGeometry(sh, { depth: w + 0.3, bevelEnabled: false }), u = rg.attributes.uv; for (let q = 0; q < u.count; q++) u.setXY(q, u.getX(q) / 4, u.getY(q) / 4);
+  bake(rg, P(-w / 2 - 0.15, wallH, 0, Math.PI / 2), roofM);
+}
+const area = p => { let a = 0; for (let i = 0; i < p.length; i++) a += p[i][0] * p[(i + 1) % p.length][1] - p[(i + 1) % p.length][0] * p[i][1]; return Math.abs(a) / 2; };
+const PV = (() => { const L_ = Math.hypot(PV_C[0] - PV_N[0], PV_C[1] - PV_N[1]); return { d: [(PV_C[0] - PV_N[0]) / L_, (PV_C[1] - PV_N[1]) / L_], len: L_ * 2 }; })();
+map.buildings.forEach((b, i) => {
+  const p = b.p; if (p.length < 3) return; let cx = 0, cz = 0; for (const q of p) { cx += q[0]; cz += q[1]; } cx /= p.length; cz /= p.length;
+  const r = nearest(cx, cz), A = area(p); if (r.d > 95 || A < 18 || (b.n && /Palazzo Vecchio|Loggia/.test(b.n)) || isWater(cx, cz)) return;
+  let Lg = 0, ang = 0; for (let k = 0; k < p.length; k++) { const a = p[k], c = p[(k + 1) % p.length], l = Math.hypot(c[0] - a[0], c[1] - a[1]); if (l > Lg) { Lg = l; ang = Math.atan2(c[1] - a[1], c[0] - a[0]); } }
+  let u0 = 1e9, u1 = -1e9, v0 = 1e9, v1 = -1e9; const ca = Math.cos(ang), sa = Math.sin(ang); for (const q of p) { const dx = q[0] - cx, dz = q[1] - cz, u = dx * ca + dz * sa, v = -dx * sa + dz * ca; u0 = Math.min(u0, u); u1 = Math.max(u1, u); v0 = Math.min(v0, v); v1 = Math.max(v1, v); }
+  let U = u1 - u0, V = v1 - v0, mx = cx + ((u0 + u1) / 2) * ca - ((v0 + v1) / 2) * sa, mz = cz + ((u0 + u1) / 2) * sa + ((v0 + v1) / 2) * ca; if (V > U) { ang += Math.PI / 2; [U, V] = [V, U]; }
+  const c2 = Math.cos(ang), s2 = Math.sin(ang), n = Math.max(1, Math.round(U / 7.2)), fw = U / n, dp = clamp(V, 6, 26);
+  for (let k = 0; k < n; k++) { const u = -U / 2 + (k + 0.5) * fw, x = mx + u * c2, z = mz + u * s2; if (nearest(x, z).d < dp / 2 + 2.6 || isWater(x, z) || onBridge(x, z)) continue;
+    unit(x, z, fw - 0.05, dp, ang, i * 3 + k); houses.push({ x, z, w: fw / 2 + 0.4, d: dp / 2 + 0.5, c: c2, s: s2 }); }
+});
+const inHouse = (x, z) => houses.some(h => { const dx = x - h.x, dz = z - h.z, u = dx * h.c + dz * h.s, v = -dx * h.s + dz * h.c; return Math.abs(u) < h.w && Math.abs(v) < h.d; });
+// the Palazzo Vecchio and its tower (begun in 1299: here because the painters' Florence is not strict about dates)
+{ const x = 62, z = 6, a = 0.33; bake(boxUV(46, 40, 34, 9), M4(x, LAND + 20, z, -a), stoneM); for (let q = 0; q < 12; q++) bake(boxUV(2.6, 3, 2.6, 9), M4(x + (-21 + q * 3.9) * Math.cos(a) - (-17.5) * Math.sin(a), LAND + 41.5, z + (-21 + q * 3.9) * Math.sin(a) + (-17.5) * Math.cos(a), -a), stoneM);
+  bake(boxUV(9, 52, 9, 9), M4(x - 6 * Math.cos(a) + 13 * Math.sin(a), LAND + 66, z - 6 * Math.sin(a) - 13 * Math.cos(a), -a), stoneM); bake(boxUV(12, 7, 12, 9), M4(x - 6 * Math.cos(a) + 13 * Math.sin(a), LAND + 90, z - 6 * Math.sin(a) - 13 * Math.cos(a), -a), stoneM);
+  houses.push({ x, z, w: 24, d: 18, c: Math.cos(a), s: Math.sin(a) }); }
+// the two bridges: the Santa Trinita she walks out on, and the Ponte Vecchio with its shops, seen down the river
+function bridge(n, c, wid, shops) { const L_ = Math.hypot(c[0] - n[0], c[1] - n[1]) * 2, d = [(c[0] - n[0]) / (L_ / 2), (c[1] - n[1]) / (L_ / 2)], ang = Math.atan2(d[1], d[0]);
+  bake(boxUV(L_ + 8, 1.2, wid, 5), M4(c[0], DECK - 0.62, c[1], -ang), stoneM); for (const sd of [-1, 1]) bake(boxUV(L_ + 8, 1.0, 0.5, 5), M4(c[0] - d[1] * sd * (wid / 2 - 0.25), DECK + 0.5, c[1] + d[0] * sd * (wid / 2 - 0.25), -ang), stoneM);
+  for (const t of [-0.3, 0.0, 0.3]) bake(boxUV(5, 6, wid + 2, 5), M4(c[0] + d[0] * L_ * t, DECK - 3.6, c[1] + d[1] * L_ * t, -ang), stoneM);
+  if (shops) for (let q = 0; q < 14; q++) for (const sd of [-1, 1]) { const u = -L_ / 2 + 6 + q * (L_ - 12) / 13, x = c[0] + d[0] * u - d[1] * sd * (wid / 2 + 1.2), z = c[1] + d[1] * u + d[0] * sd * (wid / 2 + 1.2), h = 5 + (q * 7 + (sd > 0 ? 3 : 0)) % 4;
+    bake(new THREE.BoxGeometry(6.2, h, 4.2), M4(x, DECK + h / 2 - 1.2, z, -ang), SIDE[(q + (sd > 0 ? 1 : 0)) % 4]); bake(new THREE.BoxGeometry(6.8, 0.5, 5), M4(x, DECK + h - 1.0, z, -ang), roofM); } }
+bridge(BR_N, BR_C, 9.4, false); bridge(PV_N, PV_C, 13, true);
+// the river wall along the Lungarno, with its parapet
+for (let s = S_RIVER + 4; s < S_BRIDGE - 5; s += 2.5) { const p = at(s); let v = 2; while (v < 26 && !isWater(...sideR(p, 0, v))) v += 0.5; if (v >= 26) continue; const [x, z] = sideR(p, 0, v - 0.6); bake(boxUV(2.6, 1.0, 0.55, 5), M4(x, LAND + 0.5, z, -Math.atan2(p.dz, p.dx)), stoneM); bake(boxUV(2.6, 3.4, 0.6, 5), M4(...sideR(p, 0, v + 0.1).reduce((a, q, i) => (i ? [a[0], LAND - 1.75, q] : [q]), []), -Math.atan2(p.dz, p.dx)), stoneM); houses.push({ x, z, w: 1.4, d: 0.45, c: p.dx, s: p.dz }); }
+flush();
+
+/* ================= people: Florentines in long gowns, with the painted faces ================= */
+const faceTex = await L.loadAsync('faces.jpg'); faceTex.colorSpace = THREE.SRGBColorSpace;
+const faceMat = i => { const t = faceTex.clone(); t.needsUpdate = true; t.wrapS = THREE.RepeatWrapping; t.repeat.set(-1 / 8, 1); t.offset.set((i + 1) / 8, 0); return lam({ map: t }); };
+const FACES = [2, 4, 5, 1, 6].map(faceMat), shadowM = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22, depthWrite: false });
+const lathe = (pts, m, seg) => { const me = new THREE.Mesh(new THREE.LatheGeometry(pts.map(p => new THREE.Vector2(p[0], p[1])), seg || 14), m); me.castShadow = true; return me; };
+const limb = (len, r0, r1, m) => { const g = new THREE.Group(), c = new THREE.Mesh(new THREE.CylinderGeometry(r0, r1, len, 7), m); c.position.y = -len / 2; c.castShadow = true; g.add(c); return g; };
+function person(o) {             // o: gown, sleeve, head ('hood' | 'veil' | 'hair' | 'cap'), headCol, hairCol, face (index into the painted faces), size
+  const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig); const skin = lam({ color: '#ecd0b0' }), gown = lam({ color: o.gown, map: strokeTex }), dark = lam({ color: '#2a2018' });
+  const body = lathe([[0.02, 0.03], [0.4, 0.04], [0.36, 0.32], [0.2, 0.98], [0.21, 1.14], [0.24, 1.3], [0.19, 1.41], [0.07, 1.47]], gown, 16); rig.add(body);
+  const nk = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.12, 8), skin); nk.position.y = 1.5; rig.add(nk);
+  const hd = new THREE.Group(); hd.position.y = 1.64; const r = 0.135, s = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), skin); s.scale.set(0.92, 1.14, 0.96); s.castShadow = true; hd.add(s);
+  const f = new THREE.Mesh(new THREE.SphereGeometry(r * 1.02, 12, 10, Math.PI / 2 - 1.0, 2.0, 0.5, 1.75), faceMat(o.face)); f.scale.set(0.92, 1.14, 0.96); hd.add(f);
+  const back = (col, grow) => { const b = new THREE.Mesh(new THREE.SphereGeometry(r * (grow || 1.05), 12, 10, Math.PI / 2 + 0.95, Math.PI * 2 - 1.9), lam({ color: col, map: strokeTex })); b.scale.set(0.94, 1.16, 1.0); hd.add(b); return b; };
+  if (o.head === 'hood') { back(o.headCol, 1.1); const t = new THREE.Mesh(new THREE.SphereGeometry(r * 1.1, 12, 8, 0, 6.3, 0, 1.2), lam({ color: o.headCol, map: strokeTex })); t.scale.set(0.96, 1.05, 1.02); t.position.y = 0.03; hd.add(t);
+    const band = new THREE.Mesh(new THREE.TorusGeometry(r * 0.99, 0.022, 6, 16), lam({ color: '#f1ecdc' })); band.rotation.x = Math.PI / 2; band.position.y = 0.05; band.scale.set(0.95, 1.0, 1); hd.add(band);
+    const tail = new THREE.Group(), tm = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 6), lam({ color: o.headCol, map: strokeTex })); tm.scale.set(0.07, 0.22, 0.05); tm.position.y = -0.2; tail.add(tm); tail.position.set(0, 0.06, -0.13); hd.add(tail); g.userData.tail = tail; }
+  else if (o.head === 'veil') { back('#f1ecdc', 1.08); const t = new THREE.Mesh(new THREE.SphereGeometry(r * 1.08, 12, 8, 0, 6.3, 0, 1.15), lam({ color: '#f1ecdc' })); t.position.y = 0.03; hd.add(t); const dr = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.34, 10, 1, true), lam({ color: '#f1ecdc', side: THREE.DoubleSide })); dr.position.set(0, -0.2, -0.05); hd.add(dr); }
+  else { back(o.hairCol || '#7a4a24', 1.08); const t = new THREE.Mesh(new THREE.SphereGeometry(r * 1.07, 12, 8, 0, 6.3, 0, 1.2), lam({ color: o.hairCol || '#7a4a24', map: strokeTex })); t.position.y = 0.03; hd.add(t);
+    if (o.head === 'hair') { const tail = new THREE.Group(), tm = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), lam({ color: o.hairCol || '#7a4a24', map: strokeTex })); tm.scale.set(0.12, 0.3, 0.05); tm.position.y = -0.3; tail.add(tm); tail.position.set(0, 0.02, -0.11); hd.add(tail); g.userData.tail = tail;
+      const circ = new THREE.Mesh(new THREE.TorusGeometry(r * 1.0, 0.014, 6, 16), lam({ color: '#d9b25a' })); circ.rotation.x = Math.PI / 2; circ.position.y = 0.07; hd.add(circ); }
+    else { const cap = new THREE.Mesh(new THREE.SphereGeometry(r * 1.12, 12, 8, 0, 6.3, 0, 1.0), lam({ color: o.headCol || '#3a2a20' })); cap.position.y = 0.05; hd.add(cap); } }
+  rig.add(hd);
+  const arm = () => { const a = limb(0.52, 0.065, 0.045, lam({ color: o.sleeve || o.gown, map: strokeTex })), h = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 6), skin); h.position.y = -0.54; a.add(h); return a; };
+  const aL = arm(), aR = arm(); aL.position.set(-0.25, 1.36, 0); aR.position.set(0.25, 1.36, 0); rig.add(aL, aR);
+  const fL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.07, 0.24), dark), fR = fL.clone(); fL.position.set(-0.1, 0.035, 0); fR.position.set(0.1, 0.035, 0); g.add(fL, fR);
+  const sh = new THREE.Mesh(new THREE.CircleGeometry(0.42, 14), shadowM); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; g.add(sh);
+  Object.assign(g.userData, { rig, body, hd, aL, aR, fL, fR }); g.scale.setScalar(o.size || 1.06); scene.add(g); return g;
+}
+function pose(g, phase, pace, air, lean) {
+  const u = g.userData, s = Math.sin(phase), c = Math.cos(phase);
+  u.rig.position.y = Math.abs(c) * 0.035 * pace; u.rig.rotation.z = s * 0.035 * pace; u.rig.rotation.x = (lean || 0) + 0.05 * pace;
+  u.aL.rotation.x = s * 0.6 * pace; u.aR.rotation.x = -s * 0.6 * pace; u.aL.rotation.z = -0.1 - (air ? 0.9 : 0); u.aR.rotation.z = 0.1 + (air ? 0.9 : 0);
+  u.fL.position.z = s * 0.22 * pace; u.fR.position.z = -s * 0.22 * pace; u.fL.position.y = 0.035 + Math.max(0, c) * 0.07 * pace; u.fR.position.y = 0.035 + Math.max(0, -c) * 0.07 * pace;
+  u.body.scale.set(1 + 0.04 * s * pace + (air ? 0.18 : 0), 1, 1 + 0.06 * c * pace + (air ? 0.18 : 0)); if (u.tail) u.tail.rotation.x = 0.1 + 0.5 * Math.min(1.4, pace) + 0.12 * s + (air ? 0.5 : 0);
+}
+const faceTo = (g, x, z, k) => { let d = Math.atan2(x - g.position.x, z - g.position.z) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * k; };
+// Dante as Holiday dressed him: a green gown, the red hood with its white band
+const meG = person({ gown: '#3f6a3a', sleeve: '#35592f', head: 'hood', headCol: '#b3362c', face: 3, size: 1.08 });
+const beatrice = person({ gown: '#ece0b4', sleeve: '#e2d29c', head: 'hair', hairCol: '#b5622a', face: 1, size: 1.04 }), vanna = person({ gown: '#c9452b', sleeve: '#b83a24', head: 'hair', hairCol: '#a8522a', face: 0, size: 1.04 }), maid = person({ gown: '#2f5d8a', sleeve: '#28507a', head: 'hair', hairCol: '#8a6a3a', face: 2, size: 1.0 });
+const trio = [beatrice, vanna, maid];
+const KIT = [{ gown: '#8a2e26', head: 'cap', headCol: '#3a2a20' }, { gown: '#5a6a3a', head: 'veil' }, { gown: '#3c4a7a', head: 'hood', headCol: '#7a2e26' }, { gown: '#b08a3c', head: 'veil' }, { gown: '#6a4a5a', head: 'cap', headCol: '#5a3a24' }, { gown: '#7a5a3a', head: 'hair', hairCol: '#5a3a24' }, { gown: '#a8603c', head: 'hood', headCol: '#2f4a38' }, { gown: '#4a4a44', head: 'veil' }];
+const walkers = []; for (let i = 0; i < 56; i++) { const g = person(Object.assign({ face: [2, 4, 5, 1, 6, 0][i % 6], size: rnd(0.98, 1.12) }, KIT[i % KIT.length]));
+  walkers.push({ g, s: rnd(12, S_BRIDGE - 12), dir: i % 2 ? 1 : -1, off: rnd(1.3, 3.2) * (i % 2 ? 1 : -1), v: rnd(0.8, 1.4), ph: rnd(0, 6), lo: 8, hi: S_BRIDGE - 8, said: 0 }); }
+const LINES = ['God keep you, Dante.', 'She went by the river, with her friends.', 'Wool from Flanders! Dyed in the Arno!', 'They say you write verses now.', 'Mind the cart!'];
+// pigeons on the Lungarno, and the red dove of the last picture
+const birdOf = (col, belly) => { const b = new THREE.Group(), m = lam({ color: col }); const body = new THREE.Mesh(new THREE.SphereGeometry(0.11, 10, 8), m); body.scale.set(0.8, 0.8, 1.5); b.add(body); const hd = new THREE.Mesh(new THREE.SphereGeometry(0.06, 8, 8), lam({ color: belly })); hd.position.set(0, 0.07, 0.15); b.add(hd);
+  const wing = sx => { const g = new THREE.Group(), w = new THREE.Mesh(new THREE.PlaneGeometry(0.34, 0.2), lam({ color: col, side: THREE.DoubleSide })); w.rotation.x = -Math.PI / 2; w.position.x = sx * 0.19; g.add(w); b.add(g); return g; }; b.userData = { wL: wing(-1), wR: wing(1) }; b.traverse(o => { if (o.isMesh) o.castShadow = true; }); scene.add(b); return b; };
+const pigeons = [0, 1, 2, 3, 4, 5].map(i => { const b = birdOf(['#7a8494', '#9aa0aa', '#6a7080'][i % 3], '#8a94a4'); const p = at(S_BRIDGE - 17 - i * 1.3); const [x, z] = side(p, 0, 3.5 + (i % 3) * 1.1); b.position.set(x, LAND + 0.12, z); b.rotation.y = rnd(0, 6); return b; });
+const dove = birdOf('#c9352b', '#e0553a'); dove.visible = false; dove.scale.setScalar(0.8);
+
+/* ================= play ================= */
+let state = 'title', time = 0, muted = false, endT = 0, triS = S_START + 12, triV = 0, triPh = 0, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, dusk = 0, leg = 1;
+const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
+const plate = (title, line) => { $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
+const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
+const stand = (g, s, v, faceS, faceV) => { const p = at(s), [x, z] = side(p, 0, v), q = at(faceS), [fx, fz] = side(q, 0, faceV); g.position.set(x, floorAt(x, z) ?? LAND, z); faceTo(g, fx, fz, 1); pose(g, 0, 0); };
+const P0 = at(S_BRIDGE - 12), WALL_V = (() => { let v = 1; while (v < 24 && !isWater(...sideR(P0, 0, v))) v += 0.25; return v - 0.6; })();      // how far to the left the river wall stands, at the bridge corner
+const WAY = {
+  // nine years after he first saw her, she greets him in the street
+  greet: { s: S_GREET, title: 'The Salutation of Beatrice', line: 'Dante Gabriel Rossetti, 1859 · National Gallery of Canada, Ottawa', img: 'images/salutation.jpg', after: [null, 'She greeted me. Me! I must see her again. To the river!'],
+    stage() { stand(beatrice, S_GREET + 4.6, 0.3, S_GREET + 1.6, 0); stand(vanna, S_GREET + 5.4, -0.9, S_GREET + 1.6, 0); stand(maid, S_GREET + 6.0, 1.1, S_GREET + 1.6, 0); beatrice.userData.aR.rotation.x = -0.9; return [S_GREET + 1.6, 0]; },
+    cam() { const p = at(S_GREET + 3.4), [x, z] = side(p, 0, 5.2), [tx, tz] = side(p, 0.3, 0); return [new V3(x, LAND + 1.75, z), new V3(tx, LAND + 1.4, tz), 40]; } },
+  // later, at the corner of the Santa Trinita bridge, she passes without a word: Holiday's picture, looking back along the river to the Ponte Vecchio
+  bridge: { s: S_BRIDGE - 6, title: 'Dante and Beatrice', line: 'Henry Holiday, 1883 · Walker Art Gallery, Liverpool', img: 'images/holiday.jpg', after: [null, 'She would not look at me.'],
+    // everything is placed from one point on the straight of the Lungarno, 12 m short of the bridge: u metres on towards the bridge, v metres towards the river
+    stage() { const t = Math.min(2.6, wpT * 0.32), put = (g, u, v) => { const [x, z] = sideR(P0, u, v), [fx, fz] = sideR(P0, u + 20, v); g.position.set(x, LAND, z); faceTo(g, fx, fz, 1); };
+      put(vanna, 0.6 + t, WALL_V - 5.8); put(beatrice, -0.2 + t, WALL_V - 4.5); put(maid, -2.2 + t, WALL_V - 3.7); for (const g of trio) pose(g, time * 3, 0.35); beatrice.userData.hd.rotation.y = 0.5; return [S_BRIDGE - 12 + 6.0, -(WALL_V - 1.3)]; },      // he stands at the river wall; she looks away
+    cam() { const [x, z] = sideR(P0, 9.6, WALL_V - 3.3), [tx, tz] = sideR(P0, -30, WALL_V - 2.2); return [new V3(x, LAND + 1.6, z), new V3(tx, LAND + 2.2, tz), 56]; } } };
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); triS = S_START + 12; triV = 0; endT = 0; wp = null; seen = {}; leg = 1; dusk = 0; dove.visible = false; for (const g of trio) { g.userData.hd.rotation.set(0, 0, 0); g.userData.rig.position.y = 0; g.scale.setScalar(g === maid ? 1.0 : 1.04); }
+  camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
+function begin() {
+  SND.start({ chords: [[41, 60, 64, 67, 72], [38, 57, 60, 65, 69], [36, 55, 60, 64, 67], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); state = 'play';
+  $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
+  setTimeout(() => { if (state === 'play') say(meG, 'There she is: Beatrice, all in white. After her!', 4.5); }, 900);
+}
+function update(dt) {
+  time += dt; uni.uTime.value = time;
+  if (state === 'title') { const p = at(S_RIVER + 30), q = at(S_RIVER + 90); camera.position.set(...side(p, 0, 1).reduce((a, v, i) => (i ? [a[0], LAND + 2.0, v] : [v]), [])); camera.lookAt(q.x, LAND + 4, q.z); meG.visible = false; for (const g of trio) g.visible = false; }
+  else {
+    meG.visible = true; for (const g of trio) g.visible = true;
+    let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.5 : 0) - stick.dy;
+    turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (state !== 'play') { turn = 0; go = 0; }
+    me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1); const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
+    me.speed += (go * 10.5 - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2)); let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
+    if (inHouse(nx, nz)) { if (!inHouse(nx, me.z)) nz = me.z; else if (!inHouse(me.x, nz)) nx = me.x; else { nx = me.x; nz = me.z; me.speed *= 0.4; } }
+    let f = floorAt(nx, nz); if (f === null) { f = floorAt(nx, me.z); if (f !== null) nz = me.z; else { f = floorAt(me.x, nz); if (f !== null) nx = me.x; else { nx = me.x; nz = me.z; f = floorAt(nx, nz) ?? me.y; me.speed *= 0.5; } } }
+    me.x = nx; me.z = nz; const jump = (keys.has('Space') || held.jump) && state === 'play';
+    if (jump && !me.air) { me.vy = 6.0 + Math.abs(me.speed) * 0.2; me.air = true; SND.whoosh(0.04); }
+    if (me.air) { me.vy -= (jump && me.vy < 0 ? 5 : 15) * dt; me.y += me.vy * dt; if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.06); } } else me.y += (f - me.y) * Math.min(1, dt * 14);
+    const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.9); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
+    me.lean += (turn * 0.2 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
+    if (state === 'play') { meG.position.set(me.x, me.y, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; pose(meG, me.ph, me.air ? 0.4 : pace, me.air, 0.08 * Math.min(1, pace)); }
+    const prog = nearest(me.x, me.z), sEnd = LEN - 2; dusk += (sstep(S_RIVER - 40, LEN, prog.s) - dusk) * dt * 0.8;
+
+    // Beatrice and her two companions: just ahead of him through the streets; then he hurries by the river to be at the bridge before her; then she goes out on to the bridge alone
+    if (state === 'play') {
+      const gap = triS - prog.s; let want;
+      if (leg === 1) want = triS >= S_GREET + 5 ? 0 : gap < 9 ? 12.5 : gap < 20 ? 8.5 : gap < 34 ? 3.5 : 0;
+      else if (leg === 2) want = triS >= S_BRIDGE - 22 ? 0 : 4.2;                              // they walk on along the river at their own pace; he must get ahead
+      else want = triS >= sEnd ? 0 : gap < 8 ? 9 : gap < 18 ? 6 : gap < 30 ? 2.5 : 0;
+      triV += (want - triV) * Math.min(1, dt * 2.5); triS = Math.min(sEnd, triS + triV * dt); triPh += dt * (2 + triV * 0.9);
+      if (leg === 1 && want === 0 && triS < S_GREET + 5 && time > hop) { hop = time + 6; say(vanna, 'Is that young Alighieri, following us?', 3); }
+      trio.forEach((g, i) => { if (leg === 3 && i) { stand(g, S_BRIDGE + 4 + i, i === 1 ? -2.4 : 2.4, LEN, 0); return; } const s = triS - [0, 0.9, 2.2][i], p = at(s), o = [0.2, -1.1, 0.9][i], [x, z] = side(p, 0, o); g.position.set(x, floorAt(x, z) ?? LAND, z);
+        if (triV < 0.5) { faceTo(g, me.x, me.z, dt * 3); pose(g, 0, 0); } else { g.rotation.y = Math.atan2(p.dx, p.dz); pose(g, triPh + i, Math.min(1.5, triV / 5)); } });
+    }
+    // waypoints: the scene is set as the painting, the view takes the painter's place, melts into the picture, and lets him go
+    for (const k in WAY) if (state === 'play' && !seen[k] && prog.s > WAY[k].s - 6 && prog.s < WAY[k].s + 6) { state = 'way'; wp = WAY[k]; wp.key = k; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); SND.whoosh(0.07); }
+    if (state === 'way') { wpT += dt; const [ds, dv] = wp.stage(), p = at(ds), [tx, tz] = side(p, 0, dv); me.x += (tx - me.x) * Math.min(1, dt * 2.5); me.z += (tz - me.z) * Math.min(1, dt * 2.5); me.y = floorAt(me.x, me.z) ?? LAND; meG.position.set(me.x, me.y, me.z);
+      faceTo(meG, beatrice.position.x, beatrice.position.z, dt * 4); pose(meG, 0, 0); meG.userData.aR.rotation.x = -1.2; meG.userData.aR.rotation.z = -0.5;                                     // his hand goes to his heart
+      if (wpT > 2.6 && wpT < 2.7) plate(wp.title, wp.line); if (wpT > 3.8 && wpT < 7.8) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (wpT > 7.8) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
+      if (wpT > 10) { state = 'play'; me.yaw = Math.PI - meG.rotation.y; beatrice.userData.aR.rotation.x = 0; beatrice.userData.hd.rotation.y = 0; if (wp.after[1]) say(wp.after[0] || meG, wp.after[1], 4);
+        if (wp.key === 'greet') { leg = 2; triS = S_GREET + 6; } else { leg = 3; triS = S_BRIDGE + 6; } wp = null; hop = time + 6; } }
+    // the end, out on the bridge at sunset: she kneels, her face lifted and her eyes closed, and a red dove comes to her hands
+    if (state === 'play' && leg === 3 && prog.s > sEnd - 9) { state = 'tableau'; endT = 0; bubble.classList.remove('show'); $('melt').src = 'images/beata.jpg'; $('melt').classList.add('slow'); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.3)); }
+    if (state === 'tableau') { endT += dt; const p = at(sEnd), k = Math.min(1, endT / 3); stand(beatrice, sEnd, 0, sEnd + 2, -12); beatrice.userData.rig.position.y = -0.42 * k; beatrice.userData.hd.rotation.x = -0.42 * k; beatrice.userData.aL.rotation.x = -0.7 * k; beatrice.userData.aR.rotation.x = -0.7 * k; beatrice.userData.aL.rotation.z = 0.35 * k; beatrice.userData.aR.rotation.z = -0.35 * k;
+      const [tx, tz] = side(at(sEnd - 7), 0, 2.5); me.x += (tx - me.x) * dt * 1.5; me.z += (tz - me.z) * dt * 1.5; me.speed = 0; me.y = floorAt(me.x, me.z) ?? DECK; meG.position.set(me.x, me.y, me.z); faceTo(meG, beatrice.position.x, beatrice.position.z, dt * 3); pose(meG, 0, 0);
+      dove.visible = endT > 2; const fw = [Math.sin(beatrice.rotation.y), Math.cos(beatrice.rotation.y)], dk = clamp((endT - 2) / 4, 0, 1), hp = new V3(beatrice.position.x + 0.4 * fw[0], DECK + 0.72, beatrice.position.z + 0.4 * fw[1]); dove.position.set(mix(hp.x + 6 * fw[0], hp.x, dk), mix(DECK + 4, hp.y, dk), mix(hp.z + 6 * fw[1], hp.z, dk)); faceTo(dove, beatrice.position.x, beatrice.position.z, 1);
+      const fl = Math.sin(time * 20) * (1 - dk * 0.7); dove.userData.wL.rotation.z = fl; dove.userData.wR.rotation.z = -fl;
+      if (endT > 5.0 && endT < 5.1) plate('Beata Beatrix', 'Dante Gabriel Rossetti, about 1864–70 · this version, Art Institute of Chicago');
+      if (endT > 8.0) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (endT > 18) { state = 'done'; $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); } }
+
+    // camera
+    if (state === 'way') { const [pos, look, fov] = wp.cam(), k = Math.min(1, dt * 1.5); camera.position.lerp(pos, k); camera.lookAt(look); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); }
+    else if (state === 'tableau' || state === 'done') { const kk = Math.min(1, dt * 0.9), b = beatrice.position, fwd = [Math.sin(beatrice.rotation.y), Math.cos(beatrice.rotation.y)], pos = new V3(b.x + fwd[0] * 2.3 + fwd[1] * 0.6, DECK + 1.0, b.z + fwd[1] * 2.3 - fwd[0] * 0.6);      // in front of her, the river and the old bridge behind
+      camera.position.lerp(pos, kk); camera.lookAt(b.x, DECK + 1.02, b.z); camera.fov += (40 - camera.fov) * kk; camera.updateProjectionMatrix(); }
+    else { const alt = Math.max(0, me.y - (floorAt(me.x, me.z) ?? LAND)); let dist = 4.0 + Math.abs(me.speed) * 0.2 + alt * 0.5, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
+      const k = Math.min(1, dt * 5.5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (me.y + 2.0 + alt * 0.25 - camera.position.y) * k;
+      camera.lookAt(me.x + fx * 6, me.y + 1.45, me.z + fz * 6); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 + Math.abs(me.speed) * 1.4 - camera.fov) * k; camera.updateProjectionMatrix(); }
+  }
+  for (const w of walkers) {
+    w.s += w.dir * w.v * dt; if (w.s > w.hi) { w.s = w.hi; w.dir = -1; } if (w.s < w.lo) { w.s = w.lo; w.dir = 1; }
+    const p = at(w.s); let [x, z] = side(p, 0, w.off); const dx = x - me.x, dz = z - me.z, d = Math.hypot(dx, dz); if (d < 2.4 && d > 0.01 && state !== 'title') { const k = (2.4 - d) * 0.9; x += dx / d * k; z += dz / d * k; }
+    w.g.visible = !(state === 'way' && Math.abs(w.s - wp.s) < 26); w.g.position.set(x, LAND, z); w.ph += dt * (2 + w.v * 2.6); pose(w.g, w.ph, w.v / 1.6); const heading = Math.atan2(p.dx * w.dir, p.dz * w.dir); let dy = heading - w.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); w.g.rotation.y += dy * Math.min(1, dt * 4);
+    const hd = w.g.userData.hd; let look = 0; if (d < 9 && state !== 'title') { look = Math.atan2(me.x - x, me.z - z) - w.g.rotation.y; look = clamp(Math.atan2(Math.sin(look), Math.cos(look)), -1.2, 1.2); } hd.rotation.y += (look - hd.rotation.y) * Math.min(1, dt * 4);
+    if (d < 3.4 && state === 'play' && time > w.said && time > bubbleT) { w.said = time + 30; say(w.g, LINES[Math.floor(rnd(0, LINES.length))], 3); }
+  }
+  pigeons.forEach((b, i) => { b.position.y = LAND + 0.12 + Math.abs(Math.sin(time * 6 + i)) * 0.03; b.rotation.x = Math.max(0, Math.sin(time * 2.2 + i * 1.7)) * 0.5; });
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; if (v.z > 1) bubble.classList.remove('show'); } }
+  // the hour: the sun sinks towards the west as he follows her to the river
+  const dk = state === 'title' ? 0.35 : dusk; uni.uDusk.value = dk; hemi.color.copy(C('#f2e6cf')).lerp(C('#e6b9a0'), dk); hemi.intensity = mix(1.2, 0.95, dk); sunL.color.copy(C('#ffe2b0')).lerp(C('#ff9a5a'), dk); sunL.intensity = mix(2.2, 1.9, dk);
+  sunL.position.set(camera.position.x - 160, mix(110, 38, dk), camera.position.z + 60); sunL.target.position.set(camera.position.x, 0, camera.position.z); sunL.target.updateMatrixWorld(); scene.fog.color.copy(C('#e6d2b0')).lerp(C('#e0a070'), dk);
+  SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
+}
+function draw() {
+  const w = innerWidth, h = innerHeight;
+  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); target.setSize(Math.round(w * PR), Math.round(h * PR)); post.uniforms.uPx.value.set(1 / (w * PR), 1 / (h * PR)); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); renderer.render(postScene, postCam);
+}
+let last = 0; function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(frame); }
+reset(); requestAnimationFrame(frame);
+
+/* ================= input ================= */
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
+addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
+const cv = $('cv'), sk = $('stick');
+cv.addEventListener('pointerdown', e => { if (state !== 'play') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
+const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === held.id) held.jump = false; };
+cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
+$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
+$('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
+window.__road = { get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z) { me.x = x; me.z = z; me.speed = 0; const r = nearest(x, z); triS = Math.min(LEN - 2, r.s + 12); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; }, leg(n) { leg = n; },
+  places: {}, route: s => at(s), LEN, S: { greet: S_GREET, river: S_RIVER, bridge: S_BRIDGE }, probe: (x, z) => ({ w: isWater(x, z), f: floorAt(x, z), br: onBridge(x, z), d: +nearest(x, z).d.toFixed(1) }) };
+</script>
+</body>
+</html>
