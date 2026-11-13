@@ -1,0 +1,92 @@
+{
+ "anxiety": {
+  "commons": "File:Edvard Munch - Anxiety - Google Art Project.jpg",
+  "licence": "Public domain",
+  "date": "C.E.1894 (H.E.11,894)",
+  "credit": "Google Art Project: pic",
+  "size": [
+   775,
+   1000
+  ]
+ },
+ "karl_johan": {
+  "commons": "File:Edvard Munch - Evening on Karl Johan Street (1892).jpg",
+  "licence": "Public domain",
+  "date": "1892\u00a0",
+  "credit": "Kode Musuem Bergen",
+  "size": [
+   1000,
+   695
+  ]
+ },
+ "melancholy": {
+  "commons": "File:Munch Melankoli 1892.jpg",
+  "licence": "Public domain",
+  "date": "1892",
+  "credit": "http://samling.nasjonalmuseet.no/no/object/NG.M.02813 Nasjonalmuseet / Lathion, Jacques",
+  "size": [
+   1000,
+   670
+  ]
+ },
+ "girls_bridge": {
+  "commons": "File:Munch Girls on the pier.jpg",
+  "licence": "Public domain",
+  "date": "1901\u00a0",
+  "credit": "http://samling.nasjonalmuseet.no/no/object/NG.M.00844 Nasjonalmuseet / H\u00f8stland, B\u00f8rre",
+  "size": [
+   915,
+   1000
+  ]
+ },
+ "dance_of_life": {
+  "commons": "File:Edvard Munch - The dance of life (1899-1900).jpg",
+  "licence": "Public domain",
+  "date": "from 1899 until 1900date QS:P,+1500-00-00T00:00:00Z/6,P580,+1899-00-00T00:00:00Z/9,P582,+1",
+  "credit": "https://samling.nasjonalmuseet.no/no/object/NG.M.00941 Nasjonalmuseet / H\u00f8stland, B\u00f8rre",
+  "size": [
+   1000,
+   656
+  ]
+ },
+ "moonlight": {
+  "commons": "File:Edvard Munch - Moonlight - NG.M.02815 - National Museum of Art, Architecture and Design.jpg",
+  "licence": "Public domain",
+  "date": "1895\u00a0",
+  "credit": "National Museum of Art, Architecture and Design\u00a0",
+  "size": [
+   1000,
+   841
+  ]
+ },
+ "despair": {
+  "commons": "File:Edvard Munch - Despair - MM.M.00513 - Munch Museum.jpg",
+  "licence": "Public domain",
+  "date": "1894\u00a0",
+  "credit": "Munch Museum\u00a0",
+  "size": [
+   798,
+   1000
+  ]
+ },
+ "summer_night": {
+  "commons": "File:Edvard Munch - Summer Night's Dream. The Voice (1893).jpg",
+  "licence": "Public domain",
+  "date": "1893date QS:P571,+1893-00-00T00:00:00Z/9",
+  "credit": "The Athenaeum: pic",
+  "size": [
+   1000,
+   814
+  ]
+ },
+ "starry_night": {
+  "commons": "File:Edvard Munch - Starry Night - MM.M.00187 - Munch Museum (cropped).jpg",
+  "licence": "Public domain",
+  "date": "from 1922 until 1924date QS:P,+1922-00-00T00:00:00Z/8,P580,+1922-00-00T00:00:00Z",
+  "credit": "https://munch.emuseum.com/en/internal/media/dispatcher/4621/resize%3Aformat%3Dfu",
+  "size": [
+   804,
+   1000
+  ]
+ }
+}

@@ -5,304 +5,78 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>The Night Road</title>
-<style>
-  :root { --ink:#1c1a22; --paper:#f1e9d8; --go:#b8432b; }
-  html, body { margin:0; height:100%; background:#14151d; overflow:hidden; overscroll-behavior:none;
-    -webkit-user-select:none; user-select:none; -webkit-touch-callout:none; touch-action:none;
-    font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; color:var(--paper); }
-  canvas { position:fixed; inset:0; width:100%; height:100%; display:block; }
-  .screen { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; transition:opacity 2s ease; padding:24px; box-sizing:border-box; }
-  .screen.hidden { opacity:0; pointer-events:none; }
-  #title { background:#14151d; justify-content:flex-end; padding-bottom:max(5vh, env(safe-area-inset-bottom)); }
-  #title img { position:absolute; inset:0; width:100%; height:100%; object-fit:contain; }
-  #title .words { position:relative; background:linear-gradient(rgba(20,21,29,0), rgba(20,21,29,.82) 35%); padding:60px 30px 0; width:100%; }
-  h1 { font-weight:400; font-size:clamp(32px,6.5vw,68px); letter-spacing:.02em; margin:0 0 .1em; }
-  .screen p { font-size:clamp(14px,2vw,19px); margin:.2em 0; font-style:italic; opacity:.85; }
-  button.go { margin-top:1.2em; font:inherit; font-size:clamp(17px,2.4vw,22px); color:var(--paper); background:var(--go);
-    border:0; border-radius:999px; padding:.6em 1.7em; cursor:pointer; box-shadow:0 6px 18px rgba(0,0,0,.4); }
-  #end { background:#2c2f36; justify-content:center; gap:2.2vh; }
-  #end img { max-width:min(86vw, 150vh); max-height:48vh; border:12px solid #c7a24c; box-shadow:10px 14px 34px rgba(0,0,0,.55); }
-  #end h2 { font-weight:400; font-style:italic; font-size:clamp(19px,3vw,27px); margin:0; }
-  #end p { font-style:normal; font-size:clamp(13px,1.8vw,16px); max-width:min(640px,90vw); line-height:1.4; }
-  #tip { position:fixed; left:0; right:0; bottom:max(24px, env(safe-area-inset-bottom)); text-align:center; pointer-events:none;
-    font-size:clamp(14px,2vw,18px); font-style:italic; text-shadow:0 1px 6px rgba(0,0,0,.9); transition:opacity 1.5s; padding:0 24px; }
-  #tip.hidden { opacity:0; }
-  #bMute { position:fixed; right:max(14px, env(safe-area-inset-right)); top:max(14px, env(safe-area-inset-top)); width:40px; height:40px;
-    border-radius:50%; border:0; background:rgba(241,233,216,.55); color:var(--ink); display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; }
-  #bMute svg { width:20px; height:20px; }
-  #stick { position:fixed; width:96px; height:96px; border-radius:50%; border:2px solid rgba(255,255,255,.35); display:none; pointer-events:none; transform:translate(-50%,-50%); }
-  #stick i { position:absolute; left:50%; top:50%; width:34px; height:34px; margin:-17px; border-radius:50%; background:rgba(255,255,255,.4); }
-  #err { position:fixed; inset:0; display:none; align-items:center; justify-content:center; background:#14151d; padding:30px; text-align:center; }
-</style>
+<link rel="stylesheet" href="../common/world.css">
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
 </head>
 <body>
 <canvas id="cv"></canvas>
-<div id="stick"><i></i></div>
-<div id="tip" class="hidden"></div>
-<button id="bMute" aria-label="Sound">
-  <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-</button>
 <div id="title" class="screen">
   <img src="scream.jpg" alt="The Scream by Edvard Munch">
   <div class="words">
     <h1>The Night Road</h1>
-    <p>inside the paintings of Edvard Munch</p>
+    <p>Åsgårdstrand, a summer night in the 1890s · inside the paintings of Edvard Munch</p>
     <button class="go" id="start">Step in</button>
   </div>
 </div>
 <div id="end" class="screen hidden">
   <img src="sun.jpg" alt="The Sun by Edvard Munch">
   <h2>The Sun</h2>
-  <p>Edvard Munch painted The Scream in 1893. The Sun, from 1911, fills a wall of the great hall of the University of Oslo.</p>
-  <p>The people you met on the road, in the street and by the shore come from his other paintings.</p>
-  <p style="font-size:11px;opacity:.55">Images: Wikimedia Commons, public domain</p>
+  <p>Edvard Munch spent his summers in Åsgårdstrand, a fishing village on the Oslofjord. Its pier, its shore and its white houses are in his paintings, and the streets you walked are the real ones.</p>
+  <p>These are the paintings you found.</p>
+  <div class="cards" id="gallery" style="width:min(1000px,92vw)"></div>
+  <p class="small">Paintings: public domain, via Wikimedia Commons. Street plan © OpenStreetMap contributors.</p>
   <button class="go" id="again">Walk it again</button>
 </div>
 <div id="err">This world needs WebGL, which this browser could not start.</div>
 
 <script src="../common/sound.js"></script>
 <script type="module">
-import * as THREE from 'three';
-const $ = id => document.getElementById(id), SND = window.Sound;
-const rnd = (a, b) => a + Math.random() * (b - a), clamp = (v, a, b) => Math.max(a, Math.min(b, v));
-const sstep = (a, b, v) => { const t = clamp((v - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
-const mix = (a, b, t) => a + (b - a) * t;
+import { THREE, createWorld, canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
+const SND = window.Sound;
+const map = await (await fetch('map.json')).json();
+const B = map.bounds;
 
 /* ---------- the lie of the land ----------
-   Metres. The road starts high at z = 0 and runs downhill towards negative z; the fjord lies to the east (positive x).
-   Hill road, then the city street, the shore and pier, the meadow, and the path of moonlight out across the water. */
-const ROAD_A = [0, 12], ROAD_B = [40, -178];
-const STREET_X = 40, STREET_Z0 = -186, STREET_Z1 = -316;
-const PIER = { z: -372, len: 46, w: 5, y: 1.0 };
-const DANCE = { x: 62, z: -452, r: 13 };
-const MOON_Z = -486, MOON_LEN = 330, MOON_W = 8;
-const SCREAMER = { x: 4.6, z: -9 };
-const shoreX = z => mix(96, 122, sstep(-190, -340, z)) + 9 * Math.sin(z * 0.045);
-const baseH = z => 2 + 40 * sstep(-190, -10, z) + Math.max(0, z) * 0.12;
-function ground(x, z) {
-  const b = baseH(z), sx = shoreX(z), f = sstep(0, 1, (sx - x) / (16 + b * 0.9));
-  let h = -1.6 + (b + 1.6) * f;
-  h += 14 * sstep(70, 230, sx - x) * (0.5 + 0.5 * Math.sin(x * 0.03 + z * 0.021));
-  h += 0.35 * Math.sin(x * 0.21) * Math.cos(z * 0.17) * f;
-  return h;
+   The shore as it ran before the modern marina, traced from the map, north to south. The sea is to the east; the village climbs to the west. */
+const COAST = [[-118, -470], [-110, -376], [-96, -330], [-80, -290], [-70, -250], [-55, -225], [-35, -198], [-20, -170], [0, -130], [12, -90], [30, -50], [50, -12], [68, 28], [90, 60], [120, 92], [150, 112], [166, 150], [162, 182], [176, 240], [200, 290], [240, 332], [270, 362], [330, 440]];
+function inland(x, z) {            // metres from the shore: positive on land, negative out to sea
+  let best = 1e9, sign = 1;
+  for (let i = 0; i < COAST.length - 1; i++) {
+    const a = COAST[i], b = COAST[i + 1], dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz), 0, 1);
+    const d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t); if (d < best) { best = d; sign = dx * (z - a[1]) - dz * (x - a[0]) > 0 ? 1 : -1; }
+  }
+  return best * sign;
 }
-const pierX0 = () => shoreX(PIER.z) - 6, moonX0 = () => shoreX(MOON_Z) - 4;
-function floorAt(x, z) {            // what she stands on, or null where she may not go
-  const g = ground(x, z);
-  if (Math.abs(z - PIER.z) < PIER.w / 2 && x > pierX0() && x < pierX0() + PIER.len) return Math.max(g, PIER.y);
-  if (Math.abs(z - MOON_Z) < MOON_W / 2 && x > moonX0() && x < moonX0() + MOON_LEN + 12) return Math.max(g, 0.12);
-  return g > -0.3 ? g : null;
-}
-
-/* ---------- renderer ---------- */
-let renderer;
-try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: true }); } catch (e) { $('err').style.display = 'flex'; throw e; }
-renderer.setPixelRatio(Math.min(devicePixelRatio || 1, 2));
-const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xb5653a, 60, 520);
-const camera = new THREE.PerspectiveCamera(62, 1, 0.3, 2400);
-const uni = { uTime: { value: 0 }, uDread: { value: 0 } };
-const tinted = [];                  // every material whose colour follows the hour
+const height = (x, z) => { const d = inland(x, z); return d > 0 ? 0.25 + 1.3 * sstep(0, 16, d) + 30 * sstep(14, 560, d) + 0.25 * Math.sin(x * 0.11) * Math.cos(z * 0.09) : -1.7 * sstep(0, -14, d); };
+const street = name => map.streets.filter(s => s.n === name).sort((a, b) => b.l.length - a.l.length)[0].l;
+const ROAD = street('Grev Wedels gate').slice().sort((a, b) => a[0] - b[0]);      // the road above: it comes down into the village from the west
+const HIGH = street('Edvard Munchs gate');
+const along = (line, t) => { const f = clamp(t, 0, 0.999) * (line.length - 1), i = Math.floor(f); return [mix(line[i][0], line[i + 1][0], f - i), mix(line[i][1], line[i + 1][1], f - i)]; };
+const SCREAM = along(ROAD, 0.36), PIER = { a: [44, 2], b: [112, -16], w: 5.5, y: 1.0 }, DANCE = { x: 124, z: 104, r: 12 }, WOOD = { x: -96, z: -338 }, SHORE = { x: -60, z: -236 };
+const MOON = { x0: 108, z: -15, len: 330, w: 8 };
 
 /* ---------- paint ---------- */
-function canvasTex(w, h, draw, repeat) {
-  const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d'); g.lineCap = 'round'; g.lineJoin = 'round';
-  draw(g, w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
-  if (repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; } t.anisotropy = 4; return t;
-}
-// long wavy brushstrokes, the way he fills a hillside or a sky
-function strokes(g, w, h, cols, n, wid, wave, vertical) {
-  for (let i = 0; i < n; i++) {
-    g.strokeStyle = cols[i % cols.length]; g.lineWidth = rnd(wid * 0.5, wid * 1.4); g.globalAlpha = rnd(0.55, 1);
-    const y = rnd(0, h), ph = rnd(0, 6.28), len = rnd(w * 0.3, w * 1.1), x0 = rnd(-w * 0.2, w * 0.8);
-    g.beginPath();
-    for (let x = 0; x <= len; x += 12) {
-      const yy = y + Math.sin(x * 0.012 + ph) * wave + Math.sin(x * 0.031 + ph * 2) * wave * 0.4;
-      for (const dx of [0, -w, w]) for (const dy of [0, -h, h]) { if (dx || dy) continue; }
-      vertical ? g.lineTo(yy, x0 + x) : g.lineTo(x0 + x, yy);
-    }
-    g.stroke();
-  }
-  g.globalAlpha = 1;
-}
-const groundTex = canvasTex(1024, 1024, (g, w, h) => {
-  g.fillStyle = '#b9b9b9'; g.fillRect(0, 0, w, h);
-  strokes(g, w, h, ['#e9e9e9', '#9a9a9a', '#cfcfcf', '#858585', '#f4f4f4', '#aaaaaa'], 420, 13, 16);
+const groundTex = canvasTex(1024, 1024, (g, w, h) => { g.fillStyle = '#b9b9b9'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#e9e9e9', '#9a9a9a', '#cfcfcf', '#858585', '#f4f4f4', '#aaaaaa'], 420, 13, 16); }, true);
+const waterTex = canvasTex(1024, 1024, (g, w, h) => { g.fillStyle = '#34497c'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#27386b', '#4a63a0', '#6a7fb5', '#22305c', '#5b6aa8', '#8b8fbe', '#c9b877'], 360, 12, 9); }, true);
+const roadTex = canvasTex(512, 1024, (g, w, h) => { g.fillStyle = '#9a6a48'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#b9713d', '#7b5238', '#d08a4a', '#8d6a5c', '#a3683f', '#5f463c', '#c79a6a'], 260, 11, 5, true); }, true);
+const goldTex = canvasTex(1024, 128, (g, w, h) => { g.clearRect(0, 0, w, h); strokes(g, w, h, ['#f6d46a', '#ffe9a0', '#e9b84a', '#fff6cf', '#f1c85a'], 150, 9, 3); }, true);
+// the wooden houses of the village: boards, and small windows with a lamp behind some of them
+const boards = (base, cols) => canvasTex(512, 512, (g, w, h) => {
+  g.fillStyle = base; g.fillRect(0, 0, w, h); strokes(g, w, h, cols, 110, 10, 2);
+  for (let r = 0; r < 2; r++) for (let c = 0; c < 3; c++) { const x = 44 + c * 168, y = 96 + r * 250; g.fillStyle = Math.random() < 0.55 ? '#f2c865' : '#2a2d44'; g.fillRect(x, y, 62, 92); g.strokeStyle = '#f4f0e4'; g.lineWidth = 7; g.strokeRect(x, y, 62, 92); g.beginPath(); g.moveTo(x + 31, y); g.lineTo(x + 31, y + 92); g.moveTo(x, y + 46); g.lineTo(x + 62, y + 46); g.lineWidth = 4; g.stroke(); }
 }, true);
-const waterTex = canvasTex(1024, 1024, (g, w, h) => {
-  g.fillStyle = '#34497c'; g.fillRect(0, 0, w, h);
-  strokes(g, w, h, ['#27386b', '#4a63a0', '#6a7fb5', '#22305c', '#5b6aa8', '#8b8fbe', '#c9b877'], 360, 12, 9);
-}, true);
-const roadTex = canvasTex(512, 1024, (g, w, h) => {
-  g.fillStyle = '#8a5a3a'; g.fillRect(0, 0, w, h);
-  strokes(g, w, h, ['#b9713d', '#6b4630', '#d08a4a', '#7d5a4c', '#a3683f', '#4f3a34', '#c79a6a'], 260, 11, 5, true);
-}, true);
-const goldTex = canvasTex(1024, 128, (g, w, h) => {
-  g.clearRect(0, 0, w, h);
-  strokes(g, w, h, ['#f6d46a', '#ffe9a0', '#e9b84a', '#fff6cf', '#f1c85a'], 150, 9, 3);
-}, true);
-const wallTex = hue => canvasTex(512, 512, (g, w, h) => {
-  g.fillStyle = hue; g.fillRect(0, 0, w, h);
-  strokes(g, w, h, ['#2a2c4a', '#3b3558', '#1f2340', '#4a4468'], 90, 14, 4, true);
-  for (let r = 0; r < 4; r++) for (let c = 0; c < 4; c++) {
-    const lit = Math.random() < 0.7; g.fillStyle = lit ? (Math.random() < 0.5 ? '#f3c95a' : '#f0a94a') : '#141627';
-    g.fillRect(40 + c * 118 + rnd(-4, 4), 50 + r * 112 + rnd(-4, 4), 56, 74);
-    g.strokeStyle = '#191a2c'; g.lineWidth = 5; g.strokeRect(40 + c * 118, 50 + r * 112, 56, 74);
-  }
-});
-function mat(opts) { const m = new THREE.MeshBasicMaterial(opts); m.userData.base = (opts.color ? new THREE.Color(opts.color) : new THREE.Color(1, 1, 1)); tinted.push(m); return m; }
-// feeling bends the land: everything solid sways with the dread in the air
-function bend(m, amount) {
-  m.onBeforeCompile = s => {
-    s.uniforms.uTime = uni.uTime; s.uniforms.uDread = uni.uDread;
-    s.vertexShader = 'uniform float uTime; uniform float uDread;\n' + s.vertexShader.replace('#include <begin_vertex>',
-      `#include <begin_vertex>
-       vec4 wp = modelMatrix * vec4(position, 1.0);
-       transformed.x += sin(wp.z * 0.09 + uTime * 1.4) * uDread * ${amount.toFixed(2)};
-       transformed.z += sin(wp.x * 0.07 + uTime * 1.1) * uDread * ${(amount * 0.6).toFixed(2)};`);
-  };
-  return m;
-}
-
-/* ---------- sky ---------- */
-const skyMat = new THREE.ShaderMaterial({
-  side: THREE.BackSide, depthWrite: false, fog: false,
-  uniforms: { uSky: { value: null }, uTime: uni.uTime, uDread: uni.uDread, uNight: { value: 0 }, uSun: { value: 0 } },
-  vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-  fragmentShader: `
-    uniform sampler2D uSky; uniform float uTime, uDread, uNight, uSun; varying vec3 vDir;
-    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
-    void main(){
-      vec3 d = normalize(vDir); float az = atan(d.z, d.x), el = d.y;
-      // sunset: the sky of The Scream, wrapped round the horizon and set flowing along its own bands
-      float wob = 1.0 + 2.5 * uDread;
-      vec2 uv = vec2(az / 3.14159 * 1.5 + uTime * 0.006 * wob, clamp(el * 1.9 + 0.06, 0.0, 0.98));
-      uv.y += sin(uv.x * 9.0 + uTime * 0.5) * 0.018 * wob + sin(uv.x * 23.0 - uTime * 0.8) * 0.006 * wob;
-      vec3 sunset = texture2D(uSky, vec2(abs(fract(uv.x * 0.5) * 2.0 - 1.0), clamp(uv.y, 0.01, 0.98))).rgb;
-      sunset = mix(vec3(0.33, 0.36, 0.52), sunset, smoothstep(-0.08, 0.05, el));
-      // night: deep blue bands, a few stars, the moon low in the east
-      float band = sin(el * 46.0 + sin(az * 5.0 + uTime * 0.1) * 1.6);
-      vec3 night = mix(vec3(0.16, 0.26, 0.46), vec3(0.04, 0.07, 0.2), smoothstep(0.0, 0.7, el)) + band * 0.018;
-      vec2 sp = vec2(az * 26.0, el * 40.0), sg = floor(sp); float st = hash(sg);
-      float sr = length(fract(sp) - 0.5 - (vec2(hash(sg + 3.0), hash(sg + 7.0)) - 0.5) * 0.6);
-      night += step(0.93, st) * smoothstep(0.1, 0.03, sr) * smoothstep(0.06, 0.3, el) * (0.6 + 0.4 * sin(uTime * 2.0 + st * 90.0)) * vec3(0.95, 0.9, 0.65);
-      vec3 east = normalize(vec3(1.0, 0.2, 0.0)); float md = distance(d, east);
-      night = mix(night, vec3(0.98, 0.9, 0.62), (1.0 - smoothstep(0.045, 0.055, md)) * (1.0 - uSun));
-      night += vec3(0.5, 0.42, 0.2) * exp(-md * 7.0) * 0.5 * (1.0 - uSun);
-      vec3 col = mix(sunset, night, uNight);
-      // sunrise: the rays of The Sun, straight strokes out from a white centre
-      vec3 se = normalize(vec3(1.0, 0.1, 0.0)); float sd = distance(d, se);
-      float ang = atan(d.y - se.y, d.z - se.z);
-      float ray = smoothstep(0.35, 0.65, 0.5 + 0.5 * sin(ang * 34.0)), ring = 0.5 + 0.5 * sin(sd * 46.0 - uTime * 0.6);
-      vec3 rayCol = mix(vec3(0.99, 0.9, 0.45), mix(vec3(0.45, 0.62, 0.86), vec3(0.93, 0.5, 0.4), step(0.5, fract(ang * 5.41))), smoothstep(0.25, 0.9, sd));
-      vec3 day = mix(vec3(0.78, 0.86, 0.92), vec3(0.42, 0.62, 0.86), smoothstep(0.0, 0.8, el));
-      day = mix(day, rayCol, ray * (0.35 + 0.3 * ring) * smoothstep(1.5, 0.1, sd));
-      day = mix(day, vec3(1.0, 0.99, 0.9), smoothstep(0.2, 0.05, sd));
-      col = mix(col, day, uSun);
-      gl_FragColor = vec4(col, 1.0);
-    }` });
-const sky = new THREE.Mesh(new THREE.SphereGeometry(1800, 48, 24), skyMat); sky.renderOrder = -10; scene.add(sky);
-new THREE.TextureLoader().load('sky.jpg', t => { t.wrapS = THREE.MirroredRepeatWrapping; skyMat.uniforms.uSky.value = t; });
-
-/* ---------- land and water ---------- */
-{
-  const X0 = -230, X1 = 330, Z0 = 90, Z1 = -590, nx = 150, nz = 180;
-  const pos = [], col = [], uv = [], idx = [], c = new THREE.Color(), c2 = new THREE.Color();
-  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) {
-    const x = mix(X0, X1, i / nx), z = mix(Z0, Z1, j / nz), h = ground(x, z);
-    pos.push(x, h, z); uv.push(x / 34, z / 34);
-    if (z > -190) c.set('#55603f').lerp(c2.set('#6f5a3c'), 0.5 + 0.5 * Math.sin(x * 0.05 + z * 0.03));
-    else if (z > -325) c.set(Math.abs(x - STREET_X) < 9 ? '#6d6278' : '#3b4046');
-    else c.set('#4d8a4c').lerp(c2.set('#7fae52'), sstep(60, 0, Math.hypot(x - DANCE.x, z - DANCE.z)));
-    c.lerp(c2.set('#d8b49a'), sstep(1.6, 0.2, h) * (z < -200 ? 1 : 0.6));      // pale shore
-    c.lerp(c2.set('#3d4f78'), sstep(0.0, -1.2, h));
-    col.push(c.r, c.g, c.b);
-  }
-  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, d = a + nx + 1, e = d + 1; idx.push(a, b, d, b, e, d); }
-  const g = new THREE.BufferGeometry();
-  g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
-  g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx);
-  scene.add(new THREE.Mesh(g, bend(mat({ map: groundTex, vertexColors: true }), 1.3)));
-}
-const waterMat = mat({ map: waterTex }); waterTex.repeat.set(46, 46);
-const water = new THREE.Mesh(new THREE.PlaneGeometry(3600, 3600), waterMat); water.rotation.x = -Math.PI / 2; water.position.set(600, -0.15, -300); scene.add(water);
-// the blue land across the fjord
-{
-  const m = mat({ color: '#33457a' }), g = new THREE.SphereGeometry(1, 20, 10);
-  for (const [x, z, sx, sy, sz] of [[760, 120, 260, 46, 420], [900, -260, 300, 62, 380], [820, -640, 240, 40, 330], [640, 520, 220, 34, 300], [1000, -980, 320, 54, 360]]) {
-    const h = new THREE.Mesh(g, m); h.scale.set(sx, sy, sz); h.position.set(x, -6, z); scene.add(h);
-  }
-}
-// the column of moonlight on the water, which is solid
-goldTex.repeat.set(9, 1);
-const moonMat = new THREE.MeshBasicMaterial({ map: goldTex, transparent: true, fog: false, depthWrite: false });
-const moonPath = new THREE.Mesh(new THREE.PlaneGeometry(MOON_LEN + 500, MOON_W), moonMat); moonPath.rotation.x = -Math.PI / 2;
-moonPath.position.set(moonX0() + (MOON_LEN + 500) / 2, 0.1, MOON_Z); scene.add(moonPath);
-
-function boxBetween(a, b, thick, m) {            // a plank or rail from point a to point b
-  const d = new THREE.Vector3().subVectors(b, a), mesh = new THREE.Mesh(new THREE.BoxGeometry(thick, thick, d.length()), m);
-  mesh.position.copy(a).addScaledVector(d, 0.5); mesh.lookAt(b); scene.add(mesh); return mesh;
-}
-// the plank road and its railing, on the fjord side
-{
-  const d = new THREE.Vector2(ROAD_B[0] - ROAD_A[0], ROAD_B[1] - ROAD_A[1]), len = d.length(); d.normalize();
-  const r = new THREE.Vector2(-d.y, d.x), n = 64, pos = [], uv = [], idx = [], W2 = 4.2;
-  for (let i = 0; i <= n; i++) {
-    const s = i / n * len, cx = ROAD_A[0] + d.x * s, cz = ROAD_A[1] + d.y * s;
-    for (const k of [-1, 1]) { const x = cx + r.x * W2 * k, z = cz + r.y * W2 * k; pos.push(x, ground(cx, cz) + 0.22, z); uv.push(k > 0 ? 1 : 0, s / 16); }
-    if (i < n) { const a = i * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); }
-  }
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx);
-  const rm = mat({ map: roadTex, side: THREE.DoubleSide }); scene.add(new THREE.Mesh(g, bend(rm, 1.3)));
-  const railM = bend(mat({ color: '#8a5234' }), 1.3), P = s => { const x = ROAD_A[0] + d.x * s + r.x * (W2 + 0.2), z = ROAD_A[1] + d.y * s + r.y * (W2 + 0.2); return new THREE.Vector3(x, ground(x - r.x * W2, z - r.y * W2) + 0.2, z); };
-  for (let s = 0; s < len; s += 5) {
-    const a = P(s), b = P(Math.min(len, s + 5));
-    boxBetween(a, a.clone().setY(a.y + 1.25), 0.2, railM);
-    for (const hgt of [0.45, 0.85, 1.25]) boxBetween(a.clone().setY(a.y + hgt), b.clone().setY(b.y + hgt), 0.14, railM);
-  }
-}
-// the street: tall dark houses with lit windows
-const walls = [];
-{
-  const hues = ['#2b2d4d', '#33304f', '#262a45', '#3a3352'];
-  for (const side of [-1, 1]) for (let z = STREET_Z0 - 8, k = 0; z > STREET_Z1; z -= 17, k++) {
-    const w = 15, dp = 13, h = rnd(12, 19), x = STREET_X + side * (9.5 + dp / 2);
-    const m = bend(mat({ map: wallTex(hues[(k + (side > 0 ? 2 : 0)) % 4]) }), 0.9), b = new THREE.Mesh(new THREE.BoxGeometry(dp, h, w), m);
-    b.position.set(x, ground(x, z) + h / 2 - 0.5, z); scene.add(b); walls.push([x - dp / 2 - 0.6, x + dp / 2 + 0.6, z - w / 2 - 0.6, z + w / 2 + 0.6]);
-  }
-}
-// the pier, the yellow boat, the white house, the stones on the shore, the round trees
-{
-  const pm = mat({ map: roadTex }), deck = new THREE.Mesh(new THREE.BoxGeometry(PIER.len, 0.3, PIER.w), pm); deck.position.set(pierX0() + PIER.len / 2, PIER.y - 0.15, PIER.z); scene.add(deck);
-  const rm = mat({ color: '#d9d2c0' });
-  for (let x = pierX0(); x <= pierX0() + PIER.len; x += 4) for (const s of [-1, 1]) {
-    const a = new THREE.Vector3(x, PIER.y, PIER.z + s * PIER.w / 2);
-    boxBetween(a, a.clone().setY(PIER.y + 1.1), 0.16, rm); if (x + 4 <= pierX0() + PIER.len) boxBetween(a.clone().setY(PIER.y + 1.1), a.clone().setY(PIER.y + 1.1).setX(x + 4), 0.12, rm);
-  }
-  const boat = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 8, 0, 6.3, Math.PI / 2, Math.PI / 2), mat({ color: '#e5b93a', side: THREE.DoubleSide }));
-  boat.scale.set(3.4, 1.0, 1.25); boat.position.set(pierX0() + 30, 0.55, PIER.z + 5.2); boat.rotation.y = 0.2; scene.add(boat);
-  const hx = shoreX(-352) - 34, hz = -350, house = new THREE.Mesh(new THREE.BoxGeometry(14, 7, 10), mat({ color: '#e9e4d6' })); house.position.set(hx, ground(hx, hz) + 3.4, hz); scene.add(house);
-  const roof = new THREE.Mesh(new THREE.ConeGeometry(10.5, 4.5, 4), mat({ color: '#7a3b33' })); roof.rotation.y = Math.PI / 4; roof.scale.z = 0.75; roof.position.set(hx, ground(hx, hz) + 9.1, hz); scene.add(roof);
-  walls.push([hx - 7.6, hx + 7.6, hz - 5.6, hz + 5.6]);
-  const stone = [mat({ color: '#d9c2b6' }), mat({ color: '#b9a9b4' }), mat({ color: '#e6d6c0' }), mat({ color: '#9d93a8' })], sg = new THREE.SphereGeometry(1, 10, 7);
-  for (let i = 0; i < 90; i++) { const z = rnd(-330, -560), x = shoreX(z) - rnd(1, 9), s = new THREE.Mesh(sg, stone[i % 4]); const k = rnd(0.35, 1.2); s.scale.set(k * rnd(1, 1.6), k * 0.55, k); s.position.set(x, ground(x, z) + 0.1, z); scene.add(s); }
-  const leafM = mat({ color: '#274a33' }), leafM2 = mat({ color: '#35603a' }), trunkM = mat({ color: '#4a3528' }), lg = new THREE.SphereGeometry(1, 14, 10);
-  for (const [x, z, k] of [[hx + 13, hz + 2, 1.5], [70, -402, 1.1], [30, -430, 1.3], [88, -470, 0.9], [22, -476, 1.2], [56, -500, 1.4], [100, -428, 0.8], [8, -386, 1.3], [-24, -440, 1.6], [-10, -330, 1.2], [78, -338, 1.0]]) {
-    const y = ground(x, z), t = new THREE.Mesh(new THREE.CylinderGeometry(0.35 * k, 0.5 * k, 5 * k, 7), trunkM); t.position.set(x, y + 2.5 * k, z); scene.add(t);
-    const a = new THREE.Mesh(lg, leafM); a.scale.set(4.6 * k, 4 * k, 4.6 * k); a.position.set(x, y + 7 * k, z); scene.add(a);
-    const b = new THREE.Mesh(lg, leafM2); b.scale.set(3 * k, 2.6 * k, 3 * k); b.position.set(x + 1.6 * k, y + 8.2 * k, z + 1.2 * k); scene.add(b);
-  }
-}
+const houseStyles = [
+  { wall: boards('#e9e4d6', ['#f6f2e8', '#d6d0c0', '#ffffff', '#c9c4b6']), roof: '#5e3a34' }, { wall: boards('#e9e4d6', ['#f6f2e8', '#d6d0c0', '#ffffff', '#c9c4b6']), roof: '#3f4352' },
+  { wall: boards('#d8b468', ['#e6c67c', '#c29a52', '#efd595', '#b88f4a']), roof: '#5e3a34' }, { wall: boards('#8f3b2e', ['#a3483a', '#7a3026', '#b55a48', '#6b2a22']), roof: '#3a3a44' },
+  { wall: boards('#c9cfd6', ['#dde2e8', '#aeb6c0', '#eef1f4', '#9aa3ae']), roof: '#6a4038' } ];
 
 /* ---------- the people, drawn flat as he drew them ---------- */
-function person(draw, w) { return canvasTex(w || 256, 512, draw); }
+const person = (draw, w) => canvasTex(w || 256, 512, draw);
 const P = {
   body(g, x, top, wt, wb, bot, col, edge) {
     g.fillStyle = col; g.beginPath(); g.moveTo(x - wt, top); g.bezierCurveTo(x - wt - 10, mix(top, bot, 0.4), x - wb, mix(top, bot, 0.7), x - wb, bot);
     g.lineTo(x + wb, bot); g.bezierCurveTo(x + wb, mix(top, bot, 0.7), x + wt + 10, mix(top, bot, 0.4), x + wt, top); g.closePath(); g.fill();
-    g.strokeStyle = edge || 'rgba(10,10,25,.55)'; g.lineWidth = 5; g.stroke();
-    g.strokeStyle = 'rgba(120,130,190,.22)'; g.lineWidth = 6;
+    g.strokeStyle = edge || 'rgba(10,10,25,.55)'; g.lineWidth = 5; g.stroke(); g.strokeStyle = 'rgba(120,130,190,.22)'; g.lineWidth = 6;
     for (let i = 0; i < 4; i++) { g.beginPath(); g.moveTo(x - wt * 0.5 + i * wt * 0.33, top + 20); g.quadraticCurveTo(x - wb * 0.6 + i * wb * 0.4 + 8, mix(top, bot, 0.5), x - wb * 0.6 + i * wb * 0.4, bot - 14); g.stroke(); }
   },
   head(g, x, y, rx, ry, col) { g.fillStyle = col; g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, 7); g.fill(); g.strokeStyle = 'rgba(20,20,30,.5)'; g.lineWidth = 3; g.stroke(); },
@@ -312,6 +86,7 @@ const P = {
     g.beginPath(); g.moveTo(x - 5 * s, y + 13 * s); g.lineTo(x + 5 * s, y + 13 * s); g.stroke();
   },
   topHat(g, x, y) { g.fillStyle = '#12131c'; g.fillRect(x - 22, y - 62, 44, 60); g.fillRect(x - 34, y - 6, 68, 9); },
+  cap(g, x, y, col) { g.fillStyle = col; g.beginPath(); g.ellipse(x, y, 25, 13, 0, Math.PI, 0); g.fill(); g.fillRect(x - 4, y - 3, 34, 6); },
   bonnet(g, x, y, col) { g.fillStyle = col; g.beginPath(); g.ellipse(x, y, 40, 13, 0, 0, 7); g.fill(); g.beginPath(); g.ellipse(x, y - 12, 22, 15, 0, 0, 7); g.fill(); },
   legs(g, x, y, sw, col) { g.strokeStyle = col; g.lineWidth = 11; g.beginPath(); g.moveTo(x - 10, y); g.lineTo(x - 12 - sw, 498); g.moveTo(x + 10, y); g.lineTo(x + 12 + sw, 498); g.stroke(); },
 };
@@ -319,187 +94,211 @@ const T = {
   screamer: person(g => {
     P.body(g, 128, 215, 34, 52, 506, '#1b1c2b');
     g.strokeStyle = '#1b1c2b'; g.lineWidth = 26; g.beginPath(); g.moveTo(98, 240); g.quadraticCurveTo(74, 190, 96, 138); g.moveTo(158, 240); g.quadraticCurveTo(182, 190, 160, 138); g.stroke();
-    g.fillStyle = '#d6c690'; g.beginPath(); g.moveTo(128, 62); g.bezierCurveTo(172, 62, 172, 132, 150, 168); g.quadraticCurveTo(128, 204, 106, 168); g.bezierCurveTo(84, 132, 84, 62, 128, 62); g.fill();
-    g.strokeStyle = 'rgba(70,70,40,.6)'; g.lineWidth = 3; g.stroke();
-    g.fillStyle = '#d6c690'; g.beginPath(); g.ellipse(94, 132, 13, 30, 0.15, 0, 7); g.ellipse(162, 132, 13, 30, -0.15, 0, 7); g.fill(); g.stroke();
-    g.strokeStyle = '#4a4630'; g.lineWidth = 3; g.beginPath(); g.arc(114, 108, 8, 0, 7); g.moveTo(150, 108); g.arc(142, 108, 8, 0, 7); g.stroke();
+    g.fillStyle = '#d6c690'; g.beginPath(); g.moveTo(128, 62); g.bezierCurveTo(172, 62, 172, 132, 150, 168); g.quadraticCurveTo(128, 204, 106, 168); g.bezierCurveTo(84, 132, 84, 62, 128, 62); g.fill(); g.strokeStyle = 'rgba(70,70,40,.6)'; g.lineWidth = 3; g.stroke();
+    g.beginPath(); g.ellipse(94, 132, 13, 30, 0.15, 0, 7); g.ellipse(162, 132, 13, 30, -0.15, 0, 7); g.fill(); g.stroke();
+    g.strokeStyle = '#4a4630'; g.beginPath(); g.arc(114, 108, 8, 0, 7); g.moveTo(150, 108); g.arc(142, 108, 8, 0, 7); g.stroke();
     g.fillStyle = '#4a4630'; g.beginPath(); g.arc(114, 109, 2.5, 0, 7); g.arc(142, 109, 2.5, 0, 7); g.arc(124, 128, 1.8, 0, 7); g.arc(132, 128, 1.8, 0, 7); g.fill();
     g.fillStyle = '#3a2c26'; g.beginPath(); g.ellipse(128, 156, 10, 17, 0, 0, 7); g.fill();
   }),
+  despair: person(g => {            // the man at the railing in Despair: in profile, head bowed
+    P.body(g, 128, 196, 40, 46, 504, '#2a2a36'); g.fillStyle = '#b9a98a'; g.beginPath(); g.ellipse(140, 160, 24, 30, 0.2, 0, 7); g.fill();
+    g.fillStyle = '#1c1a20'; g.beginPath(); g.ellipse(128, 146, 30, 24, 0.2, Math.PI * 0.9, Math.PI * 2.1); g.fill(); g.strokeStyle = '#4a4034'; g.lineWidth = 3; g.beginPath(); g.moveTo(152, 166); g.lineTo(160, 172); g.stroke();
+  }),
   hatBack: person(g => { P.body(g, 128, 178, 34, 46, 500, '#22253a'); P.head(g, 128, 150, 21, 24, '#2b2832'); P.topHat(g, 128, 132); }),
   crowd: [0, 1, 2, 3, 4].map(k => person(g => {
-    P.body(g, 128, 190, 36, k % 2 ? 58 : 46, 504, ['#1d1f30', '#2a2238', '#191b2a', '#2b2a3a', '#1f2434'][k]);
-    g.fillStyle = '#e8e4d2'; g.fillRect(118, 186, 20, 16);
+    P.body(g, 128, 190, 36, k % 2 ? 58 : 46, 504, ['#1d1f30', '#2a2238', '#191b2a', '#2b2a3a', '#1f2434'][k]); g.fillStyle = '#e8e4d2'; g.fillRect(118, 186, 20, 16);
     P.head(g, 128, 152, 26, 34, ['#d2d6a8', '#d9d2ae', '#c9d4b0', '#e0d8b4', '#cfd0a0'][k]); P.face(g, 128, 152, 1);
-    if (k === 0 || k === 3) P.topHat(g, 128, 126); else if (k === 1) P.bonnet(g, 128, 124, '#3a2440'); else if (k === 4) P.bonnet(g, 128, 126, '#1c1d2c');
-    else { g.fillStyle = '#2a2420'; g.beginPath(); g.ellipse(128, 128, 27, 16, 0, Math.PI, 0); g.fill(); }
+    if (k === 0 || k === 3) P.topHat(g, 128, 126); else if (k === 1) P.bonnet(g, 128, 124, '#3a2440'); else if (k === 4) P.bonnet(g, 128, 126, '#1c1d2c'); else { g.fillStyle = '#2a2420'; g.beginPath(); g.ellipse(128, 128, 27, 16, 0, Math.PI, 0); g.fill(); }
   })),
   girl: (dress, hair, sw) => person(g => {
-    P.legs(g, 128, 430, sw, '#2a2630');
-    P.body(g, 128, 196, 26, 62, 452, dress, 'rgba(40,20,20,.45)');
+    P.legs(g, 128, 430, sw, '#2a2630'); P.body(g, 128, 196, 26, 62, 452, dress, 'rgba(40,20,20,.45)');
     g.strokeStyle = dress; g.lineWidth = 13; g.beginPath(); g.moveTo(104, 206); g.lineTo(90 - sw, 290); g.moveTo(152, 206); g.lineTo(166 + sw, 290); g.stroke();
-    P.head(g, 128, 170, 22, 24, '#e6c9a6');
-    g.fillStyle = hair; g.beginPath(); g.moveTo(104, 162); g.quadraticCurveTo(128, 138, 152, 162); g.lineTo(148, 262); g.quadraticCurveTo(128, 282, 108, 262); g.closePath(); g.fill();
-    P.bonnet(g, 128, 152, '#e3c878');
+    P.head(g, 128, 170, 22, 24, '#e6c9a6'); g.fillStyle = hair; g.beginPath(); g.moveTo(104, 162); g.quadraticCurveTo(128, 138, 152, 162); g.lineTo(148, 262); g.quadraticCurveTo(128, 282, 108, 262); g.closePath(); g.fill(); P.bonnet(g, 128, 152, '#e3c878');
   }),
   sitter: up => person(g => {
     g.fillStyle = '#1d2030'; g.beginPath(); g.moveTo(70, 500); g.quadraticCurveTo(60, 330, 120, 290); g.quadraticCurveTo(170, 280, 190, 340); g.quadraticCurveTo(214, 420, 236, 500); g.closePath(); g.fill();
     g.strokeStyle = '#1d2030'; g.lineWidth = 22; g.beginPath(); g.moveTo(150, 330); g.quadraticCurveTo(190, 340, 176, up ? 262 : 284); g.stroke();
-    P.head(g, up ? 162 : 170, up ? 246 : 268, 25, 28, '#d8cda6');
-    g.fillStyle = '#2a2420'; g.beginPath(); g.ellipse(up ? 158 : 166, up ? 230 : 252, 26, 15, -0.2, Math.PI, 0); g.fill();
+    P.head(g, up ? 162 : 170, up ? 246 : 268, 25, 28, '#d8cda6'); g.fillStyle = '#2a2420'; g.beginPath(); g.ellipse(up ? 158 : 166, up ? 230 : 252, 26, 15, -0.2, Math.PI, 0); g.fill();
     g.fillStyle = '#23202a'; g.beginPath(); g.arc(up ? 174 : 181, up ? 244 : 270, 3, 0, 7); g.fill();
   }, 300),
   couple: dress => person(g => {
-    P.legs(g, 108, 420, 4, '#14151e'); P.body(g, 108, 176, 32, 36, 430, '#14151e'); P.head(g, 112, 148, 21, 25, '#d9cfae');
-    g.fillStyle = '#231c1a'; g.beginPath(); g.ellipse(110, 132, 22, 13, 0, Math.PI, 0); g.fill();
+    P.legs(g, 108, 420, 4, '#14151e'); P.body(g, 108, 176, 32, 36, 430, '#14151e'); P.head(g, 112, 148, 21, 25, '#d9cfae'); g.fillStyle = '#231c1a'; g.beginPath(); g.ellipse(110, 132, 22, 13, 0, Math.PI, 0); g.fill();
     P.body(g, 178, 190, 26, 70, 500, dress, 'rgba(60,20,20,.4)'); P.head(g, 172, 162, 20, 23, '#ead2b0');
     g.fillStyle = '#b5622a'; g.beginPath(); g.moveTo(152, 156); g.quadraticCurveTo(176, 128, 196, 158); g.quadraticCurveTo(206, 220, 186, 250); g.quadraticCurveTo(190, 190, 152, 156); g.fill();
     g.strokeStyle = '#14151e'; g.lineWidth = 15; g.beginPath(); g.moveTo(132, 210); g.quadraticCurveTo(168, 240, 198, 226); g.stroke();
   }, 300),
   lone: (dress, hair) => person(g => { P.body(g, 128, 190, 28, 60, 504, dress, 'rgba(30,20,30,.5)'); P.head(g, 128, 160, 21, 25, '#e6d0ac'); P.face(g, 128, 160, 0.8);
     g.fillStyle = hair; g.beginPath(); g.ellipse(128, 142, 24, 16, 0, Math.PI, 0); g.fill(); g.fillRect(104, 142, 8, 60); g.fillRect(144, 142, 8, 60); }),
+  // village people of the 1890s: a fisherman in a cap and jersey, a landlady in an apron, a boy, the painter himself
+  fisher: person(g => { P.legs(g, 128, 400, 3, '#3b3a3a'); P.body(g, 128, 190, 36, 38, 410, '#2f4a5e'); P.head(g, 128, 158, 22, 25, '#d8b48e'); P.face(g, 128, 158, 0.8); P.cap(g, 128, 142, '#23262e');
+    g.fillStyle = '#c9c4b4'; g.beginPath(); g.ellipse(128, 186, 20, 14, 0, 0, Math.PI); g.fill(); }),
+  landlady: person(g => { P.body(g, 128, 190, 30, 64, 504, '#5a4a5c'); g.fillStyle = '#efe9da'; g.beginPath(); g.moveTo(108, 250); g.lineTo(148, 250); g.lineTo(166, 490); g.lineTo(90, 490); g.closePath(); g.fill();
+    P.head(g, 128, 160, 22, 25, '#e2c3a0'); P.face(g, 128, 160, 0.8); g.fillStyle = '#efe9da'; g.beginPath(); g.ellipse(128, 142, 24, 14, 0, Math.PI, 0); g.fill(); }),
+  boy: person(g => { P.legs(g, 128, 410, 4, '#3a3530'); P.body(g, 128, 250, 26, 30, 420, '#6a5a44'); P.head(g, 128, 220, 21, 23, '#e6c6a2'); P.face(g, 128, 220, 0.75); P.cap(g, 128, 206, '#4a4038'); }),
+  painter: person(g => { P.legs(g, 118, 410, 3, '#1c1c24'); P.body(g, 118, 184, 34, 38, 420, '#23242e'); P.head(g, 118, 152, 22, 26, '#dcc4a0'); P.face(g, 118, 152, 0.8);
+    g.fillStyle = '#3a2a20'; g.beginPath(); g.ellipse(118, 134, 24, 14, 0, Math.PI, 0); g.fill();
+    g.strokeStyle = '#6a4a30'; g.lineWidth = 7; g.beginPath(); g.moveTo(196, 500); g.lineTo(214, 190); g.moveTo(250, 500); g.lineTo(222, 190); g.moveTo(190, 330); g.lineTo(256, 330); g.stroke();
+    g.fillStyle = '#efe6cf'; g.fillRect(186, 204, 66, 96); g.fillStyle = '#c9352b'; g.fillRect(196, 214, 46, 22); g.fillStyle = '#34497c'; g.fillRect(196, 240, 46, 50);
+    g.fillStyle = '#b08a5a'; g.beginPath(); g.ellipse(160, 290, 22, 14, -0.3, 0, 7); g.fill(); }, 300),
+  voice: person(g => { P.body(g, 128, 190, 26, 54, 504, '#eeeadb', 'rgba(60,60,80,.4)'); P.head(g, 128, 160, 21, 25, '#e3c7a4'); P.face(g, 128, 160, 0.8); g.fillStyle = '#3a1f1a'; g.beginPath(); g.ellipse(128, 144, 26, 17, 0, Math.PI, 0); g.fill(); }),
+  linden: canvasTex(512, 512, (g, w, h) => {            // the big round tree by the pier in Girls on the Bridge
+    g.fillStyle = '#3a2a22'; g.fillRect(244, 330, 24, 180); g.fillStyle = '#1f3d2c'; g.beginPath(); g.ellipse(256, 210, 210, 180, 0, 0, 7); g.fill();
+    strokes(g, w, 380, ['#2a4e36', '#18301f', '#35603f', '#22412c'], 70, 22, 22); g.globalCompositeOperation = 'destination-in'; g.beginPath(); g.ellipse(256, 210, 210, 180, 0, 0, 7); g.rect(244, 330, 24, 182); g.fill(); g.globalCompositeOperation = 'source-over';
+  }),
+  pine: canvasTex(256, 1024, (g, w, h) => {              // tall bare trunks with a dark flat crown, as in The Voice
+    g.strokeStyle = '#4a2f26'; g.lineWidth = 26; g.beginPath(); g.moveTo(128, 1020); g.quadraticCurveTo(118, 500, 132, 150); g.stroke();
+    g.strokeStyle = '#7a4a3a'; g.lineWidth = 7; g.beginPath(); g.moveTo(134, 1000); g.quadraticCurveTo(126, 500, 138, 170); g.stroke();
+    g.fillStyle = '#16301f'; for (const [x, y, rx, ry] of [[128, 110, 118, 62], [80, 170, 70, 36], [176, 190, 74, 34], [128, 60, 80, 44]]) { g.beginPath(); g.ellipse(x, y, rx, ry, 0, 0, 7); g.fill(); }
+  }),
 };
-const sprites = [];
-function sprite(tex, x, z, h, wide) {
-  const m = new THREE.SpriteMaterial({ map: tex, transparent: true, alphaTest: 0.3 }); m.userData.base = new THREE.Color(1, 1, 1); tinted.push(m);
-  const s = new THREE.Sprite(m); s.center.set(0.5, 0); h *= 1.2; s.scale.set(h * (wide ? 300 / 512 : 0.5), h, 1); s.position.set(x, (floorAt(x, z) ?? 0), z); scene.add(s); sprites.push(s); return s;
-}
-const roadDir = new THREE.Vector2(ROAD_B[0] - ROAD_A[0], ROAD_B[1] - ROAD_A[1]), roadLen = roadDir.length(); roadDir.normalize();
-const roadSide = new THREE.Vector2(-roadDir.y, roadDir.x);
-const onRoad = (s, off) => [ROAD_A[0] + roadDir.x * s + roadSide.x * off, ROAD_A[1] + roadDir.y * s + roadSide.y * off];
-const screamer = sprite(T.screamer, SCREAMER.x, SCREAMER.z, 2.5);
-const walkers = [];
-[[62, -2.4], [64.5, -1.1]].forEach(([s, off]) => { const p = onRoad(s, off); walkers.push({ sp: sprite(T.hatBack, p[0], p[1], 1.9), kind: 'men', s, off, v: 1.0 }); });
-for (let i = 0; i < 9; i++) { const s = 96 + i * 9 + rnd(-2, 2), off = rnd(-2.8, 2.6), p = onRoad(s, off); walkers.push({ sp: sprite(T.crowd[i % 5], p[0], p[1], rnd(1.7, 1.95)), kind: 'anxiety', s, off, v: -rnd(0.7, 1.0) }); }
-for (let i = 0; i < 18; i++) { const z = mix(STREET_Z0, STREET_Z1, (i + Math.random()) / 18), off = (i % 2 ? 1 : -1) * rnd(2.5, 7); walkers.push({ sp: sprite(T.crowd[(i * 2 + 1) % 5], STREET_X + off, z, rnd(1.7, 1.95)), kind: 'street', z, off, v: rnd(0.8, 1.3) }); }
+const girlRed = [T.girl('#c9352b', '#7a4a22', -9), T.girl('#c9352b', '#7a4a22', 9), T.girl('#c9352b', '#7a4a22', 0)];
 const sitterTex = [T.sitter(false), T.sitter(true)];
-const sitX = shoreX(-420) - 5, sitter = sprite(sitterTex[0], sitX, -420, 1.9, true); let sitT = 0, sitDone = false;
-const sisters = [sprite(T.girl('#f1ece0', '#c9a23a', 0), pierX0() + PIER.len - 3, PIER.z + 1.4, 1.6), sprite(T.girl('#3f7a52', '#5a3a26', 0), pierX0() + PIER.len - 4.6, PIER.z + 1.5, 1.65)];
-const dancers = [0, 1, 2].map(i => ({ sp: sprite(T.couple(['#f4efe2', '#c23a2e', '#f0e2c0'][i]), DANCE.x, DANCE.z, 1.9, true), a: i * 2.1, r: 4 + i * 2.6 }));
-sprite(T.lone('#f4efe2', '#d8b04a'), DANCE.x - 15, DANCE.z + 3, 1.8); sprite(T.lone('#15151f', '#5a2a22'), DANCE.x + 15, DANCE.z + 2, 1.8);
-const meTex = [T.girl('#c9352b', '#7a4a22', -9), T.girl('#c9352b', '#7a4a22', 9), T.girl('#c9352b', '#7a4a22', 0)];
-const meSp = sprite(meTex[2], 0, 0, 1.55);
+const pic = (file, title, year, where, note) => ({ img: 'paintings/' + file, title, year, where, note });
 
-/* ---------- play ---------- */
-let state = 'title', time = 0, muted = false, dread = 0, night = 0, sun = 0, endT = 0, dance = 0, bellT = 0, tipT = 0;
-const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, step: 0, speed: 0 };
-const keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 };
-function reset() {
-  Object.assign(me, { x: ROAD_A[0] - 2.0, z: ROAD_A[1] - 4, vy: 0, yaw: Math.atan2(roadDir.x, -roadDir.y) * 1, air: false });
-  me.y = floorAt(me.x, me.z); sun = 0; endT = 0; sitT = 0; sitDone = false; sitter.material.map = sitterTex[0];
-  camera.position.set(me.x - Math.sin(me.yaw) * 7, me.y + 3.2, me.z + Math.cos(me.yaw) * 7);
-}
-function begin() {
-  SND.start({ chords: [[38, 57, 62, 65, 69], [34, 58, 62, 65, 70], [31, 55, 58, 62, 67], [33, 57, 61, 64, 69]], scale: [62, 65, 67, 69, 72, 74, 77, 79, 81, 84, 86] });   // D minor
-  SND.setMuted(muted); reset(); state = 'play'; tipT = time;
-  $('title').classList.add('hidden'); $('end').classList.add('hidden');
-  const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to walk and turn' : 'arrow keys to walk and turn, space to jump'; t.classList.remove('hidden');
-}
-function update(dt) {
-  time += dt; uni.uTime.value = time;
-  if (state === 'title') {                         // stand where the painter stood
-    const p = onRoad(2, -0.6); camera.position.set(p[0], ground(p[0], p[1]) + 1.7, p[1]); camera.lookAt(SCREAMER.x + 2, ground(SCREAMER.x, SCREAMER.z) + 1.5, SCREAMER.z - 30);
-    dread += (0.8 - dread) * dt; uni.uDread.value = dread; meSp.visible = false; return;
-  }
-  meSp.visible = true;
-  if (time - tipT > 9) $('tip').classList.add('hidden');
-  let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx;
-  let go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.6 : 0) - stick.dy;
-  turn = clamp(turn, -1, 1); go = clamp(go, -0.6, 1);
-  if (state === 'sunrise') { turn = 0; go = 0.35; me.yaw += (Math.PI / 2 - me.yaw) * dt; }
-  me.yaw += turn * 2.1 * dt;
-  const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
-  // running downhill is fast, close to flying
-  const slope = (ground(me.x, me.z) - ground(me.x + fx * 2, me.z + fz * 2)) / 2;
-  const top = 8.5 + clamp(slope * 45, 0, 9.5);
-  me.speed += (go * top - me.speed) * Math.min(1, dt * 3.5);
-  let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
-  // joining the dance: the ring carries her round
-  const dd = Math.hypot(nx - DANCE.x, nz - DANCE.z); dance += ((dd < DANCE.r ? 1 : 0) - dance) * dt * 1.5;
-  if (dd < DANCE.r && dd > 1) { const w = 0.55 * dance * dt, cx = nx - DANCE.x, cz = nz - DANCE.z; nx = DANCE.x + cx * Math.cos(w) - cz * Math.sin(w); nz = DANCE.z + cx * Math.sin(w) + cz * Math.cos(w); me.yaw += w; }
-  for (const [x0, x1, z0, z1] of walls) if (nx > x0 && nx < x1 && nz > z0 && nz < z1) { if (me.x <= x0 || me.x >= x1) nx = me.x; else nz = me.z; }
-  nx = clamp(nx, -215, 2000); nz = clamp(nz, -575, 80);
-  let f = floorAt(nx, nz);
-  if (f === null) { f = floorAt(nx, me.z); if (f !== null) nz = me.z; else { f = floorAt(me.x, nz); if (f !== null) nx = me.x; else { nx = me.x; nz = me.z; f = floorAt(nx, nz) ?? me.y; me.speed *= 0.5; } } }
-  me.x = nx; me.z = nz;
-  if (keys.has('Space') && !me.air) { me.vy = 6.5; me.air = true; SND.puff(0.05); }
-  if (me.air) { me.vy -= 18 * dt; me.y += me.vy * dt; if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.05); } } else me.y = f;
-  const moving = Math.abs(me.speed) > 0.6;
-  if (moving && !me.air) { const before = Math.floor(me.step); me.step += dt * (2.2 + Math.abs(me.speed) * 0.22); if (Math.floor(me.step) !== before) SND.puff(0.022); }
-  meSp.material.map = me.air ? meTex[2] : moving ? meTex[Math.floor(me.step) % 2] : meTex[2];
-  meSp.position.set(me.x, me.y, me.z);
+/* ---------- the hour and the mood ---------- */
+let dread = 0, night = 0, sun = 0, dance = 0, bellT = 0, endT = 0, sitDone = false, sitT = 0, skyMat, moonMat, world;
+const cSunset = new THREE.Color(1.0, 0.86, 0.78), cNight = new THREE.Color(0.5, 0.58, 0.9), cDay = new THREE.Color(1.05, 1.02, 0.95), cT = new THREE.Color();
+const fSunset = new THREE.Color('#a8674a'), fNight = new THREE.Color('#1c2c58'), fDay = new THREE.Color('#cfe0e6'), fT = new THREE.Color();
+const roadPath = (t0, t1) => { const a = []; for (let i = 0; i <= 12; i++) a.push(along(ROAD, mix(t0, t1, i / 12))); return a; };
 
-  // the hour follows the road: sunset on the hill, night by the shore
-  night += (sstep(-110, -300, me.z) - night) * dt * 0.8;
-  const onMoon = Math.abs(me.z - MOON_Z) < MOON_W && me.x > moonX0();
-  if (state === 'play' && onMoon && me.x > moonX0() + MOON_LEN * 0.82) { state = 'sunrise'; endT = 0; [0, 2, 4, 5, 7, 9, 10].forEach((k, i) => SND.bell(k, 0.07, 1 + i * 0.5)); }
-  if (state === 'sunrise') { endT += dt; sun = sstep(0, 9, endT); if (endT > 12.5) { state = 'done'; $('end').classList.remove('hidden'); } }
-  // dread rises near the figure on the road and in the crowds; it settles by her sisters, in the dance and on the moonlight
-  let want = sstep(70, 6, Math.hypot(me.x - SCREAMER.x, me.z - SCREAMER.z)) * 0.9, calm = 0;
-  for (const w of walkers) if (w.kind !== 'men') want = Math.max(want, sstep(14, 3, Math.hypot(me.x - w.sp.position.x, me.z - w.sp.position.z)) * 0.55);
-  calm = Math.max(sstep(34, 8, Math.hypot(me.x - sisters[0].position.x, me.z - sisters[0].position.z)), dance, onMoon ? 1 : 0, sun);
-  dread += (want * (1 - calm) - dread) * dt * 1.2; uni.uDread.value = dread;
+const figures = [
+  { id: 'screamer', tex: T.screamer, x: SCREAM[0] + 2.2, z: SCREAM[1] + 0.6, h: 2.9, say: ['Do you hear it? The whole sky is crying out.', 'It goes through everything. Through me.'] },
+  { id: 'despair', tex: T.despair, x: along(ROAD, 0.44)[0] + 3.2, z: along(ROAD, 0.44)[1] + 1.2, h: 2.3, say: ['The sun went down and the clouds turned red. My friends walked on.'] },
+  ...[0, 1].map(i => ({ id: 'men' + i, tex: T.hatBack, x: 0, z: 0, h: 2.3, path: roadPath(0.5, 0.95), speed: 0.9, s0: 0.02 + i * 0.01, off: i * 1.2 - 1, loop: false, say: i ? null : ['A fine evening. Don\'t dawdle on the road, child.'] })),
+  ...[0, 1, 2, 3, 4, 5, 6].map(i => ({ id: 'anx' + i, tex: T.crowd[i % 5], x: 0, z: 0, h: 2.2, path: roadPath(0.97, 0.52), speed: 0.8 + (i % 3) * 0.12, s0: i / 7, off: (i % 3) - 1.2, say: i === 2 ? ['We are all going the same way.'] : i === 5 ? ['Good evening.'] : null })),
+  ...[0, 1, 2, 3, 4, 5, 6, 7, 8, 9].map(i => ({ id: 'street' + i, tex: T.crowd[(i * 2 + 1) % 5], x: 0, z: 0, h: 2.2, path: i % 2 ? HIGH : HIGH.slice().reverse(), speed: 0.8 + (i % 4) * 0.13, s0: i / 10, off: (i % 2 ? 2.2 : -2.2), say: i === 3 ? ['Everyone walks out in the evening. Nobody looks at anyone.'] : i === 6 ? ['Summer guests from Kristiania, the lot of them.'] : null })),
+  { id: 'sitter', frames: sitterTex, x: SHORE.x + 4, z: SHORE.z, h: 2.2, wide: 300 / 512, frame: () => (sitDone ? 1 : 0), say: ['I am waiting for a boat that has already gone.', 'She rowed out with someone else. Look, by the jetty.'] },
+  { id: 'sis1', tex: T.girl('#f1ece0', '#c9a23a', 0), x: PIER.b[0] - 6, z: PIER.b[1] + 2.9, h: 1.95, lift: 0.75, say: ['There you are! Look how the moon lies on the water.', 'They say you can walk on it, if you are brave.'] },
+  { id: 'sis2', tex: T.girl('#3f7a52', '#5a3a26', 0), x: PIER.b[0] - 8, z: PIER.b[1] + 3.4, h: 2.0, lift: 0.75 },
+  { id: 'voice', tex: T.voice, x: WOOD.x + 6, z: WOOD.z + 4, h: 2.3, say: ['Listen. The sea is breathing.', 'On these nights it never gets properly dark.'] },
+  { id: 'white', tex: T.lone('#f4efe2', '#d8b04a'), x: DANCE.x - 15, z: DANCE.z + 3, h: 2.2, say: ['Come and dance! It is midsummer.'] },
+  { id: 'black', tex: T.lone('#15151f', '#5a2a22'), x: DANCE.x + 15, z: DANCE.z + 2, h: 2.2, say: ['I danced here once. Go on, while you can.'] },
+  ...[0, 1, 2].map(i => ({ id: 'dancer' + i, tex: T.couple(['#f4efe2', '#c23a2e', '#f0e2c0'][i]), x: DANCE.x, z: DANCE.z, h: 2.3, wide: 300 / 512, a: i * 2.1, r: 4 + i * 2.6,
+    place: (w, f, dt) => { f.a += dt * 0.55; f.sp.scale.x = f.sp.userData.w * (Math.sin(f.a * 3 + w.time * 2) > 0 ? 1 : -1); return [DANCE.x + Math.cos(f.a) * f.r, DANCE.z + Math.sin(f.a) * f.r]; } })),
+  { id: 'fisher', tex: T.fisher, x: 26, z: -42, h: 2.2, say: ['Herring is poor this summer. The painter pays me to sit still instead.', 'Steamer from Kristiania ties up at the pier twice a day.'] },
+  { id: 'landlady', tex: T.landlady, x: -12, z: -2, h: 2.1, say: ['Grand Hotel, full to the attic. Painters, mostly, and they pay late.'] },
+  { id: 'boy', tex: T.boy, x: -146, z: -246, h: 1.7, say: ['That is the painter\'s house. He leaves his pictures out in the rain!', 'He painted my sister on the pier.'] },
+  { id: 'munch', tex: T.painter, x: -158, z: -262, h: 2.3, wide: 300 / 512, say: ['I do not paint what I see. I paint what I saw.', 'Go down to the shore. Everything I need is there.'] },
+];
+const places = [
+  { id: 'scream', name: 'The Road Above', kind: 'the scream', x: SCREAM[0], z: SCREAM[1], r: 11, card: pic('../scream.jpg', 'The Scream', '1893', 'National Museum, Oslo', 'A figure on a road above the fjord, under a red sky. The real road is on Ekeberg hill, above Oslo.') },
+  { id: 'despair', name: 'The Railing', kind: 'despair', x: along(ROAD, 0.44)[0], z: along(ROAD, 0.44)[1], r: 9, card: pic('despair.jpg', 'Despair', '1894', 'Munch Museum, Oslo', 'The same road and the same sky, with a man turned away at the railing.') },
+  { id: 'anxiety', name: 'The Walkers', kind: 'anxiety', x: along(ROAD, 0.72)[0], z: along(ROAD, 0.72)[1], r: 13, card: pic('anxiety.jpg', 'Anxiety', '1894', 'Munch Museum, Oslo', 'The crowd coming up the road has the faces of the people in the city street.') },
+  { id: 'street', name: 'The Evening Street', kind: 'evening on karl johan', x: along(HIGH, 0.7)[0], z: along(HIGH, 0.7)[1], r: 14, card: pic('karl_johan.jpg', 'Evening on Karl Johan', '1892', 'KODE, Bergen', 'Painted of the main street in the capital. Here its crowd walks the village street.') },
+  { id: 'house', name: 'The Painter\'s House', kind: 'his summer house', x: -152, z: -256, r: 13, card: pic('starry_night.jpg', 'Starry Night', '1922–24', 'Munch Museum, Oslo', 'He bought a small house here in 1898. It is still there and is a museum. This night sky he painted years later.') },
+  { id: 'wood', name: 'The Pine Wood', kind: 'the voice', x: WOOD.x, z: WOOD.z, r: 15, card: pic('summer_night.jpg', 'Summer Night\'s Dream (The Voice)', '1893', 'Museum of Fine Arts, Boston', 'A woman among the pines on the Åsgårdstrand shore, with the moon\'s column on the water behind her.') },
+  { id: 'moonlight', name: 'The Moon on the Water', kind: 'moonlight', x: -74, z: -296, r: 12, card: pic('moonlight.jpg', 'Moonlight', '1895', 'National Museum, Oslo', 'He painted the moon\'s reflection as a solid pillar of light, again and again.') },
+  { id: 'shore', name: 'The Stony Shore', kind: 'melancholy', x: SHORE.x, z: SHORE.z, r: 12, card: pic('melancholy.jpg', 'Melancholy', '1892', 'National Museum, Oslo', 'A man sits on the stones while a couple walk out along the jetty.') },
+  { id: 'pier', name: 'The Pier', kind: 'girls on the bridge', x: mix(PIER.a[0], PIER.b[0], 0.6), z: mix(PIER.a[1], PIER.b[1], 0.6), r: 10, card: pic('girls_bridge.jpg', 'The Girls on the Bridge', 'about 1901', 'National Museum, Oslo', 'Three girls on the footbridge to the Åsgårdstrand steamship pier, with the white house and the great round tree behind.') },
+  { id: 'dance', name: 'The Dancing Green', kind: 'the dance of life', x: DANCE.x, z: DANCE.z, r: 15, card: pic('dance_of_life.jpg', 'The Dance of Life', '1899–1900', 'National Museum, Oslo', 'Couples dancing by the shore on a summer night, under the moon and its pillar of light.') },
+  { id: 'sun', name: 'The Path of the Moon', kind: 'walk out on it', x: MOON.x0 + MOON.len * 0.8, z: MOON.z, r: 9, hidden: w => w.found.size < 3, card: pic('../sun.jpg', 'The Sun', '1911', 'University of Oslo', 'It fills the end wall of the university\'s great hall.') },
+];
 
-  // people
-  for (const w of walkers) {
-    let x, z;
-    if (w.kind === 'street') { w.z += w.v * dt * (w.off > 0 ? 1 : -1); if (w.z > STREET_Z0) w.z = STREET_Z1; if (w.z < STREET_Z1) w.z = STREET_Z0; x = STREET_X + w.off; z = w.z; }
-    else { w.s += w.v * dt; if (w.kind === 'anxiety' && w.s < 26) w.s = roadLen - 4; if (w.kind === 'men' && w.s > roadLen - 6) w.s = 56; [x, z] = onRoad(w.s, w.off); }
-    const dx = x - me.x, dz = z - me.z, d = Math.hypot(dx, dz);            // they part round her
-    if (d < 3.2 && d > 0.01) { const push = (3.2 - d) * 0.8; x += dx / d * push; z += dz / d * push; }
-    w.sp.position.set(x, ground(x, z) + 0.1 + Math.abs(Math.sin(time * 3 + w.off * 5)) * 0.04, z);
-  }
-  screamer.position.y = ground(SCREAMER.x, SCREAMER.z) + 0.2; screamer.scale.x = 1.5 * (1.0 + Math.sin(time * 2.3) * 0.05 * (1 + dread));
-  const sd = Math.hypot(me.x - sitX, me.z + 420);
-  if (!sitDone) { sitT = sd < 5 ? sitT + dt : 0; if (sitT > 1.6) { sitDone = true; sitter.material.map = sitterTex[1]; SND.bell(4, 0.08); SND.bell(6, 0.06, 0.5); } }
-  const sisD = Math.hypot(me.x - sisters[0].position.x, me.z - sisters[0].position.z);
-  sisters.forEach((s, i) => { s.position.y = PIER.y + (sisD < 14 ? Math.abs(Math.sin(time * 5 + i)) * 0.22 : 0); });
-  dancers.forEach(d => { d.a += dt * 0.55; d.sp.position.set(DANCE.x + Math.cos(d.a) * d.r, ground(DANCE.x, DANCE.z) + 0.05 + Math.abs(Math.sin(time * 3 + d.r)) * 0.08, DANCE.z + Math.sin(d.a) * d.r);
-    d.sp.scale.x = 1.9 * 1.2 * 300 / 512 * (Math.sin(d.a * 3 + time * 2) > 0 ? 1 : -1); });
-  if (dance > 0.6 && time > bellT) { bellT = time + 0.42; SND.bell([2, 4, 5, 7, 5, 4][Math.floor(time / 0.42) % 6], 0.045); }
-
-  // camera: behind her, a little above
-  const dist = 5.4 + Math.abs(me.speed) * 0.16, cx = me.x - fx * dist, cz = me.z - fz * dist, cy = Math.max(me.y + 2.9, (ground(cx, cz) + 1.3));
-  const k = Math.min(1, dt * 5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (cy - camera.position.y) * k;
-  camera.lookAt(me.x + fx * 5, me.y + 1.5 + sun * 6, me.z + fz * 5);
-  camera.rotation.z += Math.sin(time * 1.3) * 0.03 * dread;
-  camera.fov += (60 + Math.abs(me.speed) * 1.25 - camera.fov) * k; camera.updateProjectionMatrix();
-  water.material.map.offset.x = time * 0.004; moonMat.map.offset.x = -time * 0.02; moonMat.opacity = (0.25 + 0.75 * night) * (1 - sun * 0.7);
-  SND.update(0.25 + 0.5 * dance, clamp(dread * 0.9 + Math.max(0, Math.abs(me.speed) - 9) * 0.05, 0, 1));
-}
-const cSunset = new THREE.Color(1.0, 0.86, 0.78), cNight = new THREE.Color(0.42, 0.52, 0.86), cDay = new THREE.Color(1.05, 1.02, 0.95), cT = new THREE.Color();
-const fSunset = new THREE.Color('#a8674a'), fNight = new THREE.Color('#1a2b55'), fDay = new THREE.Color('#cfe0e6');
-function draw() {
-  const w = innerWidth, h = innerHeight;
-  if (renderer.domElement.width !== Math.round(w * renderer.getPixelRatio()) || renderer.domElement.height !== Math.round(h * renderer.getPixelRatio())) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
-  const n = state === 'title' ? 0 : night;
-  cT.copy(cSunset).lerp(cNight, n).lerp(cDay, sun);
-  for (const m of tinted) m.color.copy(m.userData.base).multiply(cT);
-  scene.fog.color.copy(fSunset).lerp(fNight, n).lerp(fDay, sun); scene.fog.near = mix(140, 40, n); scene.fog.far = mix(1300, 520, n) + sun * 700;
-  skyMat.uniforms.uNight.value = n; skyMat.uniforms.uSun.value = sun; sky.position.copy(camera.position);
-  renderer.render(scene, camera);
-}
-let last = 0;
-function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(frame); }
-reset(); requestAnimationFrame(frame);
-
-/* ---------- input ---------- */
-addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
-addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; });
-const cv = $('cv'), sk = $('stick');
-cv.addEventListener('pointerdown', e => { if (state !== 'play' || stick.id !== null) return; stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {}
-  sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
-cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; }
-  stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
-const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } };
-cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
-$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
-$('start').addEventListener('click', begin); $('again').addEventListener('click', begin);
-document.addEventListener('gesturestart', e => e.preventDefault());
-
-// For testing from the console.
-window.__road = { get state() { return state; }, me, begin, go(x, z) { me.x = x; me.z = z; me.speed = 0; }, face(a) { me.yaw = a; },
-  places: { street: [STREET_X, -230], sitter: [sitX - 6, -420], pier: [pierX0() + 20, PIER.z], dance: [DANCE.x + 16, DANCE.z + 14], moon: [moonX0() + 20, MOON_Z], far: [moonX0() + MOON_LEN * 0.8, MOON_Z] } };
+world = createWorld({
+  bounds: B, map, cell: 4, height, bend: 1, groundTex, waterTex, streetTex: roadTex, houseStyles, sound: { chords: [[38, 57, 62, 65, 69], [34, 58, 62, 65, 70], [31, 55, 58, 62, 67], [33, 57, 61, 64, 69]], scale: [62, 65, 67, 69, 72, 74, 77, 79, 81, 84, 86] },
+  groundColor(x, z, h) {
+    const c = new THREE.Color('#4f7a48'), d = inland(x, z);
+    c.lerp(new THREE.Color('#6a5a3e'), sstep(240, 420, d)); c.lerp(new THREE.Color('#7fae52'), sstep(40, 0, Math.hypot(x - DANCE.x, z - DANCE.z)));
+    c.lerp(new THREE.Color('#dcb6a0'), sstep(11, 1, d)); c.lerp(new THREE.Color('#3d4f78'), sstep(0, -8, d)); return c;
+  },
+  skipBuilding: b => { const p = b.p; let a = 0; for (let i = 0; i < p.length; i++) a += p[i][0] * p[(i + 1) % p.length][1] - p[(i + 1) % p.length][0] * p[i][1]; a = Math.abs(a) / 2; return a < 22 || a > 700 || inland(p[0][0], p[0][1]) < 6; },
+  houseShape: (b, i, size) => ({ wall: 3.2 + (i % 4) * 0.7 + Math.min(2, size / 12), roof: 2.2 + (i % 3) * 0.5, style: (i * 7) % 5 }),
+  skipStreet: s => ['footway', 'path', 'steps', 'cycleway'].includes(s.t),
+  decks: [{ a: PIER.a, b: PIER.b, w: PIER.w, y: PIER.y, tex: roadTex, rails: '#e6dfcf' }],
+  floor: (x, z) => (Math.abs(z - MOON.z) < MOON.w / 2 && x > MOON.x0 - 2 && x < MOON.x0 + MOON.len + 14 ? 0.14 : null),      // the moonlight on the water is solid
+  walkable: (x, z, h) => h > -0.25,
+  mapColors: { land: '#3f5a44', water: '#2a3d70', street: '#c79a6a', house: '#e9e2d0' },
+  player: { frames: girlRed, height: 1.9, start: { x: along(ROAD, 0.28)[0], z: along(ROAD, 0.28)[1] + 1, yaw: Math.atan2(along(ROAD, 0.34)[0] - along(ROAD, 0.28)[0], -(along(ROAD, 0.34)[1] - along(ROAD, 0.28)[1])) }, speed: 9.5, downhill: 9 },
+  figures, places, bookSub: 'the paintings this night is made from',
+  carry(w, nx, nz, dt) {            // joining the dance: the ring carries her round
+    const dd = Math.hypot(nx - DANCE.x, nz - DANCE.z); dance += ((dd < DANCE.r ? 1 : 0) - dance) * dt * 1.5;
+    if (dd < DANCE.r && dd > 1) { const a = 0.55 * dance * dt, cx = nx - DANCE.x, cz = nz - DANCE.z; nx = DANCE.x + cx * Math.cos(a) - cz * Math.sin(a); nz = DANCE.z + cx * Math.sin(a) + cz * Math.cos(a); w.me.yaw += a; }
+    return [nx, nz];
+  },
+  titleCamera(w) { const p = along(ROAD, 0.3); w.camera.position.set(p[0], w.ground(p[0], p[1]) + 1.7, p[1]); w.camera.lookAt(SCREAM[0] + 30, w.ground(SCREAM[0], SCREAM[1]) + 1.2, SCREAM[1] + 8); },
+  tint(w) {
+    const n = w.state === 'title' ? 0 : night; cT.copy(cSunset).lerp(cNight, n).lerp(cDay, sun); fT.copy(fSunset).lerp(fNight, n).lerp(fDay, sun);
+    skyMat.uniforms.uNight.value = n; skyMat.uniforms.uSun.value = sun; return { color: cT, fog: fT, near: mix(140, 50, n), far: mix(1300, 620, n) + sun * 700 };
+  },
+  onStart() { sun = 0; endT = 0; sitDone = false; sitT = 0; night = 0; },
+  update(w, dt) {
+    const me = w.me;
+    if (w.state === 'title') { dread += (0.8 - dread) * dt; w.uni.uDread.value = dread; return; }
+    night += (sstep(-255, -125, me.x) - night) * dt * 0.8;            // sunset on the road above, night down in the village
+    const onMoon = Math.abs(me.z - MOON.z) < MOON.w && me.x > MOON.x0;
+    if (w.state === 'play' && onMoon && me.x > MOON.x0 + MOON.len * 0.8) { w.state = 'sunrise'; endT = 0; me.auto = { yaw: Math.PI / 2, go: 0.3 }; }
+    if (w.state === 'sunrise') { endT += dt; sun = sstep(0, 9, endT); w.lookUp = sun * 6; if (endT > 12) { me.auto = null; w.lookUp = 0; w.end(); } }
+    // dread rises near the figure on the road and in the crowds; it settles by her sisters, in the dance and on the moonlight
+    let want = sstep(60, 6, Math.hypot(me.x - SCREAM[0], me.z - SCREAM[1])) * 0.9;
+    for (const f of w.figs) if (f.id.startsWith('anx') || f.id.startsWith('street')) want = Math.max(want, sstep(13, 3, Math.hypot(me.x - f.sp.position.x, me.z - f.sp.position.z)) * 0.5);
+    const sis = w.figs.find(f => f.id === 'sis1').sp.position, calm = Math.max(sstep(30, 8, Math.hypot(me.x - sis.x, me.z - sis.z)), dance, onMoon ? 1 : 0, sun);
+    dread += (want * (1 - calm) - dread) * dt * 1.2; w.uni.uDread.value = dread;
+    const scr = w.figs.find(f => f.id === 'screamer').sp; scr.scale.x = scr.userData.w * (1.0 + Math.sin(w.time * 2.3) * 0.05 * (1 + dread));
+    if (!sitDone) { sitT = Math.hypot(me.x - SHORE.x - 4, me.z - SHORE.z) < 6 ? sitT + dt : 0; if (sitT > 1.4) { sitDone = true; SND.bell(4, 0.08); SND.bell(6, 0.06, 0.5); } }
+    if (dance > 0.6 && w.time > bellT) { bellT = w.time + 0.42; SND.bell([2, 4, 5, 7, 5, 4][Math.floor(w.time / 0.42) % 6], 0.045); }
+    moonMat.map.offset.x = -w.time * 0.02; moonMat.opacity = (0.25 + 0.75 * night) * (1 - sun * 0.7);
+    SND.update(0.25 + 0.5 * dance, clamp(dread * 0.9 + Math.max(0, Math.abs(me.speed) - 10) * 0.05, 0, 1));
+  },
+  build(w) {
+    const { scene } = w;
+    /* the sky: The Scream's own sky at sunset, his Starry Night after dark, the rays of The Sun at the end */
+    skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false,
+      uniforms: { uSky: { value: null }, uStars: { value: null }, uTime: w.uni.uTime, uDread: w.uni.uDread, uNight: { value: 0 }, uSun: { value: 0 } },
+      vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+      fragmentShader: `uniform sampler2D uSky, uStars; uniform float uTime, uDread, uNight, uSun; varying vec3 vDir;
+        vec3 wrap(sampler2D t, vec2 uv){ return texture2D(t, vec2(abs(fract(uv.x * 0.5) * 2.0 - 1.0), clamp(uv.y, 0.01, 0.98))).rgb; }
+        void main(){
+          vec3 d = normalize(vDir); float az = atan(d.z, d.x), el = d.y, wob = 1.0 + 2.5 * uDread;
+          vec2 uv = vec2(az / 3.14159 * 1.5 + uTime * 0.006 * wob, clamp(el * 1.9 + 0.06, 0.0, 0.98));
+          uv.y += sin(uv.x * 9.0 + uTime * 0.5) * 0.018 * wob + sin(uv.x * 23.0 - uTime * 0.8) * 0.006 * wob;
+          vec3 sunset = mix(vec3(0.33, 0.36, 0.52), wrap(uSky, uv), smoothstep(-0.08, 0.05, el));
+          vec2 nv = vec2(az / 3.14159 * 1.2 + uTime * 0.002, clamp(el * 1.5 + 0.1, 0.0, 0.98)); nv.y += sin(nv.x * 7.0 + uTime * 0.25) * 0.012;
+          vec3 night = mix(vec3(0.07, 0.12, 0.26), wrap(uStars, nv) * 0.95, smoothstep(-0.05, 0.08, el));
+          vec3 east = normalize(vec3(1.0, 0.2, -0.05)); float md = distance(d, east);
+          night = mix(night, vec3(0.98, 0.9, 0.62), (1.0 - smoothstep(0.05, 0.062, md)) * (1.0 - uSun)); night += vec3(0.5, 0.42, 0.2) * exp(-md * 7.0) * 0.45 * (1.0 - uSun);
+          vec3 col = mix(sunset, night, uNight);
+          vec3 se = normalize(vec3(1.0, 0.1, -0.05)); float sd = distance(d, se), ang = atan(d.y - se.y, d.z - se.z);
+          float ray = smoothstep(0.35, 0.65, 0.5 + 0.5 * sin(ang * 34.0)), ring = 0.5 + 0.5 * sin(sd * 46.0 - uTime * 0.6);
+          vec3 rayCol = mix(vec3(0.99, 0.9, 0.45), mix(vec3(0.45, 0.62, 0.86), vec3(0.93, 0.5, 0.4), step(0.5, fract(ang * 5.41))), smoothstep(0.25, 0.9, sd));
+          vec3 day = mix(vec3(0.78, 0.86, 0.92), vec3(0.42, 0.62, 0.86), smoothstep(0.0, 0.8, el));
+          day = mix(day, rayCol, ray * (0.35 + 0.3 * ring) * smoothstep(1.5, 0.1, sd)); day = mix(day, vec3(1.0, 0.99, 0.9), smoothstep(0.2, 0.05, sd));
+          gl_FragColor = vec4(mix(col, day, uSun), 1.0);
+        }` });
+    const sky = new THREE.Mesh(new THREE.SphereGeometry(3000, 48, 24), skyMat); sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); sky.frustumCulled = false; scene.add(sky);
+    const L = new THREE.TextureLoader();
+    L.load('sky.jpg', t => { t.wrapS = THREE.MirroredRepeatWrapping; skyMat.uniforms.uSky.value = t; });
+    L.load('nightsky.jpg', t => { t.wrapS = THREE.MirroredRepeatWrapping; skyMat.uniforms.uStars.value = t; });
+    /* the blue land across the fjord */
+    const far = w.mat({ color: '#33457a' }), sg = new THREE.SphereGeometry(1, 20, 10);
+    for (const [x, z, sx, sy, sz] of [[1500, -900, 380, 60, 520], [1700, -100, 420, 80, 480], [1600, 800, 360, 52, 460], [1300, 1500, 300, 44, 400]]) { const h = new THREE.Mesh(sg, far); h.scale.set(sx, sy, sz); h.position.set(x, -8, z); scene.add(h); }
+    /* the column of moonlight on the water */
+    goldTex.repeat.set(9, 1); moonMat = new THREE.MeshBasicMaterial({ map: goldTex, transparent: true, fog: false, depthWrite: false });
+    const mp = new THREE.Mesh(new THREE.PlaneGeometry(MOON.len + 900, MOON.w), moonMat); mp.rotation.x = -Math.PI / 2; mp.position.set(MOON.x0 + (MOON.len + 900) / 2, 0.1, MOON.z); scene.add(mp);
+    /* the railing of the road above, on the fjord side */
+    const railM = w.bend(w.mat({ color: '#8a5234' }), 1.3);
+    for (let t = 0.2; t < 0.62; t += 0.014) {
+      const a = along(ROAD, t), b = along(ROAD, t + 0.014), n = [-(b[1] - a[1]), b[0] - a[0]], L2 = Math.hypot(n[0], n[1]) || 1, o = 3.7;
+      const A = new THREE.Vector3(a[0] + n[0] / L2 * o, w.ground(a[0], a[1]) + 0.1, a[1] + n[1] / L2 * o), Bv = new THREE.Vector3(b[0] + n[0] / L2 * o, w.ground(b[0], b[1]) + 0.1, b[1] + n[1] / L2 * o);
+      w.boxBetween(A, A.clone().setY(A.y + 1.25), 0.2, railM); for (const hgt of [0.45, 0.85, 1.25]) w.boxBetween(A.clone().setY(A.y + hgt), Bv.clone().setY(Bv.y + hgt), 0.14, railM);
+    }
+    /* trees: the great linden by the pier, lindens in the gardens, pines in the wood and all round the edge of the world */
+    const tree = (tex, x, z, h, wide) => { if (w.inHouse(x, z) || w.ground(x, z) < 0.3) return; w.sprite(tex, x, z, h, wide); };
+    tree(T.linden, 22, -20, 15, 1); tree(T.linden, -30, 24, 11, 1);
+    for (let i = 0; i < 70; i++) tree(T.linden, rnd(B[0] + 30, 120), rnd(B[1] + 30, B[3] - 30), rnd(6, 10), 1);
+    for (let i = 0; i < 46; i++) tree(T.pine, WOOD.x + rnd(-46, 26), WOOD.z + rnd(-34, 60), rnd(13, 19), 0.25);
+    for (let x = B[0]; x < B[2]; x += 9) { tree(T.pine, x + rnd(-3, 3), B[1] + rnd(2, 14), rnd(14, 20), 0.25); tree(T.pine, x + rnd(-3, 3), B[3] - rnd(2, 14), rnd(14, 20), 0.25); }
+    for (let z = B[1]; z < B[3]; z += 9) tree(T.pine, B[0] + rnd(2, 14), z + rnd(-3, 3), rnd(14, 20), 0.25);
+    /* the pale stones of the shore, and boats */
+    const stone = [w.mat({ color: '#e0c6ba' }), w.mat({ color: '#bfaeb8' }), w.mat({ color: '#ead9c4' }), w.mat({ color: '#a59aae' })], sg2 = new THREE.SphereGeometry(1, 10, 7);
+    for (let i = 0; i < 130; i++) { const t = Math.random(), k = Math.floor(t * (COAST.length - 1)), a = COAST[k], b = COAST[k + 1], u = Math.random(), x = mix(a[0], b[0], u) - rnd(0, 7), z = mix(a[1], b[1], u) + rnd(-2, 2);
+      if (Math.hypot(x - 44, z) < 14) continue; const s = new THREE.Mesh(sg2, stone[i % 4]), q = rnd(0.3, i % 9 ? 1.0 : 1.9); s.scale.set(q * rnd(1, 1.6), q * 0.5, q); s.position.set(x, w.ground(x, z) + 0.05, z); scene.add(s); }
+    const hull = (x, z, rot, col, y) => { const b = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 8, 0, 6.3, Math.PI / 2, Math.PI / 2), w.mat({ color: col, side: THREE.DoubleSide })); b.scale.set(3.2, 0.95, 1.2); b.position.set(x, y, z); b.rotation.y = rot; scene.add(b); };
+    hull(mix(PIER.a[0], PIER.b[0], 0.55) + 2, mix(PIER.a[1], PIER.b[1], 0.55) + 5.5, 0.3, '#e5b93a', 0.5);
+    for (const [x, z, r, c] of [[20, -52, 1.1, '#7a3b33'], [14, -62, 0.9, '#e9e4d6'], [-44, -212, 0.6, '#3f6a5a'], [100, 76, 2.2, '#e9e4d6']]) hull(x, z, r, c, w.ground(x, z) + 0.75);
+  },
+});
+window.__road = { get state() { return world.state; }, me: world.me, begin: world.begin, world, go(x, z) { world.me.x = x; world.me.z = z; world.me.speed = 0; }, face(a) { world.me.yaw = a; },
+  places: Object.fromEntries(places.map(p => [p.id, [p.x, p.z]])) };
 </script>
 </body>
 </html>

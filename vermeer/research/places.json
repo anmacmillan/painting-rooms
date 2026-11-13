@@ -1,0 +1,161 @@
+{
+ "note": "Coordinates are WGS84. 'coord_source' says where each point came from. OSM data © OpenStreetMap contributors, ODbL.",
+ "places": [
+  {
+   "name": "Markt",
+   "lon": 4.359229,
+   "lat": 52.011522,
+   "coord_source": "OSM: midpoint of pedestrian way 125227119 (Markt)",
+   "exists_today": true,
+   "note": "Market square with the City Hall on one side 'across from the Nieuwe Kerk'.",
+   "source": "https://en.wikipedia.org/wiki/Delft_City_Hall"
+  },
+  {
+   "name": "Nieuwe Kerk",
+   "lon": 4.360807,
+   "lat": 52.012289,
+   "coord_source": "OSM way 227924236 (bbox centre), addr Markt 80",
+   "exists_today": true,
+   "note": "Vermeer was baptised here; holds the tomb of William of Orange; its sunlit tower is the focus of View of Delft. The present stone spire dates from 1875.",
+   "source": "https://en.wikipedia.org/wiki/View_of_Delft ; https://www.mauritshuis.nl/en/our-collection/artworks/92-view-of-delft/ ; https://www.essentialvermeer.com/delft/delft_today/view_of_delft.html"
+  },
+  {
+   "name": "Stadhuis (City Hall)",
+   "lon": 4.358595,
+   "lat": 52.011507,
+   "coord_source": "OSM node 4442369523 (amenity=townhall, Markt 87)",
+   "exists_today": true,
+   "note": "Renaissance building designed by Hendrick de Keyser on the Markt opposite the Nieuwe Kerk; the tower 'De Steen' dates from around 1300.",
+   "source": "https://en.wikipedia.org/wiki/Delft_City_Hall"
+  },
+  {
+   "name": "Oude Kerk",
+   "lon": 4.355904,
+   "lat": 52.012596,
+   "coord_source": "OSM way 239895200 (bbox centre), addr Heilige Geestkerkhof 25",
+   "exists_today": true,
+   "note": "Vermeer was buried here on 15 December 1675 (VERIFIED: en and nl Wikipedia). 75 m brick tower leaning about two metres. Two grave markers: one of 1975, a larger one of 2007.",
+   "source": "https://en.wikipedia.org/wiki/Oude_Kerk_(Delft) ; https://nl.wikipedia.org/wiki/Johannes_Vermeer ; https://www.essentialvermeer.com/catalogue/view_of_delft.html"
+  },
+  {
+   "name": "Site of Vermeer's home, Oude Langendijk at the corner of the Molenpoort (now Jozefstraat)",
+   "lon": 4.360342,
+   "lat": 52.011663,
+   "coord_source": "OSM: junction node of ways 311563376 (Oude Langendijk) and 7538976 ('Jozefstraat voorheen Molenpoort')",
+   "exists_today": false,
+   "note": "The house of his mother-in-law Maria Thins, next to a hidden Jesuit church; the house is gone. WHICH CORNER IS DISPUTED: the traditional site is the east corner (house 'Serpent'), now covered by the neo-Gothic Maria van Jessekerk (built 1875-1882); research by H.G. Slager (2017, 2018, 2024) puts it on the west corner (house 'Trapmolen', today's Oude Langendijk 25). A commemorative plaque is at the corner.",
+   "source": "https://www.essentialvermeer.com/delft/delft_today/oude_langendijck.html ; https://nl.wikipedia.org/wiki/Maria_van_Jessekerk ; https://nl.wikipedia.org/wiki/Johannes_Vermeer"
+  },
+  {
+   "name": "Maria van Jessekerk",
+   "lon": 4.360853,
+   "lat": 52.011529,
+   "coord_source": "OSM way 227924235 (bbox centre), addr Burgwal 20",
+   "exists_today": true,
+   "note": "Neo-Gothic Catholic church of 1875-1882 on the ground of the 17th-century Jesuit hidden church; did not exist in Vermeer's day.",
+   "source": "https://nl.wikipedia.org/wiki/Maria_van_Jessekerk"
+  },
+  {
+   "name": "Site of the Mechelen inn, Markt at the corner of the Oude Manhuissteeg",
+   "lon": 4.359631,
+   "lat": 52.012073,
+   "coord_source": "OSM: junction node of Markt (way 125227122) and Oude Manhuissteeg (way 125227133)",
+   "exists_today": false,
+   "note": "Inn bought by Vermeer's father in 1641, where Vermeer grew up (he was not born there). Markt 54-56, demolished in 1885; no building stands in its place. The alley behind it leads to a bridge over the Voldersgracht. A 1955 tablet on the adjoining Markt 52 marks the spot and wrongly says he was born there.",
+   "source": "https://www.essentialvermeer.com/delft/delft_today/mechelen.html ; https://en.wikipedia.org/wiki/Johannes_Vermeer ; https://nl.wikipedia.org/wiki/Johannes_Vermeer"
+  },
+  {
+   "name": "St Luke's Guild site, now Vermeer Centrum Delft, Voldersgracht 21",
+   "lon": 4.359436,
+   "lat": 52.012381,
+   "coord_source": "OSM node 4442369124 (tourism=museum, Voldersgracht 21)",
+   "exists_today": true,
+   "exists_today_note": "The present building is a reconstruction; the 17th-century guild house does not survive.",
+   "note": "Historic location of the Guild of St Luke (former chapel of the Oude Manhuis, converted to a guild house from 1661); Vermeer joined the guild on 29 December 1653 and was headman in 1662, 1663, 1670 and 1671. Original pulled down in the 19th century: sources disagree on the year (1876 or 1879 on Essential Vermeer pages; 1886 on nl Wikipedia). A school stood there, then the reconstruction; the Vermeer Centrum opened in 2007.",
+   "source": "https://nl.wikipedia.org/wiki/Vermeer_Centrum_Delft ; https://www.essentialvermeer.com/delft/delft_today/guild.html ; https://en.wikipedia.org/wiki/Johannes_Vermeer"
+  },
+  {
+   "name": "Voldersgracht (canal)",
+   "lon": 4.359107,
+   "lat": 52.012155,
+   "coord_source": "OSM way 547689281 (waterway=canal, bbox centre)",
+   "exists_today": true,
+   "note": "Vermeer's parents kept the inn De Vliegende Vos in the family home on the Voldersgracht.",
+   "source": "https://nl.wikipedia.org/wiki/Johannes_Vermeer"
+  },
+  {
+   "name": "Oude Delft (canal)",
+   "lon": 4.356952,
+   "lat": 52.010749,
+   "coord_source": "OSM way 368480558 (waterway=canal, bbox centre)",
+   "exists_today": true,
+   "note": "Main north-south canal of the old town; the Kapelsbrug crossed it between the two south gates.",
+   "source": "https://nl.wikipedia.org/wiki/Schiedamse_Poort"
+  },
+  {
+   "name": "Kolk (Zuidkolk) harbour",
+   "lon": 4.360751,
+   "lat": 52.005114,
+   "coord_source": "OSM way 270579738 (natural=water, name Zuidkolk, bbox centre)",
+   "exists_today": true,
+   "note": "Triangular harbour at the south edge of town, dug 1614-1620; the water in the foreground of View of Delft. It keeps its original shape and scale.",
+   "source": "https://www.mauritshuis.nl/en/our-collection/artworks/92-view-of-delft/ ; https://nl.wikipedia.org/wiki/Schiedamse_Poort ; https://www.essentialvermeer.com/delft/delft_today/view_of_delft.html"
+  },
+  {
+   "name": "Viewpoint of View of Delft, Hooikade (south bank of the Kolk)",
+   "lon": 4.360551,
+   "lat": 52.004628,
+   "coord_source": "OSM way 39941510 (Hooikade, bbox centre). nl Wikipedia gives the painting's coordinates as 52.00417, 4.36111.",
+   "exists_today": true,
+   "exists_today_note": "The quay exists; the house Vermeer looked out from does not.",
+   "note": "Vermeer painted from an upper floor of a house on the Schie looking across the Kolk (nl Wikipedia: 'een bovenhuis aan de Schie'; Essential Vermeer: second storey of an inn long since demolished). OSM shows Hooikade as the street along the south bank of the Zuidkolk. No fetched text source names Hooikade as the viewpoint: the street name is UNVERIFIED as a sourced statement, verified only by map position.",
+   "source": "https://nl.wikipedia.org/wiki/Gezicht_op_Delft ; https://www.essentialvermeer.com/catalogue/view_of_delft.html ; OSM"
+  },
+  {
+   "name": "Schiedam Gate (Schiedamse Poort), former position",
+   "lon": 4.36056,
+   "lat": 52.00556,
+   "coord_source": "nl Wikipedia article coordinates (approximate, rounded to arc-seconds)",
+   "exists_today": false,
+   "note": "City gate in the middle of View of Delft, with a clock and bell on it; stood beside the Rotterdam Gate, joined to it by the Kapelsbrug over the Oude Delft. Demolished: 1836 per nl Wikipedia, 1834 per Essential Vermeer. Nothing remains.",
+   "source": "https://nl.wikipedia.org/wiki/Schiedamse_Poort ; https://www.essentialvermeer.com/catalogue/view_of_delft.html"
+  },
+  {
+   "name": "Rotterdam Gate (Rotterdamse Poort), former position",
+   "lon": 4.36111,
+   "lat": 52.00556,
+   "coord_source": "nl Wikipedia article coordinates (approximate, rounded to arc-seconds)",
+   "exists_today": false,
+   "note": "Twin-turreted gate at the right of View of Delft, near the Armamentarium where the Schie meets the town canals. Demolished 1834-1836 (nl Wikipedia; Essential Vermeer says 1836). Nothing remains.",
+   "source": "https://nl.wikipedia.org/wiki/Rotterdamse_Poort ; https://www.essentialvermeer.com/catalogue/view_of_delft.html"
+  },
+  {
+   "name": "Armamentarium (arsenal)",
+   "lon": 4.360042,
+   "lat": 52.00687,
+   "coord_source": "OSM relation 3404943 (bbox centre)",
+   "exists_today": true,
+   "note": "The long red-roofed arsenal behind the Schiedam Gate in View of Delft; the building is mapped in OSM today.",
+   "source": "https://en.wikipedia.org/wiki/View_of_Delft ; OSM"
+  },
+  {
+   "name": "Proposed location of The Little Street, Vlamingstraat 40-42",
+   "lon": 4.361733,
+   "lat": 52.013471,
+   "coord_source": "OSM node 3844955479 ('Straatje van Vermeer', wikidata Q586035)",
+   "exists_today": true,
+   "exists_today_note": "The plots exist; the houses in the painting do not.",
+   "note": "A PROPOSAL, not a settled fact: art historian Frans Grijzenhout argued in 2015, from the Delft quay-dues register, that the painting shows the plots now numbered Vlamingstraat 40 and 42; the house on the right belonged to Vermeer's aunt Ariaentgen Claes van der Minne, who sold tripe. Earlier candidates were the Voldersgracht and Nieuwe Langendijk 22-26 (demolished 1982).",
+   "source": "https://en.wikipedia.org/wiki/The_Little_Street ; https://nl.wikipedia.org/wiki/Het_straatje"
+  },
+  {
+   "name": "Oostpoort (East Gate)",
+   "lon": 4.368508,
+   "lat": 52.01086,
+   "coord_source": "OSM way 130410494 (historic=city_gate, bbox centre)",
+   "exists_today": true,
+   "note": "The only one of Delft's original eight city gates still standing; raised in 1519. Useful as a model for the two lost gates.",
+   "source": "https://nl.wikipedia.org/wiki/Oostpoort_(Delft)"
+  }
+ ]
+}

@@ -1,0 +1,309 @@
+{
+ "note": "Licence is the LicenseShortName returned by the Commons API on 2026-11-13. Images were fetched at 1920 px wide (the nearest standard Commons thumbnail size), then resized to 1600 px on the long side and re-encoded with Pillow at JPEG quality 85, which also strips embedded EXIF. The Lacemaker original on Commons is only 1596 x 1830.",
+ "paintings": [
+  {
+   "title": "Girl with a Pearl Earring",
+   "date": "c. 1665",
+   "date_source": "museum page",
+   "museum": "Mauritshuis",
+   "city": "The Hague",
+   "museum_url": "https://www.mauritshuis.nl/en/our-collection/artworks/670-girl-with-a-pearl-earring/",
+   "commons_file": "File:Johannes Vermeer - Girl with a Pearl Earring - 670 - Mauritshuis.jpg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "BotMultichill",
+   "commons_original_px": [
+    5068,
+    6000
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Girl_with_a_Pearl_Earring_-_670_-_Mauritshuis.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_Girl_with_a_Pearl_Earring_-_670_-_Mauritshuis.jpg?width=1920",
+   "local_image": "images/pearl.jpg",
+   "role": "The way in: the tronie the player steps through to reach Delft."
+  },
+  {
+   "title": "View of Delft",
+   "date": "c. 1660-1661",
+   "date_source": "museum page",
+   "museum": "Mauritshuis",
+   "city": "The Hague",
+   "museum_url": "https://www.mauritshuis.nl/en/our-collection/artworks/92-view-of-delft/",
+   "commons_file": "File:Johannes Vermeer - View of Delft - 92 - Mauritshuis.jpg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "BotMultichill",
+   "commons_original_px": [
+    6000,
+    5002
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_View_of_Delft_-_92_-_Mauritshuis.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_View_of_Delft_-_92_-_Mauritshuis.jpg?width=1920",
+   "local_image": "images/view_of_delft.jpg",
+   "role": "The town seen from outside: skyline across the Kolk harbour with the Schiedam and Rotterdam gates and the Nieuwe Kerk tower."
+  },
+  {
+   "title": "View of Houses in Delft, known as 'The Little Street'",
+   "date": "c. 1658",
+   "date_source": "Rijksmuseum site (date read from the 'more by Johannes Vermeer' list on the Milkmaid page, SK-A-2344)",
+   "museum": "Rijksmuseum",
+   "city": "Amsterdam",
+   "museum_url": "https://www.rijksmuseum.nl/en/collection/SK-A-2860",
+   "commons_file": "File:Gezicht op huizen in Delft, bekend als ‘Het straatje’ Gezicht op huizen in Delft, bekend als 'Het straatje', SK-A-2860.jpg",
+   "commons_licence": "CC0",
+   "commons_uploader": "Mr.Nostalgic",
+   "commons_original_px": [
+    4272,
+    5254
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Gezicht_op_huizen_in_Delft,_bekend_als_‘Het_straatje’_Gezicht_op_huizen_in_Delft,_bekend_als_'Het_straatje',_SK-A-2860.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Gezicht_op_huizen_in_Delft,_bekend_als_‘Het_straatje’_Gezicht_op_huizen_in_Delft,_bekend_als_'Het_straatje',_SK-A-2860.jpg?width=1920",
+   "local_image": "images/little_street.jpg",
+   "role": "A street: brick house fronts, doorway, alley, women at work and children playing; texture source for house facades."
+  },
+  {
+   "title": "The Milkmaid",
+   "date": "c. 1660",
+   "date_source": "museum page",
+   "museum": "Rijksmuseum",
+   "city": "Amsterdam",
+   "museum_url": "https://www.rijksmuseum.nl/en/collection/SK-A-2344",
+   "commons_file": "File:Johannes Vermeer - Het melkmeisje - Google Art Project.jpg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "DcoetzeeBot",
+   "commons_original_px": [
+    4000,
+    4485
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_Het_melkmeisje_-_Google_Art_Project.jpg?width=1920",
+   "local_image": "images/milkmaid.jpg",
+   "role": "Kitchen interior: a maidservant pouring milk by a window."
+  },
+  {
+   "title": "Woman Reading a Letter",
+   "date": "c. 1663",
+   "date_source": "Rijksmuseum site (as for The Little Street)",
+   "museum": "Rijksmuseum",
+   "city": "Amsterdam",
+   "museum_url": "https://www.rijksmuseum.nl/en/collection/SK-C-251",
+   "commons_file": "File:Brieflezende vrouw Rijksmuseum SK-C-251.jpeg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "Mr.Nostalgic",
+   "commons_original_px": [
+    4454,
+    5340
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Brieflezende_vrouw_Rijksmuseum_SK-C-251.jpeg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Brieflezende_vrouw_Rijksmuseum_SK-C-251.jpeg?width=1920",
+   "local_image": "images/woman_in_blue.jpg",
+   "role": "Interior: a woman in blue reading a letter in front of a wall map."
+  },
+  {
+   "title": "The Love Letter",
+   "date": "c. 1669 - c. 1670",
+   "date_source": "Rijksmuseum site (as for The Little Street)",
+   "museum": "Rijksmuseum",
+   "city": "Amsterdam",
+   "museum_url": "https://www.rijksmuseum.nl/en/collection/SK-A-1595",
+   "commons_file": "File:De liefdesbrief Rijksmuseum SK-A-1595.jpeg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "Mr.Nostalgic",
+   "commons_original_px": [
+    4316,
+    5008
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:De_liefdesbrief_Rijksmuseum_SK-A-1595.jpeg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/De_liefdesbrief_Rijksmuseum_SK-A-1595.jpeg?width=1920",
+   "local_image": "images/love_letter.jpg",
+   "role": "Interior seen through a doorway: a maid hands a letter to a woman holding a cittern; a view from room to room."
+  },
+  {
+   "title": "Woman Holding a Balance",
+   "date": "c. 1664",
+   "date_source": "Commons metadata of the file donated by the NGA; nga.gov refused the fetch (HTTP 403), so not checked on the museum page",
+   "museum": "National Gallery of Art",
+   "city": "Washington",
+   "museum_url": "https://www.nga.gov/artworks/1236-woman-holding-balance",
+   "commons_file": "File:Johannes Vermeer, Woman Holding a Balance, c. 1664, NGA 1236.jpg",
+   "commons_licence": "CC0",
+   "commons_uploader": "Brwz",
+   "commons_original_px": [
+    3546,
+    4000
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer,_Woman_Holding_a_Balance,_c._1664,_NGA_1236.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer,_Woman_Holding_a_Balance,_c._1664,_NGA_1236.jpg?width=1920",
+   "local_image": "images/balance.jpg",
+   "role": "Interior: a woman weighing with an empty balance at a table of pearls and coins."
+  },
+  {
+   "title": "A Lady Writing",
+   "date": "c. 1665",
+   "date_source": "Commons metadata of the file donated by the NGA; nga.gov refused the fetch (HTTP 403); this museum URL is a guess and was not opened",
+   "museum": "National Gallery of Art",
+   "city": "Washington",
+   "museum_url": "https://www.nga.gov/artworks/46437-lady-writing",
+   "commons_file": "File:Johannes Vermeer, A Lady Writing, c. 1665, NGA 46437.jpg",
+   "commons_licence": "CC0",
+   "commons_uploader": "Brwz",
+   "commons_original_px": [
+    3510,
+    4000
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer,_A_Lady_Writing,_c._1665,_NGA_46437.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer,_A_Lady_Writing,_c._1665,_NGA_46437.jpg?width=1920",
+   "local_image": "images/lady_writing.jpg",
+   "role": "Interior: a letter writer in a yellow jacket who looks up at the visitor."
+  },
+  {
+   "title": "Young Woman with a Water Pitcher",
+   "date": "ca. 1662",
+   "date_source": "Met Open Access API, object 437881",
+   "museum": "The Metropolitan Museum of Art",
+   "city": "New York",
+   "museum_url": "https://www.metmuseum.org/art/collection/search/437881",
+   "commons_file": "File:Young Woman with a Water Pitcher MET DP353257.jpg",
+   "commons_licence": "CC0",
+   "commons_uploader": "Pharos",
+   "commons_original_px": [
+    3437,
+    3866
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Young_Woman_with_a_Water_Pitcher_MET_DP353257.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Young_Woman_with_a_Water_Pitcher_MET_DP353257.jpg?width=1920",
+   "local_image": "images/water_pitcher.jpg",
+   "role": "Interior: a woman opening a window, hand on a pitcher and basin; map on the wall."
+  },
+  {
+   "title": "Young Woman with a Lute",
+   "date": "ca. 1662–63",
+   "date_source": "Met Open Access API, object 437880",
+   "museum": "The Metropolitan Museum of Art",
+   "city": "New York",
+   "museum_url": "https://www.metmuseum.org/art/collection/search/437880",
+   "commons_file": "File:Woman with a Lute MET DP354965.jpg",
+   "commons_licence": "CC0",
+   "commons_uploader": "Pharos",
+   "commons_original_px": [
+    3374,
+    3870
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Woman_with_a_Lute_MET_DP354965.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Woman_with_a_Lute_MET_DP354965.jpg?width=1920",
+   "local_image": "images/lute.jpg",
+   "role": "Music picture: a woman tuning a lute and looking out of the window."
+  },
+  {
+   "title": "The Geographer",
+   "date": "1669",
+   "date_source": "museum page",
+   "museum": "Städel Museum",
+   "city": "Frankfurt am Main",
+   "museum_url": "https://sammlung.staedelmuseum.de/en/work/the-geographer",
+   "commons_file": "File:Johannes Vermeer - The Geographer - Google Art Project.jpg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "Nick Backus",
+   "commons_original_px": [
+    7991,
+    8959
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_The_Geographer_-_Google_Art_Project.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_The_Geographer_-_Google_Art_Project.jpg?width=1920",
+   "local_image": "images/geographer.jpg",
+   "role": "Study interior: a scholar with dividers, charts and a globe."
+  },
+  {
+   "title": "The Astronomer",
+   "date": "1668",
+   "date_source": "museum page",
+   "museum": "Musée du Louvre",
+   "city": "Paris",
+   "museum_url": "https://collections.louvre.fr/en/ark:/53355/cl010064324",
+   "commons_file": "File:Johannes Vermeer - The Astronomer - 1668.jpg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "Multichill",
+   "commons_original_px": [
+    4401,
+    5000
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_The_Astronomer_-_1668.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_The_Astronomer_-_1668.jpg?width=1920",
+   "local_image": "images/astronomer.jpg",
+   "role": "Study interior: a scholar turning a celestial globe; pair to The Geographer."
+  },
+  {
+   "title": "Officer and Laughing Girl",
+   "date": "ca. 1657",
+   "date_source": "Frick collection search listing",
+   "museum": "The Frick Collection",
+   "city": "New York",
+   "museum_url": "https://collections.frick.org/search/vermeer",
+   "commons_file": "File:Johannes Vermeer - De Soldaat en het Lachende Meisje - Google Art Project.jpg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "DcoetzeeBot",
+   "commons_original_px": [
+    4785,
+    5213
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_De_Soldaat_en_het_Lachende_Meisje_-_Google_Art_Project.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_De_Soldaat_en_het_Lachende_Meisje_-_Google_Art_Project.jpg?width=1920",
+   "local_image": "images/officer.jpg",
+   "role": "Interior with two named figures: a soldier in a red coat and broad hat, a laughing girl, a map of Holland on the wall."
+  },
+  {
+   "title": "The Lacemaker",
+   "date": "UNVERIFIED at the museum (Commons file gives circa 1669-1671)",
+   "date_source": "Commons file description only; the Louvre record was not fetched (search returned HTTP 429)",
+   "museum": "Musée du Louvre",
+   "city": "Paris",
+   "museum_url": "",
+   "commons_file": "File:Johannes Vermeer - The lacemaker (c.1669-1671).jpg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "Jan Arkesteijn",
+   "commons_original_px": [
+    1596,
+    1830
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_The_lacemaker_(c.1669-1671).jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_The_lacemaker_(c.1669-1671).jpg?width=1920",
+   "local_image": "images/lacemaker.jpg",
+   "role": "Close-up craftswoman: a girl bent over bobbins and thread."
+  },
+  {
+   "title": "The Art of Painting",
+   "date": "about 1666/68",
+   "date_source": "museum page",
+   "museum": "Kunsthistorisches Museum",
+   "city": "Vienna",
+   "museum_url": "https://www.khm.at/en/objectdb/detail/2574/",
+   "commons_file": "File:Jan Vermeer - The Art of Painting - Google Art Project.jpg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "Alonso de Mendoza",
+   "commons_original_px": [
+    6209,
+    7377
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Jan_Vermeer_-_The_Art_of_Painting_-_Google_Art_Project.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Jan_Vermeer_-_The_Art_of_Painting_-_Google_Art_Project.jpg?width=1920",
+   "local_image": "images/art_of_painting.jpg",
+   "role": "The painter's studio: an artist at his easel painting a model dressed as Clio; curtain, map, chandelier, tiled floor."
+  },
+  {
+   "title": "Lady at the Virginals with a Gentleman ('The Music Lesson')",
+   "date": "UNVERIFIED at the museum (Commons file gives 1662)",
+   "date_source": "Commons file description only; rct.uk refused the fetch (HTTP 403)",
+   "museum": "Royal Collection",
+   "city": "London (Royal Collection Trust; RCIN 405346 per a Commons file title)",
+   "museum_url": "https://www.rct.uk/collection/405346/lady-at-the-virginals-with-a-gentleman",
+   "commons_file": "File:Johannes Vermeer - Lady at the Virginal with a Gentleman, 'The Music Lesson' - Google Art Project.jpg",
+   "commons_licence": "Public domain",
+   "commons_uploader": "Meidosensei",
+   "commons_original_px": [
+    4356,
+    5014
+   ],
+   "source_url": "https://commons.wikimedia.org/wiki/File:Johannes_Vermeer_-_Lady_at_the_Virginal_with_a_Gentleman,_'The_Music_Lesson'_-_Google_Art_Project.jpg",
+   "download_url": "https://commons.wikimedia.org/wiki/Special:FilePath/Johannes_Vermeer_-_Lady_at_the_Virginal_with_a_Gentleman,_'The_Music_Lesson'_-_Google_Art_Project.jpg?width=1920",
+   "local_image": "images/music_lesson.jpg",
+   "role": "Music picture: a deep room with a woman at the virginals, a gentleman, a viol on the floor and a mirror."
+  }
+ ]
+}
