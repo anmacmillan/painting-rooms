@@ -127,6 +127,9 @@ const sky = new THREE.Mesh(new THREE.SphereGeometry(5000, 48, 24), skyMat); sky.
 const L = new THREE.TextureLoader(), lam = o => new THREE.MeshLambertMaterial(o);
 const tex = async (f, rep) => { const t = await L.loadAsync('tex/' + f); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; if (rep) { t.wrapS = t.wrapT = THREE.RepeatWrapping; } return t; };
 const [tPave, tRoof, tStone, tA, tB, tC, tD, tFar] = await Promise.all([tex('paving.jpg', 1), tex('roof.jpg', 1), tex('stone.jpg', 1), tex('facade_a.jpg', 1), tex('facade_b.jpg', 1), tex('facade_c.jpg', 1), tex('facade_d.jpg', 1), tex('oltrarno.jpg')]);
+const tPal = await tex('palazzo.jpg'), tDrape = await tex('drapery.jpg', 1); tDrape.repeat.set(2, 1);
+const tTower = await (async () => { const im = await new Promise((ok, no) => { const i = new Image(); i.onload = () => ok(i); i.onerror = no; i.src = 'tex/tower.jpg'; }); const c = document.createElement('canvas'); c.width = im.width; c.height = im.height; const g = c.getContext('2d'); g.drawImage(im, 0, 0);
+  const d = g.getImageData(0, 0, c.width, c.height), a = d.data; for (let i = 0; i < a.length; i += 4) if (a[i + 2] > a[i] + 14 && a[i + 2] > a[i + 1] - 6) a[i + 3] = 0; g.putImageData(d, 0, 0); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; })();   // the painted tower, with its sky cut away
 const strokeTex = canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#c4c4c4'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#e2e2e2', '#a8a8a8', '#d4d4d4', '#989898', '#eeeeee'], 200, 9, 5); }, true);
 const FRONT = [tA, tB, tC, tD].map(t => { const m = lam({ map: t }); m.userData.flat = true; return m; }), SIDE = ['#c9964a', '#8a8072', '#d9c9a8', '#c98a80'].map(c => lam({ color: c, map: strokeTex }));
 const roofM = lam({ map: tRoof }), stoneM = lam({ map: tStone }), paveM = lam({ map: tPave });
@@ -134,7 +137,7 @@ const roofM = lam({ map: tRoof }), stoneM = lam({ map: tStone }), paveM = lam({ 
 /* ================= ground and river ================= */
 {
   const n = 2, nx = Math.ceil(WW / n), nz = Math.ceil(WH / n), pos = [], uv = [], idx = [];
-  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = B[0] + i * n, z = B[1] + j * n; pos.push(x, ground(x, z), z); uv.push(x / 5, z / 5); }
+  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = B[0] + i * n, z = B[1] + j * n; pos.push(x, ground(x, z), z); uv.push(x / 3.6, z / 3.6); }
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, d = a + nx + 1, e = d + 1; idx.push(a, d, b, b, d, e); }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
   const m = new THREE.Mesh(g, paveM); m.receiveShadow = true; scene.add(m);
@@ -191,11 +194,18 @@ map.buildings.forEach((b, i) => {
   for (let k = 0; k < n; k++) { const u = -U / 2 + (k + 0.5) * fw, x = mx + u * c2, z = mz + u * s2; if (nearest(x, z).d < dp / 2 + 2.6 || isWater(x, z) || onBridge(x, z)) continue;
     unit(x, z, fw - 0.05, dp, ang, i * 3 + k); houses.push({ x, z, w: fw / 2 + 0.4, d: dp / 2 + 0.5, c: c2, s: s2 }); }
 });
+const blocked = (x, z) => inHouse(x, z) || floorAt(x, z) === null;
 const inHouse = (x, z) => houses.some(h => { const dx = x - h.x, dz = z - h.z, u = dx * h.c + dz * h.s, v = -dx * h.s + dz * h.c; return Math.abs(u) < h.w && Math.abs(v) < h.d; });
 // the Palazzo Vecchio and its tower (begun in 1299: here because the painters' Florence is not strict about dates)
-{ const x = 62, z = 6, a = 0.33; bake(boxUV(46, 40, 34, 9), M4(x, LAND + 20, z, -a), stoneM); for (let q = 0; q < 12; q++) bake(boxUV(2.6, 3, 2.6, 9), M4(x + (-21 + q * 3.9) * Math.cos(a) - (-17.5) * Math.sin(a), LAND + 41.5, z + (-21 + q * 3.9) * Math.sin(a) + (-17.5) * Math.cos(a), -a), stoneM);
-  bake(boxUV(9, 52, 9, 9), M4(x - 6 * Math.cos(a) + 13 * Math.sin(a), LAND + 66, z - 6 * Math.sin(a) - 13 * Math.cos(a), -a), stoneM); bake(boxUV(12, 7, 12, 9), M4(x - 6 * Math.cos(a) + 13 * Math.sin(a), LAND + 90, z - 6 * Math.sin(a) - 13 * Math.cos(a), -a), stoneM);
-  houses.push({ x, z, w: 24, d: 18, c: Math.cos(a), s: Math.sin(a) }); }
+{ const x = 62, z = 6, a = 0.33, ca = Math.cos(a), sa = Math.sin(a), palM = lam({ map: tPal }), towM = lam({ map: tTower, alphaTest: 0.5 });
+  const crop = (w, h, d, u0, u1, v0, v1) => { const g = new THREE.BoxGeometry(w, h, d), u = g.attributes.uv; for (let i = 0; i < u.count; i++) { const f = Math.floor(i / 4), top = f === 2 || f === 3; u.setXY(i, top ? mix(u0, u1, 0.45 + u.getX(i) * 0.1) : mix(u0, u1, u.getX(i)), top ? mix(v0, v1, 0.02 + u.getY(i) * 0.03) : mix(v0, v1, u.getY(i))); } return g; };
+  bake(crop(46, 40, 34, 0, 1, 0, 0.935), M4(x, LAND + 20, z, -a), palM);
+  for (let q = 0; q < 12; q++) for (const w of [-17.4, 17.4]) bake(boxUV(2.4, 2.6, 0.9, 5), M4(x + (-21.6 + q * 3.93) * ca - w * sa, LAND + 41.3, z + (-21.6 + q * 3.93) * sa + w * ca, -a), stoneM);
+  for (let q = 0; q < 9; q++) for (const w of [-22.6, 22.6]) bake(boxUV(0.9, 2.6, 2.4, 5), M4(x + w * ca - (-15.6 + q * 3.9) * sa, LAND + 41.3, z + w * sa + (-15.6 + q * 3.9) * ca, -a), stoneM);
+  const tx = x - 6 * ca + 13 * sa, tz = z - 6 * sa - 13 * ca;
+  for (let q = 0; q < 3; q++) bake(crop(9, 10, 9, 0.311, 0.691, 0.0, 0.2285), M4(tx, LAND + 45 + q * 10, tz, -a), towM);
+  bake(crop(12.1, 12.2, 12.1, 0.245, 0.755, 0.2285, 0.5166), M4(tx, LAND + 76.1, tz, -a), towM); bake(crop(8.9, 16.4, 8.9, 0.311, 0.687, 0.5166, 0.9023), M4(tx, LAND + 90.4, tz, -a), towM);
+  houses.push({ x, z, w: 24, d: 18, c: ca, s: sa }); }
 // the two bridges: the Santa Trinita she walks out on, and the Ponte Vecchio with its shops, seen down the river
 function bridge(n, c, wid, shops) { const L_ = Math.hypot(c[0] - n[0], c[1] - n[1]) * 2, d = [(c[0] - n[0]) / (L_ / 2), (c[1] - n[1]) / (L_ / 2)], ang = Math.atan2(d[1], d[0]);
   bake(boxUV(L_ + 8, 1.2, wid, 5), M4(c[0], DECK - 0.62, c[1], -ang), stoneM); for (const sd of [-1, 1]) bake(boxUV(L_ + 8, 1.0, 0.5, 5), M4(c[0] - d[1] * sd * (wid / 2 - 0.25), DECK + 0.5, c[1] + d[0] * sd * (wid / 2 - 0.25), -ang), stoneM);
@@ -229,22 +239,25 @@ const FACES = [2, 4, 5, 1, 6].map(faceMat), shadowM = new THREE.MeshBasicMateria
 const lathe = (pts, m, seg) => { const me = new THREE.Mesh(new THREE.LatheGeometry(pts.map(p => new THREE.Vector2(p[0], p[1])), seg || 14), m); me.castShadow = true; return me; };
 const limb = (len, r0, r1, m) => { const g = new THREE.Group(), c = new THREE.Mesh(new THREE.CylinderGeometry(r0, r1, len, 7), m); c.position.y = -len / 2; c.castShadow = true; g.add(c); return g; };
 function person(o) {             // o: gown, sleeve, head ('hood' | 'veil' | 'hair' | 'cap'), headCol, hairCol, face (index into the painted faces), size
-  const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig); const skin = lam({ color: '#ecd0b0' }), gown = lam({ color: o.gown, map: strokeTex }), dark = lam({ color: '#2a2018' });
-  const body = lathe([[0.02, 0.03], [0.4, 0.04], [0.36, 0.32], [0.2, 0.98], [0.21, 1.14], [0.24, 1.3], [0.19, 1.41], [0.07, 1.47]], gown, 16); rig.add(body);
+  const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig); const skin = lam({ color: '#ecd0b0' }), gown = lam({ color: o.gown, map: tDrape }), dark = lam({ color: '#2a2018' });
+  const body = lathe([[0.02, 0.02], [0.47, 0.02], [0.46, 0.08], [0.38, 0.4], [0.27, 0.84], [0.205, 1.0], [0.215, 1.1], [0.25, 1.25], [0.245, 1.35], [0.17, 1.44], [0.07, 1.48]], gown, 20); rig.add(body);
+  const gird = new THREE.Mesh(new THREE.TorusGeometry(0.212, 0.018, 6, 20), lam({ color: o.girdle || (o.head === 'hair' ? '#d9b25a' : '#3a2a20') })); gird.rotation.x = Math.PI / 2; gird.position.y = 1.0; rig.add(gird);
+  for (const sx of [-1, 1]) { const sh = new THREE.Mesh(new THREE.SphereGeometry(0.095, 10, 8), lam({ color: o.sleeve || o.gown })); sh.position.set(sx * 0.235, 1.35, 0); sh.scale.set(1, 0.85, 1.05); sh.castShadow = true; rig.add(sh); }
+  if (o.head === 'hood') { const cp = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.33, 0.24, 16, 1, true), lam({ color: o.headCol, map: tDrape, side: THREE.DoubleSide })); cp.position.y = 1.4; cp.castShadow = true; rig.add(cp); }
   const nk = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.12, 8), skin); nk.position.y = 1.5; rig.add(nk);
   const hd = new THREE.Group(); hd.position.y = 1.64; const r = 0.135, s = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), skin); s.scale.set(0.92, 1.14, 0.96); s.castShadow = true; hd.add(s);
   const f = new THREE.Mesh(new THREE.SphereGeometry(r * 1.02, 12, 10, Math.PI / 2 - 1.0, 2.0, 0.5, 1.75), faceMat(o.face)); f.scale.set(0.92, 1.14, 0.96); hd.add(f);
   const back = (col, grow) => { const b = new THREE.Mesh(new THREE.SphereGeometry(r * (grow || 1.05), 12, 10, Math.PI / 2 + 0.95, Math.PI * 2 - 1.9), lam({ color: col, map: strokeTex })); b.scale.set(0.94, 1.16, 1.0); hd.add(b); return b; };
   if (o.head === 'hood') { back(o.headCol, 1.1); const t = new THREE.Mesh(new THREE.SphereGeometry(r * 1.1, 12, 8, 0, 6.3, 0, 1.2), lam({ color: o.headCol, map: strokeTex })); t.scale.set(0.96, 1.05, 1.02); t.position.y = 0.03; hd.add(t);
     const band = new THREE.Mesh(new THREE.TorusGeometry(r * 0.99, 0.022, 6, 16), lam({ color: '#f1ecdc' })); band.rotation.x = Math.PI / 2; band.position.y = 0.05; band.scale.set(0.95, 1.0, 1); hd.add(band);
-    const tail = new THREE.Group(), tm = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 6), lam({ color: o.headCol, map: strokeTex })); tm.scale.set(0.07, 0.22, 0.05); tm.position.y = -0.2; tail.add(tm); tail.position.set(0, 0.06, -0.13); hd.add(tail); g.userData.tail = tail; }
+    const tail = new THREE.Group(), tm = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 6), lam({ color: o.headCol, map: strokeTex })); tm.scale.set(0.06, 0.12, 0.05); tm.position.y = -0.1; tail.add(tm); tail.position.set(0, 0.06, -0.13); hd.add(tail); g.userData.tail = tail; }
   else if (o.head === 'veil') { back('#f1ecdc', 1.08); const t = new THREE.Mesh(new THREE.SphereGeometry(r * 1.08, 12, 8, 0, 6.3, 0, 1.15), lam({ color: '#f1ecdc' })); t.position.y = 0.03; hd.add(t); const dr = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.34, 10, 1, true), lam({ color: '#f1ecdc', side: THREE.DoubleSide })); dr.position.set(0, -0.2, -0.05); hd.add(dr); }
   else { back(o.hairCol || '#7a4a24', 1.08); const t = new THREE.Mesh(new THREE.SphereGeometry(r * 1.07, 12, 8, 0, 6.3, 0, 1.2), lam({ color: o.hairCol || '#7a4a24', map: strokeTex })); t.position.y = 0.03; hd.add(t);
     if (o.head === 'hair') { const tail = new THREE.Group(), tm = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), lam({ color: o.hairCol || '#7a4a24', map: strokeTex })); tm.scale.set(0.12, 0.3, 0.05); tm.position.y = -0.3; tail.add(tm); tail.position.set(0, 0.02, -0.11); hd.add(tail); g.userData.tail = tail;
       const circ = new THREE.Mesh(new THREE.TorusGeometry(r * 1.0, 0.014, 6, 16), lam({ color: '#d9b25a' })); circ.rotation.x = Math.PI / 2; circ.position.y = 0.07; hd.add(circ); }
     else { const cap = new THREE.Mesh(new THREE.SphereGeometry(r * 1.12, 12, 8, 0, 6.3, 0, 1.0), lam({ color: o.headCol || '#3a2a20' })); cap.position.y = 0.05; hd.add(cap); } }
   rig.add(hd);
-  const arm = () => { const a = limb(0.52, 0.065, 0.045, lam({ color: o.sleeve || o.gown, map: strokeTex })), h = new THREE.Mesh(new THREE.SphereGeometry(0.04, 8, 6), skin); h.position.y = -0.54; a.add(h); return a; };
+  const arm = () => { const a = limb(0.5, 0.078, 0.105, lam({ color: o.sleeve || o.gown, map: tDrape })), h = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), skin); h.scale.set(0.8, 1.5, 0.6); h.position.y = -0.55; a.add(h); return a; };
   const aL = arm(), aR = arm(); aL.position.set(-0.25, 1.36, 0); aR.position.set(0.25, 1.36, 0); rig.add(aL, aR);
   const fL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.07, 0.24), dark), fR = fL.clone(); fL.position.set(-0.1, 0.035, 0); fR.position.set(0.1, 0.035, 0); g.add(fL, fR);
   const sh = new THREE.Mesh(new THREE.CircleGeometry(0.42, 14), shadowM); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; g.add(sh);
@@ -293,7 +306,7 @@ const WAY = {
 function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); triS = S_START + 12; triV = 0; endT = 0; wp = null; seen = {}; leg = 1; dusk = 0; progS = S_START; dove.visible = false; for (const g of trio) { g.userData.hd.rotation.set(0, 0, 0); g.userData.rig.position.y = 0; g.scale.setScalar(g === maid ? 1.0 : 1.04); }
   camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
 function begin() {
-  SND.start({ chords: [[41, 60, 64, 67, 72], [38, 57, 60, 65, 69], [36, 55, 60, 64, 67], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); state = 'play';
+  SND.start({ track: 'music.mp3', chords: [[41, 60, 64, 67, 72], [38, 57, 60, 65, 69], [36, 55, 60, 64, 67], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); state = 'play';
   $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
   setTimeout(() => { if (state === 'play') say(meG, 'There she is: Beatrice, all in white. After her!', 4.5); }, 900);
 }
@@ -306,8 +319,10 @@ function update(dt) {
     turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (state !== 'play') { turn = 0; go = 0; }
     me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1); const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
     me.speed += (go * 10.5 - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2)); let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
-    if (inHouse(nx, nz)) { if (!inHouse(nx, me.z)) nz = me.z; else if (!inHouse(me.x, nz)) nx = me.x; else { nx = me.x; nz = me.z; me.speed *= 0.4; } }
-    let f = floorAt(nx, nz); if (f === null) { f = floorAt(nx, me.z); if (f !== null) nz = me.z; else { f = floorAt(me.x, nz); if (f !== null) nx = me.x; else { nx = me.x; nz = me.z; f = floorAt(nx, nz) ?? me.y; me.speed *= 0.5; } } }
+    if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;      // slide along whatever is in the way
+      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
+      if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
+    const f = floorAt(nx, nz) ?? me.y;
     me.x = nx; me.z = nz; const jump = (keys.has('Space') || held.jump) && state === 'play';
     if (jump && !me.air) { me.vy = 6.0 + Math.abs(me.speed) * 0.2; me.air = true; SND.whoosh(0.04); }
     if (me.air) { me.vy -= (jump && me.vy < 0 ? 5 : 15) * dt; me.y += me.vy * dt; if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.06); } } else me.y += (f - me.y) * Math.min(1, dt * 14);
@@ -349,8 +364,8 @@ function update(dt) {
     if (state === 'way') { const [pos, look, fov] = wp.cam(), k = Math.min(1, dt * 1.5); camera.position.lerp(pos, k); camera.lookAt(look); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); }
     else if (state === 'tableau' || state === 'done') { const kk = Math.min(1, dt * 0.9), b = beatrice.position, fwd = [Math.sin(beatrice.rotation.y), Math.cos(beatrice.rotation.y)], pos = new V3(b.x + fwd[0] * 2.3 + fwd[1] * 0.6, DECK + 1.0, b.z + fwd[1] * 2.3 - fwd[0] * 0.6);      // in front of her, the river and the old bridge behind
       camera.position.lerp(pos, kk); camera.lookAt(b.x, DECK + 1.02, b.z); camera.fov += (40 - camera.fov) * kk; camera.updateProjectionMatrix(); }
-    else { const alt = Math.max(0, me.y - (floorAt(me.x, me.z) ?? LAND)); let dist = 4.0 + Math.abs(me.speed) * 0.2 + alt * 0.5, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
-      const k = Math.min(1, dt * 5.5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (me.y + 2.0 + alt * 0.25 - camera.position.y) * k;
+    else { const alt = Math.max(0, me.y - (floorAt(me.x, me.z) ?? LAND)); let dist = 5.6 + Math.abs(me.speed) * 0.2 + alt * 0.5, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
+      const k = Math.min(1, dt * 5.5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (me.y + 2.45 + alt * 0.25 - camera.position.y) * k;
       camera.lookAt(me.x + fx * 6, me.y + 1.45, me.z + fz * 6); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 + Math.abs(me.speed) * 1.4 - camera.fov) * k; camera.updateProjectionMatrix(); }
   }
   for (const w of walkers) {

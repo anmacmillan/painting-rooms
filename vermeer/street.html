@@ -308,7 +308,7 @@ const WAY = {
 function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); birdS = S_START + 14; endT = 0; wp = null; seen = {}; headTurn = 0; meG.userData.pearl.visible = false; bird.userData.pearl.visible = true; meG.userData.hd.rotation.y = 0;
   camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
 function begin() {
-  SND.start({ chords: [[43, 59, 62, 67, 71], [36, 55, 60, 64, 67], [38, 57, 62, 66, 69], [43, 55, 59, 62, 67]], scale: [67, 69, 71, 74, 76, 79, 81, 83, 86, 88, 91] }); SND.setMuted(muted); reset(); state = 'play';
+  SND.start({ track: 'music.mp3', chords: [[43, 59, 62, 67, 71], [36, 55, 60, 64, 67], [38, 57, 62, 66, 69], [43, 55, 59, 62, 67]], scale: [67, 69, 71, 74, 76, 79, 81, 83, 86, 88, 91] }); SND.setMuted(muted); reset(); state = 'play';
   $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
   setTimeout(() => { if (state === 'play') say(meG, 'My earring! Come back, you thief!', 4); }, 900);
 }

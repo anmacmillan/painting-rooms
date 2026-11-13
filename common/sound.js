@@ -7,7 +7,7 @@
      Sound.puff(vol), Sound.hiss(), Sound.whoosh(vol), Sound.setMuted(bool) */
 window.Sound = (() => {
   let ac = null, master, wet, dry, pads, windGain, windBand, noise, muted = false;
-  let chords = [], scale = [], nextChord = 0, nextBell = 0, chordI = 0, walk = 4;
+  let chords = [], scale = [], nextChord = 0, nextBell = 0, chordI = 0, walk = 4, track = null, trackBuf = null, nextTrack = 0, trackGain;
   const hz = m => 440 * Math.pow(2, (m - 69) / 12);
   function start(opts) {
     chords = opts.chords; scale = opts.scale;
@@ -32,6 +32,14 @@ window.Sound = (() => {
     windGain = ac.createGain(); windGain.gain.value = 0;
     src.connect(windBand); windBand.connect(windGain); windGain.connect(dry); windGain.connect(wet); src.start();
     nextChord = ac.currentTime + 0.1; nextBell = ac.currentTime + 2.5;
+    // A recorded score (opts.track) replaces the pads and the wandering bells; it loops with a slow cross-fade. If it fails to load, the pads carry on.
+    trackGain = ac.createGain(); trackGain.gain.value = opts.trackVol || 0.5; trackGain.connect(master);
+    if (opts.track) { track = opts.track; fetch(track).then(r => r.arrayBuffer()).then(b => new Promise((ok, no) => ac.decodeAudioData(b, ok, no))).then(b => { trackBuf = b; nextTrack = ac.currentTime + 0.05; }).catch(() => { track = null; }); }
+  }
+  function playTrack(t) {
+    const X = 5, s = ac.createBufferSource(), g = ac.createGain(), d = trackBuf.duration; s.buffer = trackBuf;
+    g.gain.setValueAtTime(0.0001, t); g.gain.linearRampToValueAtTime(1, t + (nextTrack < 1 ? 1.5 : X)); g.gain.setValueAtTime(1, t + d - X); g.gain.linearRampToValueAtTime(0.0001, t + d);
+    s.connect(g); g.connect(trackGain); s.start(t); nextTrack = t + d - X;
   }
   function pad(f, t, dur, vol, type) {
     const o = ac.createOscillator(), g = ac.createGain();
@@ -65,14 +73,15 @@ window.Sound = (() => {
     update(busy, wind) {
       if (!ac || ac.state !== 'running') return;
       const now = ac.currentTime;
-      if (now >= nextChord) {
+      if (trackBuf && now >= nextTrack - 0.2) playTrack(Math.max(now, nextTrack));
+      if (!track && now >= nextChord) {
         chords[chordI++ % chords.length].forEach((m, i) => {
           pad(hz(m), now, 12.5, i === 0 ? 0.055 : 0.028, i === 0 ? 'sine' : 'triangle');
           if (i > 0) pad(hz(m + 12), now + 0.4, 11.5, 0.007, 'sine');
         });
         nextChord = now + 9;
       }
-      if (now >= nextBell) {
+      if (!track && now >= nextBell) {
         walk = Math.max(0, Math.min(scale.length - 1, walk + Math.floor(Math.random() * 7) - 3));
         bellAt(scale[walk], 0.026 + Math.random() * 0.02);
         if (Math.random() < 0.35) bellAt(scale[Math.floor(Math.random() * scale.length)], 0.02, 0.22 + Math.random() * 0.3);
