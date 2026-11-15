@@ -42,18 +42,18 @@ All five are his, from the French of the letters; the English is a plain transla
 
 He says them in a different order and on one night; that is the game's (I). The postman's line and the townspeople's five lines are invented (I) and the end card says so.
 
-## The route (913 m on the plan)
+## The route (966 m on the plan)
 
-The brief asked for 400 to 600 m. The straight line from the Place du Forum to Place Lamartine is already about 550 m, and the walk by real streets to the river is about 910 m, so the level is longer than asked. Nothing was shortened.
+The brief asked for 400 to 600 m. The straight line from the Place du Forum to Place Lamartine is already about 550 m, and the walk by real streets to the river is about 910 m, so the level is longer than asked. Nothing was shortened. On 16 Nov 2026 the start was moved to the north-west corner of the Place du Forum, so that the boy runs round the square (about 55 m) before the café composes itself: 966 m in all.
 
 | Stretch | On the plaques | 1888? | Status |
 |---|---|---|---|
-| Rue du Palais mouth, east side of the Place du Forum | Place du Forum | Named in L693 | V |
+| Round the Place du Forum from its north-west corner, then up its east side | Place du Forum | Named in L693 | V |
 | Rue de la Place, Rue du Sauvage | the same | Today's lines and names (OSM). The names were not checked against a plan of the 1880s. The town revised its street names in February 1879 (W fr_histoire) | lines P, names U |
 | Rue du 4 Septembre | the same | As above; the name commemorates 4 September 1870, so it is not older than that | lines P, name U |
 | Place Voltaire, Rue Voltaire, Rue de la Cavalerie | the same | As above. This is the part of the Cavalerie quarter spared in 1944 as far as Place Voltaire; north of it "les reconstructions de l'après-guerre" (W fr_quartier_cavalerie) | lines P, names U |
-| Porte de la Cavalerie | (a place on the mini map) | Thirteenth-century gate, rebuilt in the sixteenth, restored in the eighteenth; "ses deux tours rondes latérales furent partiellement endommagées lors de la Révolution française, et en 1877" (W fr_cavalerie). The towers and the wall stubs stand on OSM's footprints. Whether anything spanned the gap in 1888 is not known: shown open, as now | towers V, state in 1888 U |
-| Place Lamartine | (place) | Named in every source for the Yellow House; in 1888 it had public gardens ("un jardin public tres joli", L678), now a roundabout (W fr_quartier_cavalerie). Today's roads and buildings north of the gate are removed (`cleared` in prep_arles.py). The posts and rails beside the way stand in for the garden railings | V that it was gardens; layout U |
+| Porte de la Cavalerie | (a place on the mini map) | Thirteenth-century gate, rebuilt in the sixteenth, restored in the eighteenth; "ses deux tours rondes latérales furent partiellement endommagées lors de la Révolution française, et en 1877" (W fr_cavalerie). The towers and the wall stubs stand on OSM's footprints. Rebuilt 16 Nov 2026 from the two Commons photographs (`ref/cavalerie_a.jpg`, `_b.jpg`): squat round towers of large coursed blocks on a plinth, about as high as wide (7.2 m here, by eye against a car and a cyclist), no battlements, the tops broken off unevenly with a taller fragment left on one side, weeds on top, a few square holes, a round-headed niche at the foot of each towards the road, nothing across the gap. Since the damage is dated to the Revolution and 1877, a truncated state in 1888 is likely (P). Whether an arch, a gate or nothing joined the towers in 1888 was not found: shown open, as now (U). No view of the gate from the 1880s was looked at | towers V (today), state in 1888 P/U |
+| Place Lamartine | (place) | Named in every source for the Yellow House; in 1888 it had public gardens ("un jardin public tres joli", L678), now a roundabout (W fr_quartier_cavalerie). Today's roads and buildings north of the gate are removed (`cleared` in prep_arles.py). See "Place Lamartine in 1888" below | V that it was gardens; layout U |
 | Avenue de Montmajour | the same | The avenue to the right of the Yellow House "runs down to the two railway bridges" (W en_yellow_house); OSM calls it Avenue de Stalingrad | V (secondary) |
 | The bank of the Rhône | none | Stone quays built 1856 to 1868 after the floods (W fr_histoire). The bank is traced by hand along the quay walls and quay roads in OSM, because the river's own outline lies outside the extract. The landing at the end is this level's shape, cut to the foreground of the picture | quay V, bank line P, landing I |
 | Railway | (an outline beyond the Yellow House) | Station and Avignon to Marseille line 1848; Lunel line and its Rhône bridge 1868 (W fr_gare, fr_histoire) | V |
@@ -69,10 +69,22 @@ Street names blanked: every street off the walk (none was checked), and on princ
 | The café, Place du Forum | The west wall of its real block (OSM footprint; OSM's marker "Le Café la Nuit" is inside it). Awning on iron rods, the great lantern on a bracket, boarded terrace with round tables, shuttered floors and a balcony, a blue shop front at the near end | The painting; Commons photograph of 2015 (`ref/cafe_2015.jpg`). The wall is pale plaster turned sulphur by the lamp, after W fr_terrasse. Window count and the shop are read off the painting: P |
 | Ordinary houses | Today's footprints (OSM), each wall a three-storey Provençal front with shutters | Fronts painted by `tools/blender/tex_vangogh.py`: generic, I. Footprints north of Place Voltaire are largely post-1944: P |
 | Porte de la Cavalerie | Two round towers 9.4 m high and the walls beside them, in coursed stone | OSM footprints; Commons photographs (`ref/cavalerie_a.jpg`, `_b.jpg`). Heights by eye: P |
-| The Yellow House | A pair of two-storey houses under low gables, yellow, green shutters and door, the grocer's pink awning on the left half, his lit window on the corner upstairs, a taller house behind | The painting; W en_yellow_house for which rooms were his. Its site is OSM's marker "La Maison Jaune de Van Gogh"; the line of the row (due east-west) and every dimension are guesses: look P, position U |
+| The Yellow House | A pair of two-storey houses under low gables, yellow, green shutters and door, the grocer's pink awning on the left half, his lit window on the corner upstairs, a taller house behind | The painting; W en_yellow_house for which rooms were his. Its site is OSM's marker "La Maison Jaune de Van Gogh". The row was first set due east-west; on 16 Nov 2026 it was turned to run north-west to south-east, facing south-west. The argument: in the painting the Avenue de Montmajour runs off to the right of the house to the bridges; the avenue's bearing is known (OSM, about 25° east of north); with an east-west front the avenue would vanish behind the house, and only a front at about this angle puts it on the right. The blocks on the site today lie the same way (OSM). Dimensions are guesses: look P, line P, exact position U |
 | The restaurant | Pink, green shutters, a tree before it | L691: "la maison à gauche est rose à volets verts, celle qui est ombragée par un arbre, c'est là le restaurant où je vais diner tous les jours" (en.wikipedia's translation says "yellow"; the French says pink). No. 28, the widow Venissac's (W). Its front otherwise I |
 | Café de la Gare | A house left of the restaurant with its ground floor open on the room of the picture | Position from L691 ("à gauche du restaurant"). Front I. The room is the painting: red walls, green ceiling, yellow boards, billiard table and its shadow, four lamps (L676: "4 lampes jaune citron à rayonnement orangé et vert"), clock at a quarter past twelve (W fr_cafe_nuit), counter, bottles, nosegay, the landlord in white, sleepers and a couple. An open front is the game's device |
 | Town skyline, far shore | Flat outlines; towers where OSM has Saint-Julien and Saint-Trophime | Schematic: I |
+
+## Place Lamartine in 1888 (added 16 Nov 2026)
+
+| Thing in the level | Rests on | Status |
+|---|---|---|
+| Bare yellow earth instead of paving | L691, of the Yellow House picture: "Tout le terrain est jaune aussi" (by day) | V |
+| Public gardens: six lawns with a clipped border, round bushes and a ring of flowers | That there were gardens: L678 ("un jardin public tres joli" under his windows); W en_yellow_house ("one of the public gardens on Place Lamartine", with a walk round it); W en_rhone (he proposed "one of his paintings from the public gardens in Arles" for exhibition). No article on the garden pictures exists on en or fr Wikipedia (searched), and the pictures themselves were not looked at: the number, shape and planting of the lawns are furniture | gardens V, layout and planting U |
+| Benches, extra gas lamps, a cart, a carter, two neighbours talking | Nothing read. Street furniture of the time | I |
+| Heaps of earth before the Yellow House | The painting shows them; W en_yellow_house: the ditch "served the gas pipe" | V (secondary for the reason) |
+| Tables outside the Café de la Gare, a man at one | Nothing read for this café; the painting shows people at tables by the house on the avenue side | U |
+| Railway: an embankment with two bridges over the avenue, a train with smoke on the nearer | The painting; W en_yellow_house ("two railway bridges", "with a train just passing"; Lunel line and P.-L.-M.); position where OSM's railway crosses the avenue, about 150 m from the house. Shapes are outlines; the train runs to and fro for ever | V that they were there; form I |
+| Two drunks by the café, with bottles | L676 and W en_night_cafe (a café of "rôdeurs de nuit", people "too drunk to be taken in"). Their three remarks are invented and the end card says the townspeople's words are | P; words I |
 
 ## Figures (tools/blender/figure.py, world 'vangogh')
 
@@ -80,15 +92,17 @@ Street names blanked: every street off the walk (none was checked), and on princ
 |---|---|---|
 | The boy (Camille Roulin) | Blue smock, blue cap | The Schoolboy (Camille Roulin), 1888 (`ref/camille.jpg`): P. That he ran errands at night is I |
 | The painter | Straw hat, blue working jacket and trousers, red beard, a canvas and folded easel on his back | The Painter on the Road to Tarascon, 1888, destroyed in the Second World War (W en_tarascon; `ref/painter_tarascon.jpg`), a daylight picture of July or August: P for what he wore at night in September |
-| The postman | Dark blue uniform with gold buttons, cap, large beard | Portrait of the Postman Joseph Roulin (`ref/roulin.jpg`): P |
+| The postman | Dark blue uniform with gold buttons, cap, a great beard parted in two on his chest (`beard_fork`, a new default-off option) | Portrait of the Postman Joseph Roulin, Boston (`ref/roulin.jpg`, looked at): a full square beard falling in two masses. "Forked" is my reading of that one picture: P |
 | The landlord | White | The Night Café; L676 "Les vêtements blancs du patron": V |
 | The lovers | A man in blue with a straw hat, a woman in a shawl | L691 "Deux figurines colorées d'amoureux à l'avant plan"; their dress read off the painting: P |
-| Townspeople, café-goers | Dark jackets and broad hats, blue smocks and caps, dark dresses with a white fichu, a shawl | General impression of the 1880s and of the figures in the paintings; no costume source read: U |
+| Townspeople, café-goers | Dark jackets and broad hats, blue smocks and caps, dark dresses with a white fichu, a shawl; an old woman and a grey-bearded man added 16 Nov 2026 | General impression of the 1880s and of the figures in the paintings; no costume source read: U. Faces are now seven different painted ones (`tools/blender/faces`, by another agent's `tex_faces.py`): none is a likeness |
 
 ## The sky and the water
 
 - The Great Bear is set over the river to the south-south-west because he painted it there. It cannot be seen in that direction (W en_rhone). Its seven stars are placed by eye from the painting.
 - Colours follow L691: sky "bleu vert", water "bleu de roi", ground "mauve", town "bleue et violette", gas "jaune", its reflections "or roux ... jusqu'au bronze vert", the Bear "vert et rose".
+- In the Café Terrace staging the plain house fronts are dimmed to dark blue and violet while the picture is looked at, after L678: "Les pignons des maisons ... sont bleus foncés ou violets".
+- The Rhône staging (16 Nov 2026): the near bank is one dark curve from the lower left, two boats lie moored side by side, a pale mound beside them, the lovers small at the lower right coming towards us (checked numerically: both face the camera), each lamp's reflection a stack of short strokes from gold through russet to green-bronze. The boats, mound and bank are read off the painting; none is located on the real bank.
 - Haloes of dashes round the stars are closer to his manner of 1889 than of 1888, when he gave them petals (W en_rhone, fr_nuit_rhone); here they have both. This is the level's style, not a claim.
 
 ## Images
@@ -97,7 +111,7 @@ Street names blanked: every street off the walk (none was checked), and on princ
 
 ## Textures
 
-All painted by `tools/blender/tex_vangogh.py` with PIL (clothes, four house fronts, cobbles, plaster, stone). The one borrowed file is `tex/drapery.jpg`, the folded cloth copied from `florence/tex/drapery.jpg` and used only as light and shade under the painted clothes. No Florence house front or paving is used. Faces and hair are the shared ones of the Munch level (`munch/tex`).
+All painted by `tools/blender/tex_vangogh.py` with PIL (clothes, eight house fronts of two, three and four storeys with shutters open and closed, arched doors, two shops, balconies and drainpipes, cobbles, plaster, stone). The fronts are generic Provençal street fronts, not portraits of houses in Arles (I). The one borrowed file is `tex/drapery.jpg`, the folded cloth copied from `florence/tex/drapery.jpg` and used only as light and shade under the painted clothes. No Florence house front or paving is used. Faces and hair are the shared ones of the Munch level (`munch/tex`).
 
 ## Changes from the brief
 

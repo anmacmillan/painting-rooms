@@ -30,7 +30,7 @@
   <h2>An afterword: The Starry Night</h2>
   <p>The picture above is the famous one, and it is not Arles. Van Gogh painted The Starry Night in June 1889 at the asylum of Saint-Paul-de-Mausole at Saint-Rémy-de-Provence, which he had entered on 8 May 1889; it shows the view from his window with a village added from imagination, and it is now in the Museum of Modern Art, New York. The stars you have just walked under are the earlier ones. In September 1888 in Arles he painted The Night Café (finished by 8 September; Yale University Art Gallery), Café Terrace at Night (between about 9 and 16 September; Kröller-Müller Museum, Otterlo), The Yellow House and Starry Night Over the Rhône (both by about 29 September; Van Gogh Museum, Amsterdam, and Musée d'Orsay, Paris).</p>
   <p>What is real: the plan of the streets from the Place du Forum to the Porte de la Cavalerie, which is today's; the two round towers of the gate and the walls beside it, on their real footprints; the place of the café on the Place du Forum; gas in the streets of Arles (from 1881) and the stone quays of the Rhône (1856–68). The painter's five lines are his own, translated from his letters of that month: “I go outside at night to paint the stars” and “The starry sky, painted at night itself, under a gas jet” (to Theo, about 29 September, letter 691); “There: a painting of night without black” and “It amuses me enormously to paint the night on the spot” (to his sister Willemien, 9 and about 14 September, letter 678); “A place where one can ruin oneself, go mad, commit crimes” (to Theo, 9 September, letter 677). Camille Roulin, the postman's son, was eleven that September (born 10 July 1877); by early December Van Gogh had painted the whole family, the father for the second time.</p>
-  <p>What is modern or conjectural: the house fronts on the way stand on today's footprints, and north of Place Voltaire much of the quarter was rebuilt after the bombing of 1944; the street names are today's, and only Place du Forum, Place Lamartine and the Avenue de Montmajour were checked for 1888. The Yellow House was wrecked by bombs on 25 June 1944 and pulled down: it, the pink restaurant and the Café de la Gare are built from the paintings and from his own description, on a line along the square that is a guess. The café on the Forum was not yellow in 1888 except by gaslight. The gate is shown as the open gap between two towers that it is now. The landing on the river bank is shaped to the picture, and the far shore, the bridge of 1875 and the town's skyline are outlines only. The Great Bear hangs over the river in the south-west because he painted it there; it belongs in the north.</p>
+  <p>What is modern or conjectural: the house fronts on the way stand on today's footprints, and north of Place Voltaire much of the quarter was rebuilt after the bombing of 1944; the street names are today's, and only Place du Forum, Place Lamartine and the Avenue de Montmajour were checked for 1888. The Yellow House was wrecked by bombs on 25 June 1944 and pulled down: it, the pink restaurant and the Café de la Gare are built from the paintings and from his own description, in a row whose line is argued from the picture and the avenue's real bearing. Place Lamartine had public gardens and bare yellow earth; how the gardens were laid out is not known, and the lawns, benches and cart are furniture. The café on the Forum was not yellow in 1888 except by gaslight. The gate is built from photographs of its two broken towers as they stand; what joined them in 1888 is not known. The landing on the river bank is shaped to the picture, and the far shore, the bridge of 1875 and the town's skyline are outlines only. The Great Bear hangs over the river in the south-west because he painted it there; it belongs in the north.</p>
   <p>What is invented: the errand, the letter, the postman's words and the townspeople's, and the idea that the three night pictures were made on one night (they took him the best part of a month, and The Yellow House is a daylight picture). The story that he painted by candles stuck in his hat was not found in any letter read for this level and is not used.</p>
   <p>Made in admiration of Starry Nightrider, the game that started us off.</p>
   <p class="small">Paintings: public domain, via Wikimedia Commons. Letters: Vincent van Gogh, The Letters (vangoghletters.org), read in the original French. Every texture in this level was painted by a script for it; nothing is photographed. Street plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors. Sources for every statement: <a href="research/FINDINGS.md" style="color:inherit">research/FINDINGS.md</a>.</p>
@@ -50,14 +50,14 @@ const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vect
 const map = await (await fetch('map.json')).json();
 
 /* ================= the route =================
-   Real plan (tools/prep_arles.py, from OpenStreetMap). From the mouth of the Rue du Palais up the east side of the Place du Forum, past the café; out of
+   Real plan (tools/prep_arles.py, from OpenStreetMap). From the north-west corner of the Place du Forum round the square and up its east side, past the café; out of
    the square's north-east corner by the Rue de la Place and the Rue du Sauvage; the long Rue du 4 Septembre north-east across the old town to Place
    Voltaire; the Rue Voltaire and the Rue de la Cavalerie north to the Porte de la Cavalerie; through the gate and over Place Lamartine to the Yellow House;
    west past the Café de la Gare to the bank of the Rhône. The street points are OpenStreetMap's own; those in the Forum, on Place Lamartine (now a
    roundabout) and on the bank are laid by hand. x east, z south, metres from the north-east of the Place du Forum. */
-const raw = [[-4.2, 41], [-7.4, 31], [-8.4, 10], [-7.2, -3], [-8.3, -11.4], [-7.2, -45.6], [-7.9, -48.4], [-8.6, -60.7], [-8, -71.3], [-5.7, -73.4], [-2.5, -74.2], [8.3, -76.4], [10.1, -86.2], [10.5, -98.9], [12.1, -110.4], [29.9, -113.7], [40.6, -114.6], [77.2, -112.5],
+const raw = [[-27.5, -7], [-27.2, 12], [-24.5, 24.5], [-15, 29.3], [-8.2, 27], [-8.6, 10], [-7.2, -3], [-8.3, -11.4], [-7.2, -45.6], [-7.9, -48.4], [-8.6, -60.7], [-8, -71.3], [-5.7, -73.4], [-2.5, -74.2], [8.3, -76.4], [10.1, -86.2], [10.5, -98.9], [12.1, -110.4], [29.9, -113.7], [40.6, -114.6], [77.2, -112.5],
   [97.1, -117.2], [133.1, -126.1], [139.8, -128.2], [156, -136.6], [181.5, -152.3], [211.3, -174.8], [241.7, -189.1], [251.4, -196.1], [258.8, -196.9], [306.4, -216.7], [313.2, -217.4], [314.5, -224.7], [316.6, -246.7], [317.1, -251.8], [318.1, -257.7], [323.2, -286.1],
-  [325.7, -300], [323.4, -311.5], [330.9, -367.8], [331.6, -372.5], [333.1, -381.8], [337.4, -396.1], [343.3, -418.2], [360, -450], [371, -473.5], [362, -479.5], [345, -481], [300, -492], [262, -505], [244, -511], [229, -514.5], [222, -516.5]];
+  [325.7, -300], [323.4, -311.5], [330.9, -367.8], [331.6, -372.5], [333.1, -381.8], [337.4, -396.1], [343.3, -418.2], [361, -450], [376.5, -476.5], [373, -484.5], [363.4, -493.9], [347.5, -505], [300, -509], [262, -510.5], [244, -511.5], [229, -514.5], [222, -516.5]];
 const ROUTE = raw; const cum = [0]; for (let i = 1; i < ROUTE.length; i++) cum.push(cum[i - 1] + Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]));
 const LEN = cum[cum.length - 1];
 function at(s) { s = clamp(s, 0, LEN - 0.01); let i = 1; while (cum[i] < s) i++; const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1]), a = ROUTE[i - 1], b = ROUTE[i], L = Math.hypot(b[0] - a[0], b[1] - a[1]); return { x: mix(a[0], b[0], t), z: mix(a[1], b[1], t), dx: (b[0] - a[0]) / L, dz: (b[1] - a[1]) / L }; }
@@ -67,10 +67,10 @@ const S_START = 3, CORR = 15, LAND = 0, WATER = -0.5;
 // a stage is set out from one point: r metres to the right as the painter sees it, d metres away from him
 const frame = (ox, oz, dx, dz) => { const L = Math.hypot(dx, dz); dx /= L; dz /= L; const rx = -dz, rz = dx; return { ox, oz, dx, dz, rx, rz, P: (r, d) => [ox + r * rx + d * dx, oz + r * rz + d * dz], ang: (r, d) => Math.atan2(r * rx + d * dx, r * rz + d * dz), ry: Math.atan2(-rz, rx) }; };
 const F_TER = frame(-2.6, 14, 0.03, 1);          // the café terrace, seen looking south from the north-east of the Place du Forum (where en.wikipedia says he set up his easel)
-const F_YH = frame(377, -489, 0.42, -0.9);       // the Yellow House, seen from the square looking north-east, the avenue running off to the right
-const F_CAFE = frame(345, -489, 0, -1);          // the room of the Café de la Gare, seen from its open front
+const F_YH = frame(378.1, -493.4, 0.574, -0.819);       // the Yellow House, seen from the square: d runs square into its front, the avenue goes off to the right
+const F_CAFE = frame(352.13, -511.62, 0.574, -0.819);          // the room of the Café de la Gare, seen from its open front
 const F_END = frame(214, -513, -0.42, 0.91);     // the Rhône from the landing, looking south-south-west down the river to the town and the bridge
-const S_TER = nearest(...F_TER.P(5.2, -1)).s, S_YH = nearest(...F_YH.P(0, -13)).s, S_CAFE = nearest(...F_CAFE.P(0, -7)).s, S_END = LEN - 2.6, S_GATE = nearest(333.1, -381.8).s;
+const S_TER = nearest(...F_TER.P(5.2, -1)).s, S_YH = nearest(...F_YH.P(12, -12)).s, S_CAFE = nearest(...F_CAFE.P(0, -8)).s, S_END = LEN - 2.6, S_GATE = nearest(333.1, -381.8).s;
 
 /* ================= renderer, and the rule of this world: his paint =================
    The picture is rendered once and then laid again as strokes. Each stroke is a short dab that takes one colour from the scene under its middle and runs
@@ -116,14 +116,14 @@ const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 
 
 /* ================= light =================
    A night without black: the air itself is blue and violet. Yellow is the gas: a lantern on a wall bracket or a post, each with its ring of strokes. */
-const LIGHT = { hemi: 1.25, sky: 0.55, lamp: 42, cafe: 150, room: 15 };
+const LIGHT = { hemi: 1.25, sky: 0.55, lamp: 42, cafe: 150, room: 10 };
 const hemi = new THREE.HemisphereLight(C('#4a74d8'), C('#3a2c66'), LIGHT.hemi), skyL = new THREE.DirectionalLight(C('#7aa0ee'), LIGHT.sky); skyL.position.set(-40, 80, -30); scene.add(hemi, skyL, skyL.target);
 const pool = [0, 1, 2, 3, 4].map(() => { const l = new THREE.PointLight(C('#ffc860'), 0, 26, 1.6); scene.add(l); return l; });
 const big = new THREE.PointLight(C('#ffd870'), 0, 34, 1.3); scene.add(big);      // the one great light of a stage: the café's lantern, the gas of the night café
 const uni = { uTime: { value: 0 }, uBear: { value: [] } };
 /* The sky is painted in the same hand: bands of short strokes that run along slow waves and drift along them, every star a small flower of petals with a
    ring of dashes round it, and the seven stars of the Great Bear large, pale green and pink, each in rings of its own. */
-const BEAR = []; { const A = Math.atan2(F_END.dx, F_END.dz); for (const [da, el] of [[-21, 15.5], [-13.5, 18.5], [-6.5, 16.5], [-0.5, 12.5], [1.5, 6.5], [10, 7.5], [10.5, 14.5]]) { const a = A + da * Math.PI / 180, e = el * Math.PI / 180; BEAR.push(new V3(Math.sin(a) * Math.cos(e), Math.sin(e), Math.cos(a) * Math.cos(e))); } } uni.uBear.value = BEAR;
+const BEAR = []; { const A = Math.atan2(F_END.dx, F_END.dz); for (const [da, el] of [[-24, 17.5], [-15.5, 21], [-7.5, 19], [-0.5, 15], [1.5, 8.5], [11.5, 9.5], [12, 17]]) { const a = A + da * Math.PI / 180, e = el * Math.PI / 180; BEAR.push(new V3(Math.sin(a) * Math.cos(e), Math.sin(e), Math.cos(a) * Math.cos(e))); } } uni.uBear.value = BEAR;
 const sky = new THREE.Mesh(new THREE.SphereGeometry(2000, 48, 24), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: uni,
   vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
   fragmentShader: `uniform float uTime; uniform vec3 uBear[7]; varying vec3 vDir;
@@ -144,16 +144,17 @@ const sky = new THREE.Mesh(new THREE.SphereGeometry(2000, 48, 24), new THREE.Sha
       col *= 0.8 + 0.2 * smoothstep(0.0, 0.1, fx) * smoothstep(1.0, 0.9, fx) * smoothstep(0.0, 0.2, fy) * smoothstep(1.0, 0.8, fy);
       // the lesser stars, one to a cell of the sky
       vec2 gcell = vec2(az * 5.5, el * 5.5), id = floor(gcell); float hs = hash(id + 11.0);
-      if (hs > 0.6 && el > 0.1) { vec2 c = id + 0.5 + (vec2(hash(id + 3.0), hash(id + 5.0)) - 0.5) * 0.4; vec4 s = star(gcell - c, 0.13 + 0.17 * hash(id + 7.0), hs, uTime); col = mix(col, s.rgb, clamp(s.a, 0.0, 1.0)); }
-      for (int i = 0; i < 7; i++) { vec3 b = uBear[i]; float cd = dot(d, b); if (cd > 0.99) { vec3 ex = normalize(cross(vec3(0.0, 1.0, 0.0), b)), ey = cross(b, ex); vec4 s = star(vec2(dot(d, ex), dot(d, ey)), 0.062, fract(float(i) * 0.37 + 0.2), uTime); col = mix(col, s.rgb * 1.15, clamp(s.a, 0.0, 1.0)); } }
+      if (hs > mix(0.62, 0.4, smoothstep(0.15, 0.5, el)) && el > 0.1) { vec2 c = id + 0.5 + (vec2(hash(id + 3.0), hash(id + 5.0)) - 0.5) * 0.4; vec4 s = star(gcell - c, (0.09 + 0.13 * hash(id + 7.0)) * (0.75 + 1.35 * smoothstep(0.2, 0.7, el)), hs, uTime); col = mix(col, s.rgb, clamp(s.a, 0.0, 1.0)); }
+      for (int i = 0; i < 7; i++) { vec3 b = uBear[i]; float cd = dot(d, b); if (cd > 0.985) { vec3 ex = normalize(cross(vec3(0.0, 1.0, 0.0), b)), ey = cross(b, ex); vec4 s = star(vec2(dot(d, ex), dot(d, ey)), 0.076, fract(float(i) * 0.37 + 0.2), uTime); col = mix(col * 0.8, s.rgb * 1.2, clamp(s.a, 0.0, 1.0)); } }
       gl_FragColor = vec4(col, 1.0); }` }));
 sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
 
 /* ================= materials: all painted for this level by tools/blender/tex_vangogh.py ================= */
 const TL = new THREE.TextureLoader(), lam = o => new THREE.MeshLambertMaterial(o), basic = o => new THREE.MeshBasicMaterial(o);
 const tex = async (f, rep) => { const t = await TL.loadAsync(f.includes('/') ? f : 'tex/' + f); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; if (rep) { t.wrapS = t.wrapT = THREE.RepeatWrapping; } return t; };
-const [tPave, tStone, tPlaster, tA, tB, tC, tD, tTer, tCafe, tRhone, tYH] = await Promise.all([tex('paving.jpg', 1), tex('stone.jpg', 1), tex('plaster.jpg', 1), tex('facade_a.jpg', 1), tex('facade_b.jpg', 1), tex('facade_c.jpg', 1), tex('facade_d.jpg', 1), tex('images/terrace.jpg'), tex('images/nightcafe.jpg'), tex('images/rhone.jpg'), tex('images/yellowhouse.jpg')]);
-const FRONT = [tA, tB, tC, tD].map(t => { const m = lam({ map: t }); m.emissive = C('#ffffff'); m.emissiveMap = t; m.emissiveIntensity = 0.07; return m; }), stoneM = lam({ map: tStone, color: '#e6e0d2' }), paveM = lam({ map: tPave, color: '#ffffff' });
+const [tPave, tStone, tPlaster, tA, tB, tC, tD, tE, tF, tG, tH, tTer, tCafe, tRhone, tYH] = await Promise.all([tex('paving.jpg', 1), tex('stone.jpg', 1), tex('plaster.jpg', 1), ...'abcdefgh'.split('').map(k => tex(`facade_${k}.jpg`, 1)), tex('images/terrace.jpg'), tex('images/nightcafe.jpg'), tex('images/rhone.jpg'), tex('images/yellowhouse.jpg')]);
+const FRONT = [[tA, 3], [tB, 3], [tC, 3], [tD, 3], [tE, 2], [tF, 4], [tG, 2], [tH, 4], [tA, 3], [tB, 3], [tD, 3]].map(([t, floors]) => { const m = lam({ map: t }); m.emissive = C('#ffffff'); m.emissiveMap = t; m.emissiveIntensity = 0.07; return { m, floors, HM: 3.7 + 3.15 * (floors - 1) + 0.5 }; }),      // the three-storey fronts come up oftenest
+   stoneM = lam({ map: tStone, color: '#e6e0d2' }), paveM = lam({ map: tPave, color: '#ffffff' });
 const FR = makeFronts({ THREE, scene, plasterTex: tPlaster, stoneTex: tStone }), hAt = () => LAND;
 const darkWood = lam({ color: '#4a3424' }), wood = lam({ color: '#8a6238' }), iron = lam({ color: '#1c2030' }), shadowM = basic({ color: 0x06081c, transparent: true, opacity: 0.32, depthWrite: false });
 const glowM = (c, k = 0.35) => { const m = lam({ color: c }); m.emissive = C(c); m.emissiveIntensity = k; return m; };
@@ -161,8 +162,8 @@ const glowM = (c, k = 0.35) => { const m = lam({ color: c }); m.emissive = C(c);
 /* ================= the river and the ground ================= */
 const inPoly = (p, x, z) => { let c = false; for (let i = 0, j = p.length - 1; i < p.length; j = i++) { const a = p[i], b = p[j]; if ((a[1] > z) !== (b[1] > z) && x < a[0] + (z - a[1]) / (b[1] - a[1]) * (b[0] - a[0])) c = !c; } return c; };
 // the east bank as traced in prep_arles.py, with a low landing run out into the stream where the walk ends: the foreground of the picture (its shape is this level's)
-const SPIT = [[237.2, -525], [204, -525.5], [199.5, -518.5], [201.8, -512.2], [206.2, -510.4], [213.2, -511.2], [223.2, -511.6], [238.3, -511]];
-const BANK = [...map.bank.filter(q => q[1] <= -529.5), ...SPIT, ...map.bank.filter(q => q[1] >= -510)], NB = map.bank.length, riverPoly = [...BANK, ...map.water[0].p.slice(NB)];
+const SPIT = [[237.2, -525], [204, -525.5], [198.5, -519], [198.5, -511], [203, -508.3], [210, -510.2], [217, -511.5], [225, -509.6], [232, -505.5], [238.5, -498]];
+const BANK = [...map.bank.filter(q => q[1] <= -529.5), ...SPIT, ...map.bank.filter(q => q[1] >= -460)], NB = map.bank.length, riverPoly = [...BANK, ...map.water[0].p.slice(NB)];
 const inWater = (x, z) => inPoly(riverPoly, x, z);
 { const sh = new THREE.Shape([[-700, -900], [900, -900], [900, 500], [-700, 500]].map(([x, z]) => new THREE.Vector2(x, -z))); sh.holes.push(new THREE.Path(riverPoly.map(([x, z]) => new THREE.Vector2(x, -z))));
   const g = new THREE.ShapeGeometry(sh), u = g.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, u.getX(i) / 3.4, u.getY(i) / 3.4); const m = new THREE.Mesh(g, paveM); m.rotation.x = -Math.PI / 2; m.position.y = LAND; scene.add(m);
@@ -170,7 +171,9 @@ const inWater = (x, z) => inPoly(riverPoly, x, z);
   const pos = [], nor = [], uv = []; for (let i = 0; i < BANK.length - 1; i++) { const a = BANK[i], b = BANK[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); pos.push(a[0], 0.02, a[1], b[0], 0.02, b[1], b[0], WATER - 0.6, b[1], a[0], 0.02, a[1], b[0], WATER - 0.6, b[1], a[0], WATER - 0.6, a[1]); for (let k = 0; k < 6; k++) nor.push(-(b[1] - a[1]) / L, 0, (b[0] - a[0]) / L); uv.push(0, 0.5, L / 3.2, 0.5, L / 3.2, 0, 0, 0.5, L / 3.2, 0, 0, 0); }
   const wg = new THREE.BufferGeometry(); wg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); wg.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3)); wg.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); const wm = lam({ map: tStone, color: '#b8b4c8', side: THREE.DoubleSide }); scene.add(new THREE.Mesh(wg, wm));
   // the landing itself: beaten earth, mauve in the gaslight, sloping to the water at its edge
-  const e = new THREE.Shape(SPIT.map(([x, z]) => new THREE.Vector2(x, -z))), eg = new THREE.ShapeGeometry(e), em = new THREE.Mesh(eg, glowM('#5a7a9a', 0.16)); em.material.map = tPave; { const u = eg.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, u.getX(i) / 3.0, u.getY(i) / 3.0); } em.rotation.x = -Math.PI / 2; em.position.y = LAND + 0.02; scene.add(em); }
+  const e = new THREE.Shape(SPIT.map(([x, z]) => new THREE.Vector2(x, -z))), eg = new THREE.ShapeGeometry(e), em = new THREE.Mesh(eg, glowM('#4f8a8a', 0.2)); em.material.map = tPave; { const u = eg.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, u.getX(i) / 3.0, u.getY(i) / 3.0); } em.rotation.x = -Math.PI / 2; em.position.y = LAND + 0.02; scene.add(em);
+  // the dark wet edge of the bank, which in the picture is one long curve from the lower left
+  const rimM = basic({ color: '#0e1a44' }); for (let i = 2; i < SPIT.length - 1; i++) { const a = SPIT[i], b = SPIT[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]), r = new THREE.Mesh(new THREE.BoxGeometry(L + 0.5, 0.5, 1.5), rimM); r.position.set((a[0] + b[0]) / 2, -0.27, (a[1] + b[1]) / 2); r.rotation.y = -Math.atan2(b[1] - a[1], b[0] - a[0]); scene.add(r); } }
 /* The water carries every lamp down in a long broken reflection: for each gas lamp a streak on the water between it and the eye, widening as it comes,
    cut into short level dashes, "russet gold descending to green-bronze" (letter 691). Under that the river is royal blue in drifting strokes. */
 const NREF = 28, water = new THREE.Mesh(new THREE.PlaneGeometry(1500, 1500), new THREE.ShaderMaterial({ fog: false, uniforms: { uTime: uni.uTime, uL: { value: Array.from({ length: NREF }, () => new V3(0, -999, 0)) } },
@@ -178,25 +181,26 @@ const NREF = 28, water = new THREE.Mesh(new THREE.PlaneGeometry(1500, 1500), new
   fragmentShader: `uniform float uTime; uniform vec3 uL[${NREF}]; varying vec3 vW;
     float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
     void main(){ vec2 p = vW.xz, c = cameraPosition.xz, F = p - c; float dist = length(F); vec2 vd = F / max(dist, 0.01), vp = vec2(-vd.y, vd.x);
-      float k = log(max(dist, 1.0)) * 16.0, lane = dot(p, vp) * (2.6 / (1.0 + dist * 0.035));                       // strokes lie level across the line of sight, smaller with distance
+      float k = log(max(dist, 1.0)) * 25.0, lane = dot(p, vp) * (2.6 / (1.0 + dist * 0.035));                       // strokes lie level across the line of sight, smaller with distance
       vec2 cell = vec2(floor(lane + hash(vec2(floor(k), 1.0)) * 3.0 + uTime * 0.12 * (hash(vec2(floor(k), 2.0)) - 0.3)), floor(k)); float h = hash(cell);
-      vec3 col = mix(vec3(0.012, 0.055, 0.27), vec3(0.022, 0.14, 0.42), h * h); col = mix(col, vec3(0.03, 0.30, 0.42), step(0.9, h) * 0.6); col = mix(col, vec3(0.012, 0.03, 0.2), step(h, 0.22) * 0.7);
+      vec3 col = mix(vec3(0.010, 0.04, 0.22), vec3(0.018, 0.10, 0.36), h * h); col = mix(col, vec3(0.03, 0.30, 0.42), step(0.9, h) * 0.6); col = mix(col, vec3(0.012, 0.03, 0.2), step(h, 0.22) * 0.7);
       vec3 add = vec3(0.0); float ws = 0.0;
       for (int i = 0; i < ${NREF}; i++) { vec3 L = uL[i]; if (L.y < -100.0) continue; vec2 D = L.xz - c; float dl = length(D); vec2 dir = D / dl; float al = dot(F, dir), ac = dot(F, vec2(-dir.y, dir.x)), t = al / dl; if (al < 2.0 || t > 0.985) continue;
-        float w = 0.12 + 0.0075 * al, wob = (hash(vec2(floor(k), float(i))) - 0.5) * w * 1.3, I = exp(-pow((ac - wob) / w, 2.0)) * step(0.42, hash(vec2(floor(k) + 0.5, float(i) * 3.1))) * smoothstep(0.0, 0.06, t) * (0.45 + 0.55 * t);
-        add += mix(vec3(0.20, 0.36, 0.08), vec3(1.0, 0.46, 0.05), smoothstep(0.12, 0.6, t)) * I; ws += I; }
-      gl_FragColor = vec4(mix(col, add / max(ws, 0.001), clamp(ws * 1.5, 0.0, 0.96)), 1.0); }` }));
+        float w = 0.22 + 0.0125 * al, wob = (hash(vec2(floor(k), float(i))) - 0.5) * w * 1.1, I = exp(-pow((ac - wob) / w, 4.0)) * step(0.36, hash(vec2(floor(k) + 0.5, float(i) * 3.1))) * smoothstep(0.0, 0.03, t) * (0.6 + 0.4 * t);
+        add += mix(mix(vec3(0.14, 0.27, 0.07), vec3(0.95, 0.42, 0.04), smoothstep(0.05, 0.3, t)), vec3(1.0, 0.72, 0.10), smoothstep(0.45, 0.95, t) * (0.4 + 0.6 * hash(vec2(floor(k), float(i) + 7.0)))) * I; ws += I; }
+      gl_FragColor = vec4(mix(col, add / max(ws, 0.001), clamp(ws * 2.6, 0.0, 0.97)), 1.0); }` }));
 water.rotation.x = -Math.PI / 2; water.position.set(-60, WATER, -320); scene.add(water);
 
 /* ================= the houses: walls raised on the real footprints, each stretch of wall a Provençal front with its shutters ================= */
 const batches = new Map(), put = (m, p, n, uv) => { let b = batches.get(m); if (!b) { b = { pos: [], nor: [], uv: [] }; batches.set(m, b); } b.pos.push(...p); b.nor.push(...n); b.uv.push(...uv); };
 const flush = () => { for (const [m, b] of batches) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(b.nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(b.uv, 2)); scene.add(new THREE.Mesh(g, m)); } batches.clear(); };
-const blocks = [], winM = basic({ color: '#ffc84e', side: THREE.DoubleSide }), winM2 = basic({ color: '#e88a2c', side: THREE.DoubleSide }), roofM = lam({ color: '#8a4a3a' });
+const TOWERS = [], blocks = [], winM = basic({ color: '#ffc84e', side: THREE.DoubleSide }), winM2 = basic({ color: '#e88a2c', side: THREE.DoubleSide }), roofM = lam({ color: '#8a4a3a' });
 const CAFE_PT = [5, 20];      // a point inside the block whose west wall is the café: that wall is built in fronts.js
 map.buildings.forEach((b, i) => {
   const p = b.p; if (p.length < 3) return; let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9, near = 1e9; for (const q of p) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); z0 = Math.min(z0, q[1]); z1 = Math.max(z1, q[1]); near = Math.min(near, nearest(q[0], q[1]).d); }
   if (near > 85) return; blocks.push({ p, x0, x1, z0, z1 });
-  const gate = /Cavalerie/.test(b.n || ''), wall = b.h === 'citywalls', big = gate || wall || /glise|Thermes|Chapelle/.test(b.n || ''), H = gate ? 9.4 : wall ? 6.2 : big ? 15 : 9.6 + ((i * 7) % 5) * 0.55, mat = big ? stoneM : FRONT[i % 4], cafe = inPoly(p, ...CAFE_PT);
+  const gate = /Cavalerie/.test(b.n || ''), wall = b.h === 'citywalls', big = gate || wall || /glise|Thermes|Chapelle/.test(b.n || ''), fr = FRONT[(Math.imul(i + 3, 2654435761) >>> 27) % FRONT.length], H = wall ? 5.2 : big ? 15 : fr.HM * (0.96 + ((i * 7) % 5) * 0.02), mat = big ? stoneM : fr.m, cafe = inPoly(p, ...CAFE_PT);
+  if (gate) { let cx = 0, cz = 0; for (const q of p) { cx += q[0] / p.length; cz += q[1] / p.length; } TOWERS.push({ x: cx, z: cz, r: Math.hypot(p[0][0] - cx, p[0][1] - cz) }); return; }
   for (let k = 0; k < p.length; k++) { let a = p[k], c = p[(k + 1) % p.length]; const L = Math.hypot(c[0] - a[0], c[1] - a[1]); if (L < 0.3) continue;
     let nx = -(c[1] - a[1]) / L, nz = (c[0] - a[0]) / L; const mx = (a[0] + c[0]) / 2, mz = (a[1] + c[1]) / 2; if (inPoly(p, mx + nx * 0.15, mz + nz * 0.15)) { nx = -nx; nz = -nz; }
     if (-(c[1] - a[1]) * nx + (c[0] - a[0]) * nz < 0) [a, c] = [c, a];
@@ -204,17 +208,34 @@ map.buildings.forEach((b, i) => {
     const n = big ? L / 3.2 : Math.max(1, Math.round(L / 7)), v = big ? H / 3.2 : 1, N6 = [nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz];
     put(mat, [a[0], 0, a[1], c[0], 0, c[1], c[0], H, c[1], a[0], 0, a[1], c[0], H, c[1], a[0], H, a[1]], N6, [0, 0, n, 0, n, v, 0, 0, n, v, 0, v]);
     // a window here and there with the gas lit behind it: set exactly on a window of the painted front
-    if (!big && L > 4) for (let q = 0; q < n; q++) for (let w = 0; w < 4; w++) { if (((i * 13 + k * 7 + q * 5 + w * 3) % 11) > 0) continue; const t = (q + (w % 2 ? 5.1 : 1.9) / 7) / n, y = (w < 2 ? 4.3 : 7.45) * H / 10.5, hh = (w < 2 ? 1.75 : 1.5) * H / 10.5, wx = mix(a[0], c[0], t) + nx * 0.05, wz = mix(a[1], c[1], t) + nz * 0.05, hw = 0.5 * (L / n) / 7, ex = (c[0] - a[0]) / L * hw, ez = (c[1] - a[1]) / L * hw;
+    if (!big && L > 4) for (let q = 0; q < n; q++) for (let w = 0; w < 2 * (fr.floors - 1); w++) { if (((i * 13 + k * 7 + q * 5 + w * 3) % 11) > 0) continue; const t = (q + (w % 2 ? 5.1 : 1.9) / 7) / n, y = (4.3 + 3.15 * (w >> 1)) * H / fr.HM, hh = (w < 2 ? 1.75 : 1.5) * H / fr.HM, wx = mix(a[0], c[0], t) + nx * 0.05, wz = mix(a[1], c[1], t) + nz * 0.05, hw = 0.5 * (L / n) / 7, ex = (c[0] - a[0]) / L * hw, ez = (c[1] - a[1]) / L * hw;
       put((i + q + w) % 2 ? winM : winM2, [wx - ex, y, wz - ez, wx + ex, y, wz + ez, wx + ex, y + hh, wz + ez, wx - ex, y, wz - ez, wx + ex, y + hh, wz + ez, wx - ex, y + hh, wz - ez], N6, [0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1]); } }
   if (near < 40) { const sh = new THREE.Shape(p.map(([x, z]) => new THREE.Vector2(x, -z))), g = new THREE.ShapeGeometry(sh), m = new THREE.Mesh(g, big ? stoneM : roofM); m.rotation.x = -Math.PI / 2; m.position.y = H; scene.add(m); }      // a lid, for when the eye is high
 });
 const solids = [], rounds = [];
+// the lawns of the public gardens on Place Lamartine: [x, z, half-width east-west, half-width north-south] (their shapes and places are this level's: see FINDINGS.md)
+const BEDS = [[320, -436, 13, 17], [333, -474, 11, 12], [300, -470, 14, 15], [290, -430, 12, 14], [372, -428, 11, 13], [399, -455, 9, 10]], inBed = (x, z, m = 0) => BEDS.some(b => ((x - b[0]) / (b[2] + m)) ** 2 + ((z - b[1]) / (b[3] + m)) ** 2 < 1);
 const inBlock = (x, z) => blocks.some(b => x > b.x0 && x < b.x1 && z > b.z0 && z < b.z1 && inPoly(b.p, x, z)) || FR.blocked(x, z);
-const inHouse = (x, z) => inBlock(x, z) || solids.some(h => { const dx = x - h.x, dz = z - h.z, u = dx * h.c + dz * h.s, v = -dx * h.s + dz * h.c; return Math.abs(u) < h.w && Math.abs(v) < h.d; }) || rounds.some(h => Math.hypot(x - h.x, z - h.z) < h.r);
+const inHouse = (x, z) => inBlock(x, z) || solids.some(h => { const dx = x - h.x, dz = z - h.z, u = dx * h.c + dz * h.s, v = -dx * h.s + dz * h.c; return Math.abs(u) < h.w && Math.abs(v) < h.d; }) || rounds.some(h => Math.hypot(x - h.x, z - h.z) < h.r) || inBed(x, z);
 const floorAt = (x, z) => (nearest(x, z).d > CORR || inWater(x, z) ? null : LAND), blocked = (x, z) => inHouse(x, z) || floorAt(x, z) === null;
 flush();
-const FRONTS = { terrace: FR.cafeTerrace(), ...FR.lamartine() }; FR.flush();
+const FRONTS = { terrace: FR.cafeTerrace(), ...FR.lamartine() }, ROW = FRONTS.row; FR.flush();
 { const F = FRONTS.terrace, D = F.deck, [x, z] = F.P((D.u0 + D.u1) / 2, D.w1 / 2); solids.push({ x, z, w: (D.u1 - D.u0) / 2, d: D.w1 / 2, c: F.dx, s: F.dz }); }
+/* The Porte de la Cavalerie as it stands (two Commons photographs, research/ref/cavalerie_*.jpg): two squat round towers of big coursed blocks on a plinth, about as high
+   as they are wide, with no battlements: the tops are broken off unevenly, a taller fragment of the upper stage left on one side, weeds growing on them. A few square
+   holes in the masonry, a round-headed niche at the foot of each tower towards the road, and nothing spanning the gap. fr.wikipedia says the towers were damaged in the
+   Revolution and again in 1877, so a truncated state in 1888 is likely; what, if anything, then joined them is not known. */
+{ const tT = tStone.clone(); tT.repeat.set(9, 2.4); tT.needsUpdate = true; const towerM = lam({ map: tT, color: '#ece6d6' }), darkM = basic({ color: '#141a34' }), weed = glowM('#3a7a4a', 0.2);
+  TOWERS.forEach((t, k) => { const g = new THREE.Group(), R = t.r, H = 7.2, add = (m, x, y, z) => { m.position.set(x, y, z); g.add(m); return m; };
+    add(new THREE.Mesh(new THREE.CylinderGeometry(R * 0.985, R * 1.02, H, 36), towerM), 0, H / 2, 0); add(new THREE.Mesh(new THREE.CylinderGeometry(R * 1.05, R * 1.09, 0.9, 36), towerM), 0, 0.45, 0);
+    add(new THREE.Mesh(new THREE.CylinderGeometry(R * 0.985 - 0.9, R * 0.985 - 0.9, 0.3, 24), lam({ color: '#6a6a5a' })), 0, H - 0.5, 0);      // the fill inside the broken top
+    // the broken top: blocks of uneven height all round, and on one side what is left of the stage above
+    for (let i = 0; i < 26; i++) { const a = i / 26 * Math.PI * 2, tall = Math.cos(a - (k ? 2.4 : 0.9)) > 0.25, h = (tall ? 1.3 + ((i * 7) % 4) * 0.28 : 0.15 + ((i * 5) % 4) * 0.2), b = new THREE.Mesh(new THREE.BoxGeometry(R * 0.25, h, 0.85), towerM); add(b, Math.sin(a) * (R * 0.985 - 0.42), H + h / 2 - 0.02, Math.cos(a) * (R * 0.985 - 0.42)); b.rotation.y = a; }
+    for (let i = 0; i < 5; i++) { const a = i * 1.3 + k, w = new THREE.Mesh(new THREE.IcosahedronGeometry(0.34 + (i % 2) * 0.16, 0), weed); add(w, Math.sin(a) * (R - 1.1), H + 0.3, Math.cos(a) * (R - 1.1)); }
+    for (const [a, y] of [[0.5, 4.6], [2.2, 3.1], [3.6, 5.2], [5.0, 2.6]]) { const hole = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.42, 0.3), darkM); add(hole, Math.sin(a + k) * R, y, Math.cos(a + k) * R); hole.rotation.y = a + k; }
+    // the niche at its foot, towards the roadway between the towers
+    { const a = Math.atan2((k ? -1 : 1) * 0.82, -0.57), nic = new THREE.Group(), body = new THREE.Mesh(new THREE.BoxGeometry(1.0, 1.5, 0.3), darkM), head = new THREE.Mesh(new THREE.CylinderGeometry(0.5, 0.5, 0.3, 14, 1, false, 0, Math.PI), darkM), rim = new THREE.Mesh(new THREE.TorusGeometry(0.56, 0.09, 6, 14, Math.PI), towerM); body.position.y = 1.35; head.rotation.x = Math.PI / 2; head.rotation.y = Math.PI / 2; head.position.y = 2.1; rim.position.set(0, 2.1, 0.12); nic.add(body, head, rim); nic.position.set(Math.sin(a) * (R * 1.0), 0, Math.cos(a) * (R * 1.0)); nic.rotation.y = a; g.add(nic); }
+    g.position.set(t.x, LAND, t.z); scene.add(g); rounds.push({ x: t.x, z: t.z, r: R + 0.5 }); }); }
 // stone posts and a rail across every opening off the way (round the public gardens of Place Lamartine they stand for the garden railings)
 { for (const sd of [-1, 1]) for (let q = 2; q < LEN - 2; q += 2.6) { const p = at(q), [x, z] = side(p, 0, (CORR - 1) * sd); if (inHouse(x, z) || inWater(x, z) || nearest(x, z).d < CORR - 1.8) continue; const ry = -Math.atan2(p.dz, p.dx), g = new THREE.Group();
     for (const e of [-1.3, 1.3]) { const b = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.95, 0.3), stoneM); b.position.set(e, 0.47, 0); g.add(b); } const ch = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.06), iron); ch.position.y = 0.7; g.add(ch);
@@ -230,9 +251,16 @@ const haloTex = canvasTex(256, 256, (g, w) => { g.translate(w / 2, w / 2); g.lin
 const poolTex = canvasTex(256, 256, (g, w) => { g.translate(w / 2, w / 2); g.lineCap = 'round'; const rg = g.createRadialGradient(0, 0, 2, 0, 0, 126); rg.addColorStop(0, 'rgba(255,214,110,.5)'); rg.addColorStop(0.6, 'rgba(255,180,70,.14)'); rg.addColorStop(1, 'rgba(255,170,60,0)'); g.fillStyle = rg; g.fillRect(-128, -128, 256, 256);
   for (let k = 0; k < 7; k++) { const r = 12 + k * 16, n = 6 + k * 5; g.strokeStyle = k % 2 ? '#ffd870' : '#f0a848'; g.globalAlpha = 0.6 - k * 0.07; g.lineWidth = 6; for (let i = 0; i < n; i++) { const a = (i + (k % 2) * 0.5) / n * Math.PI * 2, da = Math.PI / n * 0.5; g.beginPath(); g.arc(0, 0, r, a - da, a + da); g.stroke(); } } });
 const haloM = new THREE.SpriteMaterial({ map: haloTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false }), poolM = basic({ map: poolTex, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true });
+// the lamps of the Night Café: no two haloes alike, each a few loose rings of short strokes of unequal length, orange and yellow with green among them
+const roomHalo = seed => { let sd = seed; const rn = () => (sd = (sd * 16807) % 2147483647) / 2147483647; return new THREE.SpriteMaterial({ blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false, map: canvasTex(256, 256, (g, w) => { g.translate(w / 2, w / 2); g.lineCap = 'round';
+    const rg = g.createRadialGradient(0, 0, 2, 0, 0, 110); rg.addColorStop(0, 'rgba(255,236,150,.5)'); rg.addColorStop(0.5, 'rgba(250,170,60,.12)'); rg.addColorStop(1, 'rgba(240,150,40,0)'); g.fillStyle = rg; g.fillRect(-128, -128, 256, 256); g.fillStyle = '#fff6c8'; g.beginPath(); g.ellipse(0, 4, 11, 15, 0, 0, 7); g.fill();
+    const cols = ['#ffe680', '#ffc24a', '#f49a2e', '#e07a24', '#a8b060', '#6fa866'];
+    for (let r = 22; r < 118; r += 9 + rn() * 9) { const n = Math.floor(5 + r / 7 + rn() * 4); let a = rn() * 6.28; for (let i = 0; i < n; i++) { const len = (0.25 + rn() * 0.75) * 6.28 / n * 0.8; a += 6.28 / n * (0.7 + rn() * 0.6); if (rn() < 0.18) continue;
+        g.strokeStyle = cols[Math.min(5, Math.floor(r / 22 + rn() * 1.6))]; g.globalAlpha = (0.95 - r / 150) * (0.6 + rn() * 0.4); g.lineWidth = 3.5 + rn() * 4.5; const rr = r + (rn() - 0.5) * 7; g.beginPath(); g.arc((rn() - 0.5) * 3, (rn() - 0.5) * 3, rr, a, a + len); g.stroke(); } } }) }); };
+const ROOMHALO = [11, 23, 37, 51].map(roomHalo);
 const lanternM = basic({ color: '#fff0a0' }), LAMPS = [];
 // kind: 'wall' (a bracket: nx, nz point out from the wall), 'post', 'far' (only its glow, seen across the water), 'hang' (from a ceiling)
-function lamp(x, z, y, kind, nx = 0, nz = 0, size = 2.3) { const s = new THREE.Sprite(haloM); s.scale.setScalar(size); s.position.set(x, y, z); scene.add(s); const L = { x, y, z, kind, s, size, ph: rnd(0, 6) }; LAMPS.push(L);
+function lamp(x, z, y, kind, nx = 0, nz = 0, size = 2.3) { const s = new THREE.Sprite(kind === 'hang' ? ROOMHALO[LAMPS.length % 4] : haloM); s.scale.setScalar(size); s.position.set(x, y, z); scene.add(s); const L = { x, y, z, kind, s, size, ph: rnd(0, 6) }; LAMPS.push(L);
   if (kind === 'far') return L; const lg = new THREE.Group(), body = new THREE.Mesh(new THREE.CylinderGeometry(0.13, 0.09, 0.3, 6), lanternM), cap = new THREE.Mesh(new THREE.ConeGeometry(0.17, 0.12, 6), iron); cap.position.y = 0.21; lg.add(body, cap); lg.position.set(x, y, z); scene.add(lg);
   if (kind === 'wall') { const arm = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.05, 0.9), iron); arm.position.set(x - nx * 0.45, y + 0.3, z - nz * 0.45); arm.rotation.y = Math.atan2(nx, nz); scene.add(arm); const hang = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.2, 0.03), iron); hang.position.set(x, y + 0.25, z); scene.add(hang); }
   if (kind === 'post') { const post = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.075, y - 0.15, 7), iron); post.position.set(x, (y - 0.15) / 2, z); scene.add(post); rounds.push({ x, z, r: 0.3 }); }
@@ -255,12 +283,11 @@ for (const [x, z] of [[-298, -76], [-327, -118], [-356, -161], [-384, -203], [-3
   for (let s = 250, i = 0; s < bankAt(0).L - 30; s += 13, i++) { const b = bankAt(s); if (nearest(b.x, b.z).d < 95) continue; put2(b.x + b.nx * 16, b.z + b.nz * 16, 13.4, 10, 8.5 + ((i * 7) % 5) * 1.6, Math.atan2(b.nx, b.nz) + Math.PI / 2, i % 3 ? silM : silM2); }
   put2(176, -182, 7, 7, 27, 0.2, silM2); put2(88, 128, 8, 8, 40, 0, silM2); put2(60, 95, 5, 5, 34, 0, silM);
   for (let i = 0; i < 46; i++) { const a = map.water[0].p[NB + Math.min(NB - 1, Math.floor(i / 46 * NB))]; put2(a[0] - 8 + ((i * 37) % 9), a[1] - 6 + ((i * 53) % 11), 22, 12, 4 + ((i * 11) % 5) * 1.4, i * 0.7, i % 2 ? silM : silM2); }
-  put2(447, -622, 150, 9, 7.5, Math.atan2(-0.42, 0.9), basic({ color: '#1a2450' }));      // the railway embankment that the Avenue de Montmajour passes under (the lines of 1848 and 1868)
   const br = new THREE.Mesh(new THREE.BoxGeometry(205, 1.6, 7), silM2); br.position.set(-332, 7.4, -134); br.rotation.y = Math.atan2(-113, -163) + Math.PI / 2; scene.add(br); for (const [x, z] of [[-312, -106], [-352, -163]]) put2(x, z, 6, 9, 8, br.rotation.y); }
 
 /* ================= people: figures modelled in Blender (tools/blender/figure.py, world 'vangogh') ================= */
 const FIG = makeFigures({ THREE, scene, shadowM });
-await FIG.load('models/', ['boy', 'painter', 'postman', 'landlord', 'man_dark', 'man_blue', 'lover', 'woman_arles', 'woman_shawl']);
+await FIG.load('models/', ['boy', 'painter', 'postman', 'landlord', 'man_dark', 'man_blue', 'man_grey', 'lover', 'woman_arles', 'woman_old', 'woman_shawl']);
 const T = (g, bone, x, y, z) => FIG.turn(g.userData, bone, x || 0, y || 0, z || 0);
 const faceTo = (g, x, z, k) => { let d = Math.atan2(x - g.position.x, z - g.position.z) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * k; };
 function staged(F, name, r, d, fr, fd, o = {}) { const size = o.size || 1.12, g = FIG.spawn(name, { size, adult: true, tint: o.tint }), [x, z] = F.P(r, d); FIG.pose(g, 0, 0); g.rotation.y = F.ang(fr, fd); let y = o.y || 0;
@@ -291,20 +318,54 @@ function easel(F, r, d, fr, fd, t, wide) { const g = new THREE.Group(), [x, z] =
   const sitAt = (name, u, w, fu, o = {}) => { const g = staged(TF, name, u, w, fu, 0, { sit: true, y: 0.16 + 0.1, size: 1.08, ...o }); T(g, 'spine', 8); arms(g, 'L', -40, 0, -70); arms(g, 'R', -34, 0, -60); return g; };
   sitAt('man_dark', U0 + 7.35 - 0.62, 0.95, 1); sitAt('woman_arles', U0 + 7.35 + 0.62, 0.95, -1); sitAt('man_blue', U0 + 10.3 - 0.62, 2.4, 1); sitAt('woman_shawl', U0 + 10.3 + 0.62, 2.4, -1); sitAt('man_dark', U0 + 12.25 - 0.62, 0.95, 1, { tint: '#6a5a8a' }); sitAt('lover', U0 + 5.4 - 0.62, 2.4, 1);
   const waiter = staged(TF, 'landlord', U0 + 8.9, 1.75, -1, 0.3, { y: 0.16 }); arms(waiter, 'R', -30, 0, -80); }
-const EASELS = { terrace: easel(F_TER, 2.9, -5.4, 0.2, -1, tTer, 0.8), yh: easel(F_YH, -6.8, -14.6, 0, -1, tYH, 1.29), cafe: easel(F_CAFE, -2.2, -3.0, 0, -1, tCafe, 1.27), end: easel(F_END, -2.6, -4.8, 0, -1, tRhone, 1.29) };
+const EASELS = { terrace: easel(F_TER, 2.9, -5.4, 0.2, -1, tTer, 0.8), yh: easel(F_YH, 20.8, -9.6, -0.7, 0.7, tYH, 1.29), cafe: easel(F_CAFE, -2.2, -3.0, 0, -1, tCafe, 1.27), end: easel(F_END, -2.6, -4.8, 0, -1, tRhone, 1.29) };
 // plane trees: on the Forum (the green tree at the right of the picture) and in the public gardens of Place Lamartine
 { const leafM = [glowM('#2f7a52', 0.3), glowM('#3f8a48', 0.3), glowM('#256a5a', 0.3)], trunkM = lam({ color: '#5a4a4a' });
   const tree = (x, z, h = 7) => { const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.16, 0.26, h * 0.6, 7), trunkM); tr.position.set(x, h * 0.3, z); scene.add(tr); rounds.push({ x, z, r: 0.5 }); for (let i = 0; i < 6; i++) { const b = new THREE.Mesh(new THREE.IcosahedronGeometry(1.5 + (i % 3) * 0.5, 1), leafM[i % 3]); b.position.set(x + Math.cos(i * 2.2) * 1.5, h * 0.62 + (i % 3) * 1.1, z + Math.sin(i * 2.2) * 1.5); b.scale.y = 0.75; scene.add(b); } };
-  for (const [x, z] of [[-20, 6], [-24, 17], [-17, 25], [-27, -3]]) tree(x, z, 8);
-  for (let s = S_GATE + 22, k = 0; s < LEN - 50; s += 11, k++) { if (Math.abs(s - S_YH) < 30 || Math.abs(s - S_CAFE) < 20) continue; const [x, z] = side(at(s), 0, (k % 2 ? 1 : -1) * (9 + (k % 3) * 1.6)); if (!blocked(x, z) && z > -486) tree(x, z, 7 + (k % 3)); }
-  tree(359, -486.5, 7.5); }      // "shaded by a tree": the one before the restaurant
+  for (const [x, z] of [[-18.5, 1], [-19.5, 12], [-17, 21]]) tree(x, z, 8);
+  for (let s = S_GATE + 22, k = 0; s < LEN - 50; s += 11, k++) { if (Math.abs(s - S_YH) < 30 || Math.abs(s - S_CAFE) < 20) continue; const [x, z] = side(at(s), 0, (k % 2 ? 1 : -1) * (9 + (k % 3) * 1.6)); if (!blocked(x, z) && !inBed(x, z, 1.5) && ROW.nx * (x - ROW.CX) + ROW.nz * (z - ROW.CZ) > 4) tree(x, z, 7 + (k % 3)); }
+  tree(...ROW.P(25.6, 2.6), 7.5); }      // "shaded by a tree": the one before the restaurant
 
+/* ---- Place Lamartine in 1888. What is known (FINDINGS.md): it had public gardens (letter 678; he painted them that autumn), the ground was bare and "yellow" (letter 691),
+        and The Yellow House shows a kerbed walk round a garden, heaps of earth along a trench (for the gas pipe, says en.wikipedia), people at tables by the house, and at the end
+        of the avenue two railway bridges with a train on the nearer. How the gardens were laid out is not known: the lawns, bushes, benches and cart are furniture of the time ---- */
+const train = new THREE.Group();
+{ // the ground: beaten earth
+  const sh = new THREE.Shape([[252, -392], [440, -392], [440, -548], [243, -548], [243, -500], [249, -470]].map(([x, z]) => new THREE.Vector2(x, -z))), g = new THREE.ShapeGeometry(sh), u = g.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, u.getX(i) / 4, u.getY(i) / 4);
+  const em = glowM('#c9aa5c', 0.1); em.map = tPlaster; const m = new THREE.Mesh(g, em); m.rotation.x = -Math.PI / 2; m.position.y = LAND + 0.012; scene.add(m);
+  // lawns inside a low clipped border, round bushes, a ring of flowers
+  const lawnM = glowM('#2f7a4c', 0.22), hedgeM = glowM('#1f5a3c', 0.2), bushM = [glowM('#2a6a48', 0.25), glowM('#3f8a4a', 0.25), glowM('#226a5a', 0.25)], flowerM = ['#f0a8b8', '#f6d86a', '#f4f0e0', '#e8704a'].map(c => glowM(c, 0.5));
+  BEDS.forEach(([x, z, rx, rz], k) => { const lawn = new THREE.Mesh(new THREE.CircleGeometry(1, 36), lawnM); lawn.rotation.x = -Math.PI / 2; lawn.scale.set(rx, rz, 1); lawn.position.set(x, 0.05, z); scene.add(lawn);
+    for (let i = 0; i < 40; i++) { const a = i / 40 * Math.PI * 2, h = new THREE.Mesh(new THREE.BoxGeometry(Math.max(rx, rz) * 0.17, 0.45, 0.5), hedgeM); h.position.set(x + Math.cos(a) * rx, 0.22, z + Math.sin(a) * rz); h.rotation.y = -Math.atan2(Math.cos(a) * rz, -Math.sin(a) * rx); scene.add(h); }
+    for (let i = 0; i < 7; i++) { const a = i * 0.9 + k, r = 0.25 + (i % 3) * 0.22, b = new THREE.Mesh(new THREE.IcosahedronGeometry(1.0 + (i % 3) * 0.45, 1), bushM[i % 3]); b.position.set(x + Math.cos(a) * rx * r, 0.8 + (i % 3) * 0.3, z + Math.sin(a) * rz * r); b.scale.y = 0.85; scene.add(b); }
+    for (let i = 0; i < 26; i++) { const a = i / 26 * Math.PI * 2, f = new THREE.Mesh(new THREE.IcosahedronGeometry(0.2, 0), flowerM[(i + k) % 4]); f.position.set(x + Math.cos(a) * rx * 0.82, 0.22, z + Math.sin(a) * rz * 0.82); scene.add(f); } });
+  // benches, and more gas
+  const benchM = glowM('#3a6a4a', 0.2), bench = (x, z, ry) => { const g = new THREE.Group(), seat = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.06, 0.42), benchM), back = new THREE.Mesh(new THREE.BoxGeometry(1.7, 0.4, 0.05), benchM); seat.position.y = 0.45; back.position.set(0, 0.78, -0.2); g.add(seat, back); for (const e of [-0.75, 0.75]) { const l = new THREE.Mesh(new THREE.BoxGeometry(0.06, 0.45, 0.4), iron); l.position.set(e, 0.22, 0); g.add(l); } g.position.set(x, LAND, z); g.rotation.y = ry; scene.add(g); solids.push({ x, z, w: 1.0, d: 0.4, c: Math.cos(ry), s: -Math.sin(ry) }); };
+  bench(335.5, -440, Math.PI / 2); bench(359.2, -430, -Math.PI / 2); bench(346.5, -470, Math.PI / 2 + 0.5); bench(389, -462, -Math.PI / 2 - 0.3); bench(318, -492.5, 0);
+  for (const [x, z] of [[334.5, -426], [359.5, -441], [346, -480], [392, -470], [318, -500], [284, -501]]) if (!blocked(x, z)) lamp(x, z, 3.5, 'post');
+  // the heaps of earth along the trench before the Yellow House
+  const heapM = glowM('#b8985a', 0.16); for (const [t, off, L] of [[5.5, 5.6, 4.2], [-3.2, 9, 5.0], [14, 12.5, 3.6]]) { const [x, z] = ROW.P(t, off), h = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 7), heapM); h.scale.set(L / 2, 0.55, 1.0); h.position.set(x, 0.02, z); h.rotation.y = -Math.atan2(-0.9, 0.42) + (t > 10 ? 0.9 : 0); scene.add(h); rounds.push({ x, z, r: 1.2 }); }
+  // a cart standing before the restaurant, its shafts on the ground
+  { const [x, z] = ROW.P(27.5, 3.6), g = new THREE.Group(), bed = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.5, 1.2), glowM('#3f6a8a', 0.25)); bed.position.y = 0.95; g.add(bed); for (const e of [-0.72, 0.72]) { const wh = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.06, 6, 18), darkWood), hub = new THREE.Mesh(new THREE.BoxGeometry(1.2, 0.07, 0.07), darkWood), hub2 = hub.clone(); wh.position.set(0, 0.66, e); hub.position.set(0, 0.66, e); hub.rotation.z = 0.8; hub2.position.set(0, 0.66, e); hub2.rotation.z = -0.8; g.add(wh, hub, hub2); const sf = new THREE.Mesh(new THREE.BoxGeometry(2.3, 0.07, 0.07), wood); sf.position.set(2.1, 0.5, e * 0.6); sf.rotation.z = -0.38; g.add(sf); }
+    g.position.set(x, LAND, z); g.rotation.y = Math.atan2(ROW.ez, ROW.ex) * -1; scene.add(g); solids.push({ x, z, w: 1.5, d: 1.0, c: ROW.ex, s: ROW.ez });
+    const TFr = { P: (t, off) => ROW.P(t, off), ang: (r, d) => Math.atan2(-ROW.ex * r + ROW.nx * d, -ROW.ez * r + ROW.nz * d) }, carter = staged(TFr, 'man_blue', 30.2, 3.4, 0.6, 1); arms(carter, 'L', -30, 0, -60);
+    const w1 = staged(TFr, 'woman_old', 17.6, 2.2, 0.3, 1), w2 = staged(TFr, 'woman_arles', 18.5, 2.6, -1, 0.4); T(w1, 'head', 0, 0, 20); arms(w2, 'R', -30, 0, -70); }      // two neighbours talking between the houses
+  // the railway at the end of the avenue: an embankment, a bridge over the road with a second behind it, and a train with its smoke going over the nearer
+  const A = [0.423, -0.906], E = [0.906, 0.423], ry = Math.atan2(-E[1], E[0]), nf = o => basic({ fog: false, ...o }), embM = nf({ color: '#27326a' }), capM = nf({ color: '#46549a' }), holeM = nf({ color: '#0b1030' });
+  for (const [dist, len, h] of [[150, 190, 7.2], [176, 190, 7.8]]) { const cx = ROW.CX + A[0] * dist, cz = ROW.CZ + A[1] * dist, e = new THREE.Mesh(new THREE.BoxGeometry(len, h, 9), embM), cap = new THREE.Mesh(new THREE.BoxGeometry(len, 0.5, 9.6), capM), hole = new THREE.Mesh(new THREE.BoxGeometry(10, h - 2, 9.4), holeM), arch = new THREE.Mesh(new THREE.CylinderGeometry(5, 5, 9.4, 16, 1, false, 0, Math.PI), holeM);
+    e.position.set(cx, h / 2 - 0.2, cz); cap.position.set(cx, h, cz); hole.position.set(cx, (h - 2) / 2 - 0.25, cz); arch.position.set(cx, h - 2.3, cz); arch.rotation.z = Math.PI / 2; arch.scale.y = 1; for (const m of [e, cap, hole]) { m.rotation.y = ry; scene.add(m); } }
+  { const carM = nf({ color: '#141a3e' }), litM = nf({ color: '#ffd45e' }), smokeM = nf({ color: '#c4d0ea', transparent: true, opacity: 0.8 });
+    const eng = new THREE.Mesh(new THREE.BoxGeometry(6, 2.2, 2.4), carM), boiler = new THREE.Mesh(new THREE.CylinderGeometry(1.0, 1.0, 4.2, 10), carM), fun = new THREE.Mesh(new THREE.CylinderGeometry(0.3, 0.4, 1.6, 8), carM); eng.position.set(0, 1.3, 0); boiler.rotation.z = Math.PI / 2; boiler.position.set(2.2, 1.7, 0); fun.position.set(3.6, 3.2, 0); train.add(eng, boiler, fun);
+    for (let c = 0; c < 5; c++) { const car = new THREE.Mesh(new THREE.BoxGeometry(8.2, 2.5, 2.4), carM); car.position.set(-8.4 - c * 8.8, 1.5, 0); train.add(car); for (let w = 0; w < 5; w++) for (const sd of [-1, 1]) { const win = new THREE.Mesh(new THREE.PlaneGeometry(0.8, 0.7), litM); win.position.set(-8.4 - c * 8.8 - 3 + w * 1.5, 1.9, sd * 1.21); if (sd < 0) win.rotation.y = Math.PI; train.add(win); } }
+    for (let i = 0; i < 7; i++) { const puff = new THREE.Mesh(new THREE.IcosahedronGeometry(0.9 + i * 0.45, 1), smokeM); puff.position.set(3.2 - i * 3.4, 4.6 + i * 0.7, (i % 2) * 0.8); train.add(puff); }
+    train.rotation.y = ry; train.userData = { cx: ROW.CX + A[0] * 150, cz: ROW.CZ + A[1] * 150, E }; scene.add(train); }
+}
 /* ---- the second picture, a quick one: the Yellow House, which he painted by day. Nothing is staged: the house stands, his window is lit ---- */
 /* ---- the third: the room of the Café de la Gare, as The Night Café has it. Red walls over an ochre dado, a green ceiling, yellow boards running to a door at the
         back with the clock over it, the counter with its bottles and a pink nosegay, the billiard table with its one great shadow, four lamps, the landlord in white,
         "three or four sleeping hooligans" at the tables along the walls ---- */
-{ const F = F_CAFE, W = 9, Dp = 10.9, H = 4.3, red = glowM('#8a2620', 0.22), dado = glowM('#a88a34', 0.2), floorM = glowM('#bcae52', 0.2), green = glowM('#2f7a52', 0.3), paleG = glowM('#a8d0b0', 0.3), marble = glowM('#b4d6cc', 0.3), chairM = glowM('#9a6a26', 0.25), tableM = glowM('#3a5a3a', 0.2);
-  sbox(F, 0, Dp / 2, 0.03, W, 0.06, Dp, floorM); for (let i = -4; i <= 4; i++) sbox(F, i + 0.5, Dp / 2, 0.065, 0.03, 0.01, Dp, glowM('#8a6a22', 0.25));      // the boards
+{ const F = F_CAFE, W = 9, Dp = 10.9, H = 4.3, red = glowM('#6a2622', 0.12), dado = glowM('#8f7e3a', 0.12), floorM = glowM('#a89e5a', 0.12), green = glowM('#5a7a48', 0.14), paleG = glowM('#a8d0b0', 0.3), marble = glowM('#b4d6cc', 0.3), chairM = glowM('#9a6a26', 0.25), tableM = glowM('#3a5a3a', 0.2);
+  sbox(F, 0, Dp / 2, 0.03, W, 0.06, Dp, floorM); { const bm = glowM('#8f7a26', 0.2); for (let i = -13; i <= 13; i++) sbox(F, i * 0.335, Dp / 2, 0.065, i % 3 ? 0.022 : 0.04, 0.01, Dp, bm); }      // the boards, running to the back
   sbox(F, 0, Dp, 2.75, W, 3.1, 0.2, red); sbox(F, 0, Dp - 0.02, 0.6, W, 1.2, 0.24, dado); for (const e of [-1, 1]) { sbox(F, e * W / 2, Dp / 2, 2.75, 0.2, 3.1, Dp, red); sbox(F, e * (W / 2 - 0.02), Dp / 2, 0.6, 0.24, 1.2, Dp, dado); } sbox(F, 0, Dp / 2, H, W, 0.1, Dp, green);
   sbox(F, -1.3, Dp - 0.13, 1.2, 1.15, 2.4, 0.06, glowM('#d9c468', 0.45)); sbox(F, -1.62, Dp - 0.17, 1.55, 0.5, 1.7, 0.05, glowM('#a8903a', 0.3));      // the doorway at the back, half curtained
   sbox(F, -1.3, Dp - 0.2, 3.1, 0.5, 0.9, 0.16, lam({ color: '#1c1a20' })); { const [x, z] = F.P(-1.3, Dp - 0.3), face = new THREE.Mesh(new THREE.CircleGeometry(0.19, 20), basic({ color: '#f1ecd8' })); face.position.set(x, 3.25, z); face.rotation.y = F.ang(0, -1); scene.add(face);
@@ -313,7 +374,7 @@ const EASELS = { terrace: easel(F_TER, 2.9, -5.4, 0.2, -1, tTer, 0.8), yh: easel
   for (let i = 0; i < 9; i++) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.045, 0.05, 0.34, 6), glowM(i % 3 ? '#2a5a3a' : '#7a3a2a', 0.3)), [x, z] = F.P(-0.05 + i * 0.2, Dp - 1.1); b.position.set(x, 1.27, z); scene.add(b); }
   { const [x, z] = F.P(0.2, Dp - 1.45), v = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.05, 0.22, 7), marble), fl = new THREE.Mesh(new THREE.IcosahedronGeometry(0.22, 1), glowM('#f0a8b8', 0.6)); v.position.set(x, 1.21, z); fl.position.set(x, 1.5, z); scene.add(v, fl); }
   // the billiard table, a little askew, and its shadow
-  { const bt = new THREE.Group(), [x, z] = F.P(1.1, 4.3), top = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.1, 2.8), glowM('#4a7a34', 0.3)), rim = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.22, 3.02), glowM('#3a3418', 0.3)), body = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.3, 2.8), glowM('#4a4420', 0.3)); top.position.y = 0.93; rim.position.y = 0.84; body.position.y = 0.6; bt.add(top, rim, body);
+  { const bt = new THREE.Group(), [x, z] = F.P(1.1, 4.3), top = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.1, 2.8), glowM('#5f8a3c', 0.3)), rim = new THREE.Mesh(new THREE.BoxGeometry(1.72, 0.22, 3.02), glowM('#3a3418', 0.3)), body = new THREE.Mesh(new THREE.BoxGeometry(1.5, 0.3, 2.8), glowM('#4a4420', 0.3)); top.position.y = 0.93; rim.position.y = 0.84; body.position.y = 0.6; bt.add(top, rim, body);
     for (const [a, b] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { const l = new THREE.Mesh(new THREE.CylinderGeometry(0.09, 0.06, 0.5, 8), glowM('#2a2414', 0.2)); l.position.set(a * 0.66, 0.25, b * 1.3); bt.add(l); }
     for (const [bx, bz, c] of [[0.1, 0.5, '#f4f0e0'], [0.22, 0.62, '#c9302a'], [-0.2, -0.3, '#f4f0e0']]) { const ball = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), basic({ color: c })); ball.position.set(bx, 1.01, bz); bt.add(ball); } const cue = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.012, 1.5, 5), basic({ color: '#e6d6a8' })); cue.rotation.x = Math.PI / 2; cue.rotation.z = 0.5; cue.position.set(-0.1, 1.0, 0.2); bt.add(cue);
     bt.position.set(x, 0, z); bt.rotation.y = F.ry + 0.16; scene.add(bt); solids.push({ x, z, w: 1.0, d: 1.65, c: F.rx, s: F.rz });
@@ -321,6 +382,8 @@ const EASELS = { terrace: easel(F_TER, 2.9, -5.4, 0.2, -1, tTer, 0.8), yh: easel
   const cafeTable = (r, d) => { sbox(F, r, d, 0.74, 0.75, 0.045, 1.15, marble, true); for (const [a, b] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) sbox(F, r + a * 0.3, d + b * 0.5, 0.37, 0.04, 0.72, 0.04, tableM); };
   const cafeChair = (r, d, fr, fd) => { const [x, z] = F.P(r, d), g = new THREE.Group(), seat = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.04, 0.4), chairM), back = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.5, 0.04), chairM); seat.position.y = 0.46; back.position.set(0, 0.76, -0.19); g.add(seat, back); for (const [a, b] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { const l = new THREE.Mesh(new THREE.BoxGeometry(0.035, 0.46, 0.035), chairM); l.position.set(a * 0.17, 0.23, b * 0.17); g.add(l); } g.position.set(x, 0.06, z); g.rotation.y = F.ang(fr, fd); scene.add(g); };
   for (const [r, d] of [[-3.85, 2.3], [-3.85, 4.9], [-3.85, 7.6], [3.85, 3.6], [3.85, 6.3], [2.6, 8.9]]) cafeTable(r, d);
+  for (const r of [-6.5, 6.5]) { cafeTable(r, -1.7); cafeChair(r, -0.75, 0, -1); cafeChair(r - 0.2, -2.7, 0, 1); }      // tables before the door, as a café has (their being there is assumed)
+  { const g = staged(F, 'man_grey', 6.5, -0.8, 0, -1, { sit: true, y: -0.06, size: 1.06 }); T(g, 'spine', 10); arms(g, 'R', -40, 0, -70); }
   cafeChair(-2.9, 1.6, -1, 0.3); cafeChair(-1.4, 0.9, 0.2, 1); cafeChair(2.9, 2.6, 1, 0.4); cafeChair(2.95, 5.3, 1, 0.2);
   for (const [r, d] of [[-3.85, 2.1], [-3.8, 2.5], [-3.9, 4.6], [3.8, 3.4]]) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.05, 0.3, 6), glowM('#2a5a4a', 0.4)), [x, z] = F.P(r, d); b.position.set(x, 0.92, z); scene.add(b); }
   // the sleepers and the couple
@@ -328,28 +391,37 @@ const EASELS = { terrace: easel(F_TER, 2.9, -5.4, 0.2, -1, tTer, 0.8), yh: easel
   slump('man_blue', -3.15, 4.9, -1, 0); slump('man_dark', 3.15, 6.0, 1, 0.1); slump('man_blue', 3.15, 6.75, 1, -0.1, { tint: '#8a7a4a' });
   const c1 = staged(F, 'man_dark', -3.2, 7.3, -0.6, 1, { sit: true, y: -0.06, size: 1.04 }), c2 = staged(F, 'woman_arles', -3.2, 8.0, -0.6, -1, { sit: true, y: -0.06, size: 1.0 }); T(c1, 'spine', 14); T(c2, 'spine', 12);
   const ginoux = staged(F, 'landlord', 2.55, 4.9, -0.15, -1, { size: 1.12 }); arms(ginoux, 'L', 6, 0, -8); arms(ginoux, 'R', 6, 0, -8);
-  for (const [r, d] of [[-2.7, 5.4], [0.8, 2.9], [3.2, 5.8], [-0.7, 8.8]]) { const [x, z] = F.P(r, d); lamp(x, z, 3.15, 'hang', 0, 0, 2.5); }
+  for (const [r, d] of [[-2.7, 5.4], [0.8, 2.9], [3.2, 5.8], [-0.7, 8.8]]) { const [x, z] = F.P(r, d); lamp(x, z, 3.15, 'hang', 0, 0, 2.7); }
 }
 /* ---- the last: the bank of the Rhône. Two boats lie at the landing; "two colourful figurines of lovers in the foreground" (letter 691) ---- */
-const lovers = [staged(F_END, 'lover', 5.25, 2.9, 0.3, -1, { size: 1.14 }), staged(F_END, 'woman_shawl', 4.8, 2.95, 0.3, -1, { size: 1.06 })];
+const lovers = [staged(F_END, 'lover', 5.8, 4.2, -0.55, -1, { size: 1.1 }), staged(F_END, 'woman_shawl', 5.36, 4.3, -0.55, -1, { size: 1.03 })];      // arm in arm, coming towards us
 { T(lovers[0], 'upperarmR', 0, 0, 14); T(lovers[1], 'upperarmL', 0, 0, -14); T(lovers[1], 'head', 6, 0, 14); T(lovers[0], 'head', 4, 0, -12);
-  const hullM = glowM('#27407a', 0.35), boat = (r, d, ry, L) => { const g = new THREE.Group(), h = new THREE.Mesh(new THREE.SphereGeometry(1, 12, 8), hullM); h.scale.set(L / 2, 0.6, 0.9); g.add(h); const deck = new THREE.Mesh(new THREE.CylinderGeometry(1, 1, 0.03, 12), glowM('#3a5a8a', 0.3)); deck.scale.set(L / 2 * 0.92, 1, 0.78); deck.position.y = 0.14; g.add(deck); const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.04, 3.4, 5), hullM); mast.position.set(L * 0.12, 1.7, 0); mast.rotation.z = 0.06; g.add(mast);
-    const [x, z] = F_END.P(r, d); g.position.set(x, WATER + 0.05, z); g.rotation.y = ry; scene.add(g); };
-  boat(-1.2, 6.0, F_END.ry + 0.45, 6.2); boat(2.6, 7.6, F_END.ry + 0.15, 5.4); lamp(...F_END.P(-6.2, -6.6), 3.6, 'post'); }
+  // two boats moored off the landing, side by side and bows to the right as he has them: a dark hull, a pale gunwale, a thwart, a bare mast
+  const hullM = glowM('#16224e', 0.3), railM = glowM('#6a88a8', 0.3), boat = (r, d, ry, L) => { const g = new THREE.Group(), h = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 8, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), hullM); h.scale.set(L / 2, 0.75, 0.95); h.position.y = 0.42; g.add(h);
+    const rail = new THREE.Mesh(new THREE.TorusGeometry(1, 0.05, 5, 28), railM); rail.rotation.x = Math.PI / 2; rail.scale.set(L / 2, 0.95, 1.6); rail.position.y = 0.44; g.add(rail); const inside = new THREE.Mesh(new THREE.CircleGeometry(1, 20), glowM('#2c3e6e', 0.3)); inside.rotation.x = -Math.PI / 2; inside.scale.set(L / 2 * 0.95, 0.9, 1); inside.position.y = 0.3; g.add(inside);
+    for (const u of [-0.25, 0.3]) { const th = new THREE.Mesh(new THREE.BoxGeometry(0.22, 0.05, 1.7), railM); th.position.set(u * L / 2, 0.4, 0); g.add(th); }
+    const mast = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.04, 3.8, 5), hullM); mast.position.set(L * 0.1, 2.2, 0); mast.rotation.z = 0.05; g.add(mast);
+    const [x, z] = F_END.P(r, d); g.position.set(x, WATER - 0.05, z); g.rotation.y = ry; scene.add(g); };
+  boat(-2.6, 6.2, F_END.ry + 0.42, 6.6); boat(1.6, 9.0, F_END.ry + 0.36, 5.8);
+  // the pale mound of the bank beside them
+  { const [x, z] = F_END.P(2.9, 2.5), m = new THREE.Mesh(new THREE.SphereGeometry(1, 14, 8), glowM('#6f9a7a', 0.2)); m.scale.set(2.5, 0.45, 1.0); m.position.set(x, 0.02, z); m.rotation.y = F_END.ry + 0.3; scene.add(m); }
+  lamp(...F_END.P(-6.2, -6.6), 3.6, 'post'); }
 
 // people still about at this hour. Two of them have had too much (common/score.js picks the fifth and the fourteenth): both are set down by the Café de la Gare
-const walkers = []; { const WHO = ['man_dark', 'woman_arles', 'man_blue', 'woman_shawl', 'man_blue', 'lover', 'woman_arles', 'man_dark', 'woman_shawl', 'postman', 'man_blue', 'woman_arles', 'lover', 'man_dark'];
-  const SPAN = [[S_TER + 34, 190], [200, 400], [410, S_GATE - 14], [S_GATE + 16, S_YH - 22], [S_CAFE + 18, LEN - 48]];
-  WHO.forEach((n, i) => { const [lo, hi] = SPAN[i % 5], g = FIG.spawn(n, { size: rnd(1.06, 1.14), adult: true, tint: i % 4 === 3 ? '#7a6a9a' : undefined }); walkers.push({ g, s: rnd(lo, hi), dir: i % 2 ? 1 : -1, off: (i % 2 ? 1 : -1) * rnd(0.7, 1.1), v: rnd(0.7, 1.1), ph: rnd(0, 6), lo, hi, said: 0 }); }); }
+const walkers = []; { const WHO = ['man_dark', 'woman_arles', 'man_grey', 'woman_shawl', 'man_blue', 'lover', 'woman_old', 'man_dark', 'woman_shawl', 'man_grey', 'man_blue', 'woman_arles', 'woman_old', 'man_dark'];
+  const SPAN = [[S_TER + 34, 190], [200, 400], [410, S_GATE - 14], [S_GATE + 16, S_YH - 22], [S_CAFE + 40, LEN - 48]], DRUNK = { 4: [S_CAFE + 9, S_CAFE + 30], 13: [S_CAFE + 14, S_CAFE + 38] };
+  WHO.forEach((n, i) => { const [lo, hi] = DRUNK[i] || SPAN[i % 5], g = FIG.spawn(n, { size: rnd(1.06, 1.14), adult: true, tint: i % 4 === 3 ? '#7a6a9a' : undefined }); walkers.push({ g, s: rnd(lo, hi), dir: i % 2 ? 1 : -1, off: (i % 2 ? 1 : -1) * rnd(0.7, 1.1), v: DRUNK[i] ? 0.5 : rnd(0.7, 1.1), ph: rnd(0, 6), lo, hi, said: 0, drunk: !!DRUNK[i] });
+    if (DRUNK[i]) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.045, 0.3, 6), glowM('#3a7a4a', 0.4)); b.rotation.x = Math.PI / 2; g.userData.aR.add(b); } }); }
 // every word below is invented (the end card says so). The painter's own lines are in WAY and END, from his letters
+const HIC = ['Hic!', 'The street will not keep still.', 'One more, patron!'];
 const LINES = ['Bonsoir, little Roulin.', 'The Dutchman? He went north with his easel.', 'Out so late, Camille?', 'A painter working in the dark. What next!', 'Mind the gutter, petit.'];
 
 /* ================= play ================= */
 const nearStage = (x, z) => [[F_TER, -6], [F_YH, -12], [F_CAFE, -4], [F_END, -3]].some(([F, d]) => { const [sx, sz] = F.P(0, d); return Math.hypot(x - sx, z - sz) < 13; });
 const guide = makeGuide({ posts: false, THREE, scene, map, nearest: (x, z) => nearest(x, z), at, LEN, blocked: (x, z) => blocked(x, z) || nearStage(x, z), groundY: hAt, wet: inWater, bounds: [-420, -700, 440, 80],
-  places: [{ n: 'Café, Place du Forum', x: F_TER.ox, z: F_TER.oz, s: S_TER }, { n: 'Porte de la Cavalerie', x: 333, z: -381, s: S_GATE }, { n: 'The Yellow House', x: 377, z: -489, s: S_YH }, { n: 'Café de la Gare', x: 345, z: -489, s: S_CAFE }, { n: 'The Rhône', x: 222, z: -516, s: LEN }],
+  places: [{ n: 'Café, Place du Forum', x: F_TER.ox, z: F_TER.oz, s: S_TER }, { n: 'Porte de la Cavalerie', x: 333, z: -381, s: S_GATE }, { n: 'The Yellow House', x: F_YH.ox, z: F_YH.oz, s: S_YH }, { n: 'Café de la Gare', x: F_CAFE.ox, z: F_CAFE.oz, s: S_CAFE }, { n: 'The Rhône', x: 222, z: -516, s: LEN }],
   style: { board: '#e8e0c4', ink: '#1c2850', post: '#3a4468', land: '#182a52', water: '#2a5a9a', house: '#3a4a7a', street: '#c9b878', route: '#ffd24a' } });
-let progS = S_START, state = 'title', time = 0, muted = false, endT = 0, pS = S_TER, pV = 0, pPh = 0, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, stageNow = null;
+let ambK = 1; let progS = S_START, state = 'title', time = 0, muted = false, endT = 0, pS = S_TER, pV = 0, pPh = 0, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, stageNow = null;
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
 const plate = (title, line) => { SC.award(title, null, title); $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
 const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
@@ -358,9 +430,9 @@ const WAY = {
   terrace: { F: F_TER, s: S_TER, title: 'Café Terrace at Night', line: 'Vincent van Gogh, September 1888 · Kröller-Müller Museum, Otterlo', img: 'images/terrace.jpg', after: 'There: a painting of night without black.', after2: 'It amuses me enormously to paint the night on the spot.',
     boy: [5.2, -3.4], man: [3.5, -6.4], look: [0.4, 8], cam: [[0.75, -4.4, 1.6], [-1.5, 12, 2.5], 68], light: [FR.lights.terrace.under[0], 2.6, FR.lights.terrace.under[1], LIGHT.cafe], easel: 'terrace' },
   yh: { F: F_YH, s: S_YH, quick: true, title: 'The Yellow House', line: 'Vincent van Gogh, September 1888 · painted by day · Van Gogh Museum, Amsterdam', img: 'images/yellowhouse.jpg',
-    boy: [8.5, -9.5], man: [-8.2, -15.2], look: [0, 0], cam: [[-3.0, -14, 1.7], [-1.4, 0, 3.6], 56], light: [386, 4, -485, 40], easel: 'yh' },
+    boy: [12.5, -5.5], man: [21.6, -10.4], look: [6, 0], cam: [[19, -11.3, 1.7], [5.6, 0, 3.5], 60], light: [...ROW.P(-2.4, 2.8).slice(0, 1), 4, ROW.P(-2.4, 2.8)[1], 40], easel: 'yh' },
   cafe: { F: F_CAFE, s: S_CAFE, title: 'The Night Café', line: 'Vincent van Gogh, September 1888 · Yale University Art Gallery, New Haven', img: 'images/nightcafe.jpg', after: 'A place where one can ruin oneself, go mad, commit crimes.',
-    boy: [3.6, -4.6], man: [-3.2, -2.4], look: [0, 5], cam: [[-0.7, -1.9, 2.7], [0.25, 6.0, 0.55], 52], light: [345, 3.3, -494.5, LIGHT.room], easel: 'cafe' } };
+    boy: [3.6, -4.6], man: [-3.2, -2.4], look: [0, 5], cam: [[-0.75, -1.25, 2.45], [0.35, 6.0, 0.62], 61], light: [F_CAFE.P(0, 5.5)[0], 3.3, F_CAFE.P(0, 5.5)[1], LIGHT.room], easel: 'cafe' } };
 const END = { F: F_END, boy: [-5.2, -4.6], man: [-3.4, -5.6], look: [0, 6], cam: [[0.5, -4.6, 1.85], [0.0, 40, 1.2], 52], light: [0, -50, 0, 0], easel: 'end' };
 const STAGES = [WAY.terrace, WAY.yh, WAY.cafe, END]; END.s = LEN;
 const SC = makeScore({ THREE, scene, key: 'vangogh', at, nearest: (x, z) => nearest(x, z, progS), LEN, groundY: hAt, blocked, isHouse: inBlock, walkers, slops: false, paintings: 4, thing: 'franc', things: 'francs', ditch: 'gutter', avoid: [S_TER, S_YH, S_CAFE, LEN - 6], half: 1.9, ditchColor: '#16306a', lipColor: '#8a86a0',
@@ -371,7 +443,7 @@ function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, ya
 function begin() {
   SND.start({ chords: [[38, 57, 62, 66, 69], [43, 55, 59, 62, 67], [40, 52, 59, 64, 67], [45, 57, 61, 64, 69]], scale: [62, 64, 66, 69, 71, 74, 76, 78, 81, 83, 86, 88] }); SND.setMuted(muted); reset(); SC.start(); state = 'play'; hop = time + 9;
   $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
-  setTimeout(() => { if (state === 'play') say(postman, 'A letter from Paris for Monsieur Vincent, Camille. He is out painting the stars. Run!', 5.5); }, 700);
+  setTimeout(() => { if (state === 'play') say(postman, 'A letter from Paris for Monsieur Vincent, Camille. He is out painting the stars. Run!', 5.0); }, 500);
 }
 const stand = (g, F, rd, look, k) => { const [x, z] = F.P(rd[0], rd[1]), [lx, lz] = F.P(look[0], look[1]); g.position.x += (x - g.position.x) * k; g.position.z += (z - g.position.z) * k; g.position.y = LAND; faceTo(g, lx, lz, Math.min(1, k * 1.6)); };
 const atEasel = g => { T(g, 'upperarmR', -58, 0, -8); T(g, 'forearmR', -38 - 8 * Math.sin(time * 3.1)); T(g, 'head', 6 * Math.sin(time * 0.7), 0, 0); };      // the brush hand, working
@@ -411,14 +483,14 @@ function update(dt) {
     for (const k in EASELS) EASELS[k].visible = k === 'terrace' ? !seen.terrace || (wp && wp.key === 'terrace') : (wp && wp.easel === k) || (k === 'end' && (state === 'tableau' || state === 'done'));
     // waypoints: the scene is set as the painting, the view takes the painter's place, melts into the picture, and lets the boy go
     for (const k in WAY) if (state === 'play' && !seen[k] && prog.s > WAY[k].s - 5 && prog.s < WAY[k].s + 7) { state = 'way'; wp = WAY[k]; wp.key = k; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; $('melt').classList.toggle('quick', !!wp.quick); document.body.classList.toggle('quick', !!wp.quick); bubble.classList.remove('show'); SND.whoosh(0.07); }
-    if (state === 'way') { wpT += dt; const k = Math.min(1, dt * 2.5), q = wp.quick, t0 = q ? 2.4 : 3.0, t1 = q ? 3.6 : 4.8, t2 = q ? 7.6 : 10.2, t3 = q ? 9.2 : 12.2;
+    if (state === 'way') { wpT += dt; if (window.__road.holdStage) wpT = Math.min(wpT, 2.6); const k = Math.min(1, dt * 2.5), q = wp.quick, t0 = q ? 2.4 : 3.0, t1 = q ? 3.6 : 4.8, t2 = q ? 7.6 : 10.2, t3 = q ? 9.2 : 12.2;
       stand(meG, wp.F, wp.boy, wp.look, k); me.x = meG.position.x; me.z = meG.position.z; me.y = LAND; stand(painter, wp.F, wp.man, wp.look, k); FIG.pose(painter, 0, 0); atEasel(painter); pack.visible = false;
       if (wpT > t0 && wpT < t0 + 0.1) plate(wp.title, wp.line); if (wpT > t1 && wpT < t2) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
       if (wpT > t2) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
       if (wpT > t3) { state = 'play'; bubble.classList.remove('show'); me.yaw = Math.PI - meG.rotation.y; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); pS = Math.max(wp.s, nearest(painter.position.x, painter.position.z, wp.s).s); progS = nearest(me.x, me.z, wp.s).s; if (wp.after) say(painter, wp.after, 4.4); if (wp.after2) { const g2 = wp.after2; setTimeout(() => { if (state === 'play') say(painter, g2, 4.4); }, 5200); } hop = time + 8; const p = at(progS + 3); me.yaw = Math.atan2(p.dx, -p.dz); wp = null; } }
     // the end, on the bank of the Rhône: he has set up under a gas lamp; the boy gives him the letter at last
     if (state === 'play' && seen.terrace && seen.cafe && prog.s > S_END) { state = 'tableau'; seen.yh = true; endT = 0; bubble.classList.remove('show'); $('melt').src = 'images/rhone.jpg'; $('melt').classList.add('slow'); [0, 2, 4, 6, 8, 9].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.45)); }
-    if (state === 'tableau') { endT += dt; const k = Math.min(1, dt * 1.6); stand(meG, END.F, END.boy, END.man, k); me.x = meG.position.x; me.z = meG.position.z; me.y = LAND; me.speed = 0; stand(painter, END.F, END.man, END.look, k); FIG.pose(painter, 0, 0); atEasel(painter); pack.visible = false;
+    if (state === 'tableau') { endT += dt; if (window.__road.holdStage) endT = Math.min(endT, 8.8); const k = Math.min(1, dt * 1.6); stand(meG, END.F, END.boy, END.man, k); me.x = meG.position.x; me.z = meG.position.z; me.y = LAND; me.speed = 0; stand(painter, END.F, END.man, END.look, k); FIG.pose(painter, 0, 0); atEasel(painter); pack.visible = false;
       if (endT > 1.2 && endT < 1.3) say(painter, 'I go outside at night to paint the stars.', 4.2);
       if (endT > 6.2 && endT < 6.3) say(painter, 'The starry sky, painted at night itself, under a gas jet.', 4.6);
       if (endT > 9.0 && endT < 9.1) plate('Starry Night Over the Rhône', "Vincent van Gogh, September 1888 · Musée d'Orsay, Paris");
@@ -432,21 +504,26 @@ function update(dt) {
       const k = Math.min(1, dt * 5.5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (me.y + 2.4 + alt * 0.25 - camera.position.y) * k;
       camera.lookAt(me.x + fx * 6, me.y + 1.55, me.z + fz * 6); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 + Math.abs(me.speed) * 1.4 - camera.fov) * k; camera.updateProjectionMatrix(); }
   }
+  // by the café the plain house fronts sink to dark blue and violet, as he painted them: only gas, lit windows and stars stay bright
+  { const want = state === 'title' || (state === 'way' && wp.key === 'terrace') ? 0.34 : !seen.terrace ? 0.5 : 1; ambK += (want - ambK) * Math.min(1, dt * 1.2); hemi.intensity = LIGHT.hemi * ambK; skyL.intensity = LIGHT.sky * ambK; for (const f of FRONT) f.m.emissiveIntensity = 0.07 * ambK; }
   // the lights: the five nearest lamps burn for real; every lamp's ring of strokes breathes a little; the lamps down the river grow to the eye with distance
   const ref = state === 'title' || state === 'way' || state === 'tableau' ? camera.position : meG.position; const near = LAMPS.filter(l => l.kind !== 'far').sort((a, b) => Math.hypot(a.x - ref.x, a.z - ref.z) - Math.hypot(b.x - ref.x, b.z - ref.z));
-  pool.forEach((l, i) => { const t = near[i]; if (!t) return; l.position.set(t.x, t.y - 0.2, t.z); l.intensity = LIGHT.lamp * (t.kind === 'hang' ? 0.07 : 1) * (0.93 + 0.07 * Math.sin(time * 9 + t.ph) * Math.sin(time * 5.3 + t.ph)); });
+  pool.forEach((l, i) => { const t = near[i]; if (!t) return; l.position.set(t.x, t.y - 0.2, t.z); l.intensity = LIGHT.lamp * Math.min(1, ambK * ambK * 1.6) * (t.kind === 'hang' ? 0.07 : 1) * (0.93 + 0.07 * Math.sin(time * 9 + t.ph) * Math.sin(time * 5.3 + t.ph)); });
   for (const l of LAMPS) { const d = Math.hypot(l.x - camera.position.x, l.z - camera.position.z); l.s.scale.setScalar(l.size * (l.kind === 'far' ? Math.max(1, d / 62) : 1) * (1 + 0.05 * Math.sin(time * 2.3 + l.ph))); }
-  { let nearS = STAGES[0], nd = 1e9; for (const s of STAGES) { const d = Math.abs(s.s - progS); if (d < nd) { nd = d; nearS = s; } } const s = state === 'title' ? WAY.terrace : wp || nearS; if (stageNow !== s) { stageNow = s; big.position.set(s.light[0], s.light[1], s.light[2]); } big.intensity = s.light[3] * (0.95 + 0.05 * Math.sin(time * 7)); }
+  { let nearS = STAGES[0], nd = 1e9; for (const s of STAGES) { const d = Math.abs(s.s - progS); if (d < nd) { nd = d; nearS = s; } } const s = state === 'title' ? WAY.terrace : wp || nearS; if (stageNow !== s) { stageNow = s; big.position.set(s.light[0], s.light[1], s.light[2]); big.distance = s === WAY.terrace ? 13 : 34; } big.intensity = s.light[3] * (0.95 + 0.05 * Math.sin(time * 7)); }
   { const u = water.material.uniforms.uL.value, c = camera.position, list = [...QUAY, ...near.slice(0, 6).filter(l => l.kind !== 'hang')].filter(l => inWater((l.x + c.x) / 2, (l.z + c.z) / 2) || l.kind === 'far').sort((a, b) => Math.hypot(a.x - c.x, a.z - c.z) - Math.hypot(b.x - c.x, b.z - c.z));
     for (let i = 0; i < NREF; i++) { const l = list[i]; if (l) u[i].set(l.x, l.kind === 'far' ? 1 : 0.8, l.z); else u[i].set(0, -999, 0); } }
+  { const u = train.userData, k = ((time * 5) % 230) - 115; train.position.set(u.cx + u.E[0] * k, 7.45, u.cz + u.E[1] * k); }      // the train crosses, and comes round again
   for (const w of walkers) {
     w.s += w.dir * w.v * dt; if (w.s > w.hi) { w.s = w.hi; w.dir = -1; } if (w.s < w.lo) { w.s = w.lo; w.dir = 1; }
     const p = at(w.s); let [x, z] = side(p, 0, w.off); const dx = x - me.x, dz = z - me.z, d = Math.hypot(dx, dz); if (d < 2.0 && d > 0.01 && state !== 'title') { const k = (2.0 - d) * 0.7; x += dx / d * k; z += dz / d * k; }
-    w.g.visible = state !== 'title'; w.g.position.set(x, LAND, z); w.ph += dt * (2 + w.v * 2.6); FIG.pose(w.g, w.ph, w.v / 1.6); const heading = Math.atan2(p.dx * w.dir, p.dz * w.dir); let dy = heading - w.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); w.g.rotation.y += dy * Math.min(1, dt * 4);
+    w.g.visible = state !== 'title'; w.g.position.set(x, LAND, z); w.ph += dt * (2 + w.v * 2.6); FIG.pose(w.g, w.ph, w.v / 1.6); if (w.drunk) { const a = time * 1.6 + w.ph; T(w.g, 'spine', 14 + 10 * Math.sin(a), 0, 12 * Math.sin(a * 0.7)); T(w.g, 'head', 16 * Math.sin(a + 1), 0, 18 * Math.sin(a * 0.6)); T(w.g, 'upperarmR', -70 - 25 * Math.sin(a * 0.5), 0, -20); T(w.g, 'forearmR', -80); T(w.g, 'upperarmL', 0, 0, 40 + 20 * Math.sin(a)); } const heading = Math.atan2(p.dx * w.dir, p.dz * w.dir); let dy = heading - w.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); w.g.rotation.y += dy * Math.min(1, dt * 4);
     let look = 0; if (d < 9 && state !== 'title') { look = Math.atan2(me.x - x, me.z - z) - w.g.rotation.y; look = clamp(Math.atan2(Math.sin(look), Math.cos(look)), -1.2, 1.2); } const hd = w.g.userData.hd; hd.rotation.y += (look - hd.rotation.y) * Math.min(1, dt * 4);
-    if (d < 3.2 && state === 'play' && time > w.said && time > bubbleT) { w.said = time + 30; say(w.g, LINES[Math.floor(rnd(0, LINES.length))], 3); }
+    if (d < 3.2 && state === 'play' && time > w.said && time > bubbleT) { w.said = time + 30; say(w.g, w.drunk ? HIC[Math.floor(rnd(0, 3))] : LINES[Math.floor(rnd(0, LINES.length))], 3); }
   }
-  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 150, innerWidth - 150) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1); } }
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 150, innerWidth - 150) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1);
+    if (bubbleG === postman && state === 'play' && (v.z > 1 || Math.abs(v.x) > 0.9)) { bubble.style.left = innerWidth / 2 + 'px'; bubble.style.top = innerHeight * 0.2 + 'px'; bubble.classList.add('show'); } } }      // his words follow the boy as he runs off
+  
   guide.update(me, painter.position, state === 'play');
   SND.update(0.25 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
 }
@@ -471,7 +548,7 @@ cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lif
 $('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
 $('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
 window.__road = { get state() { return state; }, me, begin, freeze(f) { camHold = f; }, hAt, FRONTS, world: { found: new Set() }, go(x, z, s) { me.x = x; me.z = z; me.speed = 0; progS = s != null ? s : nearest(x, z).s; pS = Math.min(LEN - 5, progS + 7); meG.position.set(x, LAND, z); const q = at(pS); painter.position.set(q.x, LAND, q.z); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; },
-  places: {}, route: s => at(s), LEN, S: { terrace: S_TER, yh: S_YH, cafe: S_CAFE, gate: S_GATE, end: S_END }, F: { terrace: F_TER, yh: F_YH, cafe: F_CAFE, end: F_END }, WAY, END, LIGHT, dbg: { camera, painter, meG, walkers, LAMPS, post, THREE, scene }, probe: (x, z) => ({ house: inHouse(x, z), water: inWater(x, z), f: floorAt(x, z), d: +nearest(x, z).d.toFixed(1) }) };
+  places: {}, route: s => at(s), LEN, S: { terrace: S_TER, yh: S_YH, cafe: S_CAFE, gate: S_GATE, end: S_END }, F: { terrace: F_TER, yh: F_YH, cafe: F_CAFE, end: F_END }, WAY, END, LIGHT, holdStage: false, dbg: { lovers, camera, painter, meG, walkers, LAMPS, post, THREE, scene }, probe: (x, z) => ({ house: inHouse(x, z), water: inWater(x, z), f: floorAt(x, z), d: +nearest(x, z).d.toFixed(1) }) };
 </script>
 </body>
 </html>

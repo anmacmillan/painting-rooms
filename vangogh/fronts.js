@@ -4,7 +4,7 @@
                                       pale: fr.wikipedia says the café was not yellow in 1888 except by its own gaslight (it was painted yellow about 1990).
      the Yellow House                 gone (bombed 25 June 1944, then pulled down). Its place is OpenStreetMap's marker for the site; its look is the painting:
                                       a pair of two-storey houses under low roofs, yellow, green shutters and door, the grocer's pink awning on the left half,
-                                      a taller house behind. The line of the row along the north of Place Lamartine is a conjecture.
+                                      a taller house behind. The line of the row is argued from the painting and the avenue's real bearing (see lamartine()).
      the restaurant and the Café de la Gare   "pink with green shutters" and "on the left of the restaurant", in his own words (letter 691); nothing else is known
                                       here of their fronts, so they are plain. The café's front stands open so that the room of The Night Café can be seen.
    A front is set out in its own measure: u metres along the wall from its left end as you face it, y up, w out from the wall. */
@@ -67,40 +67,42 @@ export function makeFronts({ THREE, scene, plasterTex, stoneTex }) {
     F.deck = { u0: C0 - 0.2, u1: W + 0.2, w1: AW + 0.5 }; F.C0 = C0; F.AW = AW; return F;
   }
 
-  /* ---------- Place Lamartine: the Yellow House, the restaurant and the Café de la Gare, on one conjectural line along the north of the square ---------- */
-  function lamartine(Z = -489) {
-    const w = 0.1, out = {};
+  /* ---------- Place Lamartine: the Yellow House, the restaurant and the Café de la Gare, in one row.
+     The row runs north-west to south-east and looks south-west over the square. That is argued from the painting, not measured: in it the Avenue de Montmajour
+     runs off to the right of the house to the railway bridges, and the avenue's real bearing (OpenStreetMap) then puts the house front at about this angle;
+     the blocks that stand on the site today run the same way. t is metres along the row from the house's corner on the avenue. ---------- */
+  function lamartine(CX = 384.4, CZ = -489) {
+    const w = 0.1, out = {}, ex = 0.819, ez = 0.574, nx = -ez, nz = ex, row = (t0, t1, back = 0) => front(CX - ex * t1 - nx * back, CZ - ez * t1 - nz * back, CX - ex * t0 - nx * back, CZ - ez * t0 - nz * back);
+    out.row = { CX, CZ, ex, ez, nx, nz, P: (t, off) => [CX - ex * t + nx * off, CZ - ez * t + nz * off] };
     // the house behind the Yellow House, taller, of four storeys (it is in the painting, over the roofs)
-    { const F = front(371, Z - 9.5, 389.5, Z - 9.5); body(M.cream, F, 0, F.W, 13.2, 9); box(M.tile, F, -0.3, F.W + 0.3, 13.2, 13.5, -9, 0.4);
-      for (let k = 0; k < 5; k++) for (let j = 0; j < 2; j++) shuttered(F, 1.9 + k * 3.7, 7.4 + j * 2.9, 0.5, 1.7, 0, { closed: (k + j) % 2 === 0, shut: M.pale, lit: k === 3 && j === 0 ? 1 : 0 }); }
+    { const F = row(0, 13.4, 9.5); body(M.cream, F, 0, F.W, 13.2, 9); box(M.tile, F, -0.3, F.W + 0.3, 13.2, 13.5, -9, 0.4);
+      for (let k = 0; k < 4; k++) for (let j = 0; j < 2; j++) shuttered(F, 1.7 + k * 3.3, 7.4 + j * 2.9, 0.5, 1.7, 0, { closed: (k + j) % 2 === 0, shut: M.pale, lit: k === 2 && j === 0 ? 1 : 0 }); }
     // the Yellow House: the right half of a pair. Left half: the grocer's, with its pink awning. Right half: his. Each under its own low gable
-    { const F = front(369, Z, 384.4, Z), H = 6.5, mid = 7.4, W = F.W; out.yellow = F;
+    { const F = row(0, 15.4), H = 6.5, mid = 7.4, W = F.W; out.yellow = F;
       body(M.yellow, F, 0, W, H, 8.5);
       for (const [a, b] of [[0, mid], [mid, W]]) { ext(M.yellow, F, [[a, H], [b, H], [(a + b) / 2, H + 1.25]], -0.3, 0); sheet(M.tile, F, [[a - 0.3, H, 0.35], [(a + b) / 2, H + 1.4, 0.35], [(a + b) / 2, H + 1.4, -8.5], [a - 0.3, H, -8.5]]); sheet(M.tile, F, [[(a + b) / 2, H + 1.4, 0.35], [b + 0.3, H, 0.35], [b + 0.3, H, -8.5], [(a + b) / 2, H + 1.4, -8.5]]); }
       box(M.yellowDeep, F, mid - 0.12, mid + 0.12, 0, H, w - 0.1, w + 0.06); box(M.yellowDeep, F, 0, W, 3.3, 3.5, 0, w + 0.06);
-      // the grocer's half: shop door and window, the awning, two windows above
       box(M.dark, F, 1.2, 2.5, 0, 2.6, 0, 0.03); box(M.glass, F, 3.3, 6.2, 0.8, 2.6, 0, 0.03); frame(M.green, F, 3.3, 6.2, 0.8, 2.6, 0.1, 0, 0.08);
       sheet(M.awningPink, F, [[0.6, 3.0, 0], [6.8, 3.0, 0], [6.8, 2.35, 1.9], [0.6, 2.35, 1.9]]);
       shuttered(F, 2.2, 4.1, 0.5, 1.6, 0, { closed: 1 }); shuttered(F, 5.2, 4.1, 0.5, 1.6, 0, {});
-      // his half: the green door, the studio window beside it, and above the two bedroom windows: the corner one with both shutters open, the other nearly shut
       const d0 = mid + 3.3; box(M.green, F, d0 - 0.55, d0 + 0.55, 0, 2.45, 0, 0.05); ext(M.glass, F, [[d0 - 0.55, 2.45], [d0 + 0.55, 2.45], [d0 + 0.55, 2.75], [d0, 3.0], [d0 - 0.55, 2.75]], 0, 0.04); frame(M.green, F, d0 - 0.55, d0 + 0.55, 0, 2.75, 0.09, 0, 0.09);
       shuttered(F, mid + 1.5, 0.95, 0.5, 1.6, 0, { lit: 1 }); shuttered(F, mid + 5.6, 0.95, 0.5, 1.6, 0, {});
       shuttered(F, mid + 1.8, 4.1, 0.5, 1.6, 0, { closed: 1 }); shuttered(F, mid + 5.3, 4.1, 0.5, 1.6, 0, { lit: 2 });
       box(M.yellowDeep, F, 0, W, 0, 0.5, 0, w + 0.03);
       // the side towards the Avenue de Montmajour
-      const G = front(384.4, Z, 384.4, Z - 8.5); box(M.yellow, G, 0, G.W, 0, H, -0.02, 0.02); ext(M.yellow, G, [[0, H], [G.W, H], [G.W, H + 0.0]], 0, 0.02); shuttered(G, 2.2, 0.95, 0.5, 1.6, 0.02, {}); shuttered(G, 6.0, 0.95, 0.5, 1.6, 0.02, { closed: 1 }); shuttered(G, 2.2, 4.1, 0.5, 1.6, 0.02, {}); shuttered(G, 6.0, 4.1, 0.5, 1.6, 0.02, { closed: 1 });
-      lights.yellow = { x: 386.5, y: 3.6, z: Z + 2.6, post: true }; }
-    // the restaurant where he dined: pink, green shutters
-    { const F = front(353.5, Z, 364.5, Z), H = 7.2, W = F.W; out.restaurant = F; body(M.pink, F, 0, W, H, 8); box(M.tile, F, -0.3, W + 0.3, H, H + 0.3, -8, 0.45);
+      const G = front(CX, CZ, CX - nx * 8.5, CZ - nz * 8.5); box(M.yellow, G, 0, G.W, 0, H, -0.02, 0.02); shuttered(G, 2.2, 0.95, 0.5, 1.6, 0.02, {}); shuttered(G, 6.0, 0.95, 0.5, 1.6, 0.02, { closed: 1 }); shuttered(G, 2.2, 4.1, 0.5, 1.6, 0.02, {}); shuttered(G, 6.0, 4.1, 0.5, 1.6, 0.02, { closed: 1 });
+      const [lx, lz] = out.row.P(-2.4, 2.8); lights.yellow = { x: lx, y: 3.6, z: lz, post: true }; }
+    // the restaurant where he dined: "rose à volets verts" (letter 691)
+    { const F = row(20, 31), H = 7.2, W = F.W; out.restaurant = F; body(M.pink, F, 0, W, H, 8); box(M.tile, F, -0.3, W + 0.3, H, H + 0.3, -8, 0.45);
       box(M.green, F, 1.0, 2.2, 0, 2.5, 0, 0.05); box(M.lit, F, 3.4, 6.0, 0.9, 2.5, 0, 0.03); frame(M.green, F, 3.4, 6.0, 0.9, 2.5, 0.1, 0, 0.08); box(M.green, F, 7.6, 9.6, 0, 2.6, 0, 0.05);
       for (const [u, c] of [[1.8, 0], [5.4, 1], [9.0, 0]]) shuttered(F, u, 4.2, 0.5, 1.7, 0, { closed: c }); }
-    // the Café de la Gare: the whole ground floor of its front left open on the room
-    { const F = front(337.6, Z, 352.4, Z), H = 8.2, W = F.W, O0 = 2.9, O1 = 11.9, OH = 4.3; out.cafe = F;
+    // the Café de la Gare, "à gauche du restaurant": the whole ground floor of its front left open on the room
+    { const F = row(32, 46.8), H = 8.2, W = F.W, O0 = 2.9, O1 = 11.9, OH = 4.3; out.cafe = F;
       box(M.ochre, F, 0, O0, 0, H, -0.3, 0); box(M.ochre, F, O1, W, 0, H, -0.3, 0); box(M.ochre, F, O0, O1, OH, H, -0.3, 0); box(M.tile, F, -0.3, W + 0.3, H, H + 0.3, -11.5, 0.45);
-      box(M.ochre, F, 0, W, OH + 0.4, H, -11.5, -0.3);                                              // the upper floor over the room
+      box(M.ochre, F, 0, W, OH + 0.4, H, -11.5, -0.3);
       for (const [u, c] of [[2.0, 1], [5.7, 0], [9.1, 1], [12.8, 0]]) shuttered(F, u, 5.4, 0.5, 1.7, 0, { closed: c, lit: u === 5.7 ? 2 : 0 });
       blocks.push({ F, u0: 0, u1: O0, depth: 11.5 }, { F, u0: O1, u1: W, depth: 11.5 }, { F, u0: O0, u1: O1, depth: 11.5, back: 10.9 });
-      F.O0 = O0; F.O1 = O1; F.OH = OH; lights.cafe = { x: F.P(1.2, 1.2)[0], y: 3.4, z: F.P(1.2, 1.2)[1], post: true }; }
+      F.O0 = O0; F.O1 = O1; F.OH = OH; F.mid = F.P((O0 + O1) / 2, 0); lights.cafe = { x: F.P(-1.6, 2.2)[0], y: 3.4, z: F.P(-1.6, 2.2)[1], post: true }; }
     return out;
   }
   // the room behind the open front may be walked into as far as its back wall
