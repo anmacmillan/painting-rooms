@@ -18,6 +18,7 @@
    Colours in the scene are ignored, only their lightness counts, with one exception: E.keepColour(material) marks a material whose pixels are left in colour
    (it writes alpha 0.5 into the target; so the target must keep an alpha channel, and the background must be cleared with alpha 1).
    Dark lines painted in a texture (lettering, the check of a coat) come through as ink.
+   E.drawn(material) marks a material whose texture is itself the drawing (fur in short strokes, feathers): see the note at that function. uDrawn (0.5) is the tone below which its strokes print.
 
    Options and uniforms (E.uniforms.<name>.value), all optional:
      paper, ink     colours (THREE.Color or hex)                 uGain    exposure before the tone is read (default 1)
@@ -32,12 +33,12 @@ export function makeEngraving(THREE, o = {}) {
     uInvProj: { value: new THREE.Matrix4() }, uInvView: { value: new THREE.Matrix4() }, uPxAngle: { value: 0.001 },
     uPaper: { value: new THREE.Color(o.paper ?? '#f4eedf').convertLinearToSRGB() }, uInk: { value: new THREE.Color(o.ink ?? '#17130f').convertLinearToSRGB() },      // kept as the colours the screen shows: the shader writes them straight out
     uGain: { value: o.gain ?? 1 }, uSpacing: { value: o.spacing ?? 5 }, uLine: { value: o.line ?? 1 }, uBoil: { value: o.boil ?? 0.5 }, uShade: { value: 0 }, uFade: { value: 0 },
-    uLevels: { value: new THREE.Vector3(0.13, 0.42, 0.68) }, uCrease: { value: o.crease ?? 1.1 }, uFog: { value: new THREE.Vector2(1e6, 2e6) },
+    uLevels: { value: new THREE.Vector3(0.13, 0.42, 0.68) }, uCrease: { value: o.crease ?? 1.1 }, uDrawn: { value: o.drawn ?? 0.5 }, uFog: { value: new THREE.Vector2(1e6, 2e6) },
   };
   const material = new THREE.ShaderMaterial({ uniforms, depthTest: false, depthWrite: false,
     vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
     fragmentShader: `
-    uniform sampler2D tScene, tDepth; uniform vec2 uPx; uniform float uTime, uPxAngle, uGain, uSpacing, uLine, uBoil, uShade, uFade, uCrease;
+    uniform sampler2D tScene, tDepth; uniform vec2 uPx; uniform float uTime, uPxAngle, uGain, uSpacing, uLine, uBoil, uShade, uFade, uCrease, uDrawn;
     uniform mat4 uInvProj, uInvView; uniform vec3 uPaper, uInk, uLevels; uniform vec2 uFog; varying vec2 vUv;
     float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
     float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
@@ -56,10 +57,10 @@ export function makeEngraving(THREE, o = {}) {
     void main(){
       float boil = mod(floor(uTime * 7.0), 16.0);
       vec2 res = 1.0 / uPx, uv = vUv + (vec2(noise(vUv * res / 34.0 + boil * 3.1), noise(vUv * res / 34.0 + 17.0 - boil * 2.3)) - 0.5) * uPx * 2.6 * uBoil;
-      vec4 sc = texture2D(tScene, uv);
-      uv = (floor(uv * res) + 0.5) * uPx;                                                     // whole pixels only from here: the depth buffer cannot be read between them, and the outline test needs its two neighbours evenly placed
-      vec3 c = pow(max(sc.rgb * uGain, 0.0), vec3(1.0 / 2.2)); float lum = dot(c, vec3(0.299, 0.587, 0.114));
-      float keep = step(sc.a, 0.75);                                                          // a material marked by keepColour
+      vec4 sc = texture2D(tScene, vUv), sw = texture2D(tScene, uv);                           // the tone is read a little off its place, so that drawn lines waver; marks and outlines are read exactly on the pixel
+      uv = vUv;                                                                               // (the depth buffer cannot be read between pixels, and the outline test needs its two neighbours evenly placed)
+      float keep = step(sc.a, 0.6), drawn = step(0.6, sc.a) * step(sc.a, 0.9);                // materials marked by keepColour and by drawn
+      vec3 c = pow(max(mix(sw.rgb, sc.rgb, keep) * uGain, 0.0), vec3(1.0 / 2.2)); float lum = dot(c, vec3(0.299, 0.587, 0.114));
       float dc = texture2D(tDepth, uv).x, lw = max(1.0, floor(uLine + 0.5)); vec2 e = uPx * lw;
       vec3 pc = viewPos(uv), pl = viewPos(uv - vec2(e.x, 0.0)), pr = viewPos(uv + vec2(e.x, 0.0)), pd = viewPos(uv - vec2(0.0, e.y)), pu = viewPos(uv + vec2(0.0, e.y));
       // outlines: 1/z runs straight across any flat surface on the screen, so its second difference is nothing on a plane, small at a crease and large at a silhouette
@@ -79,6 +80,7 @@ export function makeEngraving(THREE, o = {}) {
       ink = max(ink, hatch(p, a2, smoothstep(uLevels.y, uLevels.y + 0.42, t) * 0.9, wob));
       ink = max(ink, hatch(p, a3, smoothstep(uLevels.z, uLevels.z + 0.30, t) * 0.9, -wob));
       ink = max(ink, smoothstep(0.30, 0.17, lum - uShade));                                   // what is painted dark is ink: lettering, a check, the deepest shadow
+      ink = mix(ink, smoothstep(uDrawn + 0.035, uDrawn - 0.035, lum - uShade * 0.6), drawn);   // a drawn surface carries its own strokes: the darker the shade on it, the more of them print
       ink *= 1.0 - far;                                                                        // the sky is bare paper
       ink = max(ink, edge);
       // paper: a warm ground with grain and a few fibres, a shade darker towards the corners
@@ -103,6 +105,10 @@ export function makeEngraving(THREE, o = {}) {
       size.set(widthPx, heightPx);
     },
     // leave this material's pixels in colour (Alice in a drawn world). Works for the built-in opaque materials.
+    // let this material's own texture be the drawing (fur, feathers, a checked cloth): no hatching is generated on it. Paint the texture white with strokes of every grey from
+    // near black to light grey: the dark strokes print everywhere, the lighter ones only where the surface is in shade, so that the shading is made of strokes that follow the form
+    // as the texture is laid on it. Outlines are still drawn. Materials not marked are treated exactly as before.
+    drawn(m) { const prev = m.onBeforeCompile; m.onBeforeCompile = (sh, r) => { if (prev) prev(sh, r); sh.fragmentShader = sh.fragmentShader.replace('#include <dithering_fragment>', '#include <dithering_fragment>\n gl_FragColor.a = 0.75;'); }; m.customProgramCacheKey = () => 'drawn'; m.needsUpdate = true; return m; },
     keepColour(m) { const prev = m.onBeforeCompile; m.onBeforeCompile = (sh, r) => { if (prev) prev(sh, r); sh.fragmentShader = sh.fragmentShader.replace('#include <dithering_fragment>', '#include <dithering_fragment>\n gl_FragColor.a = 0.5;'); }; m.customProgramCacheKey = () => 'keepColour'; m.needsUpdate = true; return m; },
   };
 }

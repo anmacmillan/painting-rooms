@@ -79,11 +79,30 @@ Sentences on screen without quotation marks are the game's own (the controls, "I
 | "Why is a raven like a writing-desk?" (Hatter) | VII | 1621 |
 | "…she found herself at last in the beautiful garden, among the bright flower-beds and the cool fountains." | VII (end) | 1920-1922 |
 
+| "Alice was beginning to get very tired of sitting by her sister on the bank…" (her sister reading: "the book her sister was reading") | I | 60-62 |
+| "Well, I'll eat it, and if it makes me grow larger, I can reach the key; and if it makes me grow smaller, I can creep under the door…" (joined across "said Alice") | I | 253-255 |
+| "Alice took up the fan and gloves, and, as the hall was very hot, she kept fanning herself…" | II | 327-328 |
+| "It's the stupidest tea-party I ever was at in all my life!"; "Just as she said this, she noticed that one of the trees had a door leading right into it."; "That's very curious! But everything's curious today. I think I may as well go in at once." (joined across "she thought") | VII | 1907-1913 |
+| "A large rose-tree stood near the entrance of the garden: the roses growing on it were white, but there were three gardeners at it, busily painting them red." | VIII | 1930-1932 |
+| "Look out now, Five! Don't go splashing paint over me like that!" (Two); "I couldn't help it, Seven jogged my elbow." (Five; joined across "said Five, in a sulky tone") | VIII | 1934-1938 |
+| "Would you tell me, why you are painting those roses?" (joined across "said Alice, a little timidly"); "…this here ought to have been a red rose-tree, and we put a white one in by mistake…" (Two) | VIII | 1957-1961 |
+| "The Queen! The Queen!" (Five); "…and the three gardeners instantly threw themselves flat upon their faces." | VIII | 1964-1966 |
+| "What's your name, child?" / "My name is Alice, so please your Majesty." | VIII | 1996-1998 |
+| "Off with her head! Off—" / "Nonsense!" (in the book this follows "And who are these?" and Alice's "How should I know? It's no business of mine."; the game leaves that exchange out) | VIII | 2003-2015 |
+| "Can you play croquet?" / "Yes!" / "Come on, then!" | VIII | 2052-2060 |
+| "…the balls were live hedgehogs, the mallets live flamingoes, and the soldiers had to double themselves up and to stand on their hands and feet, to make the arches."; the ground "all ridges and furrows" (as built) | VIII | 2087-2090 |
+| "…it would twist itself round and look up in her face, with such a puzzled expression that she could not help bursting out laughing…"; "…it was very provoking to find that the hedgehog had unrolled itself, and was in the act of crawling away…"; "…the doubled-up soldiers were always getting up and walking off to other parts of the ground…"; "…Alice soon came to the conclusion that it was a very difficult game indeed." | VIII | 2092-2104 |
+| "Off with his head!" / "Off with her head!" (the Queen, "about once in a minute") | VIII | 2109-2110 |
+| "…she noticed a curious appearance in the air… she made it out to be a grin, and she said to herself 'It's the Cheshire Cat: now I shall have somebody to talk to.'"; "How are you getting on?" (the Cat) | VIII | 2118-2125 |
+
 ## Where the game departs from the book (said on the end card)
 
 - In the book she takes the key at once, cannot get through, drinks, has left the key on the table, eats, takes the key, cries, and is shrunk by the fan; then the key is on the table again and she swims in the pool (Ch. II). She reaches the garden only at the end of Ch. VII. In the game she keeps the key in her hand when the fan shrinks her and goes straight through.
 - The Cheshire Cat's tree (Ch. VI) and the tea-party (Ch. VII, before the March Hare's house) are not in the garden beyond the little door. The game puts them along one path beyond it.
 - The Rabbit does not go through the little door in the book: he is simply gone when she turns the corner. In the game the curtain stirs as he vanishes.
+- After the tea-party the game follows the book again: the tree with a door in it (Ch. VII), then the garden with the rose-tree, the gardeners, the Queen and the croquet-ground (Ch. VIII). The book goes by way of the hall once more; the game goes straight from the tree to the garden. The procession is cut down to the Queen and two soldiers (the book has ten soldiers, ten courtiers, the royal children, guests, the White Rabbit, the Knave and the King), and the gardeners are left lying where they threw themselves down (in the book Alice hides them in a flower-pot).
+- Helping to paint the roses by leaping, the long low bench across the hall (small she goes under it, large she steps over it, at her own size she leaps it), the glint on the key, cake and fan, and the camera's glance at them when she stands still are the game's own.
+- Alice's sister on the bank is from the text; no plate of 1865 shows her, so her figure and dress are an impression.
 - The gold sovereigns, the shelves that bump her, falling slower by holding the leap key, and the mushrooms that bounce are the game's own. (The book's mushroom is the Caterpillar's, Ch. V.)
 - The glass table is drawn at the height the DRINK ME plate gives it (the top at her waist); the key and the cake are drawn larger than "tiny" and "very small" so that they can be seen.
 - Sizes: ten inches (0.2 of her height in the game) and "more than nine feet" (2.2 times) follow the book; her ordinary height is not given by the book.
@@ -91,7 +110,7 @@ Sentences on screen without quotation marks are the game's own (the controls, "I
 
 ## The plates (downloaded 15 Nov 2026 from Wikimedia Commons, reduced to 1400 px on the long side)
 
-All six are scans from the German edition of 1869 (*Alice's Abenteuer im Wunderland*, translated by Antonie Zimmermann, "Illustrationen: John Tenniel"; Commons credits "pdf from gasl.org", dated 1869, public domain).
+All nine are scans from the German edition of 1869 (*Alice's Abenteuer im Wunderland*, translated by Antonie Zimmermann, "Illustrationen: John Tenniel"; Commons credits "pdf from gasl.org", dated 1869, public domain).
 They were chosen over the Commons set "Alice par John Tenniel NN.png" (described there as from the 1865 edition) because that set is smaller than 1400 px.
 That the German edition was printed from Tenniel's original blocks or from electrotypes of them is **unverified**; the drawings are plainly the same as the 1865 plates.
 
@@ -102,7 +121,12 @@ That the German edition was printed from Tenniel's original blocks or from elect
 | `drinkme.jpg` (1110 × 1400) | Alice with the bottle (Ch. I) | `De_Alice's_Abenteuer_im_Wunderland_Carroll_pic_04.jpg` | 1885 × 2377 | tableau 2 |
 | `rabbit_fan.jpg` (1162 × 1400) | The Rabbit scurrying from the giant Alice (Ch. II) | `De_Alice's_Abenteuer_im_Wunderland_Carroll_pic_06.jpg` | 2669 × 3215 | reference only |
 | `cheshire.jpg` (1039 × 1400) | The Cheshire Cat in the tree (Ch. VI) | `De_Alice's_Abenteuer_im_Wunderland_Carroll_pic_23.jpg` | 2808 × 3785 | tableau 3 |
-| `teaparty.jpg` (1400 × 1083) | A Mad Tea-Party (Ch. VII) | `De_Alice's_Abenteuer_im_Wunderland_Carroll_pic_25.jpg` | 2646 × 2046 | tableau 4, end card |
+| `teaparty.jpg` (1400 × 1083) | A Mad Tea-Party (Ch. VII) | `De_Alice's_Abenteuer_im_Wunderland_Carroll_pic_25.jpg` | 2646 × 2046 | tableau 4 |
+| `gardeners.jpg` (1038 × 1400) | The gardeners painting the roses (Ch. VIII) | `De_Alice's_Abenteuer_im_Wunderland_Carroll_pic_28.jpg` | 1877 × 2531 | tableau 5 |
+| `flamingo.jpg` (962 × 1400) | Alice with the flamingo and the hedgehog (Ch. VIII) | `De_Alice's_Abenteuer_im_Wunderland_Carroll_pic_30.jpg` | 2663 × 3875 | tableau 6, end card. This scan has a cream ground where the others are white: it was converted to grey and its levels stretched so that the paper prints white (no retouching) |
+| `queen.jpg` (1199 × 1400) | The Queen of Hearts and Alice in the garden (Ch. VIII) | `De_Alice's_Abenteuer_im_Wunderland_Carroll_pic_29.jpg` | 2746 × 3208 | reference only (the Queen's robe) |
+
+The three added on 16 Nov 2026 were fetched as Commons' 1280 px thumbnails of those files and reduced. Two more small references are kept in this folder, not shown in the game: `ref_hatter_330.jpg` (pic 26, the Hatter with his teacup) and `ref_hare_dormouse_330.jpg` (pic 27, the Hare and the Hatter putting the Dormouse into the teapot).
 
 Colour references kept in this folder, not shown in the game: `nursery_alice_drinkme_1890.jpg` (Commons "Alice drink me.jpg", from *The Nursery "Alice"*, public domain) and
 `nursery_alice_rabbit_1890.jpg` (Commons "The White Rabbit (Tenniel) - The Nursery Alice (1890) - BL.jpg", British Library, CC0).
@@ -113,4 +137,6 @@ Requests were made with the User-Agent "painting-rooms-research/1.0 (educational
 - The White Rabbit: checked jacket, waistcoat with buttons, wing collar, watch on a chain, umbrella under the arm: read by eye from `rabbit.jpg`. The text gives only the waistcoat-pocket and the watch (Ch. I), then the gloves and fan (Ch. II).
 - The Hatter: tall hat with the ticket "In this Style 10/6", spotted bow tie, dark coat, check below: read by eye from `teaparty.jpg`. The March Hare's straw on its head and its bow, the Dormouse asleep between them, Alice in a large arm-chair: the same plate, and Ch. VII.
 - The Cheshire Cat: striped, lying along a bough with its tail hanging: `cheshire.jpg`.
+- The card gardeners (Two, Five and Seven, as the text names them; spades, hoods, striped hose, brushes and a paint-pot) and the standard rose-tree: `gardeners.jpg`. The soldiers are clubs because the text says they carried clubs; their pips are otherwise an impression. The Queen's robe and crown: read by eye from `queen.jpg`. The flamingo and the hedgehog, rolled up and walking: `flamingo.jpg`.
+- Alice's face is painted after the plates (large eyes under heavy lids, a small unsmiling mouth); the Hatter's is drawn in line after `ref_hatter_330.jpg` and `teaparty.jpg`.
 - Nothing here uses any film, later illustrator or modern edition.

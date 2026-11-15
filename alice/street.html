@@ -34,11 +34,11 @@
   <div class="words"><h1>Down the Rabbit-Hole</h1><p>after John Tenniel’s drawings for Lewis Carroll’s <span style="font-style:normal">Alice’s Adventures in Wonderland</span>, 1865</p><button class="go" id="start">Step in</button></div>
 </div>
 <div id="end" class="screen hidden">
-  <img src="images/teaparty.jpg" alt="A Mad Tea-Party, by John Tenniel">
-  <h2>A Mad Tea-Party</h2>
-  <p>John Tenniel drew forty-two pictures for Lewis Carroll’s <i>Alice’s Adventures in Wonderland</i> (1865), and the Brothers Dalziel cut them in wood. You have just run through four of them, in a world drawn the same way.</p>
-  <p><b>From the book:</b> the White Rabbit with his watch, the fall past cupboards, book-shelves, maps and pictures, the jar of ORANGE MARMALADE put safely in a cupboard, the hall of locked doors, the glass table and the little golden key, DRINK ME, EAT ME, the Rabbit’s gloves and fan, the Cheshire Cat and the tea-party. Everything anybody says is Carroll’s own words.</p>
-  <p><b>The game’s own:</b> the gold sovereigns, the shelves to dodge, the bouncing mushrooms, and the short cut: in the book Alice loses the key again, swims in her own tears, and reaches the garden only much later; the Cat and the tea-party are not in that garden.</p>
+  <img src="images/flamingo.jpg" alt="Alice with the flamingo and the hedgehog, by John Tenniel">
+  <h2>Alice and the Flamingo</h2>
+  <p>John Tenniel drew forty-two pictures for Lewis Carroll’s <i>Alice’s Adventures in Wonderland</i> (1865), and the Brothers Dalziel cut them in wood. You have just run through six of them, in a world drawn the same way.</p>
+  <p><b>From the book:</b> the White Rabbit with his watch, the fall past cupboards, book-shelves, maps and pictures, the jar of ORANGE MARMALADE put safely in a cupboard, the hall of locked doors, the glass table and the little golden key, DRINK ME, EAT ME, the Rabbit’s gloves and fan, the Cheshire Cat, the tea-party, the tree with a door in it, the gardeners painting the white roses red, the Queen of Hearts and her croquet-ground, with flamingoes for mallets, hedgehogs for balls and soldiers for arches. Everything anybody says is Carroll’s own words.</p>
+  <p><b>The game’s own:</b> the gold sovereigns, the shelves to dodge, the bench across the hall, the bouncing mushrooms, helping to paint the roses, and the short cut through the little door: in the book Alice loses the key again and comes back to the hall, by the door in the tree, before she reaches the Queen’s garden.</p>
   <p><b>Why a yellow dress?</b> Tenniel’s 1865 pictures are black and white, so they do not say. When he coloured them himself for <i>The Nursery “Alice”</i> (1890) he gave her a yellow dress, a white pinafore and blue stockings. The famous blue dress came later.</p>
   <p class="small">Pictures: John Tenniel (died 1914), public domain, from scans of the 1869 German edition on Wikimedia Commons. Words: Lewis Carroll (died 1898), public domain, from Project Gutenberg.</p>
   <button class="go" id="again">Run it again</button>
@@ -61,9 +61,9 @@ const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); ren
 const scene = new THREE.Scene(); scene.background = new THREE.Color(0xffffff); scene.fog = new THREE.Fog(0xffffff, 50, 240);
 const camera = new THREE.PerspectiveCamera(58, 1, 0.12, 420);
 const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType }); target.depthTexture = new THREE.DepthTexture(4, 4, THREE.FloatType);
-const ENG = makeEngraving(THREE, { scene: target.texture, depth: target.depthTexture, paper: PAPER });
+const ENG = makeEngraving(THREE, { scene: target.texture, depth: target.depthTexture, paper: PAPER, drawn: 0.46 });
 const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), ENG.material));
-const hemi = new THREE.HemisphereLight(0xffffff, 0xbbbbbb, 1.1), sun = new THREE.DirectionalLight(0xffffff, 2.5); scene.add(hemi, sun, sun.target);
+const hemi = new THREE.HemisphereLight(0xffffff, 0xd4d4d4, 1.1), sun = new THREE.DirectionalLight(0xffffff, 2.5); scene.add(hemi, sun, sun.target);
 sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -24, right: 24, top: 24, bottom: -24, near: 1, far: 150 }); sun.shadow.bias = -0.0008; sun.shadow.normalBias = 0.04;
 const lamp = new THREE.PointLight(0xffffff, 0, 30, 1.2); scene.add(lamp);
 
@@ -79,11 +79,12 @@ const scribble = (g, w, h, n, len, lw) => { g.lineWidth = lw; for (let i = 0; i 
 const white = lam({ color: '#f8f6f0' }), pale = lam({ color: '#dcd9d0' }), midM = lam({ color: '#9a978f' }), darkM = lam({ color: '#3a3834' }), inkM = basic('#1c1a18');
 const grassT = tex(512, 512, '#fbfaf5', (g, w, h) => { g.lineWidth = 2.2; for (let i = 0; i < 300; i++) { const x = rnd(0, w), y = rnd(0, h); for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(x + k * 4, y); g.lineTo(x + k * 4 + rnd(-5, 5), y - rnd(8, 20)); g.stroke(); } } }, true);
 const barkT = tex(256, 256, '#d2cec4', (g, w, h) => { for (let i = 0; i < 120; i++) { g.lineWidth = rnd(1.5, 4); const x = rnd(0, w), y = rnd(0, h); g.beginPath(); g.moveTo(x, y); g.bezierCurveTo(x + rnd(-8, 8), y + 20, x + rnd(-8, 8), y + 40, x + rnd(-6, 6), y + rnd(50, 90)); g.stroke(); } }, true);
-const leafT = tex(256, 256, '#d8d5cc', (g, w, h) => scribble(g, w, h, 150, 9, 2.6), true);
+// foliage is drawn, not hatched: bunches of small scalloped strokes in every grey, the dark ones always printing, the pale ones only in the shade of the crown
+const leafT = canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#ffffff'; g.fillRect(0, 0, w, h); g.lineCap = 'round'; for (let i = 0; i < 520; i++) { const x = rnd(0, w), y = rnd(0, h), v = Math.round(25 + 180 * Math.pow(Math.random(), 0.75)), r = rnd(9, 17), a = rnd(2.6, 3.9); g.strokeStyle = `rgb(${v},${v},${v})`; g.lineWidth = rnd(4, 6); for (let k = 0; k < 3; k++) { g.beginPath(); g.arc(x + k * r * 1.1, y + (k % 2) * 6, r, a, a + 2.6); g.stroke(); } } }, true);
 const earthT = tex(256, 256, '#c9c5ba', (g, w, h) => scribble(g, w, h, 70, 14, 2), true);
 const stoneT = tex(256, 256, '#e2dfd6', (g, w, h) => { g.lineWidth = 3; for (let y = 0; y < h; y += 42) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); for (let x = (y / 42 % 2) * 40; x < w; x += 84) { g.beginPath(); g.moveTo(x, y); g.lineTo(x, y + 42); g.stroke(); } } scribble(g, w, h, 30, 6, 1.5); }, true);
 const blobG = (() => { const g = new THREE.IcosahedronGeometry(1, 3), p = g.attributes.position; for (let i = 0; i < p.count; i++) { const v = new V3().fromBufferAttribute(p, i), k = 1 + 0.16 * Math.sin(v.x * 4.1 + v.y * 2.3) * Math.cos(v.z * 3.7) + 0.08 * Math.sin(v.y * 9.0); p.setXYZ(i, v.x * k, v.y * k * 0.92, v.z * k); } g.computeVertexNormals(); return g; })();
-const leafM = lam({ map: rep(leafT, 3, 2) }), leafD = lam({ map: rep(leafT, 3, 2), color: '#cfcfcf' }), barkM = lam({ map: rep(barkT, 2, 3) });
+const leafM = ENG.drawn(lam({ map: rep(leafT, 2, 1.4) })), leafD = ENG.drawn(lam({ map: rep(leafT, 2, 1.4), color: '#dddddd' })), barkM = lam({ map: rep(barkT, 2, 3) });
 function tree(G, x, y, z, k, list) { const t = new THREE.Group(); cyl(t, 0.26 * k, 0.42 * k, 4.6 * k, barkM, 0, 2.3 * k, 0, { seg: 9 });
   for (const [dx, dy, dz, s, m] of [[0, 6.3, 0, 3.6, 0], [1.5, 7.5, 0.9, 2.5, 1], [-1.4, 5.5, -0.8, 2.6, 1], [0.2, 8.4, -0.6, 1.9, 0]]) { const b = put(t, new THREE.Mesh(blobG, m ? leafD : leafM), dx * k, dy * k, dz * k); b.scale.setScalar(s * k); b.rotation.y = rnd(0, 6); }
   t.position.set(x, y, z); G.add(t); if (list) list.push([x, z, 0.55 * k]); return t; }
@@ -102,8 +103,8 @@ const ground = (x, z) => Math.max(0, (z + 86) * 0.038) + 0.22 * Math.sin(x * 0.1
   for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, d = a + nx + 1, e = d + 1; idx.push(a, d, b, b, d, e); }
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
   const m = new THREE.Mesh(g, lam({ map: grassT })); m.receiveShadow = true; fieldG.add(m);
-  blades(fieldG, 2600, () => { const x = rnd(-13, 13), z = rnd(HOLE_Z + 1.5, 16); return Math.hypot(x - RS[0], z - RS[1] - 1.5) < 4 ? null : [x, ground(x, z), z]; });
-  blades(fieldG, 80, () => { const x = RS[0] + rnd(-1.3, 1.3), z = RS[1] + rnd(-1.2, -0.3); return [x, ground(x, z), z]; }, 0.15, 0.4); blades(fieldG, 40, () => { const x = RS[0] + rnd(-1.3, 1.3), z = RS[1] + rnd(0.3, 1.2); return [x, ground(x, z), z]; }, 0.06, 0.16);      // long grass round the place where he stops
+  blades(fieldG, 2600, () => { const x = rnd(-13, 13), z = rnd(HOLE_Z + 1.5, 16); return Math.hypot(x - RS[0], z - RS[1] - 1.5) < 5.5 ? null : [x, ground(x, z), z]; });
+  blades(fieldG, 70, () => { const x = RS[0] + rnd(-1.4, 1.4), z = RS[1] + rnd(-1.3, -0.45); return [x, ground(x, z), z]; }, 0.15, 0.42); blades(fieldG, 16, () => { const x = RS[0] + rnd(-1.3, 1.3), z = RS[1] + rnd(0.4, 1.0); return [x, ground(x, z), z]; }, 0.05, 0.12);      // long grass round the place where he stops
   // the hedge and its bank, with the large rabbit-hole under it
   const bankM = lam({ map: rep(earthT, 16, 1) });
   for (const sx of [-1, 1]) box(fieldG, 30, 1.7, 3.4, bankM, sx * 16.7, 0.85, HOLE_Z - 2.2);
@@ -161,7 +162,7 @@ const jar = new THREE.Group(), cupb = new THREE.Group(), ledges = [], wellCoins 
   for (let i = 0; i < 40; i++) { const s = cyl(wellG, 0.02, 0.03, rnd(0.7, 1.6), inkM, rnd(-1.9, 1.9), Y_H + rnd(0.12, 0.5), WZ + rnd(-1.9, 1.9), { seg: 5, cast: false }); s.rotation.set(rnd(1.2, 1.9), rnd(0, 6), rnd(-0.4, 0.4)); }
 }
 /* ================= act 3: "a long, low hall, which was lit up by a row of lamps hanging from the roof. There were doors all round the hall" ================= */
-const HZ0 = -108, HZ1 = -136, HX = 5, HC = 3.4, TAB = [0, -120], DOOR = [-2, HZ1 + 0.35], FANP = [2.2, -127];
+const HZ0 = -108, HZ1 = -136, HX = 5, HC = 3.4, TAB = [0, -120], DOOR = [-2, HZ1 + 0.35], FANP = [2.2, -127], BZ = -128.5;
 const doorT = tex(256, 512, '#e4e1d8', (g, w, h) => { g.lineWidth = 9; g.strokeRect(6, 6, w - 12, h - 6); g.lineWidth = 4; for (const [x, y, ww, hh] of [[34, 34, 80, 190], [142, 34, 80, 190], [34, 262, 80, 200], [142, 262, 80, 200]]) { g.strokeRect(x, y, ww, hh); g.strokeRect(x + 10, y + 10, ww - 20, hh - 20); } g.beginPath(); g.arc(216, 250, 9, 0, 7); g.fill(); g.fillRect(212, 266, 8, 14); });
 const glassM = lam({ color: '#ffffff', transparent: true, opacity: 0.16, depthWrite: false });
 const key = new THREE.Group(), bottle = new THREE.Group(), cake = new THREE.Group(), fan = new THREE.Group(), gloves = new THREE.Group(), curtain = new THREE.Group(), littleDoor = new THREE.Group(), pool = new THREE.Group();
@@ -177,6 +178,8 @@ const key = new THREE.Group(), bottle = new THREE.Group(), cake = new THREE.Grou
   for (const sx of [-1, 1]) { pln(hallG, HX - 1.5, HC, wallM(HX - 1.5), sx * (HX + 1.5) / 2, yF + HC / 2, HZ0, { ry: Math.PI }); pln(hallG, 4.5, 3.2, lam({ map: rep(earthT, 3, 2) }), sx * 1.5, yF + 1.6, (HZ0 + WZ - WR) / 2, { ry: -sx * Math.PI / 2 }); }
   pln(hallG, 3, 4.5, lam({ map: rep(earthT, 2, 3) }), 0, yF, (HZ0 + WZ - WR) / 2, { rx: -Math.PI / 2 }); pln(hallG, 3, 4.5, darkM, 0, yF + 3.2, (HZ0 + WZ - WR) / 2, { rx: Math.PI / 2 }); pln(hallG, 2 * WR, 2 * WR, lam({ map: rep(earthT, 4, 4) }), 0, yF + 0.01, WZ, { rx: -Math.PI / 2 });
   for (let z = HZ0 - 3; z > HZ1 + 2; z -= 5.5) { cyl(hallG, 0.012, 0.012, 0.7, inkM, 2.9, yF + HC - 0.35, z, { seg: 4, cast: false }); cyl(hallG, 0.07, 0.2, 0.2, pale, 2.9, yF + HC - 0.78, z, { seg: 10 }); put(hallG, new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), white), 2.9, yF + HC - 0.95, z); }
+  // a long low bench across the hall (the game's own): small she walks under it, large she steps over it, at her own size she must leap it
+  box(hallG, 2 * HX - 0.3, 0.07, 0.5, pale, 0, yF + 0.44, BZ); for (let x = -HX + 0.5; x < HX; x += 1.5) for (const dz of [-0.2, 0.2]) box(hallG, 0.07, 0.41, 0.07, pale, x, yF + 0.205, BZ + dz);
   // the little three-legged table, all made of solid glass (its size is taken from the DRINK ME plate: the top is at her waist)
   const tb = new THREE.Group(); tb.position.set(TAB[0], yF, TAB[1]); hallG.add(tb);
   cyl(tb, 0.36, 0.36, 0.035, glassM, 0, 0.8, 0, { seg: 28, cast: false }); for (const [y, r, t] of [[0.82, 0.36, 0.014], [0.775, 0.345, 0.02], [0.74, 0.3, 0.012]]) put(tb, new THREE.Mesh(new THREE.TorusGeometry(r, t, 6, 36), white), 0, y, 0, { rx: Math.PI / 2 });
@@ -204,12 +207,13 @@ const key = new THREE.Group(), bottle = new THREE.Group(), cake = new THREE.Grou
   pln(pool, 2 * HX, 15, lam({ map: rep(wt, 5, 8), transparent: true, opacity: 0.92 }), 0, 0, 0, { rx: -Math.PI / 2 }); pool.position.set(0, yF - 0.02, HZ1 + 7.5); hallG.add(pool);
 }
 const inHall = (x, z, r) => (Math.abs(x) < WR - r && z < WZ + WR - r && z > WZ - WR - 0.3) || (Math.abs(x) < 1.5 - r && z <= WZ - WR + 0.4 && z > HZ0 - 0.4) || (Math.abs(x) < HX - r && z <= HZ0 && z > HZ1 + r);
-const blockHall = (x, z) => !inHall(x, z, 0.32 * Math.min(1.6, me.S)) || (me.S > 0.5 && Math.hypot(x - TAB[0], z - TAB[1]) < 0.36 + 0.3 * me.S);
+const blockHall = (x, z) => !inHall(x, z, 0.32 * Math.min(1.6, me.S)) || (me.S > 0.5 && Math.hypot(x - TAB[0], z - TAB[1]) < 0.36 + 0.3 * me.S) || (me.S > 0.5 && me.S < 1.5 && Math.abs(z - BZ) < 0.42 && me.y < Y_H + 0.4) || (me.S > 1.5 && z > HZ0 - 0.7);
+const glint = new THREE.Group(); for (let i = 0; i < 4; i++) { const r = new THREE.Mesh(new THREE.PlaneGeometry(0.3, 0.012), new THREE.MeshBasicMaterial({ color: INK, side: THREE.DoubleSide })); r.rotation.z = i * Math.PI / 4; glint.add(r); } hallG.add(glint);
 
 /* ================= act 4: through the little door: the garden, the wood, the Cat's tree, the tea-table in front of the March Hare's house ================= */
-const GZ0 = -140, CAT = [-1.3, -193], TEA = [0, -240], gTrees = [], shrooms = [[-2.2, -161, 0.75, 0.85], [1.4, -166.5, 1.25, 0.95], [-0.9, -172.5, 1.8, 1.05]];
+const GZ0 = -140, CAT = [-1.3, -193], TEA = [0, -240], DT = [-8.2, -237], gTrees = [], shrooms = [[-2.2, -161, 0.75, 0.85], [1.4, -166.5, 1.25, 0.95], [-0.9, -172.5, 1.8, 1.05]];
 const pathX = z => 2.2 * Math.sin((z - GZ0) * 0.055) * sstep(GZ0 - 6, GZ0 - 26, z) * sstep(TEA[1] + 8, TEA[1] + 30, z);
-const cast = makeCast(THREE, canvasTex), cat = cast.cat(), hare = cast.rabbit({ hare: true, bow: true }), dormouse = cast.dormouse(), hat = cast.topHat();
+const cast = makeCast(THREE, canvasTex, ENG), cat = cast.cat(), hare = cast.rabbit({ hare: true, bow: true }), dormouse = cast.dormouse(), hat = cast.topHat();
 {
   const yF = Y_H, lawn = lam({ map: rep(grassT, 12, 28) });
   pln(gardenG, 70, 150, lawn, 0, yF, -205, { rx: -Math.PI / 2 });
@@ -224,8 +228,11 @@ const cast = makeCast(THREE, canvasTex), cat = cast.cat(), hare = cast.rabbit({ 
     for (let i = 0; i < 16; i++) { const x = bx + rnd(-1.8, 1.8), z = bz + rnd(-1.0, 1.0), h = rnd(0.5, 1.15); cyl(gardenG, 0.012, 0.012, h, inkM, x, yF + h / 2, z, { seg: 4, cast: false }); const f = put(gardenG, new THREE.Mesh(new THREE.IcosahedronGeometry(rnd(0.09, 0.15), 1), i % 3 ? white : pale), x, yF + h, z); for (let k = 0; k < 2; k++) { const lf = put(gardenG, new THREE.Mesh(new THREE.SphereGeometry(1, 6, 4), midM), x + rnd(-0.1, 0.1), yF + h * rnd(0.3, 0.7), z + rnd(-0.1, 0.1), { cast: false }); lf.scale.set(0.09, 0.02, 0.05); lf.rotation.y = rnd(0, 6); } } }
   cyl(gardenG, 1.5, 1.6, 0.5, lam({ map: rep(stoneT, 6, 0.4) }), 4.2, yF + 0.25, -150.5, { seg: 24 }); cyl(gardenG, 1.36, 1.36, 0.04, lam({ color: '#cfcfcf' }), 4.2, yF + 0.47, -150.5, { seg: 24, cast: false }); cyl(gardenG, 0.16, 0.24, 1.3, pale, 4.2, yF + 0.9, -150.5); cyl(gardenG, 0.5, 0.2, 0.16, pale, 4.2, yF + 1.6, -150.5);
   const jets = [0, 1, 2, 3, 4, 5].map(i => { const j = cyl(gardenG, 0.02, 0.005, 0.7, white, 4.2 + Math.cos(i) * 0.3, yF + 1.95, -150.5 + Math.sin(i) * 0.3, { seg: 5, cast: false }); j.rotation.set(Math.sin(i) * 0.5, 0, -Math.cos(i) * 0.5); return j; }); gardenG.userData.jets = jets;
+  // 'she noticed that one of the trees had a door leading right into it'
+  { const dt_ = new THREE.Group(); dt_.position.set(DT[0], yF, DT[1]); gardenG.add(dt_); cyl(dt_, 0.95, 1.2, 8, lam({ map: rep(barkT, 5, 6) }), 0, 4, 0, { seg: 14 }); pln(dt_, 1.0, 1.9, lam({ map: doorT }), 1.13, 0.95, 0, { ry: Math.PI / 2 }); box(dt_, 0.1, 2.05, 1.2, pale, 1.1, 1.0, 0, { cast: false });
+    for (const [x, y, z, k] of [[0, 9, 0, 3.6], [2.2, 8, 1, 2.4], [-2, 8.4, -1, 2.6]]) { const b = put(dt_, new THREE.Mesh(blobG, leafM), x, y, z); b.scale.setScalar(k); } gTrees.push([DT[0], DT[1], 1.3]); }
   // the wood
-  for (let i = 0; i < 46; i++) { const z = rnd(TEA[1] - 22, GZ0 - 17), sd = i % 2 ? 1 : -1, x = pathX(z) + sd * rnd(4.2, 14); if (Math.hypot(x - CAT[0], z - CAT[1]) < 6 || Math.hypot(x - TEA[0], z - TEA[1]) < 8 || gTrees.some(t => Math.hypot(t[0] - x, t[1] - z) < 3)) continue; tree(gardenG, x, yF, z, rnd(0.8, 1.3), gTrees); }
+  for (let i = 0; i < 46; i++) { const z = rnd(TEA[1] - 22, GZ0 - 17), sd = i % 2 ? 1 : -1, x = pathX(z) + sd * rnd(4.2, 14); if (Math.hypot(x - DT[0], z - DT[1]) < 4.5 || Math.hypot(x - CAT[0], z - CAT[1]) < 6 || Math.hypot(x - TEA[0], z - TEA[1]) < (z > TEA[1] - 2 ? 14 : 8) || gTrees.some(t => Math.hypot(t[0] - x, t[1] - z) < 3)) continue; tree(gardenG, x, yF, z, rnd(0.8, 1.3), gTrees); }
   // great mushrooms to spring from (the game's own; the book's mushroom belongs to the Caterpillar)
   const gillT = tex(256, 64, '#f4f2ec', (g, w, h) => { g.lineWidth = 3; for (let x = 4; x < w; x += 9) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); } }, true), spotT = tex(256, 256, '#f6f4ee', (g, w, h) => { g.lineWidth = 3; for (let i = 0; i < 16; i++) { g.beginPath(); g.ellipse(rnd(10, w - 10), rnd(40, h - 20), rnd(8, 16), rnd(5, 9), 0, 0, 7); g.stroke(); } }, true);
   for (const [x, z, h, r] of shrooms) { cyl(gardenG, r * 0.2, r * 0.3, h - 0.1, white, x, yF + (h - 0.1) / 2, z); const capm = put(gardenG, new THREE.Mesh(new THREE.SphereGeometry(r, 22, 10, 0, 6.3, 0, Math.PI / 2), lam({ map: spotT })), x, yF + h - 0.28, z); capm.scale.y = 0.55; cyl(gardenG, r * 0.985, r * 0.3, 0.1, lam({ map: rep(gillT, 4, 1) }), x, yF + h - 0.32, z, { seg: 22, cast: false }); }
@@ -237,7 +244,7 @@ const cast = makeCast(THREE, canvasTex), cat = cast.cat(), hare = cast.rabbit({ 
   // "a table set out under a tree in front of the house"; "the chimneys were shaped like ears and the roof was thatched with fur"
   const tp = new THREE.Group(); tp.position.set(TEA[0], yF, TEA[1]); gardenG.add(tp);
   const clothT = tex(512, 128, '#fbfaf5', (g, w, h) => { g.lineWidth = 2.5; for (let x = 5; x < w; x += rnd(8, 20)) { g.beginPath(); g.moveTo(x, 6); g.lineTo(x + rnd(-3, 3), h - rnd(4, 26)); g.stroke(); } }, true);
-  const cl = new THREE.Mesh(new THREE.BoxGeometry(5.4, 0.62, 1.7), [lam({ map: rep(clothT, 1, 1) }), lam({ map: rep(clothT, 1, 1) }), white, white, lam({ map: rep(clothT, 3, 1) }), lam({ map: rep(clothT, 3, 1) })]); put(tp, cl, 0, 0.5, 0); box(tp, 5.0, 0.3, 1.3, darkM, 0, 0.15, 0, { cast: false });
+  const cl = new THREE.Mesh(new THREE.BoxGeometry(5.4, 0.62, 1.7), [lam({ map: rep(clothT, 1, 1) }), lam({ map: rep(clothT, 1, 1) }), white, white, lam({ map: rep(clothT, 3, 1) }), lam({ map: rep(clothT, 3, 1) })]); put(tp, cl, 0, 0.5, 0); cl.receiveShadow = false; box(tp, 5.0, 0.3, 1.3, darkM, 0, 0.15, 0, { cast: false });
   const cup = (x, z) => { cyl(tp, 0.085, 0.07, 0.012, white, x, 0.818, z, { seg: 14 }); cyl(tp, 0.048, 0.034, 0.06, white, x, 0.85, z, { seg: 12 }); put(tp, new THREE.Mesh(new THREE.TorusGeometry(0.022, 0.006, 4, 8), white), x + 0.055, 0.85, z); };
   for (const [x, z] of [[-2.1, 0.35], [-1.5, -0.1], [-0.9, 0.4], [-0.2, 0.45], [0.5, 0.3], [1.3, 0.45], [2.0, 0.3], [0.9, -0.35], [-0.6, -0.4], [2.2, -0.3], [-2.2, -0.35]]) cup(x, z);
   const pot = put(tp, new THREE.Mesh(new THREE.SphereGeometry(0.17, 16, 12), lam({ map: tex(128, 64, '#f4f2ec', (g, w, h) => scribble(g, w, h, 12, 8, 2)) })), -0.35, 0.95, 0.05); pot.scale.y = 0.82; cyl(tp, 0.025, 0.04, 0.2, white, -0.56, 0.98, 0.05, { seg: 8, rz: 0.9 }); put(tp, new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.014, 5, 10), white), -0.16, 0.96, 0.05); cyl(tp, 0.03, 0.03, 0.03, white, -0.35, 1.1, 0.05, { seg: 8 });
@@ -246,7 +253,7 @@ const cast = makeCast(THREE, canvasTex), cat = cast.cat(), hare = cast.rabbit({ 
   const ch = new THREE.Group(); ch.position.set(-3.2, 0, -0.25); ch.rotation.y = Math.PI / 2 - 0.3; tp.add(ch); const chM = lam({ map: tex(128, 128, '#f6f4ee', (g, w, h) => scribble(g, w, h, 16, 10, 1.6)) });
   box(ch, 1.0, 0.62, 0.95, chM, 0, 0.31, 0); box(ch, 1.0, 0.95, 0.22, chM, 0, 0.95, -0.42); cyl(ch, 0.5, 0.5, 0.22, chM, 0, 1.42, -0.42, { seg: 18, rx: Math.PI / 2 }); for (const s of [-1, 1]) { box(ch, 0.2, 0.34, 0.9, chM, s * 0.52, 0.66, 0.02); cyl(ch, 0.13, 0.13, 0.9, chM, s * 0.52, 0.84, 0.02, { seg: 10, rx: Math.PI / 2 }); box(ch, 0.16, 0.55, 0.3, chM, s * 0.52, 1.25, -0.33); }
   tp.userData.chair = ch;
-  hare.position.set(-1.95, -0.05, -1.05); hare.scale.setScalar(1.3); hare.rotation.y = -0.2; tp.add(hare); dormouse.position.set(-1.3, 0.82, -0.68); dormouse.scale.setScalar(1.5); dormouse.rotation.y = 0.2; tp.add(dormouse);      // 'the three were all crowded together at one corner of it'
+  hare.position.set(-1.85, -0.1, -1.0); hare.scale.setScalar(1.65); hare.rotation.y = -0.2; tp.add(hare); dormouse.position.set(-1.22, 0.82, -0.66); dormouse.scale.setScalar(1.45); dormouse.rotation.y = 0.2; tp.add(dormouse);      // 'the three were all crowded together at one corner of it'
   tree(gardenG, TEA[0] - 1.3, yF, TEA[1] - 3.2, 1.5, gTrees); tree(gardenG, TEA[0] - 6.5, yF, TEA[1] - 5, 1.3, gTrees); tree(gardenG, TEA[0] + 7.5, yF, TEA[1] - 2, 1.2, gTrees);
   const hs = new THREE.Group(); hs.position.set(TEA[0] + 3.5, yF, TEA[1] - 9); gardenG.add(hs); const furT = tex(256, 256, '#bdbab2', (g, w, h) => { g.lineWidth = 2.5; for (let i = 0; i < 420; i++) { const x = rnd(0, w), y = rnd(0, h); g.beginPath(); g.moveTo(x, y); g.lineTo(x + rnd(-4, 4), y + rnd(12, 26)); g.stroke(); } }, true);
   box(hs, 9, 3.4, 6, lam({ map: rep(stoneT, 5, 2) }), 0, 1.7, 0); const rf = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 5.4, 3.2, 4, 1), lam({ map: rep(furT, 5, 2) })); put(hs, rf, 0, 4.9, 0, { ry: Math.PI / 4 }); rf.scale.set(1.25, 1, 0.85);
@@ -257,18 +264,52 @@ const blockGarden = (x, z) => z > GZ0 - 0.5 || z < TEA[1] - 5 || Math.abs(x) > 1
   (Math.abs(x - TEA[0]) < 3.0 && Math.abs(z - TEA[1]) < 1.15) || Math.hypot(x - TEA[0] + 3.2, z - TEA[1] + 0.25) < 0.8 || Math.hypot(x - 4.2, z + 150.5) < 1.8;
 
 /* ================= the people: Alice and the Hatter from Blender (tools/blender/figure.py); the Rabbit, the Hare, the Dormouse and the Cat built in cast.js ================= */
-const FIG = makeFigures({ THREE, scene, shadowM: new THREE.MeshBasicMaterial({ visible: false }), castShadow: true }); await FIG.load('models/', ['alice', 'hatter']);
+const FIG = makeFigures({ THREE, scene, shadowM: new THREE.MeshBasicMaterial({ visible: false }), castShadow: true }); await FIG.load('models/', ['alice', 'hatter', 'queen', 'sister']);
 const BASE = 0.85, meG = FIG.spawn('alice', { size: BASE }); for (const k in meG.userData.mats) ENG.keepColour(meG.userData.mats[k]);            // the one thing in colour
-const hatter = FIG.spawn('hatter', { size: 1.08, adult: true }); scene.remove(hatter); gardenG.children.find(c => c.userData.chair).add(hatter); hatter.position.set(-0.75, -0.2, -1.0); hatter.rotation.y = -1.15;
-for (const k in hatter.userData.mats) if (k !== 'dress') { const m = hatter.userData.mats[k]; if (k === 'skin') m.color.set('#f0f0f0'); }
-scene.updateMatrixWorld(true); hat.scale.setScalar(1.2); FIG.onHead(hatter, hat, 0, 1.655, 0.0);
+const hatter = FIG.spawn('hatter', { size: 1.3, adult: true }); scene.remove(hatter); gardenG.children.find(c => c.userData.chair).add(hatter); hatter.position.set(-0.7, -0.6, -1.0); hatter.rotation.y = -0.6;
+for (const k of ['skin', 'face']) { const m = hatter.userData.mats[k]; if (k === 'skin') m.color.set('#ffffff'); ENG.drawn(m); }      /* his face is a drawing (tools/blender/tex_alice.py): the filter prints its lines and does not hatch over them */
+scene.updateMatrixWorld(true); hat.scale.setScalar(1.25); FIG.onHead(hatter, hat, 0, 1.675, -0.035); hat.rotation.x -= 0.3;      /* set well back, so that his face shows under it */
+{ const nose = cast.skin([[0, 0.02, 0, 0.012], [0, 0.0, 0.02, 0.024, 0.03], [0, -0.03, 0.05, 0.026, 0.03], [0, -0.05, 0.06, 0.02, 0.02], [0, -0.06, 0.05, 0.006]], ENG.drawn(cast.lam({ color: '#ffffff' })), { up: [0, 1, 0], n: 8 }); FIG.onHead(hatter, nose, 0, 1.475, 0.118); }
 for (const s of [-1, 1]) { const b = cast.ell(cast.lam({ map: tex(64, 64, '#f6f4ee', (g) => { for (const [x, y] of [[16, 18], [44, 14], [30, 40], [52, 46], [12, 52]]) { g.beginPath(); g.arc(x, y, 6, 0, 7); g.fill(); } }) }), 0.06, 0.036, 0.018); FIG.onHead(hatter, b, s * 0.055, 1.3, 0.075); b.rotation.z = s * 0.35; }
 { const c = new THREE.Group(); cyl(c, 0.05, 0.035, 0.06, white, 0, 0, 0, { seg: 12 }); hatter.userData.aR.add(c); }
 const rabbit = cast.rabbit(); rabbit.scale.setScalar(1.0); scene.add(rabbit);
 const held = new THREE.Group(), heldL = new THREE.Group(); meG.userData.aR.add(held); meG.userData.aL.add(heldL);                    // what she carries in her right hand
+// her sister on the bank, reading (the book opens with her; no plate shows her, so her dress is an impression)
+const sister = FIG.spawn('sister', { size: 1.0, adult: true }); scene.remove(sister); fieldG.add(sister); sister.position.set(-2.3, ground(-2.3, 4.6) - 0.5, 4.6); sister.rotation.y = Math.PI / 2 + 0.5; FIG.pose(sister, 0, 0);
+{ const u = sister.userData, t = FIG.turn; t(u, 'thighL', -84, 0, 0); t(u, 'thighR', -80, 0, 0); t(u, 'shinL', 60, 0, 0); t(u, 'shinR', 72, 0, 0); t(u, 'upperarmL', -38, 6, 0); t(u, 'upperarmR', -38, -6, 0); t(u, 'forearmL', -72, 0, 0); t(u, 'forearmR', -72, 0, 0); u.hd.rotation.x = 0.42;
+  const book = new THREE.Group(); box(book, 0.3, 0.02, 0.22, white, 0, 0, 0); box(book, 0.31, 0.012, 0.23, darkM, 0, -0.016, 0); book.rotation.set(0.9, 0, 0); u.aR.add(book); book.position.set(0.14, -0.04, 0.1); }
+/* ================= act 5: the Queen's garden: the rose-tree and its gardeners, the Queen, the croquet-ground "all ridges and furrows" (Chapter VIII) ================= */
+const QZ = -300, ROSE = [0.6, -313], CRQ = [0, -348], queenG = new THREE.Group(), queenCoins = new THREE.Group(); scene.add(queenG); queenG.add(queenCoins);
+const ridge = (x, z) => 0.11 * Math.sin(x * 1.4 + Math.sin(z * 0.35)) * sstep(CRQ[1] + 16, CRQ[1] + 12, z) * sstep(CRQ[1] - 16, CRQ[1] - 12, z);
+const roseTree = cast.roseTree(), G7 = cast.card({ n: 7, brush: true }), G5 = cast.card({ n: 5, brush: true }), G2 = cast.card({ n: 2, pot: true }), gardeners = [G7, G5, G2];
+const queen = FIG.spawn('queen', { size: 1.1, adult: true }); scene.remove(queen); queenG.add(queen); scene.updateMatrixWorld(true); FIG.onHead(queen, cast.crown(), 0, 1.6, 0.0);
+const guards = [cast.card({ n: 3, suit: 'club' }), cast.card({ n: 4, suit: 'club' })];
+const arches = [[-5, 6, 3], [5.5, 2, 4], [-4, -5, 2], [4.5, -8, 5]].map(([x, z, n], i) => ({ g: cast.arch(n), st: cast.card({ n, suit: 'club' }), x0: CRQ[0] + x, z0: CRQ[1] + z, x: 0, z: 0, ang: 0, mode: 'arch', t: 0, tx: 0, tz: 0, ph: 0, i }));
+const hog = cast.hedgehog(), hog2 = cast.hedgehog(), flam = cast.flamingo(), grinCat = cast.cat();
+const hh = { x: 0, z: 0, vx: 0, vz: 0, rolled: true, still: 0, ang: 0, cool: 0 }, Q = { stage: 0, t: 0, t0: 0, x: 0, z: 0, ph: 0, v: 0, tx: 0, tz: 0, line: -1, lineT: 0, hoops: 0, shout: 0, curl: 0.3, curlT: 6, strikeT: -9, flat: 0, painted: 0, skip: false, come: false };
+{
+  const yF = Y_H, n = 0.6, X0 = -30, X1 = 30, Z0 = -378, Z1 = -294, nx = Math.round((X1 - X0) / n), nz = Math.round((Z1 - Z0) / n), pos = [], uv = [], idx = [];
+  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = X0 + i * n, z = Z0 + j * n; pos.push(x, yF + ridge(x, z), z); uv.push(x / 5, z / 5); }
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, d = a + nx + 1, e = d + 1; idx.push(a, d, b, b, d, e); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
+  const m = new THREE.Mesh(g, lam({ map: grassT })); m.receiveShadow = true; queenG.add(m);
+  blades(queenG, 1500, () => { const x = rnd(-13, 13), z = rnd(CRQ[1] - 19, QZ + 2); return Math.hypot(x - ROSE[0], z - ROSE[1] - 2) < 4.5 ? null : [x, yF + ridge(x, z), z]; }, 0.06, 0.16);
+  for (let x = -15; x <= 15; x += 2.1) for (const z of [QZ + 3.6, CRQ[1] - 21]) { const b = put(queenG, new THREE.Mesh(blobG, x % 2 ? leafM : leafD), x + rnd(-0.3, 0.3), yF + 1.0, z + rnd(-0.3, 0.3)); b.scale.set(1.7, 1.5, 1.4); b.rotation.y = rnd(0, 6); }
+  for (const sx of [-1, 1]) for (let z = CRQ[1] - 21; z < QZ + 4; z += 2.2) { const b = put(queenG, new THREE.Mesh(blobG, leafD), sx * (14 + rnd(-0.3, 0.3)), yF + 1.0, z); b.scale.set(1.4, 1.5, 1.7); b.rotation.y = rnd(0, 6); }
+  for (const [x, z, k] of [[-19, -305, 1.3], [20, -316, 1.2], [-20, -335, 1.4], [19, -352, 1.3], [-6, -376, 1.4], [9, -377, 1.2], [18, -374, 1.3], [-18, -372, 1.2]]) tree(queenG, x, yF, z, k);
+  roseTree.position.set(ROSE[0], yF, ROSE[1]); roseTree.scale.setScalar(1.15); queenG.add(roseTree);
+  for (const [x, z] of [[-7, -306], [7.5, -320], [-8.5, -324]]) { const r = cast.roseTree(); r.position.set(x, yF, z); r.rotation.y = x; queenG.add(r); }
+  [[G7, -0.68, 0.4, 0.5], [G5, 0.3, 0.22, -0.2], [G2, 0.78, 0.6, -0.55]].forEach(([c, x, z, ry]) => { c.position.set(ROSE[0] + x, yF, ROSE[1] + z); c.rotation.y = ry; c.scale.setScalar(1.06); queenG.add(c); });
+  const pot = cyl(queenG, 0.11, 0.09, 0.09, pale, ROSE[0] - 0.35, yF + 0.045, ROSE[1] + 1.25, { seg: 12 }); cyl(queenG, 0.012, 0.012, 0.3, inkM, ROSE[0] - 0.2, yF + 0.09, ROSE[1] + 1.25, { seg: 4, rz: 1.2, cast: false });
+  for (const c of guards) queenG.add(c); for (const a of arches) { queenG.add(a.g, a.st); a.st.visible = false; }
+  queenG.add(hog, hog2, grinCat); grinCat.scale.setScalar(1.5); grinCat.userData.vanish(1); meG.add(flam); flam.scale.setScalar(1.05 / BASE); flam.position.set(-0.06, 0.9, 0.24); flam.rotation.y = 0.2; flam.visible = false;
+}
+const whiteRoses = roseTree.userData.roses.filter(r => r.material === roseTree.userData.wm);
+const blockQueen = (x, z) => Math.abs(x) > 12.6 || z > QZ + 2.4 || z < CRQ[1] - 19.5 || Math.hypot(x - ROSE[0], z - ROSE[1]) < 0.4 || (Q.stage < 2 && gardeners.some(g => Math.hypot(x - g.position.x, z - g.position.z) < 0.45));
+
 
 /* ================= points (common/score.js). Nothing here can be failed. ================= */
-const SC = makeScore({ THREE, scene, key: 'alice', at: s => ({ x: 0, z: -s, dx: 0, dz: -1 }), nearest: (x, z) => ({ s: -z, d: Math.abs(x) }), LEN: 250, par: 210, groundY: () => 0, blocked: () => true, paintings: 4,
+const SC = makeScore({ THREE, scene, key: 'alice', at: s => ({ x: 0, z: -s, dx: 0, dz: -1 }), nearest: (x, z) => ({ s: -z, d: Math.abs(x) }), LEN: 400, par: 330, groundY: () => 0, blocked: () => true, paintings: 6,
   thing: 'sovereign', things: 'gold sovereigns', washing: false, ditches: [], hurdles: [], powerups: false });
 // the coins are the level's own, laid by hand and given to the score to look after; they and Alice are the only colour in the drawing
 function coin(G, x, y, z) { const g = new THREE.Group(), mats = [ENG.keepColour(new THREE.MeshBasicMaterial({ color: '#f2c230' })), ENG.keepColour(new THREE.MeshBasicMaterial({ color: '#b07f14' }))];
@@ -279,10 +320,11 @@ const fieldCoins = new THREE.Group(), gardenCoins = new THREE.Group(); fieldG.ad
 for (let i = 0; i < 11; i++) { const z = -36 - i * 5, x = 2.4 * Math.sin(i * 0.8); coin(fieldCoins, x, ground(x, z) + (i % 4 === 3 ? 2.0 : 0.85), z); }
 for (let y = -8, k = 0; y > Y_H + 8; y -= 4.2, k++) { const x = 2.3 * Math.sin(k * 0.83), z = WZ + 2.1 * Math.cos(k * 1.31); if (ledges.some(l => Math.abs(l.y - y) < 2.6 && x > l.x0 - 0.7 && x < l.x1 + 0.7 && z > l.z0 - 0.7 && z < l.z1 + 0.7)) continue; coin(wellG, x, y, z); }
 shrooms.forEach(([x, z, h, r], i) => { coin(gardenCoins, x, Y_H + h + 2.3 + i * 0.5, z); coin(gardenCoins, x + 0.2, Y_H + h + 3.6 + i * 0.9, z - 0.8); });
+for (const [x, z, y] of [[0, -304, 0.85], [-2, -308, 0.85], [-3.5, -322, 0.85], [-2, -328, 2.0], [0, -333, 0.85], [6, -344, 0.85], [-7, -352, 0.85], [2, -358, 2.0]]) coin(queenCoins, x, Y_H + y, z);
 for (const z of [-146, -152, -178, -183, -200, -206, -212, -218, -224]) coin(gardenCoins, pathX(z) + Math.sin(z) * 0.7, Y_H + (z % 4 === 0 ? 2.0 : 0.85), z);
 
 /* ================= state ================= */
-let state = 'title', act = 1, time = 0, muted = false, tab = -1, tabT = 0, hStage = 0, bubbleG = null, bubbleT = 0, tipT = 0, shade = 0, shadeWant = 0, fadeWant = 0, actT = 0;
+let glanceT = 0, state = 'title', act = 1, time = 0, muted = false, tab = -1, tabT = 0, hStage = 0, bubbleG = null, bubbleT = 0, tipT = 0, shade = 0, shadeWant = 0, fadeWant = 0, actT = 0;
 const seen = new Set(), once = new Set(), keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, touch = { jump: false };
 const me = { x: 0, z: 8, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0, S: 1, Sw: 1, carry: null, hasKey: false, stall: 0, wet: 0 };
 const rb = { x: 0, z: 0, y: 0, mode: 'wait', ph: 0, v: 0, watch: 0, yaw: Math.PI, t: 0, tx: 0, tz: 0 };
@@ -293,62 +335,131 @@ const turnTo = (a, k) => { let d = a - me.yaw; d = Math.atan2(Math.sin(d), Math.
 const first = k => { if (once.has(k)) return false; once.add(k); return true; };
 const plate = (title, line, asp) => { SC.award(title, null, title); const el = $('plate'), m = (innerWidth - Math.min(innerWidth, innerHeight * asp)) / 2, side = m > 215; el.innerHTML = `<i>${title}</i><span>${side ? line.replace(' · ', '<br>') : line}</span>`;
   el.style.left = side ? m / 2 + 'px' : '50%'; el.style.bottom = side ? '14%' : ''; el.style.whiteSpace = side ? 'normal' : ''; el.style.maxWidth = side ? m - 50 + 'px' : ''; el.classList.add('show'); };
-const floorAt = (x, z) => act === 1 ? ground(x, z) : Y_H;
-const blocked = (x, z) => act === 1 ? blockField(x, z) : act === 3 ? blockHall(x, z) : act === 4 ? blockGarden(x, z) : false;
+const floorAt = (x, z) => act === 1 ? ground(x, z) : act === 5 ? Y_H + ridge(x, z) : act === 3 && me.S > 0.5 && me.S < 1.5 && Math.abs(z - BZ) < 0.36 ? Y_H + 0.475 : Y_H;
+const blocked = (x, z) => act === 1 ? blockField(x, z) : act === 3 ? blockHall(x, z) : act === 4 ? blockGarden(x, z) : act === 5 ? blockQueen(x, z) : false;
 const grow = (to, up) => { me.Sw = to; if (SND.bell) for (let i = 0; i < 7; i++) SND.bell(up ? 2 + i : 9 - i, 0.06, i * 0.09); SND.whoosh(0.09); };
 function place(o, G, x, y, z) { G.add(o); o.position.set(x, y, z); o.rotation.set(0, 0, 0); o.visible = true; }
 function setAct(n) {
-  act = n; actT = 0; fieldG.visible = n === 1; wellG.visible = n === 2 || n === 3; hallG.visible = n === 3 || n === 2; gardenG.visible = n === 4; rabbit.visible = n === 1 || n === 3;
+  act = n; actT = 0; fieldG.visible = n === 1; wellG.visible = n === 2 || n === 3; hallG.visible = n === 3 || n === 2; gardenG.visible = n === 4; queenG.visible = n === 5; rabbit.visible = n === 1 || n === 3; flam.visible = false;
   if (n === 2) { Object.assign(me, { x: 0, z: WZ, y: W_TOP - 4, vy: -1, air: true, speed: 0, yaw: 0, stall: 0 }); tell('“Either the well was very deep, or she fell very slowly…”  Steer with the arrows: catch what you can, and keep clear of the shelves.', 8);
     setTimeout(() => { if (act === 2 && state === 'play') say(meG, '“Well! after such a fall as this, I shall think nothing of tumbling down stairs!”', 5); }, 5200); setTimeout(() => { if (act === 2 && state === 'play') say(meG, '“Do cats eat bats? Do cats eat bats?”', 4); }, 15500); }
   if (n === 3) { Object.assign(me, { x: 0, z: WZ, y: Y_H, vy: 0, air: false, speed: 0, yaw: 0 }); Object.assign(rb, { x: 0, z: WZ - WR - 2.5, y: Y_H, mode: 'toDoor', v: 8, tx: DOOR[0] + 0.3, tz: HZ1 + 1.0 }); SND.puff(0.2); setTimeout(() => SND.puff(0.16), 220);
     tell('“…thump! thump! down she came upon a heap of sticks and dry leaves, and the fall was over.”', 6); setTimeout(() => { if (act === 3) say(rabbit, '“Oh my ears and whiskers, how late it’s getting!”', 4); }, 900); }
-  if (n === 4) { Object.assign(me, { x: DOOR[0], z: GZ0 - 1.2, y: Y_H, vy: 0, air: false, speed: 0, yaw: 0, S: 1, Sw: 1, hasKey: false, carry: null, wet: 0 }); held.clear(); heldL.clear(); tell('“…she found herself at last in the beautiful garden, among the bright flower-beds and the cool fountains.”', 7); }
+  if (n === 4) { Object.assign(me, { x: DOOR[0], z: GZ0 - 1.2, y: Y_H, vy: 0, air: false, speed: 0, yaw: 0, S: 1, Sw: 1, hasKey: false, carry: null, wet: 0 }); held.clear(); heldL.clear(); tell('Beyond the little door: a garden, and a wood.', 5); }
+  if (n === 5) { Object.assign(me, { x: 0, z: QZ - 1.5, y: Y_H, vy: 0, air: false, speed: 0, yaw: 0, S: 1, Sw: 1 }); resetQueen(); tell('“…and then—she found herself at last in the beautiful garden, among the bright flower-beds and the cool fountains.”', 7); }
 }
+// ---- act 5: the gardeners, the Queen, croquet with a flamingo and a hedgehog
+const QLINES = () => [[queen, '“What’s your name, child?”'], [meG, '“My name is Alice, so please your Majesty.”'], [queen, '“Off with her head! Off—”'], [meG, '“Nonsense!”'], [queen, '“Can you play croquet?”'], [meG, '“Yes!”'], [queen, '“Come on, then!”']];
+function resetQueen() {
+  Object.assign(Q, { stage: 0, t: 0, t0: 0, x: ROSE[0] + 2, z: ROSE[1] - 26, ph: 0, v: 0, tx: ROSE[0] + 2, tz: ROSE[1] - 26, line: -1, hoops: 0, shout: 0, curl: 0.3, curlT: 6, strikeT: -9, flat: 0, painted: 0, skip: false, come: false });
+  for (const r of whiteRoses) r.material = roseTree.userData.wm; flam.visible = false; grinCat.visible = false; hog2.visible = false; hog.visible = false; queen.visible = false; for (const c of guards) c.visible = false;
+  arches.forEach(a => { Object.assign(a, { x: a.x0, z: a.z0, ang: a.i * 0.9 + 0.3, mode: 'arch', t: 9 + a.i * 5, ph: 0 }); a.g.visible = true; a.st.visible = false; });
+  Object.assign(hh, { x: CRQ[0], z: CRQ[1] + 10, vx: 0, vz: 0, rolled: true, still: 0, cool: 0 });
+}
+function queens(dt, playing) {
+  const yAt = (x, z) => Y_H + ridge(x, z), dR = Math.hypot(me.x - ROSE[0], me.z - ROSE[1]), fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
+  Q.flat += ((Q.stage >= 2 ? 1 : 0) - Q.flat) * Math.min(1, dt * 6);
+  gardeners.forEach((g, i) => { const u = g.userData; u.flat(Q.flat); if (Q.stage < 2) { u.arms[1].rotation.x = -1.75 + 0.3 * Math.sin(time * 3.2 + i * 2); u.arms[0].rotation.x = i === 2 ? -0.5 : -0.2; u.head.rotation.x = -0.25; u.head.rotation.y = i === 0 ? 0.5 : -0.5; } else { u.arms[1].rotation.x = -2.8; u.arms[0].rotation.x = -2.8; u.head.rotation.x = 0; } });
+  // the Queen walks to where she is going, her two soldiers a step behind her
+  { const dx = Q.tx - Q.x, dz = Q.tz - Q.z, d = Math.hypot(dx, dz), want = d > 0.3 ? (Q.come ? 3.6 : 2.4) : 0; Q.v += (want - Q.v) * Math.min(1, dt * 4); if (d > 0.05) { Q.x += dx / d * Q.v * dt; Q.z += dz / d * Q.v * dt; if (Q.v > 0.3) queen.rotation.y = Math.atan2(dx, dz); } Q.ph += dt * (2 + Q.v * 2.2);
+    queen.position.set(Q.x, yAt(Q.x, Q.z), Q.z); FIG.pose(queen, Q.ph, Q.v / 3); const c = Math.cos(queen.rotation.y), s = Math.sin(queen.rotation.y);
+    guards.forEach((gd, i) => { const ox = (i ? 1.1 : -1.1), x = Q.x + c * ox - s * 1.3, z = Q.z - s * ox - c * 1.3; gd.position.set(x, yAt(x, z), z); gd.rotation.y = queen.rotation.y; gd.userData.pose(Q.ph + i * 2, Q.v / 2.4); }); }
+  // the arches: soldiers doubled up, who get up and walk off to another part of the ground
+  for (const a of arches) { a.t -= dt;
+    if (a.mode === 'arch' && Q.stage === 3 && a.t < 0 && Math.hypot(hh.x - a.x, hh.z - a.z) > 3) a.mode = 'up';
+    if (a.mode === 'up') { a.mode = 'walk'; a.tx = CRQ[0] + rnd(-9, 9); a.tz = CRQ[1] + rnd(-11, 11); a.g.visible = false; a.st.visible = true; if (first('archwalk')) tell('“…the doubled-up soldiers were always getting up and walking off to other parts of the ground…”', 7); }
+    if (a.mode === 'walk') { const dx = a.tx - a.x, dz = a.tz - a.z, d = Math.hypot(dx, dz); if (d < 0.3) { a.mode = 'arch'; a.ang = rnd(0, 3.1); a.t = rnd(13, 20); a.g.visible = true; a.st.visible = false; } else { a.x += dx / d * 1.9 * dt; a.z += dz / d * 1.9 * dt; a.ph += dt * 7; a.st.rotation.y = Math.atan2(dx, dz); a.st.userData.pose(a.ph, 1); } }
+    a.g.position.set(a.x, yAt(a.x, a.z), a.z); a.g.rotation.y = a.ang; a.st.position.copy(a.g.position); }
+  // the hedgehog: a ball while it is rolled up; left alone it unrolls and crawls away
+  if (Q.stage >= 3) { const px = hh.x, pz = hh.z, sp = Math.hypot(hh.vx, hh.vz);
+    if (hh.rolled) { hh.vx -= (ridge(hh.x + 0.1, hh.z) - ridge(hh.x - 0.1, hh.z)) / 0.2 * 7 * dt; hh.vz -= (ridge(hh.x, hh.z + 0.1) - ridge(hh.x, hh.z - 0.1)) / 0.2 * 7 * dt; const k = Math.exp(-0.85 * dt); hh.vx *= k; hh.vz *= k; hh.x += hh.vx * dt; hh.z += hh.vz * dt;
+      if (Math.abs(hh.x - CRQ[0]) > 11.5) { hh.vx *= -0.6; hh.x = CRQ[0] + Math.sign(hh.x - CRQ[0]) * 11.5; } if (Math.abs(hh.z - CRQ[1]) > 14) { hh.vz *= -0.6; hh.z = CRQ[1] + Math.sign(hh.z - CRQ[1]) * 14; }
+      hh.still = sp < 0.35 ? hh.still + dt : 0; if (sp > 0.3) { hog.rotation.y = Math.atan2(hh.vx, hh.vz); hog.userData.ball.rotation.x += sp * dt / 0.15; }
+      if (hh.still > 3.4 && Q.stage === 3 && Math.hypot(me.x - hh.x, me.z - hh.z) > 1.6) { hh.rolled = false; hh.ang = rnd(0, 6.3); hog.userData.rolled(false); if (first('unroll')) tell('“…it was very provoking to find that the hedgehog had unrolled itself, and was in the act of crawling away…”', 7); }
+      if (sp > 0.7) for (const a of arches) if (a.mode === 'arch') { const nx = Math.sin(a.ang), nz = Math.cos(a.ang), s0 = (px - a.x) * nx + (pz - a.z) * nz, s1 = (hh.x - a.x) * nx + (hh.z - a.z) * nz; if (s0 * s1 < 0) { const lat = Math.abs((hh.x - a.x) * nz - (hh.z - a.z) * nx);
+        if (lat < 0.5) { Q.hoops++; SC.gain(40, 'Through the arch!', 3); SND.bell(6, 0.08); SND.bell(9, 0.07, 0.1); a.t = 1.2; } else if (lat < 0.7) { hh.vx *= -0.5; hh.vz *= -0.5; hh.x = px; hh.z = pz; SND.puff(0.1); } } } }
+    else { hh.x += Math.sin(hh.ang) * 0.55 * dt; hh.z += Math.cos(hh.ang) * 0.55 * dt; hog.rotation.y = hh.ang; if (Math.abs(hh.x - CRQ[0]) > 11 || Math.abs(hh.z - CRQ[1]) > 13.5) hh.ang += Math.PI * dt;
+      if (Math.hypot(me.x - hh.x, me.z - hh.z) < 1.5) { hh.rolled = true; hh.still = 0; hh.vx = hh.vz = 0; hog.userData.rolled(true); SND.puff(0.05); } }
+    hog.position.set(hh.x, yAt(hh.x, hh.z), hh.z); }
+  // the flamingo: its neck will not stay straight
+  if (flam.visible) { Q.curlT -= dt; if (Q.curlT < -2.4) Q.curlT = rnd(5, 8); const want = state === 'tab' ? 1 : time - Q.strikeT < 0.4 ? 0 : Q.curlT < 0 ? 1 : 0.28; Q.curl += (want - Q.curl) * Math.min(1, dt * (want === 0 ? 20 : 5)); flam.userData.curl(Q.curl); }
+  if (state === 'scene') {                       // the Queen and Alice, word for word; a leap (or a tap) hurries them on
+    const L = QLINES(); turnTo(Math.atan2(Q.x - me.x, -(Q.z - me.z)), Math.min(1, dt * 4));
+    if (Q.come) { Q.tx = clamp(me.x + 1.0, -10, 10); Q.tz = me.z - 2.7; if (Math.hypot(Q.tx - Q.x, Q.tz - Q.z) < 0.45) { Q.come = false; Q.line = -1; } return; }
+    queen.rotation.y = Math.atan2(me.x - Q.x, me.z - Q.z);
+    if (Q.line < 0 || time - Q.lineT > 2.9 || Q.skip) { Q.skip = false; Q.line++; Q.lineT = time; if (Q.line >= L.length) { state = 'play'; Q.stage = 3; Q.t = 0; Q.tx = CRQ[0] + 3; Q.tz = CRQ[1] + 4; flam.visible = true; hog.visible = true; hog.userData.rolled(true); bubble.classList.remove('show'); bubbleG = null;
+        tell('“…the balls were live hedgehogs, the mallets live flamingoes, and the soldiers had to double themselves up and to stand on their hands and feet, to make the arches.”', 10); } else { say(L[Q.line][0], L[Q.line][1], 2.9); if (Q.line === 2) SND.hiss(); } }
+    if (Q.line === 2) queen.userData.aR.rotation.x = -1.5;
+    return; }
+  if (!playing) return;
+  if (Q.stage === 0) {
+    if (dR < 15 && first('g1')) { say(G2, '“Look out now, Five! Don’t go splashing paint over me like that!”', 4.2); Q.t0 = time; tell('“A large rose-tree stood near the entrance of the garden: the roses growing on it were white, but there were three gardeners at it, busily painting them red.”', 8); }
+    if (Q.t0 && time > Q.t0 + 4.4 && first('g2')) say(G5, '“I couldn’t help it, Seven jogged my elbow.”', 3.6);
+    if (!seen.has(4) && dR < 6.4 && me.z > ROSE[1] + 1.5) startTab(4); }
+  if (Q.stage === 1) { Q.t += dt;
+    if (Q.t > 4.6 && first('g3')) say(G2, '“…this here ought to have been a red rose-tree, and we put a white one in by mistake…”', 5.5);
+    if (Q.t > 6 && first('g4')) tell('Leap, and help them paint the white roses red before the Queen comes.', 7);
+    for (const r of whiteRoses) if (r.material !== roseTree.userData.dm) { const wx = ROSE[0] + r.position.x * 1.15, wy = Y_H + r.position.y * 1.15, wz = ROSE[1] + r.position.z * 1.15; if (Math.hypot(me.x - wx, me.z - wz) < 0.7 && Math.abs(me.y + 1.25 - wy) < 0.6) { r.material = roseTree.userData.dm; Q.painted++; SC.gain(15, 'A rose painted red', 2); SND.puff(0.08); } }
+    if (Q.painted >= whiteRoses.length || Q.t > 24) { Q.stage = 2; Q.come = true; say(G5, '“The Queen! The Queen!”', 3); tell('“…and the three gardeners instantly threw themselves flat upon their faces.”', 6); queen.visible = true; for (const c of guards) c.visible = true; Q.x = ROSE[0] + 3; Q.z = ROSE[1] - 15; SND.bell(1, 0.07); SND.bell(0, 0.07, 0.3); setTimeout(() => { if (act === 5 && Q.stage === 2) { state = 'scene'; me.speed = 0; } }, 2600); } }
+  if (Q.stage === 3) { Q.t += dt;
+    if (Math.hypot(Q.tx - Q.x, Q.tz - Q.z) < 0.5) { Q.tx = CRQ[0] + rnd(-8, 8); Q.tz = CRQ[1] + rnd(-10, 10); }
+    if (time > Q.shout && time > bubbleT) { Q.shout = time + rnd(8, 11); say(queen, Math.random() < 0.5 ? '“Off with his head!”' : '“Off with her head!”', 2.6); }
+    if (hh.rolled && time > hh.cool && Math.abs(me.speed) > 2.2 && !me.air && Math.hypot(me.x - hh.x, me.z - hh.z) < 0.95) { const weak = Q.curl > 0.7, v = weak ? 2.2 : 5.5 + Math.abs(me.speed) * 0.55; hh.vx = fx * v; hh.vz = fz * v; hh.cool = time + 0.6; hh.still = 0; Q.strikeT = time; SND.puff(0.16); SND.bell(4, 0.06);
+      if (weak && first('twist')) tell('“…it would twist itself round and look up in her face, with such a puzzled expression that she could not help bursting out laughing…”', 8); }
+    if (Q.t > 40 && Q.hoops === 0 && first('hard')) tell('“…Alice soon came to the conclusion that it was a very difficult game indeed.”', 6);
+    if ((Q.hoops >= 3 || Q.t > 75) && !me.air) { Q.stage = 4; Q.t = 0; grinCat.visible = true; grinCat.position.set(me.x + fx * 3.2, Y_H + 2.3, me.z + fz * 3.2); grinCat.rotation.y = Math.atan2(-fx, -fz) + 0.0; say(grinCat, '“How are you getting on?”', 3.2);
+      tell('“…she noticed a curious appearance in the air… she made it out to be a grin, and she said to herself ‘It’s the Cheshire Cat: now I shall have somebody to talk to.’”', 8); } }
+  if (Q.stage === 4) { Q.t += dt; if (Q.t > 3.6 && !seen.has(5) && !me.air) startTab(5); }
+}
+
 function reset() {
   Object.assign(me, { x: 0, z: 8, y: ground(0, 8), vy: 0, yaw: 0, air: false, speed: 0, S: 1, Sw: 1, carry: null, hasKey: false, stall: 0, wet: 0 }); held.clear(); heldL.clear(); hStage = 0; tab = -1; seen.clear(); once.clear(); shade = shadeWant = 0; fadeWant = 0;
   Object.assign(rb, { x: 2.6, z: 17, y: ground(2.6, 17), mode: 'wait', v: 0, watch: 0, yaw: Math.PI }); rabbit.scale.setScalar(1); rabbit.userData.watching(0);
   for (const l of ledges) l.hit = false; place(jar, wellG, ...jar.userData.home); jar.scale.setScalar(1);
   place(key, hallG, TAB[0] + 0.05, Y_H + 0.835, TAB[1] + 0.02); key.scale.setScalar(1.4); place(bottle, hallG, TAB[0] - 0.1, Y_H + 0.82, TAB[1] + 0.08); bottle.visible = false; cake.visible = false; fan.visible = gloves.visible = false; pool.visible = false; pool.userData.k = 0;
-  curtain.rotation.y = 0; littleDoor.rotation.y = 0; Object.assign(catS, { k: 0, want: 0, said: 0 }); cat.userData.vanish(0);
+  curtain.rotation.y = 0; littleDoor.rotation.y = 0; resetQueen(); idleT = 0; FANP[0] = 2.2; FANP[1] = -127; Object.assign(catS, { k: 0, want: 0, said: 0 }); cat.userData.vanish(0);
   $('melt').classList.remove('show', 'slow'); $('plate').classList.remove('show'); setAct(1); $('tip').classList.add('hidden'); camera.position.set(0, ground(0, 14) + 3, 14);
 }
 function begin() {
   SND.start({ chords: [[48, 60, 64, 67, 72], [45, 57, 60, 64, 69], [41, 53, 57, 60, 65], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
   $('title').classList.add('hidden'); $('end').classList.add('hidden');
-  tell(matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap', 7);
+  tell('“Alice was beginning to get very tired of sitting by her sister on the bank…”   ' + (matchMedia('(pointer: coarse)').matches ? 'Drag to run and turn · second finger to leap' : 'Arrow keys to run and turn · space to leap'), 8);
   rb.mode = 'pass'; rb.tx = RS[0]; rb.tz = RS[1]; rb.v = 9; setTimeout(() => { if (state === 'play' && act === 1) say(rabbit, '“Oh dear! Oh dear! I shall be late!”', 4); }, 700);
 }
 
-/* ================= the four plates, each staged where the artist stood ================= */
+/* ================= the six plates, each staged where the artist stood ================= */
 const LINE = 'John Tenniel, 1865 · cut in wood by the Brothers Dalziel';
 const TABS = [
   { id: 'rabbit', img: 'images/rabbit.jpg', asp: 976 / 1400, title: 'The White Rabbit', cam: () => { const y = ground(RS[0], RS[1]); return { pos: [RS[0] - 0.05, y + 0.6, RS[1] + 4.2], look: [RS[0] - 0.05, y + 0.6, RS[1]], fov: 21.5 }; } },
   { id: 'drinkme', img: 'images/drinkme.jpg', asp: 1110 / 1400, title: 'Drink Me', cam: () => ({ pos: [TAB[0] + 0.36, Y_H + 0.68, TAB[1] + 6], look: [TAB[0] + 0.36, Y_H + 0.68, TAB[1]], fov: 14.6 }) },
   { id: 'cheshire', img: 'images/cheshire.jpg', asp: 1039 / 1400, title: 'The Cheshire Cat', cam: () => ({ pos: [CAT[0] + 0.9, Y_H + 1.75, CAT[1] + 9.6], look: [CAT[0] + 0.9, Y_H + 1.9, CAT[1]], fov: 36 }) },
-  { id: 'teaparty', img: 'images/teaparty.jpg', asp: 1400 / 1083, title: 'A Mad Tea-Party', cam: () => ({ pos: [TEA[0] - 2.3, Y_H + 1.12, TEA[1] + 3.9], look: [TEA[0] - 2.05, Y_H + 1.06, TEA[1] - 0.9], fov: 29 }) },
+  { id: 'teaparty', img: 'images/teaparty.jpg', asp: 1400 / 1083, title: 'A Mad Tea-Party', cam: () => ({ pos: [TEA[0] - 2.2, Y_H + 1.26, TEA[1] + 3.1], look: [TEA[0] - 2.0, Y_H + 1.26, TEA[1] - 0.9], fov: 33 }) },
+  { id: 'gardeners', img: 'images/gardeners.jpg', asp: 1038 / 1400, title: 'Painting the Roses Red', cam: () => ({ pos: [ROSE[0] + 0.1, Y_H + 1.42, ROSE[1] + 5.4], look: [ROSE[0] + 0.1, Y_H + 1.42, ROSE[1]], fov: 36 }) },
+  { id: 'flamingo', img: 'images/flamingo.jpg', asp: 962 / 1400, title: 'Alice and the Flamingo', last: true, cam: () => { const y = Y_H + ridge(me.x, me.z); return { pos: [me.x - 0.25, y + 0.74, me.z + 4.6], look: [me.x - 0.25, y + 0.74, me.z], fov: 22.6 }; } },
 ];
-function startTab(i) { tab = i; tabT = 0; state = 'tab'; seen.add(i); me.speed = 0; $('meltImg').src = TABS[i].img; $('melt').classList.toggle('slow', i === 3); bubble.classList.remove('show'); bubbleG = null; $('tip').classList.add('hidden'); SND.whoosh(0.1); }
+function startTab(i) { tab = i; tabT = 0; state = 'tab'; seen.add(i); me.speed = 0; $('meltImg').src = TABS[i].img; $('melt').classList.toggle('slow', !!TABS[i].last); bubble.classList.remove('show'); bubbleG = null; $('tip').classList.add('hidden'); SND.whoosh(0.1); }
 const tabFov = T => { const c = T.cam(), ph = Math.min(innerHeight, innerWidth / T.asp); return 2 * Math.atan(Math.tan(c.fov * Math.PI / 360) * innerHeight / ph) * 180 / Math.PI; };
 function tableau(dt) {
-  const T = TABS[tab], last = tab === 3; tabT += dt; if (window.__road.dbg.hold) tabT = Math.min(tabT, 3.4); const k = Math.min(1, dt * 2.4);
+  const T = TABS[tab], last = !!T.last; tabT += dt; if (window.__road.dbg.hold) tabT = Math.min(tabT, 3.4); const k = Math.min(1, dt * 2.4);
   if (tab === 0) { rabbit.userData.watching(1); }
   if (tab === 1) { const tx = TAB[0] + 0.62, tz = TAB[1] + 0.1; me.x += (tx - me.x) * k; me.z += (tz - me.z) * k; turnTo(-2.25, k); }                 // beside the table, turned a little towards us
   if (tab === 2) { const tx = CAT[0] + 0.06, tz = CAT[1] + 3.2; me.x += (tx - me.x) * k; me.z += (tz - me.z) * k; turnTo(0.22, k); }
   if (tab === 3) { const tx = TEA[0] - 2.95, tz = TEA[1] - 0.3; me.x += (tx - me.x) * k; me.z += (tz - me.z) * k; turnTo(1.95, k); }
+  if (tab === 4) { const tx = ROSE[0] + 3.4, tz = ROSE[1] + 5.2; me.x += (tx - me.x) * k; me.z += (tz - me.z) * k; turnTo(-0.5, k); }                        // she stands aside: the plate is of the gardeners alone
+  if (tab === 5) { turnTo(-2.3, k); hh.rolled = true; hh.vx = hh.vz = 0; hog.userData.rolled(true); hh.x += (me.x + 0.02 - hh.x) * k; hh.z += (me.z + 0.42 - hh.z) * k; hog2.visible = true; hog2.userData.rolled(false); hog2.position.set(me.x + 0.3, Y_H + ridge(me.x + 0.3, me.z + 0.3), me.z + 0.36); hog2.rotation.y = 1.5; }
   if (tabT > 2.6 && !$('plate').classList.contains('show') && tabT < 3.5) { plate(T.title, LINE, T.asp); [2, 4, 5, 7, 9].forEach((n, i) => SND.bell(n, 0.06, i * 0.22)); }
   if (tabT > 4.0 && (last || tabT < 8.2)) $('melt').classList.add('show');
   if (!last && tabT > 8.2) { $('melt').classList.remove('show'); $('plate').classList.remove('show'); }
   if (!last && tabT > 10.4) { state = 'play'; tab = -1; meG.userData.hd.rotation.x = 0; meG.userData.hd.rotation.y = 0; afterTab(T.id); }
-  if (last && tabT > 15) { state = 'done'; SC.finish(); card(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); }
+  if (last && tabT > 15) { state = 'done'; SC.finish(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); }
 }
 function afterTab(id) {
   if (id === 'rabbit') { rb.mode = 'toHole'; rabbit.userData.watching(0); tell('“…burning with curiosity, she ran across the field after it.”', 5); }
   if (id === 'drinkme') { bottle.visible = false; cake.visible = true; hStage = 3; grow(0.2, false); say(meG, '“What a curious feeling! I must be shutting up like a telescope.”', 5); SC.gain(20, 'Drink me'); }
+  if (id === 'teaparty') { me.x = TEA[0] - 3.7; me.z = TEA[1] + 1.5; me.yaw = -1.9; say(meG, '“It’s the stupidest tea-party I ever was at in all my life!”', 4.5); setTimeout(() => { if (act === 4) tell('“Just as she said this, she noticed that one of the trees had a door leading right into it.”', 9); }, 4000); glanceT = time + 4.5; }
+  if (id === 'gardeners') { Q.stage = 1; Q.t = 0; say(meG, '“Would you tell me, why you are painting those roses?”', 4); }
   if (id === 'cheshire') { say(meG, '“Would you tell me, please, which way I ought to go from here?”', 4.2); catS.said = time; }
 }
-// the end card is written for a level on the road; this one is not on it yet (common/score.js is not ours to change), so say where she is and send her back to the gallery
-function card() { const c = $('scCard'), i = c && c.querySelector('i'); if (i) i.textContent = 'Oxford, 1865 · after Tenniel'; const a = $('scNext'); if (a) { a.href = '../index.html'; a.textContent = 'Back to the gallery'; } }
 
 /* ================= play ================= */
 function update(dt) {
@@ -381,24 +492,27 @@ function update(dt) {
     meG.scale.setScalar(BASE * S); meG.position.set(me.x, me.y - me.wet * 0.1, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; FIG.pose(meG, me.ph, state === 'tab' ? 0 : me.air ? 0.4 : pace, me.air && state !== 'tab');
     if (me.wet > 0.5 && state === 'play') { FIG.turn(meG.userData, 'upperarmL', -60 + 50 * Math.sin(me.ph), 0, 0); FIG.turn(meG.userData, 'upperarmR', -60 - 50 * Math.sin(me.ph), 0, 0); }
     SC.update(dt, me, playing, time);
-    if (playing && act === 1) field(dt); if (act === 3) hall(dt, playing); if (act === 4) garden(dt, playing);
+    if (playing && act === 1) field(dt); if (act === 3) hall(dt, playing); if (act === 4) garden(dt, playing); if (act === 5) queens(dt, playing);
     if (state === 'tab') { tableau(dt); posed(); }
   }
   if (act === 2 && state !== 'title') SC.update(dt, me, playing, time);
   theRabbit(dt); cameraAndLight(dt);
-  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = new V3(); bubbleG.getWorldPosition(v); v.y += bubbleG === meG ? 1.75 * me.S * BASE + 0.1 : bubbleG === cat ? 0.9 : bubbleG === hatter ? 2.1 : 1.55 * bubbleG.scale.y; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 150, innerWidth - 150) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1); } }
-  fieldCoins.visible = gardenCoins.visible = state !== 'tab' && state !== 'done';
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = new V3(); bubbleG.getWorldPosition(v); v.y += bubbleG === meG ? 1.75 * me.S * BASE + 0.1 : bubbleG === cat || bubbleG === grinCat ? 0.9 : bubbleG === hatter ? 2.1 : bubbleG === queen ? 2.05 : 1.55 * bubbleG.scale.y; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 150, innerWidth - 150) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1); } }
+  fieldCoins.visible = gardenCoins.visible = queenCoins.visible = state !== 'tab' && state !== 'done';
   ENG.uniforms.uFog.value.set(scene.fog.color.r > 0.6 ? scene.fog.near : 1e6, scene.fog.color.r > 0.6 ? scene.fog.far : 2e6);
   shade += (shadeWant - shade) * Math.min(1, dt * 5); ENG.uniforms.uShade.value = shade; ENG.uniforms.uFade.value += (fadeWant - ENG.uniforms.uFade.value) * Math.min(1, dt * 3);
   SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp((act === 2 ? 0.55 : 0) + Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
 }
-let shake = 0;
+let shake = 0, idleT = 0, fanT = 0;
+// what matters in the hall at each stage of the puzzle: where the glint sits, and where the camera glances when she has stood still a while
+function hallHint() { const k = [TAB[0] + 0.05, Y_H + 0.86, TAB[1] + 0.02]; return hStage === 0 || hStage === 4 ? k : hStage === 1 || hStage === 7 ? [DOOR[0], Y_H + 0.25, HZ1 + 0.2] : hStage === 2 ? [TAB[0] - 0.1, Y_H + 0.95, TAB[1] + 0.08] : hStage === 3 ? [cake.position.x, Y_H + 0.12, cake.position.z] : hStage === 5 ? [rb.x, Y_H + 0.7, rb.z] : hStage === 6 ? [FANP[0], Y_H + 0.1, FANP[1]] : null; }
 // Alice as each plate has her
 function posed() { const u = meG.userData, t = FIG.turn;
   if (tab === 1) { t(u, 'upperarmR', -34, -4, 0); t(u, 'forearmR', -96, 0, 0); t(u, 'upperarmL', -12, 4, 0); t(u, 'forearmL', -98, 0, 0); u.hd.rotation.x = 0.2; u.hd.rotation.y = 0.5;
     meG.updateMatrixWorld(true); held.getWorldPosition(tmp); place(bottle, hallG, tmp.x, tmp.y - 0.03, tmp.z); bottle.rotation.set(0, 0.5, -0.25);      /* the bottle upright in her raised hand, its label hanging out to the side */
     if (me.hasKey) { me.hasKey = false; place(key, hallG, TAB[0] - 0.02, Y_H + 0.835, TAB[1] + 0.06); key.scale.setScalar(1.4); } }
   if (tab === 2) { t(u, 'upperarmL', 26, 6, 0); t(u, 'forearmL', 8, 0, 0); t(u, 'upperarmR', 26, -6, 0); t(u, 'forearmR', 8, 0, 0); u.hd.rotation.x = -0.42; u.hd.rotation.y = 0; }        // hands behind her back, looking up
+  if (tab === 5) { t(u, 'upperarmR', -24, -8, 0); t(u, 'forearmR', -92, 0, 0); t(u, 'upperarmL', -24, 8, 0); t(u, 'forearmL', -92, 0, 0); u.hd.rotation.x = -0.22; u.hd.rotation.y = 0.35; }
   if (tab === 3) { const k = sstep(0.4, 2.0, tabT); meG.position.y = me.y - 0.04 * k; t(u, 'thighL', -78 * k, 0, 0); t(u, 'thighR', -78 * k, 0, 0); t(u, 'shinL', 78 * k, 0, 0); t(u, 'shinR', 78 * k, 0, 0); t(u, 'upperarmR', -40 * k, 12, 0); t(u, 'forearmR', -50 * k, 0, 0); u.hd.rotation.x = 0.12; u.hd.rotation.y = 0.3; }
 }
 function field(dt) {
@@ -425,6 +539,8 @@ function fall(dt, turn, go, jump) {
 function hall(dt, playing) {
   const S = me.S, dTab = Math.hypot(me.x - TAB[0], me.z - TAB[1]), dDoor = Math.hypot(me.x - DOOR[0], me.z - DOOR[1]), normal = me.Sw === 1 && S > 0.9 && S < 1.1, small = me.Sw < 0.5 && S < 0.3, large = me.Sw > 1.5 && S > 2;
   key.rotation.y += dt * 1.2; if (me.hasKey) { key.rotation.y = 0; }
+  { const h = hallHint(), on = h && [0, 2, 3, 4, 6].includes(hStage) && state === 'play'; glint.visible = !!on; if (on) { glint.position.set(h[0], h[1] + (hStage === 6 ? 0.25 : 0.06), h[2]); glint.quaternion.copy(camera.quaternion); glint.rotateZ(time * 0.9); glint.scale.setScalar((0.55 + 0.45 * Math.abs(Math.sin(time * 2.6))) * (hStage === 6 ? 2.4 : S < 0.5 ? 0.9 : 1.3)); } }
+  idleT = playing && Math.abs(me.speed) < 0.4 && !me.air ? idleT + dt : Math.min(idleT, 0); if (idleT > 8.5) idleT = -5;
   if (pool.visible) { pool.userData.k = Math.min(1, pool.userData.k + dt * 0.12); pool.position.y = Y_H - 0.02 + 0.12 * pool.userData.k; pool.children[0].material.map.offset.x = time * 0.02; }
   if (S > 0.5 && dTab < 0.4 + 0.3 * S) { const d = Math.max(dTab, 0.01), ux = dTab < 0.05 ? 0 : (me.x - TAB[0]) / d, uz = dTab < 0.05 ? 1 : (me.z - TAB[1]) / d; me.x = TAB[0] + ux * (0.41 + 0.3 * S); me.z = TAB[1] + uz * (0.41 + 0.3 * S); }
   if (!playing) return;
@@ -439,12 +555,14 @@ function hall(dt, playing) {
   }
   if (hStage === 2 && normal && dTab < 1.3 && !me.air) { if (first('bottleSeen')) tell('“…this time she found a little bottle on it, (‘which certainly was not here before,’ said Alice)…”', 6); startTab(1); }
   if (hStage === 3 && small) {
+    if (once.has('reach') && idleT > 3 && first('eatit')) say(meG, '“Well, I’ll eat it, and if it makes me grow larger, I can reach the key; and if it makes me grow smaller, I can creep under the door…”', 7);
     if (dTab < 1.3 && first('reach')) tell('“…she could see it quite plainly through the glass… Soon her eye fell on a little glass box that was lying under the table.”', 8);
     if (Math.hypot(me.x - cake.position.x, me.z - cake.position.z) < 0.24) { hStage = 4; cake.visible = false; grow(2.2, true); SC.gain(30, 'Eat me', 2); say(meG, '“Curiouser and curiouser! … now I’m opening out like the largest telescope that ever was! Good-bye, feet!”', 6); pool.visible = true; pool.userData.k = 0; }
   }
   if (hStage === 4 && large && dTab < 2.0) { hStage = 5; takeKey(); SC.gain(30, 'The key again', 2); tell('“…she at once took up the little golden key and hurried off to the garden door.”', 6);
-    Object.assign(rb, { x: -HX + 0.6, z: HZ1 + 5, y: Y_H, mode: 'return', v: 3.2, tx: FANP[0] - 0.4, tz: FANP[1] + 0.5 }); rabbit.visible = true; rabbit.scale.setScalar(1); setTimeout(() => { if (act === 3) say(rabbit, '“Oh! the Duchess, the Duchess! Oh! won’t she be savage if I’ve kept her waiting!”', 5); }, 700); }
+    Object.assign(rb, { x: -HX + 0.6, z: -121.4, y: Y_H, mode: 'return', v: 3.2, tx: clamp(me.x + (me.x > 1 ? -2.2 : 2.2), -3.6, 3.6), tz: Math.max(me.z - 3.0, BZ + 1.5) }); rabbit.visible = true; rabbit.scale.setScalar(1); setTimeout(() => { if (act === 3) say(rabbit, '“Oh! the Duchess, the Duchess! Oh! won’t she be savage if I’ve kept her waiting!”', 5); }, 700); }
   if (hStage === 6 && Math.hypot(me.x - FANP[0], me.z - FANP[1]) < 1.5) { hStage = 7; fan.visible = false; held.add(fan); fan.position.set(0, -0.05, 0.1); fan.rotation.set(0, 0, 0); fan.scale.setScalar(1 / (BASE * S)); fan.visible = true; grow(0.2, false); SC.gain(30, 'The Rabbit’s fan', 2); tell('“…she soon found out that the cause of this was the fan she was holding…”', 7); setTimeout(() => { fan.scale.setScalar(0.5 / (BASE * 0.2)); }, 1500); }
+  if (hStage === 6 && time - fanT > 6 && first('fanhint')) tell('“Alice took up the fan and gloves, and, as the hall was very hot, she kept fanning herself…”', 7);
   if (hStage === 7 && small && me.wet > 0.5 && first('swim')) say(meG, '“I wish I hadn’t cried so much!”', 4);
 }
 function takeKey() { me.hasKey = true; heldL.add(key); key.position.set(0, -0.03, 0.06); key.rotation.set(0, 0, 1.2); key.scale.setScalar(1.3 / (BASE * Math.max(1, me.S))); SND.bell(7, 0.08); SND.bell(10, 0.07, 0.12); }
@@ -462,6 +580,7 @@ function garden(dt, playing) {
     if (t > 30 && catS.want === 1) catS.want = 1.3; }
   const dTea = Math.hypot(me.x - TEA[0] + 3.2, me.z - TEA[1] - 1.4);
   if (me.z < TEA[1] + 15 && first('noroom')) { say(hare, '“No room! No room!”', 3.4); setTimeout(() => { if (state === 'play') say(meG, '“There’s plenty of room!”', 3); }, 3600); }
+  if (seen.has(3) && state === 'play' && Math.hypot(me.x - DT[0] - 1.5, me.z - DT[1]) < 1.6) { state = 'drop'; say(meG, '“That’s very curious! But everything’s curious today. I think I may as well go in at once.”', 4); setTimeout(() => { shadeWant = 1; }, 1600); setTimeout(() => { setAct(5); state = 'play'; shadeWant = 0; }, 2600); }
   if (!seen.has(3) && dTea < 2.6 && !me.air) { startTab(3); setTimeout(() => say(hatter, '“Why is a raven like a writing-desk?”', 3.4), 900); }
 }
 // the White Rabbit: always ahead of her, never caught
@@ -479,11 +598,11 @@ function theRabbit(dt) {
     if (rb.mode === 'toDoor') { u.pose(rb.ph, rb.v / 7); if (goTo(rb.tx, rb.tz, 9)) { rb.mode = 'gone3'; curtain.rotation.y = -1.2; setTimeout(() => { curtain.rotation.y = 0; }, 900); SND.whoosh(0.07); tell('“…she turned the corner, but the Rabbit was no longer to be seen.”', 5); } }
     if (rb.mode === 'gone3') { rabbit.scale.multiplyScalar(Math.max(0, 1 - dt * 7)); if (rabbit.scale.x < 0.02) { rabbit.visible = false; rb.mode = 'out'; } }
     if (rb.mode === 'return') { u.pose(rb.ph, 0.4); if (goTo(rb.tx, rb.tz, 3.2)) { rb.mode = 'start'; rb.t = 0; say(meG, '“If you please, sir—”', 2.6); } }
-    if (rb.mode === 'start') { rb.t += dt; u.pose(0, 0); rabbit.position.y = Y_H + Math.max(0, 0.5 * Math.sin(rb.t * 9) * (rb.t < 0.35 ? 1 : 0)); if (rb.t > 0.2 && hStage === 5) { hStage = 6; place(fan, hallG, FANP[0], Y_H + 0.02, FANP[1]); fan.rotation.set(-Math.PI / 2, 0, 0.6); fan.scale.setScalar(1); place(gloves, hallG, FANP[0] + 0.6, Y_H, FANP[1] + 0.3); SND.puff(0.1);
+    if (rb.mode === 'start') { rb.t += dt; u.pose(0, 0); rabbit.position.y = Y_H + Math.max(0, 0.5 * Math.sin(rb.t * 9) * (rb.t < 0.35 ? 1 : 0)); if (rb.t > 0.2 && hStage === 5) { hStage = 6; fanT = time; FANP[0] = rb.x - 0.4; FANP[1] = rb.z + 0.5; place(fan, hallG, FANP[0], Y_H + 0.02, FANP[1]); fan.rotation.set(-Math.PI / 2, 0, 0.6); fan.scale.setScalar(1); place(gloves, hallG, FANP[0] + 0.6, Y_H, FANP[1] + 0.3); SND.puff(0.1);
         tell('“The Rabbit started violently, dropped the white kid gloves and the fan, and skurried away into the darkness as hard as he could go.”', 8); }
-      if (rb.t > 1.0) { rb.mode = 'flee'; rb.tx = HX - 0.5; rb.tz = HZ1 + 4.8; } }
+      if (rb.t > 1.0) { rb.mode = 'flee'; rb.tx = HX - 0.5; rb.tz = -126.6; } }
     if (rb.mode === 'flee') { u.pose(rb.ph, 1.4); if (goTo(rb.tx, rb.tz, 12)) { rabbit.visible = false; rb.mode = 'out'; } }
-    rb.y = Y_H;
+    rb.y = Y_H + (rb.mode === 'toDoor' ? 0.6 * Math.max(0, 1 - Math.abs(rb.z - BZ) / 0.9) : 0);      // he hops the bench
   }
   rabbit.position.set(rb.x, Math.max(rb.y, rabbit.position.y * (rb.mode === 'start' ? 1 : 0) + rb.y * (rb.mode === 'start' ? 0 : 1)), rb.z); if (rb.mode !== 'start') rabbit.position.y = rb.y; rabbit.rotation.y = rb.yaw;
 }
@@ -492,12 +611,16 @@ function cameraAndLight(dt) {
   const S = me.S, fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw); let fogN = 50, fogF = 240, fogC = 1, hemiI = 1.1, sunI = 2.5, lampI = 0;
   const lerpTo = (p, l, fov, k) => { camera.position.x += (p[0] - camera.position.x) * k; camera.position.y += (p[1] - camera.position.y) * k; camera.position.z += (p[2] - camera.position.z) * k; camLook.lerp(tmp.set(l[0], l[1], l[2]), k); camera.lookAt(camLook); camera.fov += (fov - camera.fov) * k; };
   if (state === 'title') { camera.position.set(4, ground(4, 14) + 2.2, 14); camLook.set(0, 1, -30); camera.lookAt(camLook); }
-  else if (state === 'tab' || state === 'done') { const T = TABS[Math.max(0, tab)], c = T.cam(); lerpTo(c.pos, c.look, tabFov(T), Math.min(1, dt * 1.8)); if (tab === 1) { fogN = 7.5; fogF = 13; } if (tab === 0) { fogN = 9; fogF = 40; } if (tab === 3) { fogN = 9; fogF = 30; } if (tab === 2) { fogN = 12; fogF = 45; } }
+  else if (state === 'tab' || state === 'done') { const T = TABS[Math.max(0, tab)], c = T.cam(); lerpTo(c.pos, c.look, tabFov(T), Math.min(1, dt * 1.8)); if (tab === 1) { fogN = 7.5; fogF = 13; } if (tab === 0) { fogN = 9; fogF = 40; } if (tab === 3) { fogN = 9; fogF = 30; } if (tab === 2) { fogN = 12; fogF = 45; } if (tab === 4) { fogN = 9; fogF = 26; } if (tab === 5) { fogN = 7; fogF = 22; } }
+  else if (state === 'scene') { const mx = (me.x + Q.x) / 2, mz = (me.z + Q.z) / 2, dx = Q.x - me.x, dz = Q.z - me.z, d = Math.hypot(dx, dz) || 1; lerpTo([mx - dz / d * 4.6, Y_H + 1.55, mz + dx / d * 4.6], [mx, Y_H + 1.1, mz], 40, Math.min(1, dt * 2.5)); }
   else if (act === 2) { lerpTo([me.x * 0.4, me.y + 5.4, WZ + 2.9], [me.x * 0.6, me.y - 6, WZ - 1.0], 62, Math.min(1, dt * 4)); }
   else { const alt = Math.max(0, me.y - floorAt(me.x, me.z)), big = S > 1.5; let dist = (3.2 + Math.abs(me.speed) * 0.1) * Math.pow(S, 0.8) + alt * 0.5 + (big ? 1.6 : 0), cx = me.x - fx * dist, cz = me.z - fz * dist, cy = me.y + 2.0 * Math.pow(S, 0.9) + alt * 0.25;
     if (act === 4) cz = Math.min(cz, GZ0 - 0.75);
+    if (act === 5) cz = Math.min(cz, QZ + 1.4);
     if (act === 3) { cx = clamp(cx, -HX + 0.4, HX - 0.4); cz = clamp(cz, HZ1 + 0.4, WZ + WR - 0.4); if (cz > HZ0 - 0.2) cx = clamp(cx, -1.2, 1.2); if (cz > WZ - WR) cx = clamp(cx, -WR + 0.4, WR - 0.4); cy = Math.min(cy, Y_H + (cz > HZ0 ? 2.9 : HC - 0.25)); }
-    const k = Math.min(1, dt * 5.5); lerpTo([cx, cy, cz], [me.x + fx * 6 * Math.pow(S, 0.7), me.y + 1.35 * S * (big ? 0.6 : 1), me.z + fz * 6 * Math.pow(S, 0.7)], 58 + Math.abs(me.speed) * 0.9, k); camera.rotation.z += -me.lean * 0.25; }
+    const hint = act === 3 && idleT > 5 ? hallHint() : act === 4 && time < glanceT ? [DT[0] + 1.2, Y_H + 1.2, DT[1]] : null;
+    if (hint) { lerpTo([cx, cy, cz], hint, 50, Math.min(1, dt * 2)); } else {
+    const k = Math.min(1, dt * 5.5); lerpTo([cx, cy, cz], [me.x + fx * 6 * Math.pow(S, 0.7), me.y + 1.35 * S * (big ? 0.6 : 1), me.z + fz * 6 * Math.pow(S, 0.7)], 58 + Math.abs(me.speed) * 0.9, k); camera.rotation.z += -me.lean * 0.25; } }
   if (shake > 0) { camera.position.y += (Math.random() - 0.5) * shake; shake = Math.max(0, shake - dt * 0.3); }
   const dc = window.__road.dbg.cam; if (dc) { camera.position.set(...dc.pos); camera.lookAt(...dc.look); camera.fov = dc.fov || 50; }
   camera.updateProjectionMatrix();
@@ -515,10 +638,10 @@ function draw() {
 }
 
 /* ================= input, and the hooks the tests use ================= */
-addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (state === 'scene' && e.code === 'Space' && !e.repeat) Q.skip = true; if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
 addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; touch.jump = false; });
 const cv = $('cv'), sk = $('stick');
-cv.addEventListener('pointerdown', e => { if (state !== 'play') return; if (stick.id !== null) { touch.jump = true; touch.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointerdown', e => { if (state === 'scene') Q.skip = true; if (state !== 'play') return; if (stick.id !== null) { touch.jump = true; touch.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
 cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
 const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === touch.id) touch.jump = false; };
 cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
@@ -527,11 +650,12 @@ $('start').addEventListener('click', begin); $('again').addEventListener('click'
 window.__road = { dbg: { camera, THREE, scene, ENG, sun, hemi, rabbit, cat, hold: false, cam: null, TABS }, get state() { return state; }, get act() { return act; }, get hall() { return hStage; }, get tab() { return tab; }, get tabT() { return tabT; }, me, rb, begin,
   go(x, z) { me.x = x; me.z = z; me.speed = 0; }, face(a) { me.yaw = a; }, size(k) { me.S = me.Sw = k; },
   places: { start: [0, 8], rabbit: [RS[0], RS[1] + 12], hole: [0, HOLE_Z + 6], table: [TAB[0], TAB[1] + 4], door: [DOOR[0], DOOR[1] + 2], fan: FANP, gardenGate: [DOOR[0], GZ0 - 2], mushrooms: [shrooms[0][0], shrooms[0][1] + 3], cat: [CAT[0], CAT[1] + 9], tea: [TEA[0] - 2, TEA[1] + 9] },
-  ledges, shrooms, jarHome: jar.userData.home, cupboard: [WR, -103, WZ - 0.4], cake: [cake.position.x, cake.position.z], pathX, WZ, Y_H, HOLE_Z, TAB, DOOR, CAT, TEA, RS,
+  ledges, shrooms, jarHome: jar.userData.home, cupboard: [WR, -103, WZ - 0.4], cake: [cake.position.x, cake.position.z], pathX, WZ, Y_H, HOLE_Z, TAB, DOOR, CAT, TEA, RS, BZ, DT, ROSE, CRQ, QZ, Q, hh, arches, FANP, whiteRoses: whiteRoses.map(r => [ROSE[0] + r.position.x * 1.15, Y_H + r.position.y * 1.15, ROSE[1] + r.position.z * 1.15]),
   // jump.act(n) starts an act as play reaches it; jump.hallStage(h) sets the puzzle to a stage (0 nothing yet, 2 bottle on the table, 3 small, 4 large, 6 fan dropped, 7 small with the key); jump.tab(i) stages plate i
   jump: { act(n) { if (state === 'title' || state === 'done') begin(); state = 'play'; shadeWant = 0; $('melt').classList.remove('show'); $('plate').classList.remove('show'); if (n === 1) { reset(); state = 'play'; rb.mode = 'pass'; } else setAct(n); },
     hallStage(h) { this.act(3); rabbit.visible = false; rb.mode = 'out'; hStage = h; me.z = TAB[1] + 4; if (h >= 1 && h !== 3 && h !== 4) takeKey(); bottle.visible = h === 2; if (h === 3 || h === 7) me.S = me.Sw = 0.2; cake.visible = h === 3; if (h >= 4 && h <= 6) { me.S = me.Sw = 2.2; cake.visible = false; pool.visible = true; pool.userData.k = 1; } if (h === 7) { pool.visible = true; pool.userData.k = 1; cake.visible = false; } if (h === 6) { place(fan, hallG, FANP[0], Y_H + 0.02, FANP[1]); fan.rotation.set(-Math.PI / 2, 0, 0.6); place(gloves, hallG, FANP[0] + 0.6, Y_H, FANP[1] + 0.3); } },
-    tab(i) { if (i === 0) { this.act(1); Object.assign(rb, { x: RS[0], z: RS[1], mode: 'watch', watch: 1, yaw: -Math.PI / 2 + 0.38 }); me.z = RS[1] + 9; me.x = 0; } if (i === 1) { this.hallStage(2); me.x = TAB[0] + 0.9; me.z = TAB[1] + 0.9; } if (i === 2) { this.act(4); me.x = CAT[0]; me.z = CAT[1] + 7; } if (i === 3) { this.act(4); seen.add(2); me.x = TEA[0] - 3.2; me.z = TEA[1] + 3; } } } };
+    croquet() { this.act(5); Q.stage = 3; Q.t = 0; queen.visible = true; for (const c of guards) c.visible = true; Q.x = Q.tx = CRQ[0] + 3; Q.z = Q.tz = CRQ[1] + 4; flam.visible = true; hog.visible = true; me.z = CRQ[1] + 13; }, finale() { this.croquet(); Q.hoops = 3; },
+    tab(i) { if (i === 4) { this.act(5); me.x = ROSE[0]; me.z = ROSE[1] + 6; } if (i === 5) { this.croquet(); me.z = CRQ[1] + 6; Q.stage = 4; Q.t = 3; grinCat.visible = true; grinCat.position.set(me.x, Y_H + 2.3, me.z - 3.2); } if (i === 0) { this.act(1); Object.assign(rb, { x: RS[0], z: RS[1], mode: 'watch', watch: 1, yaw: -Math.PI / 2 + 0.38 }); me.z = RS[1] + 9; me.x = 0; } if (i === 1) { this.hallStage(2); me.x = TAB[0] + 0.9; me.z = TAB[1] + 0.9; } if (i === 2) { this.act(4); me.x = CAT[0]; me.z = CAT[1] + 7; } if (i === 3) { this.act(4); seen.add(2); me.x = TEA[0] - 3.2; me.z = TEA[1] + 3; } } } };
 let last = 0; function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(frame); }
 reset(); requestAnimationFrame(frame);
 </script>
