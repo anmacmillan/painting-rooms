@@ -17,7 +17,7 @@
   #go { display:inline-block; margin:1.1em 0 .4em; text-decoration:none; font-size:clamp(20px,2.8vw,30px); color:var(--ink); background:linear-gradient(#ffe08a, #f2c865); border-radius:999px; padding:.55em 1.6em; box-shadow:0 10px 26px rgba(0,0,0,.45), inset 0 -3px 0 rgba(0,0,0,.15); }
   #go:active { transform:translateY(2px); }
   /* the journey: four stops on one line of time */
-  .road { position:relative; max-width:1280px; margin:clamp(22px,3vw,40px) auto 0; display:grid; grid-template-columns:repeat(4, 1fr); gap:clamp(12px,2vw,28px); }
+  .road { position:relative; max-width:1500px; margin:clamp(22px,3vw,40px) auto 0; display:grid; grid-template-columns:repeat(var(--n, 4), 1fr); gap:clamp(12px,2vw,28px); }
   .road::before { content:""; position:absolute; left:6%; right:6%; top:clamp(13px,1.6vw,19px); height:4px; background:linear-gradient(90deg, #c7a24c, #f2c865, #c7a24c); border-radius:2px; opacity:.8; }
   a.stop { position:relative; text-decoration:none; display:flex; flex-direction:column; align-items:center; }
   .year { position:relative; z-index:1; font-size:clamp(15px,1.8vw,21px); background:#2a2d34; border:2px solid #c7a24c; border-radius:999px; padding:.1em .8em; margin-bottom:.9em; font-variant-numeric:tabular-nums; }
@@ -52,6 +52,7 @@
 <script type="module">
   import { LEVELS, loadScores } from './common/score.js';
   const all = loadScores(), road = document.getElementById('road'); let total = 0, found = 0, of = 0, nextIdx = LEVELS.findIndex(l => !(all[l.key] && all[l.key].runs));
+  road.style.setProperty('--n', LEVELS.length);
   LEVELS.forEach((l, k) => {
     const r = all[l.key], done = !!(r && r.runs), a = document.createElement('a'); a.href = l.href; a.className = 'stop ' + (done ? 'done' : k === nextIdx ? 'next' : 'todo'); of += l.paintings;
     const n = done ? Math.min(l.paintings, r.paintings || 0) : 0; if (done) { total += r.best; found += n; }

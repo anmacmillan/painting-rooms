@@ -5,6 +5,7 @@ export const LEVELS = [
   { key: 'florence', href: 'florence/street.html', name: 'Florence, about 1283', place: 'Florence', year: '1283', title: 'The New Life', by: 'Rossetti and Holiday', img: 'florence/images/holiday.jpg', paintings: 3, coin: 'florins' },
   { key: 'caravaggio', href: 'caravaggio/street.html', name: 'Rome, about 1600', place: 'Rome', year: '1600', title: "The Painter's Light", by: 'Caravaggio', img: 'caravaggio/images/calling.jpg', paintings: 3, coin: 'scudi' },
   { key: 'vermeer', href: 'vermeer/street.html', name: 'Delft, about 1665', place: 'Delft', year: '1665', title: 'The Girl in Delft', by: 'Vermeer', img: 'vermeer/images/pearl.jpg', paintings: 3, coin: 'ducats' },
+  { key: 'turner', href: 'turner/street.html', name: 'Maidenhead, 1844', place: 'Maidenhead', year: '1844', title: 'Rain, Steam and Speed', by: 'Turner', img: 'turner/images/rain_steam_speed.jpg', paintings: 2, coin: 'shillings' },
   { key: 'munch', href: 'munch/street.html', name: 'Åsgårdstrand, 1901', place: 'Åsgårdstrand', year: '1901', title: 'The Night Road', by: 'Munch', img: 'munch/paintings/girls_bridge.jpg', paintings: 2, coin: 'kroner' },
 ];
 const STORE = 'paintingRooms.v1';

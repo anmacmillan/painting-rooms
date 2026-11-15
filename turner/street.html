@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Rain, Steam and Speed: the Great Western Railway</title>
+<link rel="stylesheet" href="../common/world.css">
+<style>
+  #end > img { max-height:44vh; }
+  #bubble { font-size:17px; }
+  #plate { position:fixed; left:50%; bottom:max(34px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2.5s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.9); z-index:9; width:92vw; }
+  #plate.show { opacity:1; }
+  /* each tableau melts into the painting itself */
+  #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(16px) saturate(1.25); transition:opacity 5s ease, filter 6s ease; pointer-events:none; z-index:8; }
+  #melt.show { opacity:1; filter:none; } #melt.quick, body.quick #cv { transition-duration:2.4s, 2.8s; } #cv { transition:filter 5s ease; } body.melting #cv { filter:brightness(.3) blur(4px); } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.85; }
+  #tip { text-shadow:0 1px 8px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.8); }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
+<img id="melt" src="images/rain_steam_speed.jpg" alt="">
+<div id="plate"></div>
+<button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+<div id="title" class="screen">
+  <img src="images/rain_steam_speed.jpg" alt="Rain, Steam and Speed by J. M. W. Turner">
+  <div class="words"><h1>Rain, Steam and Speed</h1><p>the Great Western Railway, 1844 · after J. M. W. Turner</p><button class="go" id="start">Catch the train</button></div>
+</div>
+<div id="end" class="screen hidden">
+  <img src="images/rain_steam_speed.jpg" alt="Rain, Steam and Speed – The Great Western Railway, by J. M. W. Turner">
+  <h2>Rain, Steam and Speed – The Great Western Railway</h2>
+  <p>J. M. W. Turner showed this picture at the Royal Academy in 1844. It hangs in the National Gallery, London. An engine of the Firefly class brings a train of open wagons west over Brunel's bridge at Maidenhead; we look east, towards London, and the old road bridge of the 1770s stands on the left.</p>
+  <p><b>Real:</b> the bridge, in use from July 1839, with its two wide, flat brick arches; the track seven feet wide, its rails laid on long timbers; the engine, shaped here after the working replica of <i>Fire Fly</i> at Didcot, with one pair of seven-foot driving wheels, a tall chimney and no cab; the open wagons, in which those who paid least rode with the goods; the boat and the plough in the picture; and the hare. Turner brushed the hare in at the last, the paint has since gone transparent, and it shows now only in an engraving of 1859. The first picture you passed is his <i>Ploughing Up Turnips, near Slough</i>, shown in 1809 (Tate): Windsor Castle in the mist.</p>
+  <p><b>Imagined:</b> you, the driver, the fireman, the passengers and what they all wear; the station; the luggage; the size and fittings of the wagons; and the view of that field from the line, which was not built until thirty years after he painted it. Nobody ran along the top of a moving train.</p>
+  <p class="small">Paintings: public domain, via Wikimedia Commons. Sources for every statement: turner/research/FINDINGS.md.</p>
+  <button class="go" id="again">Ride it again</button>
+</div>
+<div id="err">This world needs WebGL, which this browser could not start.</div>
+
+<script src="../common/sound.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { makeFigures } from '../common/figure.js';
+import { canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
+import { makeScore, LEVELS } from '../common/score.js';
+const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
+
+/* ================= the line =================
+   The train stands still in the world and the land is drawn past it: that keeps the wagons, the coins and the score on fixed ground.
+   The train points down -z; a place on it is its distance s from the tail of the platform, so z = -s. North is +x (the right hand, going west), south is -x.
+   Facts and their sources: research/FINDINGS.md. Sizes marked there as unverified are chosen for play. */
+const T0 = 20, WL = 7.6, GAP = 1.5, NW = 12, NGOODS = 7, FLOOR = 1.25, PLAT_Y = 0.95, GROUND_Y = -0.5, VMAX = 17, GAUGE = 2.14;
+const wagons = [...Array(NW)].map((_, i) => ({ i, a: T0 + i * (WL + GAP), b: T0 + i * (WL + GAP) + WL, y: FLOOR, lat: i < NGOODS ? 1.25 : 0.8, goods: i < NGOODS }));
+const TEN_A = wagons[NW - 1].b + GAP, TEN_B = TEN_A + 5.6, FP_B = TEN_B + 2.3, ENG_F = FP_B + 6.4, LEN = ENG_F + 1;
+const VEH = [...wagons, { i: NW, a: TEN_A, b: TEN_B, y: 1.55, lat: 1.0, tender: true }, { i: NW + 1, a: TEN_B, b: FP_B, y: 1.2, lat: 0.95, foot: true }];
+const vehAt = (s, m = 0.24) => VEH.find(v => v.foot ? s >= v.a && s <= v.b : v.tender ? s > v.a - m && s < v.b : s > v.a - m && s < v.b + m) || null;
+const at = s => { s = clamp(s, 0, LEN); return { x: 0, z: -s, dx: 0, dz: -1 }; };
+const nearest = (x, z) => ({ s: clamp(-z, 0, LEN), d: Math.abs(x) });
+
+/* ================= renderer, and the oil-paint filter over everything ================= */
+let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
+const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR);
+const FOGC = C('#dccfae'), scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(FOGC.getHex(), 0.006);
+const camera = new THREE.PerspectiveCamera(60, 1, 0.2, 6000);
+const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
+// Each pixel takes the average colour of whichever neighbouring patch is the most even (as in munch/street.html); over it, slanting scumbles of rain.
+const post = new THREE.ShaderMaterial({ uniforms: { tScene: { value: target.texture }, uPx: { value: new THREE.Vector2() }, uTime: { value: 0 }, uRain: { value: 1 } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+  fragmentShader: `uniform sampler2D tScene; uniform vec2 uPx; uniform float uTime, uRain; varying vec2 vUv;
+    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
+    void main(){
+      vec2 uv = vUv + vec2(sin(vUv.y * 38.0 + uTime * 0.7), cos(vUv.x * 31.0 - uTime * 0.6)) * 0.0016;
+      vec3 best = vec3(0.0); float bestVar = 1e9;
+      for (int q = 0; q < 4; q++) {
+        vec2 dir = vec2(q == 0 || q == 3 ? -1.0 : 1.0, q < 2 ? -1.0 : 1.0); vec3 m = vec3(0.0), m2 = vec3(0.0);
+        for (int j = 0; j < 4; j++) for (int i = 0; i < 4; i++) { vec3 c = texture2D(tScene, uv + dir * vec2(float(i), float(j)) * uPx * 0.95).rgb; m += c; m2 += c * c; }
+        m /= 16.0; m2 = abs(m2 / 16.0 - m * m); float v = m2.r + m2.g + m2.b; if (v < bestVar) { bestVar = v; best = m; }
+      }
+      // rain: long light strokes dragged down the canvas at a slant
+      vec2 r = vec2(vUv.x * 1.6 + vUv.y * 0.55, vUv.y); float streak = noise(vec2(r.x * 170.0, r.y * 5.0 + uTime * 7.0)) * noise(vec2(r.x * 37.0 + 9.0, r.y * 2.0 + uTime * 3.1));
+      best = mix(best, vec3(1.0, 0.97, 0.86), smoothstep(0.42, 0.85, streak) * 0.2 * uRain);
+      float grain = hash(floor(vUv / uPx / 2.0)) * 0.05 - 0.025, weave = sin(vUv.x / uPx.x * 1.6) * sin(vUv.y / uPx.y * 1.6) * 0.012;
+      vec3 col = best * (1.0 + grain + weave); col *= 1.0 - 0.26 * pow(length(vUv - 0.5) * 1.25, 2.6);
+      gl_FragColor = vec4(col, 1.0);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`, depthTest: false, depthWrite: false });
+const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
+
+/* ================= light and sky: the sun low in the east behind the rain, gold and white, with scraps of blue ================= */
+const hemi = new THREE.HemisphereLight(0xfff1d2, 0x8a7a58, 1.55), sunL = new THREE.DirectionalLight(0xffe0a2, 1.5); scene.add(hemi, sunL, sunL.target);
+const SUN = new V3(0.12, 0.42, 1).normalize(), uni = { uTime: { value: 0 }, uFog: { value: FOGC }, uSun: { value: SUN }, uDen: { value: 0.006 } };
+const GLSL_NOISE = `float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
+    float fbm(vec2 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 5; i++) { s += a * noise(p); p = p * 2.03 + 7.1; a *= 0.5; } return s; }
+    vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }`;
+const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: uni,
+  vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `uniform float uTime; uniform vec3 uFog, uSun; varying vec3 vDir; ${GLSL_NOISE}
+    void main(){
+      vec3 d = normalize(vDir); float el = max(d.y, 0.0), t = uTime * 0.014;
+      vec2 p = d.xz / (d.y * 0.9 + 0.32);                                                   // the cloud as a low ceiling
+      vec2 q = p * 1.2 + vec2(fbm(p * 0.7 + t), fbm(p * 0.7 - t + 4.0)) * 1.9;              // dragged about by the wind
+      float n = fbm(q + vec2(t * 2.0, 0.0)), n2 = fbm(q * 2.3 - vec2(0.0, t * 3.0) + 11.0);
+      vec3 cream = lin(vec3(0.98, 0.94, 0.83)), gold = lin(vec3(0.90, 0.77, 0.50)), ochre = lin(vec3(0.70, 0.56, 0.34)), blue = lin(vec3(0.50, 0.62, 0.80)), grey = lin(vec3(0.60, 0.61, 0.63));
+      vec3 col = mix(gold, cream, smoothstep(0.30, 0.66, n));
+      col = mix(col, grey, smoothstep(0.50, 0.28, n) * 0.45);
+      col = mix(col, blue, smoothstep(0.5, 0.7, n2) * smoothstep(0.08, 0.4, el) * 0.85);
+      col = mix(col, ochre, smoothstep(0.62, 0.85, fbm(q * 3.7 + 3.0)) * 0.28);
+      float sd = max(dot(d, uSun), 0.0);
+      col += lin(vec3(1.0, 0.92, 0.70)) * (pow(sd, 5.0) * 0.13 + pow(sd, 40.0) * 0.3 + pow(sd, 700.0) * 0.9);    // the sun burning through
+      float veil = fbm(vec2(atan(d.z, d.x) * 5.0 + el * 7.0, el * 1.5 - uTime * 0.05));                          // slanting curtains of rain
+      col = mix(col, uFog * 1.05, smoothstep(0.42, 0.8, veil) * 0.4 * (1.0 - el));
+      col = mix(uFog, col, smoothstep(0.0, 0.2, d.y));
+      gl_FragColor = vec4(col, 1.0);
+    }` });
+const sky = new THREE.Mesh(new THREE.SphereGeometry(4500, 48, 24), skyMat); sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
+
+/* ================= helpers ================= */
+const lam = o => new THREE.MeshLambertMaterial(o);
+const bx = (w, h, d, x, y, z) => new THREE.BoxGeometry(w, h, d).translate(x, y, z);
+const cyl = (r0, r1, h, seg, x, y, z, axis) => { const g = new THREE.CylinderGeometry(r0, r1, h, seg); if (axis === 'z') g.rotateX(Math.PI / 2); else if (axis === 'x') g.rotateZ(Math.PI / 2); return g.translate(x, y, z); };
+const merged = (geos, mat) => new THREE.Mesh(mergeGeometries(geos.map(g => g.index ? g.toNonIndexed() : g)), mat);
+const daub = (base, cols, n = 160, wid = 9) => canvasTex(256, 256, (g, w, h) => { g.fillStyle = base; g.fillRect(0, 0, w, h); strokes(g, w, h, cols, n, wid, 8); }, true);
+const greyTex = canvasTex(512, 512, (g, w, h) => { g.fillStyle = '#c4c4c4'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#e9e9e9', '#a4a4a4', '#d6d6d6', '#959595', '#f4f4f4', '#b4b4b4'], 300, 11, 12); }, true);
+const sph = new THREE.SphereGeometry(1, 14, 10);
+
+/* ================= the land that is drawn past ================= */
+let L = 0, V = 0;                                       // metres run, metres a second
+const TILE = 240, fieldTex = canvasTex(1024, 1024, (g, w, h) => {      // fields in gold, olive and umber, laid in long strokes
+  g.fillStyle = '#b9a766'; g.fillRect(0, 0, w, h);
+  for (let i = 0; i < 26; i++) { g.fillStyle = ['#c8b572', '#a89a5c', '#b39a58', '#9a9460', '#cdb97c', '#8f7f4c', '#bfae74'][i % 7]; g.globalAlpha = 0.55; const x = rnd(0, w), y = rnd(0, h), a = rnd(120, 360), b = rnd(90, 260); for (const ox of [-w, 0, w]) for (const oy of [-h, 0, h]) g.fillRect(x + ox, y + oy, a, b); }
+  g.globalAlpha = 1; strokes(g, w, h, ['#d2c084', '#a3945a', '#c4b070', '#94855a', '#dccb92', '#b0a468'], 420, 9, 10); }, true);
+const groundM = lam({ map: fieldTex }); fieldTex.repeat.set(3000 / TILE, 3000 / TILE);
+const plane = () => { const m = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), groundM); m.rotation.x = -Math.PI / 2; m.position.y = GROUND_Y; scene.add(m); return m; };
+const landE = plane(), landW = plane(); landW.visible = false;
+// the permanent way: Brunel's "baulk road", rails on continuous timbers held to gauge by cross transoms; two tracks
+const ballastTex = canvasTex(256, 512, (g, w, h) => { g.fillStyle = '#7f6c50'; g.fillRect(0, 0, w, h); for (let i = 0; i < 2600; i++) { g.fillStyle = ['#8c7a5c', '#6f5e46', '#96846a', '#655540', '#a08e70'][i % 5]; g.fillRect(rnd(0, w), rnd(0, h), rnd(2, 6), rnd(2, 5)); } }, true); ballastTex.repeat.set(2, 700 / 9.6);
+{ const b = new THREE.Mesh(new THREE.PlaneGeometry(9.6, 700), lam({ map: ballastTex })); b.rotation.x = -Math.PI / 2; b.position.set(-2.2, -0.28, -110); scene.add(b);
+  const timber = lam({ color: '#6b5236', map: greyTex }), iron = lam({ color: '#5a5650' }), gs = [], rs = [];
+  for (const cx of [0, -4.3]) for (const sd of [-1, 1]) { gs.push(bx(0.36, 0.2, 700, cx + sd * (GAUGE / 2 + 0.03), -0.17, -110)); rs.push(bx(0.07, 0.07, 700, cx + sd * (GAUGE / 2 + 0.03), -0.035, -110)); }
+  scene.add(merged(gs, timber), merged(rs, iron)); }
+const TRANSOM = 4.5, transoms = new THREE.InstancedMesh(new THREE.BoxGeometry(GAUGE + 0.5, 0.16, 0.3), lam({ color: '#8a7250', map: greyTex }), 2 * 100); transoms.frustumCulled = false; scene.add(transoms);
+// post-and-rail fencing down both sides, and what stands in the fields: all of it comes out of the mist ahead, runs past and is used again
+const fencePosts = new THREE.InstancedMesh(mergeGeometries([bx(0.14, 1.3, 0.14, 0, 0.65, 0), bx(0.05, 0.12, 3.0, 0, 1.05, 1.5), bx(0.05, 0.12, 3.0, 0, 0.6, 1.5)]), lam({ color: '#6f6248', map: greyTex }), 2 * 150); fencePosts.frustumCulled = false; scene.add(fencePosts);
+const blob = (() => { const g = new THREE.IcosahedronGeometry(1, 2), p = g.attributes.position; for (let i = 0; i < p.count; i++) { const v = new V3().fromBufferAttribute(p, i), k = 1 + 0.16 * Math.sin(v.x * 4.1 + v.y * 2.3) * Math.cos(v.z * 3.7) + 0.08 * Math.sin(v.y * 9.0); p.setXYZ(i, v.x * k, v.y * k * 0.9, v.z * k); } g.computeVertexNormals(); return g; })();
+const leafM = ['#5d5c34', '#74703c', '#4b4c30', '#8a7c44', '#666a3c'].map(c => lam({ color: c, map: greyTex })), trunkM = lam({ color: '#4a3a2a' }), hayM = lam({ color: '#c9a858', map: greyTex }), wallM = lam({ color: '#cfc3a6', map: greyTex }), roofM = lam({ color: '#6b5a48', map: greyTex });
+const goldM = ['#b0a05c', '#c2ae66', '#9c9454', '#a8985a'].map(c => lam({ color: c, map: greyTex }));
+function tree(k = 1, mats = leafM) { const g = new THREE.Group(), t = new THREE.Mesh(new THREE.CylinderGeometry(0.22 * k, 0.4 * k, 4.2 * k, 6), trunkM); t.position.y = 2.1 * k; g.add(t);
+  for (const [dx, dy, dz, s] of [[0, 6.0, 0, 3.6], [1.5, 7.2, 0.9, 2.5], [-1.4, 5.3, -0.8, 2.6]]) { const b = new THREE.Mesh(blob, mats[Math.floor(rnd(0, mats.length))]); b.scale.setScalar(s * k); b.position.set(dx * k, dy * k, dz * k); b.rotation.y = rnd(0, 6); g.add(b); } return g; }
+const hedge = (len, tall = 1, mats = leafM) => { const g = new THREE.Group(), n = Math.round(len / 5); for (let i = 0; i < n; i++) { const b = new THREE.Mesh(blob, mats[(i * 3) % mats.length]); b.scale.set(3.2 * (tall > 1 ? 1.5 : 1), rnd(1.1, 1.9) * tall, 1.5 * tall); b.position.set((i - n / 2) * 5, 0.9, 0); g.add(b); } return g; };
+const rick = () => { const g = new THREE.Group(), b = new THREE.Mesh(new THREE.CylinderGeometry(2.4, 2.7, 2.6, 10), hayM); b.position.y = 1.3; const t = new THREE.Mesh(new THREE.ConeGeometry(2.7, 2.0, 10), hayM); t.position.y = 3.6; g.add(b, t); return g; };
+const cottage = () => { const g = new THREE.Group(), w = new THREE.Mesh(new THREE.BoxGeometry(8, 3, 5), wallM); w.position.y = 1.5; const sh = new THREE.Shape([new THREE.Vector2(-3, 0), new THREE.Vector2(3, 0), new THREE.Vector2(0, 2.4)]), r = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 8.8, bevelEnabled: false }), roofM); r.rotation.y = Math.PI / 2; r.position.set(-4.4, 3, 0); g.add(w, r); return g; };
+const scen = [], SPAN = 560;
+const bush = () => { const g = new THREE.Group(); for (let i = 0; i < 2; i++) { const b = new THREE.Mesh(blob, leafM[Math.floor(rnd(0, leafM.length))]); b.scale.set(rnd(1.2, 2.2), rnd(0.9, 1.6), rnd(1.2, 2.2)); b.position.set(i * 1.6, 0.8, rnd(-0.6, 0.6)); g.add(b); } return g; };
+for (let i = 0; i < 130; i++) { const kind = i < 50 ? 'tree' : i < 80 ? 'hedge' : i < 92 ? 'rick' : i < 98 ? 'cottage' : 'bush', g = kind === 'tree' ? tree(rnd(0.8, 1.5)) : kind === 'hedge' ? hedge(rnd(24, 60)) : kind === 'rick' ? rick() : kind === 'bush' ? bush() : cottage(); scene.add(g); scen.push({ g, kind, x: 0, z: 0 }); }
+function roll(o, z) { const sd = Math.random() < 0.5 ? 1 : -1, d = o.kind === 'hedge' ? rnd(30, 170) : o.kind === 'cottage' ? rnd(60, 190) : o.kind === 'rick' ? rnd(26, 140) : o.kind === 'bush' ? rnd(7.5, 22) : rnd(16, 210);
+  o.x = sd > 0 ? 6 + d : -10 - d; o.z = z; o.g.rotation.y = o.kind === 'hedge' ? (Math.random() < 0.3 ? Math.PI / 2 : rnd(-0.2, 0.2)) : rnd(0, 6); }
+
+/* ---- the station the train leaves from. Slough had its first proper station from June 1840; what it looked like here is imagined. ---- */
+const station = new THREE.Group(); scene.add(station); {
+  const flagT = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#a79f8e'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#b8b09e', '#978f7e', '#c4bcaa', '#8d8676'], 90, 10, 6); g.strokeStyle = 'rgba(60,54,44,.5)'; g.lineWidth = 2; for (let k = 0; k <= 4; k++) { g.beginPath(); g.moveTo(0, k * 64); g.lineTo(w, k * 64); g.moveTo(k * 64, 0); g.lineTo(k * 64, h); g.stroke(); }
+    g.globalAlpha = 0.35; strokes(g, w, h, ['#efe6c8', '#f7f0d8'], 26, 14, 10); g.globalAlpha = 1; }, true); flagT.repeat.set(3, 50);          // wet flagstones holding the light
+  const pf = new THREE.Mesh(new THREE.BoxGeometry(7.6, 1.5, 150), lam({ map: flagT })); pf.position.set(1.75 + 3.8, PLAT_Y - 0.75, -45); station.add(pf);
+  const bank = station.userData.bank = new THREE.Mesh(new THREE.BoxGeometry(5.2, 1.5, 900), lam({ color: '#a2955f', map: greyTex })); bank.position.set(1.75 + 2.6, PLAT_Y - 0.76, -120 - 450); station.add(bank);          // past the platform end the bank runs on level, so she can always keep running
+  const hall = merged([bx(7, 5.2, 34, 0, 2.6, 0)], lam({ color: '#b9a583', map: greyTex })); hall.position.set(13.2, PLAT_Y, -34); station.add(hall);
+  const sh = new THREE.Shape([new THREE.Vector2(-4.4, 0), new THREE.Vector2(4.4, 0), new THREE.Vector2(0, 2.6)]), roof = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 36, bevelEnabled: false }), roofM); roof.position.set(13.2, PLAT_Y + 5.2, -52); station.add(roof);
+  const awn = merged([bx(4.6, 0.14, 30, 0, 0, 0), ...[-13, -6.5, 0, 6.5, 13].map(z => bx(0.14, 3.2, 0.14, -1.7, -1.6, z))], lam({ color: '#5c5346', map: greyTex })); awn.position.set(8.7, PLAT_Y + 3.3, -34); station.add(awn);
+  const board = new THREE.Mesh(new THREE.PlaneGeometry(4.2, 0.9), new THREE.MeshLambertMaterial({ map: canvasTex(512, 110, (g, w, h) => { g.fillStyle = '#efe7d2'; g.fillRect(0, 0, w, h); g.strokeStyle = '#2a2622'; g.lineWidth = 8; g.strokeRect(4, 4, w - 8, h - 8); g.fillStyle = '#2a2622'; g.font = '600 74px Georgia, serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('SLOUGH', w / 2, h / 2 + 4); }) })); board.rotation.y = -Math.PI / 2; board.position.set(9.65, PLAT_Y + 2.4, -30); station.add(board);
+}
+
+/* ---- the first picture's field: Ploughing Up Turnips, near Slough (shown 1809). Laid out from the painting; it lies south of the line. ---- */
+const field = new THREE.Group(); field.visible = false; scene.add(field);
+const FCAM = { x: -26, y: GROUND_Y + 1.55, look: [-200, 15, -4], fov: 38 }, FP = (d, r, y = GROUND_Y) => new V3(FCAM.x - d, y, -r);          // d metres in front of the painter, r to his right
+/* ---- Maidenhead: the Thames, Brunel's bridge of two flat brick arches, and upstream the road bridge of the 1770s ---- */
+const valley = new THREE.Group(); valley.visible = false; scene.add(valley);
+const WATER_Y = -10.6, BEND = [20, 0], RD = [0.42, 0.91], RN = [0.91, -0.42], ROADB = [BEND[0] + RD[0] * 178, BEND[1] + RD[1] * 178], U0 = -150, U1 = 280;
+// The river runs straight under the railway. Above it the model swings the reach round to the north-east, so that the road bridge stands in the picture where Turner put it
+// (in life it lies upstream, off to the left of this view: see research/FINDINGS.md). riverD is the distance from mid-stream.
+const riverD = (x, u) => { const d1 = x <= BEND[0] ? Math.abs(u) : Math.hypot(x - BEND[0], u), t = clamp((x - BEND[0]) * RD[0] + (u - BEND[1]) * RD[1], 0, 420); return Math.min(d1, Math.hypot(x - BEND[0] - RD[0] * t, u - BEND[1] - RD[1] * t)); };
+const valleyH = (x, u) => { const a = riverD(x, u); let h = mix(-9.5, GROUND_Y - 0.03, sstep(70, 138, a)); if (a < 52) h = mix(-12.5, h, sstep(42, 52, a));
+  h = mix(h, GROUND_Y - 0.03, Math.max(sstep(205, 268, u), sstep(-100, -146, u)));                                                    // the low ground closes before the edge of the model
+  if (Math.abs(u) > 79) { const off = Math.max(0, x - 2.9, -7.3 - x); h = Math.max(h, GROUND_Y - 0.04 - off / 1.7); }               // the embankment up to each end of the railway bridge
+  const s = (x - ROADB[0]) * RN[0] + (u - ROADB[1]) * RN[1], w = (x - ROADB[0]) * RD[0] + (u - ROADB[1]) * RD[1]; if (Math.abs(s) > 66 && Math.abs(s) < 170 && Math.abs(w) < 30) h = Math.max(h, -2.6 - Math.max(0, Math.abs(w) - 4.5) / 1.6);      // the causeway of the road bridge
+  return h; };
+const waterMat = new THREE.ShaderMaterial({ uniforms: uni, fog: false,
+  vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+  fragmentShader: `uniform float uTime, uDen; uniform vec3 uFog, uSun; varying vec3 vW; ${GLSL_NOISE}
+    void main(){
+      vec2 p = vW.xz; float w = noise(p * 0.04 + vec2(uTime * 0.03, 0.0)) * 5.0, band = sin(p.x * 0.33 + w + uTime * 0.3), band2 = sin(p.x * 0.9 - w * 1.7 + uTime * 0.5 + p.y * 0.2);
+      vec3 deep = lin(vec3(0.60, 0.57, 0.46)), light = lin(vec3(0.83, 0.77, 0.58)), col = mix(deep, light, smoothstep(-0.6, 1.0, band) * 0.7);
+      col = mix(col, lin(vec3(0.96, 0.91, 0.74)), smoothstep(0.8, 1.0, band2) * 0.3);                                                   // the wet light lying on the river
+      vec3 v = normalize(cameraPosition - vW), rf = reflect(-v, vec3(0.0, 1.0, 0.0)); col += lin(vec3(1.0, 0.9, 0.66)) * pow(max(dot(rf, uSun), 0.0), 9.0) * 0.35;
+      float dist = distance(vW, cameraPosition), f = 1.0 - exp(-uDen * uDen * dist * dist); gl_FragColor = vec4(mix(col, uFog, f), 1.0);
+    }` });
+
+/* ================= the train: built from the Firefly class as recorded, and the working replica of Fire Fly (photograph in research/commons) =================
+   2-2-2: one pair of 7 ft driving wheels between 4 ft carrying wheels, wheelbase 13 ft 2 in; outside frames; a boiler lagged in wood under brass bands;
+   a tall chimney; a raised brass firebox casing; an open footplate with no cab; a six-wheeled tender. No rods show: in the photograph the frames and wheels hide the motion. */
+const train = new THREE.Group(); scene.add(train);
+const wheels = [], wheelGeo = (r, n) => mergeGeometries([new THREE.TorusGeometry(r - 0.05, 0.05, 6, 30).rotateY(Math.PI / 2), cyl(0.13, 0.13, 0.22, 10, 0, 0, 0, 'x'), ...[...Array(n)].map((_, k) => new THREE.BoxGeometry(0.05, r * 2 - 0.12, 0.07).rotateX(k * Math.PI / n))].map(g => g.toNonIndexed()));
+const WG = { big: wheelGeo(1.067, 10), four: wheelGeo(0.61, 7), wag: wheelGeo(0.5, 5) }, wheelM = lam({ color: '#2a2622' });
+function axle(s, kind, par = train) { const r = kind === 'big' ? 1.067 : kind === 'four' ? 0.61 : 0.5; for (const sx of [-1, 1]) { const w = new THREE.Mesh(WG[kind], wheelM); w.position.set(sx * (GAUGE / 2 + 0.03), r, -s); w.rotation.x = rnd(0, 6); par.add(w); wheels.push({ w, r }); } }
+const woodM = lam({ color: '#6a4a30', map: greyTex }), wood2M = lam({ color: '#7a5a3a', map: greyTex }), frameM = lam({ color: '#4a3324', map: greyTex }), blackM = lam({ color: '#1f1e1e' }), brassM = lam({ color: '#b98c3a', emissive: '#2a1e08' }), redM = lam({ color: '#a8281e' }), ironM = lam({ color: '#3a3836' });
+const lagT = canvasTex(256, 256, (g, w, h) => { for (let x = 0; x < w; x += 16) { g.fillStyle = ['#8a5a30', '#7a4e2a', '#96663a', '#84562e'][(x / 16) % 4]; g.fillRect(x, 0, 15, h); g.fillStyle = 'rgba(30,18,8,.5)'; g.fillRect(x + 15, 0, 1, h); } g.fillStyle = '#d2a84e'; for (const y of [10, 88, 166, 240]) g.fillRect(0, y, w, 7); }); lagT.wrapS = THREE.RepeatWrapping; lagT.repeat.set(2, 1);
+const cokeT = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#3a3936'; g.fillRect(0, 0, w, h); for (let i = 0; i < 500; i++) { g.fillStyle = ['#4c4b47', '#2b2a28', '#5a5852', '#201f1e'][i % 4]; g.beginPath(); g.arc(rnd(0, w), rnd(0, h), rnd(3, 9), 0, 7); g.fill(); } }, true);
+const plankT = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#7a5c3c'; g.fillRect(0, 0, w, h); for (let x = 0; x < w; x += 32) { g.fillStyle = ['#84643f', '#6e5236', '#8d6c46', '#644a30'][Math.floor(rnd(0, 4))]; g.fillRect(x, 0, 29, h); } g.globalAlpha = 0.25; strokes(g, w, h, ['#e9dcb8', '#f3e8c8'], 18, 10, 10, true); g.globalAlpha = 1; }, true); plankT.repeat.set(1.5, 4);
+const fireGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(128, 128, (g, w, h) => { const r = g.createRadialGradient(64, 64, 2, 64, 64, 64); r.addColorStop(0, 'rgba(255,244,214,1)'); r.addColorStop(0.25, 'rgba(255,150,60,.9)'); r.addColorStop(0.6, 'rgba(210,60,30,.45)'); r.addColorStop(1, 'rgba(160,30,20,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); }), blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false, opacity: 0 }));
+{ // the engine
+  const E = s => -s, drv = FP_B + 2.1, bz0 = FP_B + 1.25, bz1 = bz0 + 2.9, sb1 = bz1 + 1.0;                                             // firebox from the footplate to bz0, barrel to bz1, smokebox to sb1
+  axle(FP_B + 0.2, 'four'); axle(drv, 'big'); axle(drv + 2.0 + 0.11, 'four');                                                             // 13 ft 2 in between the carrying axles
+  const frames = [bx(0.07, 0.5, ENG_F - TEN_B - 0.2, 1.3, 0.85, E((ENG_F + TEN_B) / 2 + 0.1)), bx(0.07, 0.5, ENG_F - TEN_B - 0.2, -1.3, 0.85, E((ENG_F + TEN_B) / 2 + 0.1))];
+  for (const sx of [-1, 1]) for (const [s, hgt] of [[FP_B + 0.2, 0.45], [drv, 0.5], [drv + 2.11, 0.45]]) frames.push(bx(0.09, hgt + 0.3, 0.5, sx * 1.3, 0.62, E(s)));           // the horns that hold each axle
+  train.add(merged(frames, frameM));
+  train.add(merged([bx(2.75, 0.1, FP_B - TEN_B, 0, 1.15, E((TEN_B + FP_B) / 2)), bx(2.75, 0.08, ENG_F - FP_B, 0, 1.12, E((FP_B + ENG_F) / 2))], wood2M));                          // footplate and running plate
+  const barrel = new THREE.Mesh(new THREE.CylinderGeometry(0.64, 0.64, bz1 - bz0, 22, 1), lam({ map: lagT })); barrel.rotation.x = Math.PI / 2; barrel.position.set(0, 1.98, E((bz0 + bz1) / 2)); train.add(barrel);
+  train.add(merged([cyl(0.7, 0.7, sb1 - bz1, 22, 0, 1.98, E((bz1 + sb1) / 2), 'z'), bx(1.5, 0.9, sb1 - bz1, 0, 1.45, E((bz1 + sb1) / 2)), cyl(0.2, 0.23, 1.75, 14, 0, 3.5, E(bz1 + 0.5)), cyl(0.3, 0.2, 0.22, 14, 0, 4.45, E(bz1 + 0.5)), cyl(0.52, 0.52, 0.05, 20, 0, 1.98, E(sb1) - 0.03, 'z'),
+    bx(1.5, 1.5, bz0 - FP_B, 0, 1.9, E((FP_B + bz0) / 2))], blackM));                                                                    // smokebox, chimney, the iron firebox below the brass
+  const casing = new THREE.Mesh(new THREE.SphereGeometry(1, 4, 8, Math.PI / 4, Math.PI * 2, 0, Math.PI / 2), brassM); casing.scale.set(1.12, 1.1, 0.98); casing.position.set(0, 2.3, E((FP_B + bz0) / 2)); train.add(casing);      // the raised firebox casing, four-sided and domed
+  train.add(merged([cyl(0.1, 0.16, 0.6, 10, 0, 2.9, E(bz0 + 1.3)), cyl(0.06, 0.1, 0.5, 8, 0, 3.6, E((FP_B + bz0) / 2)), ...[-1, 1].flatMap(sx => [new THREE.TorusGeometry(1.14, 0.05, 6, 20, Math.PI).rotateY(Math.PI / 2).translate(sx * 1.24, 1.067, E(drv))])], brassM));      // safety valve, and the brass rim of each splasher
+  train.add(merged([bx(2.9, 0.45, 0.22, 0, 0.98, E(ENG_F))], redM)); train.add(merged([-1, 1].map(sx => cyl(0.2, 0.2, 0.45, 12, sx * 0.95, 0.98, E(ENG_F + 0.3), 'z')), ironM));
+  const rail = []; for (const sx of [-1, 1]) { rail.push(bx(0.04, 0.04, FP_B - TEN_B - 0.3, sx * 1.3, 2.15, E((TEN_B + FP_B) / 2))); for (const s of [TEN_B + 0.2, FP_B - 0.15]) rail.push(bx(0.045, 1.0, 0.045, sx * 1.3, 1.67, E(s))); } train.add(merged(rail, ironM));
+  const hole = new THREE.Mesh(new THREE.CircleGeometry(0.2, 14), new THREE.MeshBasicMaterial({ color: '#ff9a3a', fog: false })); hole.position.set(0, 1.62, E(FP_B) + 0.01); train.add(hole);            // the firehole, facing the footplate
+  fireGlow.position.set(0, 1.75, E(sb1) - 0.35); fireGlow.scale.setScalar(2.6); train.add(fireGlow);
+  // tender: six wheels, a tank with a low coping, coke on top
+  for (const d of [0.9, 2.8, 4.7]) axle(TEN_A + d, 'four');
+  train.add(merged([bx(2.7, 0.4, TEN_B - TEN_A - 0.1, 0, 0.9, E((TEN_A + TEN_B) / 2)), bx(0.07, 0.5, TEN_B - TEN_A, 1.3, 0.85, E((TEN_A + TEN_B) / 2)), bx(0.07, 0.5, TEN_B - TEN_A, -1.3, 0.85, E((TEN_A + TEN_B) / 2))], frameM));
+  train.add(merged([bx(2.5, 0.42, TEN_B - TEN_A - 0.3, 0, 1.31, E((TEN_A + TEN_B) / 2)), ...[-1, 1].map(sx => bx(0.08, 0.3, TEN_B - TEN_A - 0.3, sx * 1.22, 1.66, E((TEN_A + TEN_B) / 2))), bx(2.5, 0.3, 0.08, 0, 1.66, E(TEN_A + 0.19))], lam({ color: '#2f3a2e', map: greyTex })));
+  const coke = new THREE.Mesh(new THREE.PlaneGeometry(2.36, TEN_B - TEN_A - 0.4), lam({ map: cokeT })); coke.rotation.x = -Math.PI / 2; coke.position.set(0, 1.545, E((TEN_A + TEN_B) / 2)); train.add(coke);
+}
+// open wagons: seven with goods at the tail, five trucks of passengers next the tender (as at Sonning in 1841 the passenger trucks ran between tender and goods)
+for (const w of wagons) {
+  const mid = -(w.a + w.b) / 2, sideH = w.goods ? 0.5 : 0.62, gs = [bx(2.9, 0.12, WL, 0, FLOOR - 0.06, mid), bx(0.08, sideH, WL, 1.45, FLOOR + sideH / 2, mid), bx(0.08, sideH, WL, -1.45, FLOOR + sideH / 2, mid), bx(2.9, 0.26, 0.08, 0, FLOOR + 0.13, -w.a - 0.04), bx(2.9, 0.26, 0.08, 0, FLOOR + 0.13, -w.b + 0.04)];
+  for (const sx of [-1, 1]) for (let k = 0; k <= 4; k++) gs.push(bx(0.07, sideH + 0.1, 0.1, sx * 1.5, FLOOR + sideH / 2 - 0.05, -w.a - 0.3 - k * (WL - 0.6) / 4));
+  const body = merged(gs, lam({ map: plankT, color: w.goods ? '#b9a88c' : '#d0b894' })); train.add(body);
+  if (!w.goods) train.add(merged([-1, 1].map(sx => bx(0.42, 0.42, WL - 0.5, sx * 1.2, FLOOR + 0.21, mid)), wood2M));                 // a bench down each side
+  train.add(merged([bx(0.12, 0.3, WL + 0.5, 1.2, FLOOR - 0.28, mid), bx(0.12, 0.3, WL + 0.5, -1.2, FLOOR - 0.28, mid), bx(0.1, 0.1, GAP + 0.3, 0, 0.95, -w.b - GAP / 2), ...[-1, 1].flatMap(sx => [cyl(0.13, 0.13, 0.4, 8, sx * 0.9, 0.98, -w.a + 0.2, 'z'), cyl(0.13, 0.13, 0.4, 8, sx * 0.9, 0.98, -w.b - 0.2, 'z')])], frameM));
+  axle(w.a + 1.5, 'wag'); axle(w.b - 1.5, 'wag');
+}
+
+/* ================= people and beasts ================= */
+const shadowM = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22, depthWrite: false });
+const FIG = makeFigures({ THREE, scene, shadowM }); await FIG.load('models/', ['child', 'driver', 'fireman', 'gent', 'shawl_woman', 'ploughman', 'field_woman']);
+const meG = FIG.spawn('child', { size: 0.9 });
+const stand = (name, par, x, y, z, ry, o = {}) => { const g = FIG.spawn(name, { size: o.size || 1.1, adult: true, tint: o.tint }); FIG.pose(g, 0, 0); g.position.set(x, y, z); g.rotation.y = ry; par.add(g); return g; };
+function sit(g, seatY) { const u = g.userData, k = g.scale.y; for (const S of ['L', 'R']) { FIG.turn(u, 'thigh' + S, -84, 0, 0); FIG.turn(u, 'shin' + S, 84, 0, 0); FIG.turn(u, 'upperarm' + S, -24, 0, 0); FIG.turn(u, 'forearm' + S, -50, 0, 0); } g.position.y = seatY - 0.77 * k; u.sh.visible = false; return g; }
+const beastT = daub('#c9c9c9', ['#e4e4e4', '#a8a8a8', '#f0f0f0', '#989898'], 90, 12);
+function beast(o) {            // a horse or a cow, in a few masses: enough for a figure half lost in mist. Its head is at +z.
+  const g = new THREE.Group(), m = lam({ color: o.col, map: beastT }), Ln = o.len, H = o.ht, r = H * (o.horse ? 0.25 : 0.3), by = o.lying ? r * 0.75 : H - r, add = (geo, sx, sy, sz, x, y, z, rx = 0) => { const p = new THREE.Mesh(geo, m); p.scale.set(sx, sy, sz); p.position.set(x, y, z); p.rotation.x = rx; g.add(p); return p; };
+  add(sph, r * 0.92, r, Ln / 2, 0, by, 0);
+  if (!o.lying) { const lg = new THREE.CylinderGeometry(0.075, 0.055, 1, 6); for (const [sx, sz] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) add(lg, 1, H - r * 1.2, 1, sx * r * 0.5, (H - r * 1.2) / 2, sz * (Ln / 2 - 0.2)); }
+  const na = o.down ? 2.1 : o.horse ? 0.95 : 1.25, nl = o.horse ? 0.7 : 0.55, nz = Ln / 2 - 0.12, ny = by + r * 0.45;
+  add(new THREE.CylinderGeometry(r * (o.horse ? 0.55 : 0.45), r * (o.horse ? 0.8 : 0.62), 1, 7), 1, nl, 1, 0, ny + Math.cos(na) * nl / 2, nz + Math.sin(na) * nl / 2, na);
+  add(sph, o.horse ? 0.15 : 0.13, o.horse ? 0.18 : 0.16, o.horse ? 0.34 : 0.25, 0, ny + Math.cos(na) * nl + (o.down ? 0 : 0.04), nz + Math.sin(na) * nl + 0.12, o.down ? 1.1 : 0.45);
+  add(new THREE.CylinderGeometry(0.04, 0.02, 1, 5), 1, o.horse ? 0.8 : 0.7, 1, 0, by - 0.1, -Ln / 2 - 0.05, -0.25);
+  return g; }
+// the hare: drawn three times the size of life so that it can be seen at all
+const hare = new THREE.Group(); { const m = lam({ color: '#6e5234', map: beastT }), part = (sx, sy, sz, x, y, z, rx = 0) => { const p = new THREE.Mesh(sph, m); p.scale.set(sx, sy, sz); p.position.set(x, y, z); p.rotation.x = rx; hare.add(p); return p; };
+  part(0.11, 0.12, 0.26, 0, 0.2, 0); part(0.07, 0.075, 0.1, 0, 0.3, -0.27); part(0.022, 0.1, 0.035, 0.035, 0.44, -0.24, 0.35); part(0.022, 0.1, 0.035, -0.035, 0.44, -0.24, 0.35); part(0.045, 0.045, 0.045, 0, 0.24, 0.27);
+  hare.userData.legs = [part(0.03, 0.03, 0.17, 0.06, 0.09, -0.16), part(0.03, 0.03, 0.17, -0.06, 0.09, -0.16), part(0.04, 0.04, 0.2, 0.07, 0.09, 0.2), part(0.04, 0.04, 0.2, -0.07, 0.09, 0.2)]; hare.scale.setScalar(3); hare.visible = false; scene.add(hare); }
+// on the footplate
+const driver = stand('driver', train, 0.72, 1.2, -(FP_B - 0.75), Math.PI, { size: 1.12 }), fireman = stand('fireman', train, -0.74, 1.2, -(TEN_B + 0.75), Math.PI * 0.9, { size: 1.1 });
+{ const sh = merged([cyl(0.022, 0.022, 1.1, 6, 0, 0, 0.45, 'z'), bx(0.24, 0.03, 0.3, 0, 0, 1.1)], ironM); sh.rotation.x = 0.5; fireman.userData.aR.add(sh); }
+stand('gent', station, 7.5, PLAT_Y, -22, -Math.PI / 2); stand('shawl_woman', station, 7.7, PLAT_Y, -31, -Math.PI / 2 + 0.3); stand('field_woman', station, 7.4, PLAT_Y, -12, -Math.PI / 2 - 0.4);
+// passengers: seated down both benches of the four trucks, and a few on their feet in the gangway
+const riders = [], standers = [];
+wagons.filter(w => !w.goods).forEach((w, k) => {
+  for (let j = 0; j < 4; j++) for (const sx of [-1, 1]) { if ((j + k + (sx > 0 ? 1 : 0)) % 4 === 3) continue; const name = ['gent', 'shawl_woman', 'fireman', 'field_woman', 'ploughman'][(j * 2 + k + (sx > 0 ? 3 : 0)) % 5];
+    const g = stand(name, train, sx * 1.14, 0, -(w.a + 1.0 + j * 1.85), sx > 0 ? -Math.PI / 2 : Math.PI / 2, { size: rnd(1.04, 1.12), tint: ['#8a7a66', '#6a7480', '#7a5a4a', null][(j + k * 3) % 4] }); sit(g, FLOOR + 0.44); riders.push(g); }
+  const sx = k % 2 ? 1 : -1, g = stand(['gent', 'ploughman', 'shawl_woman', 'fireman'][k % 4], train, sx * 0.4, FLOOR, -(w.a + (k % 2 ? 4.9 : 3.0)), Math.PI + rnd(-0.5, 0.5), { size: 1.1 }); standers.push(g); });
+
+/* ---- contents of the field (after the painting: horses and women on the left, the men at a broken harrow in the middle, a man in a white shirt with his back to us, cattle and a heap of turnips on the right, the castle pale on its hill) ---- */
+{
+  const soil = new THREE.Mesh(new THREE.PlaneGeometry(150, 110), lam({ map: daub('#a8874f', ['#b9965a', '#9a7a48', '#c4a468', '#8a6c42', '#b08c50'], 220, 10), color: '#f0dfb4' })); soil.rotation.x = -Math.PI / 2; soil.position.set(FCAM.x - 60, GROUND_Y + 0.03, 0); field.add(soil);
+  const put = (g, d, r, ry, y) => { g.position.copy(FP(d, r, y)); g.rotation.y = ry; field.add(g); return g; }, TOWARD = Math.PI / 2, AWAY = -Math.PI / 2;      // facing the painter, or with the back to him
+  put(beast({ len: 2.1, ht: 1.6, col: '#d8d2c4', horse: true }), 17.5, -5.0, 0.2); put(beast({ len: 2.1, ht: 1.62, col: '#3a2c22', horse: true }), 18.5, -6.9, 0.5); put(beast({ len: 2.1, ht: 1.6, col: '#4a3626', horse: true, down: true }), 17, -3.5, -0.4); put(beast({ len: 2.1, ht: 1.6, col: '#2e241c', horse: true }), 19.5, -8.6, 0.3);
+  const w1 = FIG.spawn('field_woman', { size: 1.06, adult: true }); FIG.pose(w1, 0, 0); sit(w1, GROUND_Y + 0.28); put(w1, 13.2, -2.4, TOWARD + 0.3, w1.position.y);
+  const w2 = stand('shawl_woman', field, 0, 0, 0, 0, { size: 1.08 }); put(w2, 13.6, -1.45, TOWARD - 0.5); FIG.turn(w2.userData, 'spine', 26, 0, 0);
+  const tub = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.36, 0.6, 12), woodM); put(tub, 12.4, -3.3, 0, GROUND_Y + 0.3);
+  const m1 = stand('ploughman', field, 0, 0, 0, 0, { size: 1.1, tint: '#b9a27a' }); put(m1, 21, 0.1, TOWARD + 0.4);
+  const m2 = stand('fireman', field, 0, 0, 0, 0, { size: 1.08 }); put(m2, 21.6, 1.7, AWAY + 0.9); FIG.turn(m2.userData, 'spine', 38, 0, 0); FIG.turn(m2.userData, 'upperarmL', -40, 0, 0); FIG.turn(m2.userData, 'upperarmR', -40, 0, 0);
+  const m3 = stand('gent', field, 0, 0, 0, 0, { size: 1.08, tint: '#6a5a44' }); put(m3, 22.4, 0.9, TOWARD); FIG.turn(m3.userData, 'spine', 22, 0, 0);
+  put(merged([bx(0.1, 0.1, 2.6, 0, 0.42, 0), bx(1.5, 0.08, 0.1, 0, 0.3, -0.9), bx(1.5, 0.08, 0.1, 0, 0.3, 0.2), bx(0.07, 0.6, 0.07, 0.3, 0.6, 1.2), bx(0.07, 0.6, 0.07, -0.3, 0.6, 1.2)], woodM), 20.4, 1.0, 0.6);            // the harrow they are mending
+  const back = stand('ploughman', field, 0, 0, 0, 0, { size: 1.14 }); put(back, 16.6, 2.5, AWAY + 0.15);
+  put(beast({ len: 2.0, ht: 1.5, col: '#8a8478', horse: true }), 30, 5.2, 0.3); put(beast({ len: 2.0, ht: 1.5, col: '#5a4a3a', horse: true }), 31, 6.8, 0.2); const far = stand('ploughman', field, 0, 0, 0, 0, { size: 1.05, tint: '#8a6a4a' }); put(far, 29, 7.4, TOWARD);
+  put(beast({ len: 2.3, ht: 1.5, col: '#a8683a', lying: true }), 17.5, 6.6, -1.3); put(beast({ len: 1.9, ht: 1.35, col: '#1e1a18', down: true }), 14.2, 5.0, 2.2); put(beast({ len: 2.2, ht: 1.4, col: '#8a4a2a', lying: true }), 20, 8.6, -1.0);
+  const turnipM = lam({ color: '#efe9da' }), topM = lam({ color: '#59663a', map: greyTex }); for (let i = 0; i < 16; i++) { const t = new THREE.Mesh(sph, turnipM); t.scale.setScalar(rnd(0.09, 0.13)); put(t, 12.4 + rnd(-0.4, 0.4), 3.6 + rnd(-0.5, 0.5), 0, GROUND_Y + 0.1 + (i % 3) * 0.08); }
+  for (let i = 0; i < 22; i++) { const lf = new THREE.Mesh(blob, topM); lf.scale.set(rnd(0.2, 0.36), 0.1, rnd(0.2, 0.36)); put(lf, rnd(5.5, 9), rnd(-2.5, 3.5), rnd(0, 6), GROUND_Y + 0.1); }                             // turnip tops in the foreground
+  for (const [d, r, k] of [[44, -14, 0.8], [52, -20, 0.6], [80, -3, 0.5], [84, 30, 0.45], [88, -40, 0.6]]) put(tree(k), d, r, rnd(0, 6));
+  for (const [d, r] of [[92, -62], [98, -26], [94, 12], [100, 48], [96, 84], [120, -90], [124, -44], [118, 0], [126, 40], [120, 86], [128, 124], [122, -134]]) put(hedge(40, rnd(2.4, 3.6)), d, r, Math.PI / 2 + rnd(-0.2, 0.2));
+  for (const r of [-110, -70, -30, 10, 50, 90, 130]) put(hedge(44), 132, r, Math.PI / 2 + rnd(-0.1, 0.1));
+  const smoke = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(128, 128, (g, w, h) => { const r = g.createRadialGradient(64, 64, 2, 64, 64, 64); r.addColorStop(0, 'rgba(255,250,236,.8)'); r.addColorStop(1, 'rgba(255,250,236,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); }), depthWrite: false, transparent: true })); smoke.scale.set(26, 14, 1); put(smoke, 84, 1.5, 0, GROUND_Y + 7);
+  // Windsor Castle on its hill: the long north front, the Round Tower with its flagstaff, towers at the ends. Kept pale and outside the fog so that it floats as he painted it.
+  const hill = new THREE.Mesh(sph, new THREE.MeshBasicMaterial({ color: '#8d8c74', fog: false, transparent: true, opacity: 0.62 })); hill.scale.set(110, 50, 640); put(hill, 640, 22, 0, GROUND_Y - 8);
+  const paleM = new THREE.MeshBasicMaterial({ color: '#c3c2bd', fog: false, transparent: true, opacity: 0.8 }), cg = [bx(40, 15, 300, 0, 7.5, 0), bx(34, 24, 60, 0, 12, -40), cyl(21, 26, 12, 16, -6, 21, 52), cyl(17, 18, 30, 16, -6, 36, 52), cyl(0.6, 0.6, 22, 5, -6, 62, 52), bx(30, 27, 18, 0, 13.5, 150), bx(30, 25, 16, 0, 12.5, -150), bx(26, 23, 12, 0, 11.5, -95), bx(24, 22, 12, 0, 11, 105), bx(24, 20, 10, 0, 10, 5), bx(20, 34, 13, 6, 17, -205), bx(22, 40, 15, 6, 20, -245)];
+  const castle = merged(cg, paleM); castle.renderOrder = 2; put(castle, 660, 22, 0, GROUND_Y + 40);
+  const mist = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(8, 128, (g, w, h) => { const r = g.createLinearGradient(0, 0, 0, h); r.addColorStop(0, 'rgba(226,214,184,0)'); r.addColorStop(0.55, 'rgba(226,214,184,.85)'); r.addColorStop(1, 'rgba(226,214,184,.95)'); g.fillStyle = r; g.fillRect(0, 0, w, h); }), fog: false, depthWrite: false, transparent: true })); mist.scale.set(900, 46, 1); mist.renderOrder = 3; put(mist, 600, 0, 0, GROUND_Y + 30);      // the mist that parts the castle from the fields
+}
+
+/* ---- contents of the river valley ---- */
+const boat = new THREE.Group(), plough = new THREE.Group(); let valleyTex;
+{
+  const xs = [-760, -520, -360, -250, -180, -130, -95, -66, -46, -34, -26, -20, -15, -11, -8.6, -7.3, -4, 0, 2.9, 4.2, 6.5, 10, 14, 19]; for (let x = 26; x <= 290; x += 8) xs.push(x); xs.push(310, 340, 380, 440, 540, 760);
+  const zs = []; for (let u = U0; u <= U1; u += 3.75) zs.push(u); zs.push(U1);
+  const pos = [], col = [], uv = [], idx = [], c = new THREE.Color(), c2 = new THREE.Color();
+  for (const u of zs) for (const x of xs) { const h = valleyH(x, u), low = sstep(GROUND_Y - 0.3, -8, h); pos.push(x, h, u); uv.push(x / TILE, -u / TILE);
+    c.set('#ffffff').lerp(c2.set('#e2cc80'), low * 0.75).lerp(c2.set('#9a8a58'), sstep(-9.3, -11, h)).lerp(c2.set('#c8b274'), low * 0.3 * (0.5 + 0.5 * Math.sin(x * 0.05 + u * 0.08))); col.push(c.r, c.g, c.b); }
+  for (let j = 0; j < zs.length - 1; j++) for (let i = 0; i < xs.length - 1; i++) { const a = j * xs.length + i, b = a + 1, d = a + xs.length, e = d + 1; idx.push(a, d, b, b, d, e); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
+  valleyTex = fieldTex.clone(); valleyTex.repeat.set(1, 1); valleyTex.needsUpdate = true; valley.add(new THREE.Mesh(g, lam({ map: valleyTex, vertexColors: true })));
+  const water = new THREE.Mesh(new THREE.PlaneGeometry(1700, U1 - U0), waterMat); water.rotation.x = -Math.PI / 2; water.position.set(0, WATER_Y, (U0 + U1) / 2); valley.add(water);
+  // a wall pierced by arches, drawn in the plane (along its length, up), then stood up and pushed through to the bridge's width
+  const arcade = (u0, u1, yBot, yTop, arches, depth, mat) => { const sh = new THREE.Shape(); sh.moveTo(u0, yBot); sh.lineTo(u1, yBot); sh.lineTo(u1, yTop); sh.lineTo(u0, yTop); sh.closePath();
+    for (const [cu, half, rise, spring] of arches) { const p = new THREE.Path(); p.moveTo(cu - half, yBot + 0.5); p.lineTo(cu - half, spring); p.absellipse(cu, spring, half, rise, Math.PI, 0, true); p.lineTo(cu + half, yBot + 0.5); p.closePath(); sh.holes.push(p); }
+    const m = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth, bevelEnabled: false, curveSegments: 22 }), mat); m.rotation.y = -Math.PI / 2; return m; };
+  // Brunel's bridge: two semi-elliptical arches of 128 ft span and 24 ft rise, a short arch of 21 ft and three of 28 ft on each bank (spans as recorded; heights above the water by eye)
+  const brickT = daub('#8a5238', ['#9a5e40', '#7a452e', '#a56a48', '#6e3d2a', '#94583a'], 200, 7); brickT.repeat.set(0.06, 0.06);
+  const land = [46.9, 55.95, 66.05, 76.15].flatMap((u, k) => [[u, k ? 4.25 : 3.2, k ? 4.25 : 3.2, k ? -6.4 : -5.4], [-u, k ? 4.25 : 3.2, k ? 4.25 : 3.2, k ? -6.4 : -5.4]]);
+  const rb = arcade(-82, 82, -13.5, -0.36, [[21.7, 19.5, 7.4, -9.4], [-21.7, 19.5, 7.4, -9.4], ...land], 10.4, lam({ map: brickT })); rb.position.x = 3.0; valley.add(rb);
+  const stoneM = lam({ color: '#b39a7a', map: greyTex }), par = []; for (const x of [2.8, -7.2]) { par.push(bx(0.4, 1.15, 164, x, 0.2, 0), bx(0.56, 0.14, 164, x, 0.84, 0)); for (const u of [-43.6, 43.6, 0]) par.push(bx(0.7, 12, 2.4, x + (x > 0 ? 0.12 : -0.12), -5.6, u)); } valley.add(merged(par, stoneM));          // parapets with their coping, and the pilasters between river arches and land arches
+  // the road bridge of 1772 to 1777: seven water arches and three land arches on each bank, pale stone, with a balustrade
+  const road = [-36.6, -24.4, -12.2, 0, 12.2, 24.4, 36.6].map(u => [u, 5.2, 5.2, -8.9]).concat([47.4, 56.2, 65].flatMap(u => [[u, 3.4, 3.4, -8.2], [-u, 3.4, 3.4, -8.2]]));
+  const rg = new THREE.Group(), ra = arcade(-72, 72, -13.5, -2.6, road, 9, lam({ color: '#efe4c4', map: greyTex, emissive: '#3a3424' })); ra.position.x = 4.5; rg.add(ra, merged([bx(0.3, 0.9, 144, 4.5, -2.15, 0), bx(0.3, 0.9, 144, -4.5, -2.15, 0)], lam({ color: '#f1e8cc', emissive: '#3a3424' })));
+  rg.position.set(ROADB[0], 0, ROADB[1]); rg.rotation.y = Math.atan2(RN[0], RN[1]); valley.add(rg);
+  // woods on the banks, thickest on the east bank between the two bridges, and the high ground behind Taplow
+  for (let i = 0; i < 260; i++) { const x = rnd(-380, 330), u = rnd(U0 + 8, U1 - 20), a = riverD(x, u), h = valleyH(x, u); if (a < 54 || a > 150 || h > GROUND_Y - 0.3 && Math.random() < 0.6 || Math.abs(x + 2) < 14 && Math.abs(u) > 60) continue; if (!(x > 0 && u > 40) && Math.random() < 0.6) continue;
+    const t = Math.random() < 0.5 ? hedge(rnd(14, 30), rnd(2.2, 3.6), goldM) : tree(rnd(0.9, 1.7), goldM); t.position.set(x, h, u); t.rotation.y = rnd(0, 6); valley.add(t); }
+  const rise = new THREE.Mesh(sph, lam({ color: '#a39a5c', map: greyTex })); rise.scale.set(300, 46, 170); rise.position.set(ROADB[0] + 150, -16, ROADB[1] + 230); valley.add(rise);
+  // the boat on the river, and the plough at the right-hand edge of the picture
+  const hull = new THREE.Mesh(new THREE.SphereGeometry(1, 16, 8, 0, 6.3, Math.PI / 2, Math.PI / 2), lam({ color: '#6a4a2c', side: THREE.DoubleSide })); hull.scale.set(0.8, 0.5, 2.6); boat.add(hull);
+  for (const [n, z, tn] of [['gent', -0.7, '#3a3a44'], ['shawl_woman', 0.8, null]]) { const p = FIG.spawn(n, { size: 1.0, adult: true, tint: tn }); FIG.pose(p, 0, 0); sit(p, -0.05); p.position.z = z; boat.add(p); }
+  boat.position.set(38, WATER_Y + 0.3, 40); boat.rotation.y = 0.5; boat.scale.setScalar(1.9); valley.add(boat);
+  const h1 = beast({ len: 2.1, ht: 1.6, col: '#5a4030', horse: true }), h2 = beast({ len: 2.1, ht: 1.6, col: '#c9c0b0', horse: true }); h1.position.z = 5.2; h2.position.z = 2.9; plough.add(h1, h2, merged([bx(0.09, 0.09, 2.6, 0, 0.5, 0.6), bx(0.07, 0.7, 0.07, 0.25, 0.75, -0.8), bx(0.07, 0.7, 0.07, -0.25, 0.75, -0.8), bx(0.06, 0.5, 0.5, 0, 0.25, 0)], woodM));
+  const pm = FIG.spawn('ploughman', { size: 1.12, adult: true }); FIG.pose(pm, 0.9, 0.5); pm.position.z = -1.5; plough.add(pm); plough.scale.setScalar(2); plough.rotation.y = -Math.PI / 2; valley.add(plough);
+  plough.position.set(-72, valleyH(-72, 172), 172);
+}
+
+/* ================= steam, and rain you can run through ================= */
+const puffT = canvasTex(128, 128, (g, w, h) => { const r = g.createRadialGradient(64, 64, 4, 64, 64, 64); r.addColorStop(0, 'rgba(255,252,240,.95)'); r.addColorStop(0.5, 'rgba(250,244,226,.55)'); r.addColorStop(1, 'rgba(245,238,220,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); for (let i = 0; i < 40; i++) { g.fillStyle = 'rgba(255,255,255,.08)'; g.beginPath(); g.arc(rnd(30, 98), rnd(30, 98), rnd(8, 22), 0, 7); g.fill(); } });
+const puffs = [...Array(64)].map(() => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: puffT, depthWrite: false, transparent: true, opacity: 0 })); s.visible = false; scene.add(s); return { s, t: 9, life: 1, v: new V3(), rot: 0 }; });
+let puffI = 0; const CHIM = new V3(0, 4.6, -(FP_B + 1.25 + 2.9 + 0.5));
+function puff(big) { const p = puffs[puffI++ % puffs.length]; p.t = 0; p.life = rnd(2.6, 3.6); p.s.visible = true; p.s.position.copy(CHIM).add(new V3(rnd(-0.1, 0.1), 0, rnd(-0.1, 0.1))); p.v.set(rnd(-0.5, 0.5), rnd(3.5, 5) * (big ? 1.2 : 1), 0); p.k = big ? 1.4 : rnd(0.7, 1.1); p.w = rnd(1, 1.6); p.s.material.rotation = rnd(-0.5, 0.5); }
+const RAINB = 44, rainMat = new THREE.ShaderMaterial({ transparent: true, depthWrite: false, fog: false, uniforms: { uShift: { value: new V3() }, uVel: { value: new V3(0.6, -9, 14) }, uAlpha: { value: 0.22 } },
+  vertexShader: `attribute vec2 aCorner; uniform vec3 uShift, uVel; varying float vA;
+    void main(){ vec3 c = mod(position + uShift - cameraPosition + ${(RAINB / 2).toFixed(1)}, ${RAINB.toFixed(1)}) - ${(RAINB / 2).toFixed(1)} + cameraPosition; vec3 d = normalize(uVel), side = normalize(cross(d, cameraPosition - c));
+      c += d * aCorner.x * (0.9 + length(uVel) * 0.07) + side * aCorner.y * 0.011; vec4 mv = viewMatrix * vec4(c, 1.0); vA = smoothstep(${(RAINB / 2).toFixed(1)}, 8.0, -mv.z) * smoothstep(0.4, 2.5, -mv.z); gl_Position = projectionMatrix * mv; }`,
+  fragmentShader: 'uniform float uAlpha; varying float vA; void main(){ gl_FragColor = vec4(vec3(1.0, 0.98, 0.9) * 1.6, uAlpha * vA); }' });
+{ const N = 5200, pos = new Float32Array(N * 12), cor = new Float32Array(N * 8), idx = []; for (let i = 0; i < N; i++) { const x = rnd(0, RAINB), y = rnd(0, RAINB), z = rnd(0, RAINB); for (let k = 0; k < 4; k++) { pos.set([x, y, z], i * 12 + k * 3); cor.set([k < 2 ? 0 : 1, k % 2 ? 1 : -1], i * 8 + k * 2); } idx.push(i * 4, i * 4 + 1, i * 4 + 2, i * 4 + 2, i * 4 + 1, i * 4 + 3); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('aCorner', new THREE.BufferAttribute(cor, 2)); g.setIndex(idx); const m = new THREE.Mesh(g, rainMat); m.frustumCulled = false; m.renderOrder = 5; rainMat.side = THREE.DoubleSide; scene.add(m); }
+
+/* ================= play ================= */
+let state = 'title', time = 0, muted = false, onTrain = false, wpT = 0, endT = 0, seenField = false, fieldAt = -1, fogD = 0.006, fogWant = 0.006, bubbleG = null, bubbleT = 0, beat = 0, wheelA = 0, footT = 0, nag = 0, fellT = 0;
+const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0, last: 0, from: -1 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false }, leapt = new Set();
+const plate = (title, line) => { SC.award(title, null, title); $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
+const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
+const tip = (t, secs = 6) => { const e = $('tip'); e.textContent = t; e.classList.remove('hidden'); clearTimeout(tip.h); tip.h = setTimeout(() => e.classList.add('hidden'), secs * 1000); };
+// what stands in her way on the wagons: each a round footprint with a top she may leap over
+const obst = [], hit = (x, z, y) => obst.some(o => y < o.top - 0.15 && Math.hypot(x - o.x, z - o.z) < o.r + 0.3);
+const blocked = (x, z) => Math.abs(x) < 1.7 && -z > T0 - 0.5 ? Math.abs(x) > (vehAt(-z)?.lat ?? 1.25) + 0.05 || hit(x, z, me.y) : x < 2.05 || x > 6.6;
+const groundY = (x, z) => Math.abs(x) < 1.7 && -z > T0 - 0.5 ? (vehAt(-z)?.y ?? FLOOR) : PLAT_Y;
+// points (common/score.js). Its coins are laid every 19 units of its own measure; four of its units to the metre here puts a shilling every 4.75 m along the wagons.
+const K = 4, SC = makeScore({ THREE, scene, key: 'turner', at: s => { const p = at(s / K); return { x: p.x, z: p.z, dx: 0, dz: -0.6 }; }, nearest: (x, z) => ({ s: nearest(x, z).s * K, d: Math.abs(x) }), LEN: LEN * K, groundY, blocked, paintings: 2,
+  thing: 'shilling', things: 'silver shillings', washing: false, ditches: [], hurdles: [], avoid: [30, 60, 86, (LEN - 4.5) * K], half: 1.3 });
+{ // luggage and goods on the seven open wagons, set clear of the shillings; then the passengers on their feet
+  const crateM = lam({ color: '#9a7a50', map: greyTex }), sackM = lam({ color: '#c9b890', map: greyTex }), trunkM2 = lam({ color: '#5a3a2a', map: greyTex }), hoopM = lam({ color: '#2a2622' });
+  const free = (x, z, r, top) => !SC.picks.some(p => Math.hypot(p.userData.x - x, p.userData.z - z) < r + 0.75 && p.userData.y < top + 0.5) && !SC.powers.some(p => Math.hypot(p.x - x, p.z - z) < r + 1);
+  const kinds = [
+    (x, z) => { const m = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.75, 0.95), crateM); m.position.set(x, FLOOR + 0.375, z); m.rotation.y = rnd(-0.3, 0.3); train.add(m); return { r: 0.56, top: FLOOR + 0.75 }; },
+    (x, z) => { const g = merged([cyl(0.36, 0.31, 0.9, 12, 0, 0.45, 0)], woodM), h = merged([0.2, 0.7].map(y => new THREE.TorusGeometry(0.35, 0.025, 5, 14).rotateX(Math.PI / 2).translate(0, y, 0)), hoopM); g.add(h); g.position.set(x, FLOOR, z); train.add(g); return { r: 0.4, top: FLOOR + 0.9 }; },
+    (x, z) => { const g = new THREE.Group(); for (const [dx, dy, dz, ry] of [[-0.2, 0.17, 0, 0.2], [0.25, 0.17, 0.1, -0.4], [0, 0.48, 0.05, 1.2]]) { const s = new THREE.Mesh(sph, sackM); s.scale.set(0.5, 0.2, 0.3); s.position.set(dx, dy, dz); s.rotation.y = ry; g.add(s); } g.position.set(x, FLOOR, z); train.add(g); return { r: 0.6, top: FLOOR + 0.68 }; },
+    (x, z) => { const m = merged([bx(1.0, 0.5, 0.6, 0, 0.25, 0), bx(0.6, 0.34, 0.45, 0.05, 0.67, 0)], trunkM2); m.position.set(x, FLOOR, z); m.rotation.y = rnd(-0.4, 0.4); train.add(m); return { r: 0.58, top: FLOOR + 0.84 }; }];
+  wagons.filter(w => w.goods).forEach((w, k) => { [[2.3, -0.62], [4.3, 0.62], [6.2, -0.5]].forEach(([d, x], j) => { if (k === 0 && j === 1) return; const z = -(w.a + d); for (const xx of [k % 2 ? -x : x, k % 2 ? x : -x]) { const kd = kinds[(k + j * 2) % 4], probe = { r: 0.6, top: FLOOR + 0.9 }; if (!free(xx, z, probe.r, probe.top)) continue; const o = kd(xx, z); obst.push({ x: xx, z, r: o.r, top: o.top }); break; } }); });
+  for (const g of standers) obst.push({ x: g.position.x, z: g.position.z, r: 0.3, top: 9 });
+  obst.push({ x: driver.position.x, z: driver.position.z, r: 0.3, top: 9 }, { x: fireman.position.x, z: fireman.position.z, r: 0.3, top: 9 });
+}
+const BRIDGE_AT = -(ENG_F + 10), bridgeLeft = () => BRIDGE_AT - valley.position.z;                 // the engine's place on the bridge in the picture: ten metres short of the middle pier
+const CAMF = { pos: [7.5, 6.5, -(ENG_F + 58)], look: [7, 11, -(ENG_F - 46)], fov: 34, fog: 0.0052 };       // the painter's standpoint, north of the line and above it, looking east
+function reset() {
+  Object.assign(me, { x: 3.4, z: -(T0 - 10), yaw: 0, vy: 0, air: false, speed: 0, y: PLAT_Y, last: 0, from: -1 }); onTrain = false; leapt.clear(); L = 0; V = 0; wpT = 0; endT = 0; seenField = false; fieldAt = -1; fogD = fogWant = 0.006; footT = 0; nag = 0;
+  station.visible = true; station.position.z = 0; station.userData.bank.position.y = PLAT_Y - 0.76; field.visible = false; valley.visible = false; hare.visible = false; landW.visible = false; landE.position.z = 0; fireGlow.material.opacity = 0;
+  for (const o of scen) roll(o, rnd(-420, 140));
+  $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('melt').src = 'images/rain_steam_speed.jpg'; $('plate').classList.remove('show');
+  camera.position.set(me.x + 0.6, me.y + 2.6, me.z + 5); camera.fov = 60;
+}
+function begin() {
+  SND.start({ chords: [[38, 57, 62, 66, 69], [43, 55, 59, 62, 67], [45, 57, 61, 64, 69], [40, 55, 59, 64, 67]], scale: [62, 64, 66, 69, 71, 74, 76, 78, 81, 83, 86] }); SND.setMuted(muted); reset(); SC.start(); state = 'play'; V = 1.6;
+  $('title').classList.add('hidden'); $('end').classList.add('hidden'); SND.hiss();
+  tip(matchMedia('(pointer: coarse)').matches ? 'The train is leaving! Drag to run beside it · a second finger to leap aboard' : 'The train is leaving! Arrow keys to run beside it · space to leap aboard', 10);
+}
+function aboard() { onTrain = true; me.from = -1; me.speed *= 0.25; SC.gain(30, 'Aboard!', 2); tip('Now forward to the engine: leap from wagon to wagon', 7); station.userData.left = true; }
+function fell() { const v = VEH[me.last] || VEH[0]; SC.lose(15, 'Down between the wagons!'); SND.whoosh(0.12); Object.assign(me, { x: 0, z: -(v.a + 1.0), y: v.y + 1.4, vy: 0, air: true, speed: 0, yaw: 0, from: -1 }); fellT = time; }
+function startField() { field.visible = true; field.position.z = me.z - 92; fieldAt = time; }
+function startBridge(d = 170) { valley.visible = true; valley.position.z = BRIDGE_AT - d; landW.visible = true; hare.visible = true; valleyTex.offset.set((1500 / TILE) % 1, (((-valley.position.z + 1500) / TILE + fieldTex.offset.y) % 1 + 1) % 1); }      // its ground is painted to run on from the ground already under the train
+
+function update(dt) {
+  time += dt; uni.uTime.value = time; post.uniforms.uTime.value = time;
+  const riding = state !== 'title';
+  // ---- how fast the train is going
+  if (state === 'title') V = VMAX;
+  else if (state === 'play' && !onTrain) { const gap = T0 + me.z; V += ((gap > 24 ? 1.0 : 5.6) - V) * Math.min(1, dt * 0.8); }      // it will not run away from her: if she falls far behind, it crawls
+  else if (state === 'turnips') V += (0.45 - V) * Math.min(1, dt * 2.2);
+  else if (state === 'tableau' || state === 'done') V = Math.max(0.3, Math.min(V, 1.3 * bridgeLeft()));                                 // the moment seized: everything slows almost to a stop on the bridge
+  else V = Math.min(VMAX, V + 2.6 * dt);
+  const dz = V * dt; L += dz; wheelA += dz;
+  for (const w of wheels) w.w.rotation.x -= dz / w.r;
+  // ---- the land goes by
+  if (!valley.visible) fieldTex.offset.y = (L / TILE) % 1; ballastTex.offset.y = (L / 9.6) % 1;
+  if (valley.visible) { valley.position.z += dz; landE.position.z = valley.position.z + U1 - 2 + 1500; landW.position.z = valley.position.z + U0 + 2 - 1500; }
+  if (station.visible) { station.position.z += dz; if (onTrain) station.userData.bank.position.y = Math.max(-2, station.userData.bank.position.y - dt * 1.2);      // once she is aboard, the bank she ran along falls away
+    if (station.position.z > 1100) station.visible = false; }
+  if (field.visible) { field.position.z += dz; if (field.position.z > 400 && state === 'play') field.visible = false; }
+  const out = (x, z) => (station.visible && x > 0 && x < 40 && z > station.position.z - 125 && z < station.position.z + 40) || (field.visible && x < 0 && Math.abs(z - field.position.z) < 105) || (valley.visible && z - valley.position.z > U0 && z - valley.position.z < U1 && (valleyH(x, z - valley.position.z) < GROUND_Y - 0.35 || Math.abs(x + 2) < 22 && Math.abs(z - valley.position.z) < 100));
+  for (const o of scen) { o.z += dz; if (o.z > 140) roll(o, o.z - SPAN); o.g.visible = !out(o.x, o.z); o.g.position.set(o.x, GROUND_Y, o.z); }
+  { const D = update.D || (update.D = new THREE.Object3D()); let n = 0;
+    for (let k = 0; k < 100; k++) for (const cx of [0, -4.3]) { D.position.set(cx, -0.19, ((k * TRANSOM + L) % (100 * TRANSOM)) - 330); D.scale.setScalar(1); D.rotation.set(0, 0, 0); D.updateMatrix(); transoms.setMatrixAt(n++, D.matrix); } transoms.instanceMatrix.needsUpdate = true; n = 0;
+    for (let k = 0; k < 150; k++) for (const x of [11, -12]) { const z = ((k * 3 + L) % 450) - 330; D.position.set(x, GROUND_Y, z); D.scale.setScalar(out(x, z) || out(x, z + 3) ? 0 : 1); D.updateMatrix(); fencePosts.setMatrixAt(n++, D.matrix); } fencePosts.instanceMatrix.needsUpdate = true; }
+  // ---- the engine's beat: four to each turn of the driving wheels, each a puff of steam and a chuff
+  const b = Math.floor(wheelA / (Math.PI * 1.067 / 2)); if (b !== beat) { beat = b; const fast = V > 9; if (!fast || b % 2 === 0) { puff(!fast); if (riding) { SND.puff(fast ? 0.045 : 0.08); if (!fast) SND.whoosh(0.035); } } }
+  const still = state === 'tableau' || state === 'done', slow = Math.max(still ? 0.3 : 0.12, Math.min(1, V / 8));
+  if (still && Math.floor(time * 1.1) !== Math.floor((time - dt) * 1.1)) puff(false);                              // in the slowed moment she still breathes out a puff now and then: three hang in the air behind her
+  for (const p of puffs) if (p.s.visible) { p.t += dt * slow; if (p.t > p.life) { p.s.visible = false; continue; } const a = p.t / p.life; p.v.z += (Math.max(V, still ? 7 : 0) * 0.92 - p.v.z) * Math.min(1, dt * 2.5); p.v.y += (0.5 - p.v.y) * Math.min(1, dt * 1.2 * slow);
+    p.s.position.addScaledVector(p.v, dt * (0.25 + 0.75 * slow)); p.s.scale.set((0.9 + 5 * Math.sqrt(a)) * p.k * p.w, (0.9 + 5 * Math.sqrt(a)) * p.k, 1); p.s.material.opacity = 0.8 * Math.min(1, a * 8) * (1 - a) ** 1.3; }
+  rainMat.uniforms.uVel.value.set(0.8, -9, 2 + Math.max(V, state === 'tableau' || state === 'done' ? 11 : 0) * 0.8); rainMat.uniforms.uShift.value.addScaledVector(rainMat.uniforms.uVel.value, dt); for (const k of ['x', 'y', 'z']) rainMat.uniforms.uShift.value[k] = ((rainMat.uniforms.uShift.value[k] % RAINB) + RAINB) % RAINB;
+
+  if (!riding) { camera.position.set(7, 3.2, -(T0 + 30)); camera.lookAt(0, 2, -(ENG_F + 30)); meG.visible = false; }
+  else {
+    meG.visible = true;
+    let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.5 : 0) - stick.dy;
+    turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (state !== 'play') { turn = 0; go = 0; }
+    me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1);
+    const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw), top = onTrain ? 7.6 : 9.6;
+    me.speed += (go * top - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.6));
+    let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt, f;
+    const jump = (keys.has('Space') || held.jump) && state === 'play';
+    if (!onTrain) {                                                    // on the platform: the ground she stands on is being left behind
+      nz += dz; const s = -nz, w = wagons.find(v => s > v.a + 0.25 && s < v.b - 0.25);
+      if (me.air && w && nx < 3.8) { nx -= 7.5 * dt; if (nx < 1.3) aboard(); }      // a leap beside an open wagon carries her in over the side
+      if (!onTrain) nx = clamp(nx, me.air && w ? 1.2 : 2.05, 6.6);
+      f = onTrain ? w.y : PLAT_Y;
+    }
+    if (onTrain) {
+      nx = clamp(nx, -(vehAt(-nz)?.lat ?? 1.25), vehAt(-nz)?.lat ?? 1.25);
+      for (const o of obst) if (me.y < o.top - 0.15) { const dx = nx - o.x, dzz = nz - o.z, d = Math.hypot(dx, dzz), R = o.r + 0.3; if (d < R && d > 1e-4) { nx = o.x + dx / d * R; nz = o.z + dzz / d * R; } }
+      let v = vehAt(-nz); if (v && v.y > me.y + (me.air ? 0.05 : 0.3)) { nz = me.z; v = vehAt(-nz); }
+      nx = clamp(nx, -(v?.lat ?? 1.25), v?.lat ?? 1.25);                    // the tender stands higher than the wagons: it has to be leapt onto
+      nz = Math.max(nz, -(FP_B - 0.45)); nz = Math.min(nz, -(T0 + 0.1));
+      f = v ? v.y : -6;
+      if (v && !me.air) me.last = v.i;
+    }
+    me.x = nx; me.z = nz;
+    if (jump && !me.air) { me.vy = 6.1 + Math.abs(me.speed) * 0.1; me.air = true; me.from = onTrain ? me.last : -1; SND.whoosh(0.04); }
+    if (me.air) { me.vy -= (jump && me.vy < 0 ? 7 : 17) * dt; me.y += me.vy * dt;
+      if (me.y <= f && me.vy <= 0) { me.y = f; me.air = false; SND.puff(0.06); const v = onTrain && vehAt(-me.z);
+        if (v && me.from >= 0 && v.i > me.from && !leapt.has(v.i)) { leapt.add(v.i); SC.gain(15, v.tender ? 'Onto the tender!' : 'A clean leap!', 2); }
+        if (v) me.last = v.i; } }
+    else if (f < me.y - 0.6) { me.air = true; me.vy = 0; me.from = -1; } else me.y += (f - me.y) * Math.min(1, dt * 20);
+    if (onTrain && me.y < 0.15) fell();
+    const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.95); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
+    me.lean += (turn * 0.22 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
+    meG.position.set(me.x, me.y, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; FIG.pose(meG, me.ph, me.air ? 0.4 : pace, me.air);
+    if (SC.update(dt, me, state === 'play', time)) me.speed *= 0.2;
+    const s = -me.z;
+
+    if (state === 'play' && !onTrain && time > nag) { nag = time + 7; if (T0 + me.z > 3) tip('Run! Catch the last wagon, and leap aboard beside it', 4); }
+    // ---- the first picture: a squall closes in, and when it lifts the field near Slough is there, with Windsor Castle beyond
+    if (state === 'play' && onTrain && !seenField && fieldAt === -1 && me.last >= 2) { fieldAt = -2; fogWant = 0.017; wpT = time; }
+    if (fieldAt === -2 && time - wpT > 1.3) { startField(); say(standers[0], 'Windsor! Look, there, through the rain!', 4); }
+    if (field.visible && !seenField) { const d = me.z - field.position.z; if (d < 55) fogWant = 0.0042;
+      if (state === 'play' && d < 9 && !me.air && vehAt(-me.z)) { state = 'turnips'; seenField = true; wpT = 0; me.speed = 0; $('melt').src = 'images/ploughing_turnips.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.whoosh(0.1); bubbleG = null; } }
+    if (state === 'turnips') {
+      wpT += dt; if (window.__road.dbg.hold) wpT = Math.min(wpT, 4);
+      if (wpT > 2.6 && wpT < 2.7) plate('Ploughing Up Turnips, near Slough', 'J. M. W. Turner, shown in 1809 · Tate');
+      if (wpT > 4.2 && wpT < 7.6) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (wpT > 7.6) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
+      if (wpT > 9.8) { state = 'play'; fogWant = 0.006; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').src = 'images/rain_steam_speed.jpg'; tip('On to the engine!', 4); }
+    }
+    // ---- the footplate, and the bridge
+    if (state === 'play' && onTrain && seenField && !me.air && s > TEN_B + 0.25) { state = 'footplate'; footT = 0; fogWant = 0.017; SC.gain(30, 'The footplate!', 2); say(driver, 'Hold fast, now. Maidenhead bridge!', 4.5); SND.hiss(); }
+    if (state === 'footplate') { footT += dt; me.x += (-0.1 - me.x) * dt * 2; me.z += (-(TEN_B + 1.05) - me.z) * dt * 2; me.yaw += (0 - me.yaw) * dt * 3; me.speed = 0;
+      if (footT > 6.5 && footT < 6.6) say(fireman, 'A hare on the line! See her go!', 4);
+      if (!valley.visible && footT > 1.3) startBridge();
+      if (valley.visible) fogWant = bridgeLeft() < 125 ? 0.0046 : 0.017;
+      if (valley.visible && bridgeLeft() <= V / 1.3) { state = 'tableau'; endT = 0; SND.bell(4, 0.08); [2, 4, 5, 7, 9, 10].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); bubble.classList.remove('show'); } }
+    if (state === 'tableau') { endT += dt; if (window.__road.dbg.hold) endT = Math.min(endT, 6); fogWant = CAMF.fog; fireGlow.material.opacity = Math.min(0.95, endT * 0.4);
+      if (endT > 3.5 && endT < 3.6) plate('Rain, Steam and Speed', 'J. M. W. Turner, 1844 · National Gallery, London'); if (endT > 7.5) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (endT > 17) { state = 'done'; SC.finish(); leaps(); card(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); } }
+    hare.visible = valley.visible && bridgeLeft() < 120;
+    if (hare.visible) { const hop = time * 11 * Math.max(0.2, Math.min(1, V / 9)), hz = -(ENG_F + 24 + 2.5 * Math.sin(time * 0.6)); hare.position.set(0.15 * Math.sin(time * 1.3), -0.24 + Math.abs(Math.sin(hop)) * 0.42, hz); hare.rotation.x = Math.cos(hop) * 0.35 * Math.sign(Math.sin(hop)); }
+    FIG.pose(driver, 0, 0); driver.userData.aR.rotation.x = -1.0 + Math.sin(time * 1.1) * 0.05; driver.userData.hd.rotation.y = state === 'footplate' && footT < 4.5 ? -1.2 : 0;
+    FIG.pose(fireman, 0, 0); fireman.userData.aR.rotation.x = -0.5 + Math.sin(time * 2.2) * 0.25; fireman.userData.aL.rotation.x = -0.7;
+    for (const g of standers) { const d = Math.atan2(me.x - g.position.x, me.z - g.position.z) - g.rotation.y, a = clamp(Math.atan2(Math.sin(d), Math.cos(d)), -1.2, 1.2), hd = g.userData.hd; hd.rotation.y += (a - hd.rotation.y) * Math.min(1, dt * 4); }
+
+    // ---- camera
+    const lerpTo = (p, look, fov, k) => { camera.position.x += (p[0] - camera.position.x) * k; camera.position.y += (p[1] - camera.position.y) * k; camera.position.z += (p[2] - camera.position.z) * k; const q = lerpTo.q || (lerpTo.q = new V3(...look)); q.lerp(new V3(...look), lerpTo.fresh ? 1 : Math.min(1, k * 1.5)); lerpTo.fresh = false; camera.lookAt(q); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); };
+    if (state === 'tableau' || state === 'done') lerpTo(CAMF.pos, CAMF.look, CAMF.fov, Math.min(1, dt * 1.1));
+    else if (state === 'turnips') lerpTo([FCAM.x, FCAM.y, field.position.z], [FCAM.look[0], FCAM.look[1], field.position.z + FCAM.look[2]], FCAM.fov, Math.min(1, dt * 1.7));
+    else if (state === 'footplate') lerpTo([3.6, 3.6, -(TEN_B - 0.6)], [0.2, 0.5, -(ENG_F + 30)], 62, Math.min(1, dt * 1.6));
+    else {
+      const dist = 4.5 + Math.abs(me.speed) * 0.08, cx = me.x - fx * dist + (onTrain ? 0 : 0.5), cz = me.z - fz * dist, cy = me.y + 2.55, k = Math.min(1, dt * (time - fellT < 0.6 ? 12 : 5.5));
+      camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (cy - camera.position.y) * k;
+      const lk = [me.x + fx * 7, me.y + 1.3, me.z + fz * 7]; (lerpTo.q || (lerpTo.q = new V3())).set(...lk); lerpTo.fresh = false; camera.lookAt(...lk); camera.rotation.z += -me.lean * 0.25 + Math.sin(time * 23) * 0.0012 * V; camera.position.y += Math.sin(time * 31) * 0.0009 * V;
+      camera.fov += (58 + Math.abs(me.speed) * 0.7 + V * 0.5 - camera.fov) * k; camera.updateProjectionMatrix();
+    }
+  }
+  if (window.__road.dbg.cam) { const c = window.__road.dbg.cam; camera.position.set(...c.pos); camera.lookAt(...c.look); camera.fov = c.fov || 50; camera.updateProjectionMatrix(); }      // a fixed camera for test shots
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.getWorldPosition(new V3()); v.y += 2.3; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 130, innerWidth - 130) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1); } }
+  // ---- the air
+  fogD += (fogWant - fogD) * Math.min(1, dt * (fogWant > fogD ? 2.2 : 0.9)); scene.fog.density = fogD; uni.uDen.value = fogD; { const dry = state === 'turnips' ? 0.06 : state === 'tableau' || state === 'done' ? 0.6 : 1, k = Math.min(1, dt * 2); post.uniforms.uRain.value += (dry - post.uniforms.uRain.value) * k; rainMat.uniforms.uAlpha.value += (0.22 * dry - rainMat.uniforms.uAlpha.value) * k; }
+  sunL.position.copy(camera.position).addScaledVector(SUN, 400); sunL.target.position.copy(camera.position);
+  SND.update(0.35 + 0.5 * Math.min(1, V / VMAX), clamp(0.25 + V / VMAX * 0.6 + (me.air ? 0.15 : 0), 0, 1));
+}
+// The level list lives in common/score.js. Until this level is entered there, the shared card would call it "Level 0" and offer Florence next: say nothing false instead.
+function card() { if (LEVELS.some(l => l.key === 'turner')) return; const c = $('scCard'), n = $('scNext'); if (c && c.firstChild && c.firstChild.tagName === 'I') { const br = c.firstChild.nextSibling; c.firstChild.remove(); if (br && br.tagName === 'BR') br.remove(); } if (n) { n.href = '../index.html'; n.textContent = 'Back to the gallery'; } }
+// the shared card counts leaps over ditches, of which this level has none: show the leaps between wagons instead
+function leaps() { const c = $('scCard'), n = leapt.size; if (c) c.innerHTML = c.innerHTML.replace(/\d+ clean leaps?/, `${n} clean leap${n === 1 ? '' : 's'}`); }
+function draw() {
+  const w = innerWidth, h = innerHeight;
+  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); target.setSize(Math.round(w * PR), Math.round(h * PR)); post.uniforms.uPx.value.set(1 / (w * PR), 1 / (h * PR)); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); renderer.render(postScene, postCam);
+}
+let last = 0; function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(frame); }
+reset(); requestAnimationFrame(frame);
+
+/* ================= input ================= */
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
+addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
+const cv = $('cv'), sk = $('stick');
+cv.addEventListener('pointerdown', e => { if (state !== 'play') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
+const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === held.id) held.jump = false; };
+cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
+$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
+$('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
+/* test hooks, as in munch/street.html. go(x, z) puts her on the train if the place is on it (and gets the train up to speed), otherwise on the platform. */
+window.__road = { dbg: { camera, THREE, CAMF, FCAM, field, valley, boat, plough, hare, obst, scene, get V() { return V; }, set V(v) { V = v; }, get fog() { return fogD; }, set fogWant(v) { fogWant = v; } }, get state() { return state; }, get onTrain() { return onTrain; }, me, begin,
+  go(x, z) { me.x = x; me.z = z; me.speed = 0; me.air = false; me.vy = 0; onTrain = Math.abs(x) < 1.7 && -z > T0 - 0.3; me.y = groundY(x, z); if (onTrain) { V = VMAX; me.last = vehAt(-z)?.i ?? 0; station.visible = false; } }, face(a) { me.yaw = a; },
+  route: s => at(s), LEN, wagons, VEH, T0, TEN_A, TEN_B, FP_B, ENG_F,
+  places: { platform: [3.4, -(T0 - 13)], last: [0, -(wagons[0].a + 1)], goods: [0, -(wagons[2].a + 1)], trucks: [0, -(wagons[NGOODS].a + 0.6)], tender: [0, -(TEN_A + 1)], foot: [0, -(TEN_B + 0.2)] },
+  jump: { field() { seenField = false; fieldAt = -2; wpT = time - 1.3; fogD = fogWant = 0.017; }, skipField() { seenField = true; }, skipTo(s) { seenField = true; window.__road.go(0, -s); }, tableau(d = 30) { seenField = true; window.__road.go(0, -(TEN_B + 1)); state = 'footplate'; footT = 7; startBridge(d); } } };
+</script>
+</body>
+</html>
