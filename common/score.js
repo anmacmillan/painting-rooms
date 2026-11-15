@@ -2,11 +2,11 @@
 // The paintings are the main score: each tableau she reaches is worth far more than anything on the ground.
 import { getName, setName, postScore, topScores } from './board.js';
 export const LEVELS = [
-  { key: 'florence', href: 'florence/street.html', name: 'Florence, about 1283', place: 'Florence', year: '1283', title: 'The New Life', by: 'Rossetti and Holiday', img: 'florence/images/holiday.jpg', paintings: 3, coin: 'florins' },
-  { key: 'caravaggio', href: 'caravaggio/street.html', name: 'Rome, about 1600', place: 'Rome', year: '1600', title: "The Painter's Light", by: 'Caravaggio', img: 'caravaggio/images/calling.jpg', paintings: 3, coin: 'scudi' },
-  { key: 'vermeer', href: 'vermeer/street.html', name: 'Delft, about 1665', place: 'Delft', year: '1665', title: 'The Girl in Delft', by: 'Vermeer', img: 'vermeer/images/pearl.jpg', paintings: 3, coin: 'ducats' },
-  { key: 'turner', href: 'turner/street.html', name: 'Maidenhead, 1844', place: 'Maidenhead', year: '1844', title: 'Rain, Steam and Speed', by: 'Turner', img: 'turner/images/rain_steam_speed.jpg', paintings: 2, coin: 'shillings' },
-  { key: 'munch', href: 'munch/street.html', name: 'Åsgårdstrand, 1901', place: 'Åsgårdstrand', year: '1901', title: 'The Night Road', by: 'Munch', img: 'munch/paintings/girls_bridge.jpg', paintings: 2, coin: 'kroner' },
+  { key: 'florence', at: [11.25, 43.77], href: 'florence/street.html', name: 'Florence, about 1283', place: 'Florence', year: '1283', title: 'The New Life', by: 'Rossetti and Holiday', img: 'florence/images/holiday.jpg', paintings: 3, coin: 'florins' },
+  { key: 'caravaggio', at: [12.47, 41.90], href: 'caravaggio/street.html', name: 'Rome, about 1600', place: 'Rome', year: '1600', title: "The Painter's Light", by: 'Caravaggio', img: 'caravaggio/images/calling.jpg', paintings: 3, coin: 'scudi' },
+  { key: 'vermeer', at: [4.36, 52.01], href: 'vermeer/street.html', name: 'Delft, about 1665', place: 'Delft', year: '1665', title: 'The Girl in Delft', by: 'Vermeer', img: 'vermeer/images/pearl.jpg', paintings: 3, coin: 'ducats' },
+  { key: 'turner', at: [-0.70, 51.52], href: 'turner/street.html', name: 'Maidenhead, 1844', place: 'Maidenhead', year: '1844', title: 'Rain, Steam and Speed', by: 'Turner', img: 'turner/images/rain_steam_speed.jpg', paintings: 2, coin: 'shillings' },
+  { key: 'munch', at: [10.47, 59.35], href: 'munch/street.html', name: 'Åsgårdstrand, 1901', place: 'Åsgårdstrand', year: '1901', title: 'The Night Road', by: 'Munch', img: 'munch/paintings/girls_bridge.jpg', paintings: 2, coin: 'kroner' },
 ];
 const STORE = 'paintingRooms.v1';
 export function loadScores() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } }
@@ -105,7 +105,7 @@ export function makeScore(o) {
     else { g.add(new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.06, 6, 20), glow('#4f9a4a'))); for (let i = 0; i < 6; i++) { const b = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 5), glow('#f2c865')); b.position.set(Math.cos(i * 1.05) * 0.3, Math.sin(i * 1.05) * 0.3, 0.05); g.add(b); } }
     const h = new THREE.Sprite(new THREE.SpriteMaterial({ map: haloTex, color: kind === 'wings' ? 0xbfe0ff : 0xc8ffb0, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); h.scale.setScalar(2.4); g.add(h);
     const y = o.groundY(p.x, p.z) + 1.05; g.position.set(p.x, y, p.z); scene.add(g); powers.push({ kind, g, x: p.x, z: p.z, y }); });
-  const gm = () => mult * (power.laurel > 0 ? 2 : 1);
+  const gm = () => Math.min(4, mult * (power.laurel > 0 ? 2 : 1));
   let pts = 0, got = 0, leaps = 0, seen = new Set(), clock = 0, running = false, toastT = 0, lastS = 0, streak = 0, lastGain = -9, mult = 1;
   const flow = n => { streak = clock - lastGain < 3.2 ? streak + n : n; lastGain = clock; const m = 1 + Math.min(3, Math.floor(streak / 4)); if (m > mult) say(`×${m}  keep it flowing!`); mult = m; };
   const lose = (n, msg) => { pts = Math.max(0, pts - n); streak = 0; mult = 1; say(msg); show(); hud.classList.remove('hurt'); void hud.offsetWidth; hud.classList.add('hurt'); if (SND && SND.puff) SND.puff(0.12); };
@@ -155,7 +155,7 @@ export function makeScore(o) {
   }
   function finish() {
     if (!running) return; running = false; hud.style.display = 'none';
-    const secs = Math.round(clock), bonus = Math.max(0, 5 * Math.round((300 - secs) / 5)); pts += PTS.finish + bonus;
+    const secs = Math.round(clock), par = o.par || Math.round(LEN / 4.5 + 45), bonus = Math.max(0, Math.min(150, 5 * Math.round((150 - Math.max(0, secs - par)) / 5)));      // full marks inside a brisk time for this road, a point a second lost after it pts += PTS.finish + bonus;
     const all = loadScores(), was = all[o.key] || {}, best = Math.max(was.best || 0, pts); all[o.key] = { best, time: Math.min(was.time || 1e9, secs), paintings: Math.max(was.paintings || 0, seen.size), of: o.paintings, found: [...new Set([...(was.found || []), ...seen])], coins: Math.max(was.coins || 0, got), runs: (was.runs || 0) + 1, done: Date.now() }; saveScores(all);
     const total = LEVELS.reduce((t, l) => t + ((all[l.key] || {}).best || 0), 0), next = LEVELS[lvl + 1], mm = Math.floor(secs / 60), ss = String(secs % 60).padStart(2, '0');
     const end = document.getElementById('end'), again = document.getElementById('again'), card = document.createElement('p'); card.id = 'scCard';
