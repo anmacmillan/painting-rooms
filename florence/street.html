@@ -40,6 +40,7 @@
 import * as THREE from 'three';
 import { canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
 import { makeGuide } from '../common/guide.js';
+import { makeScore } from '../common/score.js';
 const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
 const map = await (await fetch('map.json')).json();
 
@@ -300,7 +301,7 @@ const guide = makeGuide({ THREE, scene, map, nearest: (x, z) => nearest(x, z), a
   style: { board: '#e9e2d0', ink: '#3a2a20', post: '#8a8072', land: '#4a4034', water: '#5a7a80', house: '#7a6a54', street: '#e2d4b0' } });
 let progS = S_START, state = 'title', time = 0, muted = false, endT = 0, triS = S_START + 12, triV = 0, triPh = 0, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, dusk = 0, leg = 1;
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
-const plate = (title, line) => { $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
+const plate = (title, line) => { SC.award(title, null, title); $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
 const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
 const stand = (g, s, v, faceS, faceV) => { const p = at(s), [x, z] = side(p, 0, v), q = at(faceS), [fx, fz] = side(q, 0, faceV); g.position.set(x, floorAt(x, z) ?? (isWater(x, z) ? DECK : LAND), z); faceTo(g, fx, fz, 1); pose(g, 0, 0); };
 const P0 = at(S_BRIDGE - 12), WALL_V = (() => { let v = 1; while (v < 24 && !isWater(...sideR(P0, 0, v))) v += 0.25; return v - 0.6; })();      // how far to the left the river wall stands, at the bridge corner
@@ -315,10 +316,12 @@ const WAY = {
     stage() { const t = Math.min(2.6, wpT * 0.32), put = (g, u, v) => { const [x, z] = sideR(P0, u, v), [fx, fz] = sideR(P0, u + 20, v); g.position.set(x, LAND, z); faceTo(g, fx, fz, 1); };
       put(vanna, 0.6 + t, WALL_V - 5.8); put(beatrice, -0.2 + t, WALL_V - 4.5); put(maid, -2.2 + t, WALL_V - 3.7); for (const g of trio) pose(g, time * 3, 0.35); beatrice.userData.hd.rotation.y = 0.5; return [S_BRIDGE - 12 + 6.0, -(WALL_V - 1.3)]; },      // he stands at the river wall; she looks away
     cam() { const [x, z] = sideR(P0, 9.6, WALL_V - 3.3), [tx, tz] = sideR(P0, -30, WALL_V - 2.2); return [new V3(x, LAND + 1.6, z), new V3(tx, LAND + 2.2, tz), 56]; } } };
+// points: the paintings first, then what lies on the road and the drains to leap (common/score.js)
+const SC = makeScore({ THREE, scene, key: 'florence', at, nearest: (x, z) => nearest(x, z, progS), LEN, groundY: (x, z) => floorAt(x, z) ?? LAND, blocked, paintings: Object.keys(WAY).length + 1, thing: 'florin', things: 'gold florins', ditch: 'drain', wet: false, avoid: Object.values(WAY).map(w => w.s), half: 2.6, ditchColor: '#3d3a34', lipColor: '#a39a84' });
 function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); triS = S_START + 12; triV = 0; endT = 0; wp = null; seen = {}; leg = 1; dusk = 0; progS = S_START; dove.visible = false; for (const g of trio) { g.userData.hd.rotation.set(0, 0, 0); g.userData.rig.position.y = 0; g.scale.setScalar(g === maid ? 1.0 : 1.04); }
   camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
 function begin() {
-  SND.start({ track: 'music.mp3', chords: [[41, 60, 64, 67, 72], [38, 57, 60, 65, 69], [36, 55, 60, 64, 67], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); state = 'play';
+  SND.start({ track: 'music.mp3', chords: [[41, 60, 64, 67, 72], [38, 57, 60, 65, 69], [36, 55, 60, 64, 67], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
   $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
   setTimeout(() => { if (state === 'play') say(meG, 'There she is: Beatrice, all in white. After her!', 4.5); }, 900);
 }
@@ -341,6 +344,7 @@ function update(dt) {
     const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.9); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
     me.lean += (turn * 0.2 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
     if (state === 'play') { meG.position.set(me.x, me.y, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; pose(meG, me.ph, me.air ? 0.4 : pace, me.air, 0.08 * Math.min(1, pace)); }
+    if (SC.update(dt, me, state === 'play', time)) me.speed *= 0.2;
     const prog = nearest(me.x, me.z, progS), sEnd = LEN - 2; progS = prog.s; dusk += (sstep(S_RIVER - 40, LEN, prog.s) - dusk) * dt * 0.8;
 
     // Beatrice and her two companions: just ahead of him through the streets; then he hurries by the river to be at the bridge before her; then she goes out on to the bridge alone
@@ -370,15 +374,15 @@ function update(dt) {
       const fl = Math.sin(time * 20) * (1 - dk * 0.7); dove.userData.wL.rotation.z = fl; dove.userData.wR.rotation.z = -fl;
       if (endT > 5.0 && endT < 5.1) plate('Beata Beatrix', 'Dante Gabriel Rossetti, about 1864–70 · this version, Art Institute of Chicago');
       if (endT > 8.0) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
-      if (endT > 18) { state = 'done'; $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); } }
+      if (endT > 18) { state = 'done'; SC.finish(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); } }
 
     // camera
     if (state === 'way') { const [pos, look, fov] = wp.cam(), k = Math.min(1, dt * 1.5); camera.position.lerp(pos, k); camera.lookAt(look); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); }
     else if (state === 'tableau' || state === 'done') { const kk = Math.min(1, dt * 0.9), b = beatrice.position, fwd = [Math.sin(beatrice.rotation.y), Math.cos(beatrice.rotation.y)], pos = new V3(b.x + fwd[0] * 2.3 + fwd[1] * 0.6, DECK + 1.0, b.z + fwd[1] * 2.3 - fwd[0] * 0.6);      // in front of her, the river and the old bridge behind
       camera.position.lerp(pos, kk); camera.lookAt(b.x, DECK + 1.02, b.z); camera.fov += (40 - camera.fov) * kk; camera.updateProjectionMatrix(); }
-    else { const alt = Math.max(0, me.y - (floorAt(me.x, me.z) ?? LAND)); let dist = 5.6 + Math.abs(me.speed) * 0.2 + alt * 0.5, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
+    else { const alt = Math.max(0, me.y - (floorAt(me.x, me.z) ?? LAND)); let dist = 4.6 + Math.abs(me.speed) * 0.1 + alt * 0.5, cx, cz; for (let k = 0; k < 4; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
       const k = Math.min(1, dt * 5.5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (me.y + 2.45 + alt * 0.25 - camera.position.y) * k;
-      camera.lookAt(me.x + fx * 6, me.y + 1.45, me.z + fz * 6); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 + Math.abs(me.speed) * 1.4 - camera.fov) * k; camera.updateProjectionMatrix(); }
+      camera.lookAt(me.x + fx * 6, me.y + 1.45, me.z + fz * 6); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 + Math.abs(me.speed) * 0.9 - camera.fov) * k; camera.updateProjectionMatrix(); }
   }
   for (const w of walkers) {
     w.s += w.dir * w.v * dt; if (w.s > w.hi) { w.s = w.hi; w.dir = -1; } if (w.s < w.lo) { w.s = w.lo; w.dir = 1; }

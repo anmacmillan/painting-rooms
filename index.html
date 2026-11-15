@@ -14,26 +14,40 @@
   a.room img { width:100%; display:block; border:14px solid #f4efe2; box-sizing:border-box; box-shadow:10px 14px 30px rgba(0,0,0,.4); }
   a.room span { display:block; margin-top:1em; font-size:clamp(18px,3vw,24px); }
   a.room small { display:block; opacity:.7; font-style:italic; margin-top:.2em; }
+  a.room em { display:block; font-size:.62em; letter-spacing:.08em; text-transform:uppercase; font-style:normal; opacity:.65; margin-bottom:.25em; }
+  a.room small.best { color:#f2c865; opacity:1; font-style:normal; }
+  #total { font-style:normal; color:#f2c865; opacity:1; margin:-1.2em 0 2em; min-height:1.2em; }
 </style>
 </head>
 <body>
   <h1>Painting Rooms</h1>
   <p>short games set inside paintings</p>
+  <p id="total"></p>
+  <p style="margin:-1.2em 0 2em"><a href="arcade/" style="color:#f2c865">all the games, and the family board</a></p>
   <div class="rooms">
-  <a class="room" href="florence/street.html">
+  <a class="room" data-level="florence" href="florence/street.html">
     <img src="florence/images/holiday.jpg" alt="Dante and Beatrice by Henry Holiday" style="aspect-ratio:1.26;object-fit:cover;object-position:50% 40%">
-    <span>The New Life: Florence</span>
+    <span><em>Level 1 · about 1283</em>The New Life: Florence</span>
     <small>follow Beatrice to the Arno, after Henry Holiday and Rossetti</small>
+    <small class="best" id="best-florence"></small>
   </a>
-  <a class="room" href="vermeer/street.html">
+  <a class="room" data-level="caravaggio" href="caravaggio/street.html">
+    <img src="caravaggio/images/calling.jpg" alt="The Calling of Saint Matthew by Caravaggio" style="aspect-ratio:1.26;object-fit:cover;object-position:50% 60%">
+    <span><em>Level 2 · about 1600</em>The Painter's Light: Rome</span>
+    <small>carry the painter's lantern through the night, after Caravaggio</small>
+    <small class="best" id="best-caravaggio"></small>
+  </a>
+  <a class="room" data-level="vermeer" href="vermeer/street.html">
     <img src="vermeer/images/little_street.jpg" alt="The Little Street by Johannes Vermeer" style="aspect-ratio:1.26;object-fit:cover;object-position:50% 80%">
-    <span>The Girl in Delft: one street</span>
-    <small>the rebuild: chase a magpie through Delft, after Johannes Vermeer</small>
+    <span><em>Level 3 · about 1665</em>The Girl in Delft: one street</span>
+    <small>chase a thieving magpie through Delft, after Johannes Vermeer</small>
+    <small class="best" id="best-vermeer"></small>
   </a>
-  <a class="room" href="munch/street.html">
+  <a class="room" data-level="munch" href="munch/street.html">
     <img src="munch/paintings/girls_bridge.jpg" alt="The Girls on the Bridge by Edvard Munch" style="aspect-ratio:1.26;object-fit:cover;object-position:50% 70%">
-    <span>The Night Road: one street</span>
-    <small>the rebuild: a chase down one street of Åsgårdstrand, after Edvard Munch</small>
+    <span><em>Level 4 · 1901</em>The Night Road: one street</span>
+    <small>race your sisters to the pier on a summer night, after Edvard Munch</small>
+    <small class="best" id="best-munch"></small>
   </a>
   <a class="room" href="rousseau/">
     <img src="rousseau/painting.jpg" alt="Tropical Forest with Monkeys by Henri Rousseau">
@@ -46,5 +60,11 @@
     <small>inside a painting by Georges Seurat</small>
   </a>
   </div>
+<script type="module">
+  import { LEVELS, loadScores } from './common/score.js';
+  const all = loadScores(); let total = 0;
+  for (const l of LEVELS) { const r = all[l.key], el = document.getElementById('best-' + l.key); if (r && el) { total += r.best; el.textContent = `best ${r.best} points · ${r.paintings} paintings · ${Math.floor(r.time / 60)}:${String(r.time % 60).padStart(2, '0')}`; } }
+  if (total) document.getElementById('total').textContent = `${total} points across the four levels`;
+</script>
 </body>
 </html>

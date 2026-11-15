@@ -1,0 +1,38 @@
+[
+ {
+  "file": "medusa.jpg",
+  "title": "File:Caravaggio - Medusa - Google Art Project.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Caravaggio_-_Medusa_-_Google_Art_Project.jpg",
+  "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/15/Caravaggio_-_Medusa_-_Google_Art_Project.jpg/1280px-Caravaggio_-_Medusa_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "orig": [
+   3369,
+   3453
+  ],
+  "license": "Public domain",
+  "bytes": 382200
+ },
+ {
+  "file": "calling.jpg",
+  "title": "File:Caravaggio, Michelangelo Merisi da - The Calling of Saint Matthew - 1599-1600 (hi res).jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Caravaggio,_Michelangelo_Merisi_da_-_The_Calling_of_Saint_Matthew_-_1599-1600_(hi_res).jpg",
+  "thumb": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ce/Caravaggio%2C_Michelangelo_Merisi_da_-_The_Calling_of_Saint_Matthew_-_1599-1600_%28hi_res%29.jpg/1280px-Caravaggio%2C_Michelangelo_Merisi_da_-_The_Calling_of_Saint_Matthew_-_1599-1600_%28hi_res%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail",
+  "orig": [
+   1283,
+   1200
+  ],
+  "license": "Public domain",
+  "bytes": 285794
+ },
+ {
+  "file": "loreto.jpg",
+  "title": "File:Michelangelo Merisi da Caravaggio - Madonna di Loreto - WGA04156.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Michelangelo_Merisi_da_Caravaggio_-_Madonna_di_Loreto_-_WGA04156.jpg",
+  "thumb": "https://upload.wikimedia.org/wikipedia/commons/a/a0/Michelangelo_Merisi_da_Caravaggio_-_Madonna_di_Loreto_-_WGA04156.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=thumbnail_unscaled",
+  "orig": [
+   621,
+   1060
+  ],
+  "license": "Public domain",
+  "bytes": 480723
+ }
+]

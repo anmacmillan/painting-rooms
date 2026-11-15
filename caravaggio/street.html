@@ -1,0 +1,349 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>The Painter's Light: one night in Rome</title>
+<link rel="stylesheet" href="../common/world.css">
+<style>
+  :root { --go:#7a2a1c; } html, body { background:#060608; } #title { background:#060608; } #title > img, #end > img { background:#060608; } #end { background:#17161a; } #end > img { max-height:46vh; border-color:#6a5430; }
+  #bubble { font-size:17px; }
+  #plate { position:fixed; left:50%; bottom:max(34px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2.5s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.95); z-index:9; white-space:nowrap; }
+  #plate.show { opacity:1; } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.85; }
+  #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(16px) saturate(1.2); transition:opacity 2.4s ease, filter 2.8s ease; pointer-events:none; z-index:8; }
+  #melt.show { opacity:1; filter:none; } #melt.slow { transition-duration:5s, 6s; } #melt.quick { transition-duration:1.2s, 1.5s; } #cv { transition:filter 2.6s ease; } body.melting #cv { filter:brightness(.28) blur(4px); } body.quick #cv { transition-duration:1.2s; }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
+<img id="melt" src="images/medusa.jpg" alt=""><div id="plate"></div>
+<button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+<div id="title" class="screen">
+  <img src="images/calling.jpg" alt="The Calling of Saint Matthew by Caravaggio">
+  <div class="words"><h1>The Painter's Light</h1><p>one night in Rome, about 1600 · after Caravaggio</p><button class="go" id="start">Take the lantern</button></div>
+</div>
+<div id="end" class="screen hidden">
+  <img src="images/loreto.jpg" alt="Madonna di Loreto by Caravaggio">
+  <h2>Madonna di Loreto</h2>
+  <p>Caravaggio painted for the churches of this one small quarter of Rome. The Calling of Saint Matthew (1599–1600) still hangs in the Contarelli Chapel of San Luigi dei Francesi, and the Madonna di Loreto (about 1604–06) in Sant'Agostino, a few minutes' walk away. The Medusa, painted on a shield for Cardinal del Monte to give to the Grand Duke of Tuscany, is in the Uffizi in Florence. In 1600 the painter was living in the cardinal's household at Palazzo Madama, which is now the Italian Senate.</p>
+  <p>What is real: the streets and squares, and the palace and the two churches on their own sites. A writer of 1604 says he went about with a sword at his side and a servant following him. What is invented: the boy, every word the painter says, and this night walk. The three pictures were painted years apart, between about 1597 and 1606, and never stood in doorways. The palace front you passed was rebuilt in 1642, and the wide street before it was cut through in the 1930s: here it is an older lane. The great church and the Fountain of the Four Rivers in Piazza Navona came fifty years later and are left out; the plain basin is of 1574.</p>
+  <p class="small">Paintings: public domain, via Wikimedia Commons (Uffizi, Florence; San Luigi dei Francesi and Sant'Agostino, Rome). House fronts, paving and stone were painted with Google's image model for the Florence level and are used again here in the dark. Street plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors.</p>
+  <button class="go" id="again">Walk it again</button>
+</div>
+<div id="err">This world needs WebGL, which this browser could not start.</div>
+
+<script src="../common/sound.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { rnd, clamp, sstep, mix } from '../common/world.js';
+import { makeGuide } from '../common/guide.js';
+import { makeScore } from '../common/score.js';
+import { makeFigures } from '../common/figure.js';
+const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
+const map = await (await fetch('map.json')).json();
+
+/* ================= the route =================
+   Real plan (tools/prep_rome.py, from OpenStreetMap): from the north end of Piazza Navona, out by the Corsia Agonale to Piazza Madama and the
+   front of Palazzo Madama, along Via del Salvatore between the palace and the church to Piazza di San Luigi de' Francesi, north across the square
+   and up Via della Scrofa, then west by Via di Sant'Agostino to the square before the basilica. The points in the open squares are laid by hand
+   between the mapped street lines; the street points are OpenStreetMap's own. x east, z south, metres from the north of Piazza Navona. */
+const raw = [[4, -6], [8, 20], [14, 44], [24.4, 52.7], [57, 50.8], [63, 49.5], [68.5, 45], [68.8, 30], [72, 23.2], [79.8, 22.8], [143.9, 22.6], [150.5, 19], [150.2, 3], [149, -31.5], [147.9, -55.6], [148.4, -61.1], [148.6, -63.4], [147.0, -103.5], [139, -103.7], [123.3, -103.5], [111.5, -103.3], [103, -106], [97, -114], [95.9, -125]];
+const ROUTE = raw; const cum = [0]; for (let i = 1; i < ROUTE.length; i++) cum.push(cum[i - 1] + Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]));
+const LEN = cum[cum.length - 1];
+function at(s) { s = clamp(s, 0, LEN - 0.01); let i = 1; while (cum[i] < s) i++; const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1]), a = ROUTE[i - 1], b = ROUTE[i], L = Math.hypot(b[0] - a[0], b[1] - a[1]); return { x: mix(a[0], b[0], t), z: mix(a[1], b[1], t), dx: (b[0] - a[0]) / L, dz: (b[1] - a[1]) / L }; }
+function nearest(x, z, hint) { let best = 1e9, s = 0, bd = 1e9; for (let i = 1; i < ROUTE.length; i++) { const a = ROUTE[i - 1], b = ROUTE[i], dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz), 0, 1), d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t), si = cum[i - 1] + t * (cum[i] - cum[i - 1]), cost = d + (hint == null ? 0 : 0.04 * Math.abs(si - hint)); if (cost < best) { best = cost; s = si; bd = d; } } return { s, d: bd }; }
+const side = (p, u, v) => [p.x + p.dx * u - p.dz * v, p.z + p.dz * u + p.dx * v];
+const S_START = 3, CORR = 16, LAND = 0;
+// a stage is set out from one point on a wall: r metres to the right as the painter sees it, d metres away from him into the wall
+const frame = (ox, oz, dx, dz) => { const L = Math.hypot(dx, dz); dx /= L; dz /= L; const rx = -dz, rz = dx; return { ox, oz, dx, dz, rx, rz, P: (r, d) => [ox + r * rx + d * dx, oz + r * rz + d * dz], ang: (r, d) => Math.atan2(r * rx + d * dx, r * rz + d * dz), ry: Math.atan2(-rz, rx) }; };
+const F_MED = frame(77.2, 48.0, 0.997, -0.075);            // the west front of Palazzo Madama, seen looking east
+const F_CALL = frame(146.35, 2.85, -0.9986, 0.052);         // before the east front of San Luigi dei Francesi, seen looking west
+const F_END = frame(95.6, -131.6, 0.092, -0.996);           // the south front of Sant'Agostino, seen looking north
+const S_MED = nearest(...F_MED.P(0, -8)).s, S_CALL = nearest(...F_CALL.P(0, -3.6)).s, S_END = LEN - 8;
+
+/* ================= renderer and the oil-paint filter (as in the other streets) ================= */
+let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
+const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0x040508, 14, 120);
+const camera = new THREE.PerspectiveCamera(58, 1, 0.2, 3000);
+const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
+const post = new THREE.ShaderMaterial({ uniforms: { tScene: { value: target.texture }, uPx: { value: new THREE.Vector2() } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+  fragmentShader: `uniform sampler2D tScene; uniform vec2 uPx; varying vec2 vUv;
+    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+    void main(){
+      vec3 best = vec3(0.0); float bestVar = 1e9;
+      for (int q = 0; q < 4; q++) {                       // each pixel takes the mean of its most even neighbouring patch: edges hold, the rest becomes dabs of paint
+        vec2 dir = vec2(q == 0 || q == 3 ? -1.0 : 1.0, q < 2 ? -1.0 : 1.0); vec3 m = vec3(0.0), m2 = vec3(0.0);
+        for (int j = 0; j < 3; j++) for (int i = 0; i < 3; i++) { vec3 c = texture2D(tScene, vUv + dir * vec2(float(i), float(j)) * uPx * 0.9).rgb; m += c; m2 += c * c; }
+        m /= 9.0; m2 = abs(m2 / 9.0 - m * m); float v = m2.r + m2.g + m2.b; if (v < bestVar) { bestVar = v; best = m; }
+      }
+      float grain = hash(floor(vUv / uPx / 2.0)) * 0.05 - 0.025, weave = sin(vUv.x / uPx.x * 1.6) * sin(vUv.y / uPx.y * 1.6) * 0.012;
+      vec3 col = best * (1.0 + grain + weave) + vec3(0.012, 0.009, 0.006) * (grain * 8.0 + 0.4);      // the dark is a brown ground, never a dead black
+      col *= 1.0 - 0.45 * pow(length(vUv - 0.5) * 1.25, 2.6);
+      gl_FragColor = vec4(col, 1.0);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`, depthTest: false, depthWrite: false });
+const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
+
+/* ================= light: the rule of this world =================
+   It is night. A thin moon gives the walls an edge and no more. Light is only where it falls: the boy's lantern, a torch at a corner,
+   and at each picture one hard shaft coming down across the wall. */
+const LIGHT = { hemi: 0.34, moon: 0.42, lantern: 19, torch: 15, shaft: 320 };
+const hemi = new THREE.HemisphereLight(C('#3c4c7c'), C('#15110f'), LIGHT.hemi), moon = new THREE.DirectionalLight(C('#7c92cc'), LIGHT.moon); moon.position.set(-60, 80, 50); scene.add(hemi, moon, moon.target);
+const lantern = new THREE.PointLight(C('#ffb25e'), LIGHT.lantern, 30, 1.7); scene.add(lantern);
+const pool = [0, 1, 2, 3].map(() => { const l = new THREE.PointLight(C('#ff9440'), 0, 20, 2); scene.add(l); return l; });
+const shaft = new THREE.SpotLight(C('#ffe2b4'), LIGHT.shaft, 30, 0.3, 0.12, 2); shaft.castShadow = true; shaft.shadow.mapSize.set(2048, 2048); shaft.shadow.camera.near = 0.6; shaft.shadow.camera.far = 26; shaft.shadow.bias = -0.0008; shaft.shadow.normalBias = 0.03; scene.add(shaft, shaft.target);
+const beam = new THREE.Mesh(new THREE.ConeGeometry(1, 1, 28, 1, true), new THREE.MeshBasicMaterial({ color: '#ffd9a0', transparent: true, opacity: 0.035, blending: THREE.AdditiveBlending, depthWrite: false, side: THREE.DoubleSide, fog: false })); beam.geometry.translate(0, -0.5, 0); scene.add(beam);      // the dust in the shaft
+const uni = { uTime: { value: 0 } };
+const sky = new THREE.Mesh(new THREE.SphereGeometry(2000, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: uni,
+  vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `uniform float uTime; varying vec3 vDir;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
+    void main(){ vec3 d = normalize(vDir); float el = max(d.y, 0.0), az = atan(d.z, d.x);
+      vec3 col = mix(vec3(0.012, 0.016, 0.034), vec3(0.003, 0.004, 0.012), smoothstep(0.0, 0.6, el));
+      float cl = noise(vec2(az * 3.0 + uTime * 0.003, el * 7.0)) * noise(vec2(az * 7.0, el * 15.0 + 3.0)); col += vec3(0.02, 0.024, 0.04) * smoothstep(0.2, 0.6, cl);      // torn cloud, barely there
+      vec2 g = vec2(az * 60.0, el * 90.0); float st = step(0.985, hash(floor(g))) * smoothstep(0.35, 0.0, length(fract(g) - 0.5)); col += vec3(0.5, 0.52, 0.6) * st * smoothstep(0.05, 0.3, el) * (1.0 - smoothstep(0.25, 0.6, cl));
+      float md = distance(d, normalize(vec3(-0.55, 0.62, 0.45))); col += vec3(0.75, 0.8, 0.95) * (1.0 - smoothstep(0.022, 0.03, md)) * smoothstep(0.012, 0.03, distance(d, normalize(vec3(-0.535, 0.63, 0.45)))) + vec3(0.03, 0.04, 0.07) * exp(-md * 9.0);      // a thin moon
+      gl_FragColor = vec4(col, 1.0); }` }));
+sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
+
+/* ================= materials: the painted fronts, paving and stone made for Florence, here by lantern ================= */
+const TL = new THREE.TextureLoader(), lam = o => new THREE.MeshLambertMaterial(o), basic = o => new THREE.MeshBasicMaterial(o);
+const tex = async (f, rep) => { const t = await TL.loadAsync(f.includes('/') ? f : 'tex/' + f); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; if (rep) { t.wrapS = t.wrapT = THREE.RepeatWrapping; } return t; };
+const [tPave, tStone, tA, tB, tC, tD, tMedusa] = await Promise.all([tex('paving.jpg', 1), tex('stone.jpg', 1), tex('facade_a.jpg', 1), tex('facade_b.jpg', 1), tex('facade_c.jpg', 1), tex('facade_d.jpg', 1), tex('images/medusa.jpg')]);
+const FRONT = [tA, tB, tC, tD].map(t => lam({ map: t })), stoneM = lam({ map: tStone, color: '#d8d0c0' }), paveM = lam({ map: tPave, color: '#b8b0a4' });
+const plaster = lam({ color: '#6c6454' }), darkWood = lam({ color: '#3a2a1c' }), wood = lam({ color: '#6a4a2c' }), iron = lam({ color: '#1c1a18' }), black = basic({ color: '#030304' }), shadowM = basic({ color: 0x000000, transparent: true, opacity: 0.3, depthWrite: false });
+
+/* ================= ground ================= */
+{ const g = new THREE.PlaneGeometry(700, 700), u = g.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, u.getX(i) * 700 / 3.6, u.getY(i) * 700 / 3.6); const m = new THREE.Mesh(g, paveM); m.rotation.x = -Math.PI / 2; m.position.set(80, LAND, -40); m.receiveShadow = true; scene.add(m); }
+
+/* ================= the houses: walls raised on the real footprints ================= */
+const batches = new Map(), put = (m, p, n, uv) => { let b = batches.get(m); if (!b) { b = { pos: [], nor: [], uv: [] }; batches.set(m, b); } b.pos.push(...p); b.nor.push(...n); b.uv.push(...uv); };
+const flush = () => { for (const [m, b] of batches) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(b.nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(b.uv, 2)); const mesh = new THREE.Mesh(g, m); mesh.receiveShadow = true; scene.add(mesh); } batches.clear(); };
+const inPoly = (p, x, z) => { let c = false; for (let i = 0, j = p.length - 1; i < p.length; j = i++) { const a = p[i], b = p[j]; if ((a[1] > z) !== (b[1] > z) && x < a[0] + (z - a[1]) / (b[1] - a[1]) * (b[0] - a[0])) c = !c; } return c; };
+const blocks = [], winM = basic({ color: '#6a3c14' }), winM2 = basic({ color: '#3c2410' });
+const BIG = [[/Palazzo Madama/, 19], [/San Luigi dei Francesi/, 25], [/Basilica di Sant'Agostino/, 23], [/Sant'Agnese|Pamphilj/, 15]];
+map.buildings.forEach((b, i) => {
+  const p = b.p; if (p.length < 3 || /Obelisco/.test(b.n || '')) return; let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9, near = 1e9; for (const q of p) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); z0 = Math.min(z0, q[1]); z1 = Math.max(z1, q[1]); near = Math.min(near, nearest(q[0], q[1]).d); }
+  if (near > 100) return; blocks.push({ p, x0, x1, z0, z1 });
+  const big = BIG.find(k => k[0].test(b.n || '')), H = big ? big[1] : 10.2 + ((i * 7) % 5) * 1.1, mat = big ? stoneM : FRONT[i % 4];
+  for (let k = 0; k < p.length; k++) { let a = p[k], c = p[(k + 1) % p.length]; const L = Math.hypot(c[0] - a[0], c[1] - a[1]); if (L < 0.3) continue;
+    let nx = -(c[1] - a[1]) / L, nz = (c[0] - a[0]) / L; const mx = (a[0] + c[0]) / 2, mz = (a[1] + c[1]) / 2; if (inPoly(p, mx + nx * 0.15, mz + nz * 0.15)) { nx = -nx; nz = -nz; }
+    if (-(c[1] - a[1]) * nx + (c[0] - a[0]) * nz < 0) [a, c] = [c, a];                                   // wind it so that it faces outward
+    const n = big ? L / 5 : Math.max(1, Math.round(L / 7)), v = big ? H / 5 : 1;
+    put(mat, [a[0], 0, a[1], c[0], 0, c[1], c[0], H, c[1], a[0], 0, a[1], c[0], H, c[1], a[0], H, a[1]], [nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz], [0, 0, n, 0, n, v, 0, 0, n, v, 0, v]);
+    // here and there a window with a candle behind it
+    if (!big && L > 5) for (let q = 0; q < Math.floor(L / 7); q++) { if (((i * 13 + k * 7 + q * 5) % 9) > 1) continue; const t = (q + 0.3 + ((i + q) % 3) * 0.2) / Math.floor(L / 7), wx = mix(a[0], c[0], t) + nx * 0.06, wz = mix(a[1], c[1], t) + nz * 0.06, y = 4.6 + ((i + q * 3) % 3) * 1.7, ex = (c[0] - a[0]) / L * 0.36, ez = (c[1] - a[1]) / L * 0.36;
+      put((i + q) % 2 ? winM : winM2, [wx - ex, y, wz - ez, wx + ex, y, wz + ez, wx + ex, y + 1.1, wz + ez, wx - ex, y, wz - ez, wx + ex, y + 1.1, wz + ez, wx - ex, y + 1.1, wz - ez], [nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz], [0, 0, 1, 0, 1, 1, 0, 0, 1, 1, 0, 1]); } }
+});
+winM.side = winM2.side = THREE.DoubleSide;
+const solids = [], rounds = [];                                   // what the stages add: boxes { x, z, w, d, c, s } and round things { x, z, r }
+const inHouse = (x, z) => blocks.some(b => x > b.x0 && x < b.x1 && z > b.z0 && z < b.z1 && inPoly(b.p, x, z)) || solids.some(h => { const dx = x - h.x, dz = z - h.z, u = dx * h.c + dz * h.s, v = -dx * h.s + dz * h.c; return Math.abs(u) < h.w && Math.abs(v) < h.d; }) || rounds.some(h => Math.hypot(x - h.x, z - h.z) < h.r);
+const floorAt = (x, z) => (nearest(x, z).d > CORR ? null : LAND), blocked = (x, z) => inHouse(x, z) || floorAt(x, z) === null;
+// stone posts hung with chain across every opening off the way
+{ for (const sd of [-1, 1]) for (let q = 2; q < LEN - 2; q += 2.6) { const p = at(q), [x, z] = side(p, 0, (CORR - 1) * sd); if (inHouse(x, z) || nearest(x, z).d < CORR - 1.8) continue; const ry = -Math.atan2(p.dz, p.dx), g = new THREE.Group();
+    for (const e of [-1.3, 1.3]) { const b = new THREE.Mesh(new THREE.BoxGeometry(0.36, 0.95, 0.36), stoneM); b.position.set(e, 0.47, 0); g.add(b); } const ch = new THREE.Mesh(new THREE.BoxGeometry(2.4, 0.06, 0.06), iron); ch.position.y = 0.66; g.add(ch);
+    g.position.set(x, LAND, z); g.rotation.y = ry; scene.add(g); solids.push({ x, z, w: 1.5, d: 0.3, c: p.dx, s: p.dz }); } }
+// Piazza Navona had Giacomo della Porta's plain basin at this end from 1574; the sea god in it today was added in 1878
+{ const x = -4, z = -17, rim = new THREE.Mesh(new THREE.CylinderGeometry(4.6, 4.9, 0.7, 28), stoneM); rim.position.set(x, 0.35, z); const w = new THREE.Mesh(new THREE.CylinderGeometry(4.2, 4.2, 0.1, 28), lam({ color: '#0c1622' })); w.position.set(x, 0.68, z); scene.add(rim, w); rounds.push({ x, z, r: 5.3 }); }
+flush();
+
+/* ================= things a stage is built from ================= */
+const sbox = (F, r, d, y, w, h, dp, mat, solid) => { const [x, z] = F.P(r, d), m = new THREE.Mesh(new THREE.BoxGeometry(w, h, dp), mat); m.position.set(x, y, z); m.rotation.y = F.ry; m.castShadow = m.receiveShadow = true; scene.add(m); if (solid) solids.push({ x, z, w: w / 2 + 0.25, d: dp / 2 + 0.25, c: F.rx, s: F.rz }); return m; };
+const torches = [];
+function torch(x, z, y) { const g = new THREE.Group(), fl = new THREE.Mesh(new THREE.ConeGeometry(0.1, 0.36, 7), basic({ color: '#ffb44a' })), gl = new THREE.Mesh(new THREE.SphereGeometry(0.34, 10, 8), basic({ color: '#ff8a2a', transparent: true, opacity: 0.22, blending: THREE.AdditiveBlending, depthWrite: false })), st = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.04, 0.6, 6), iron);
+  fl.position.y = 0.16; gl.position.y = 0.14; st.position.y = -0.3; g.add(fl, gl, st); g.position.set(x, y, z); scene.add(g); torches.push({ g, fl, x, y: y + 0.2, z, ph: rnd(0, 6) }); }
+for (let s = 16, k = 0; s < LEN - 20; s += 27, k++) { if ([S_MED, S_CALL].some(a => Math.abs(a - s) < 15)) continue; const p = at(s), sd = k % 2 ? 1 : -1; let v = 1.5; while (v < 13 && !inHouse(...side(p, 0, v * sd))) v += 0.25; if (v >= 13) continue; const [x, z] = side(p, 0, (v - 0.4) * sd); torch(x, z, 2.7); }
+
+/* ================= people: figures modelled in Blender (tools/blender/figure.py, world 'caravaggio') ================= */
+const FIG = makeFigures({ THREE, scene, shadowM, castShadow: true });
+await FIG.load('models/', ['boy', 'painter', 'gallant_gold', 'gallant_stripe', 'matthew', 'youth', 'christ', 'peter', 'madonna', 'pilgrim_man', 'pilgrim_woman']);
+const T = (g, bone, x, y, z) => FIG.turn(g.userData, bone, x || 0, y || 0, z || 0);
+const faceTo = (g, x, z, k) => { let d = Math.atan2(x - g.position.x, z - g.position.z) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * k; };
+// a figure placed in a stage: at (r, d), facing the local direction (fr, fd); 'sit' and 'kneel' lower it and fold the legs
+function staged(F, name, r, d, fr, fd, o = {}) { const size = o.size || 1.12, g = FIG.spawn(name, { size, adult: true }), [x, z] = F.P(r, d); FIG.pose(g, 0, 0); g.rotation.y = F.ang(fr, fd); let y = o.y || 0;
+  if (o.sit) { y -= 0.37 * size; for (const S of 'LR') { T(g, 'thigh' + S, -84, 0, S === 'L' ? 6 : -6); T(g, 'shin' + S, 82); } }
+  if (o.kneel) { y -= 0.385 * size; for (const S of 'LR') { T(g, 'thigh' + S, 4); T(g, 'shin' + S, 92); } }
+  g.position.set(x, LAND + y, z); g.userData.sh.visible = false; g.userData.home = y; return g; }
+const meG = FIG.spawn('boy', { size: 0.98 }), painter = FIG.spawn('painter', { size: 1.16, adult: true });
+// the lantern he carries: a little iron house with the flame inside
+const lampG = new THREE.Group(); { const body = new THREE.Mesh(new THREE.CylinderGeometry(0.055, 0.055, 0.15, 8), basic({ color: '#ffd68a' })), cap = new THREE.Mesh(new THREE.ConeGeometry(0.075, 0.07, 8), iron), base = new THREE.Mesh(new THREE.CylinderGeometry(0.065, 0.065, 0.02, 8), iron), ring = new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.008, 5, 10), iron), halo = new THREE.Mesh(new THREE.SphereGeometry(0.2, 10, 8), basic({ color: '#ffb25e', transparent: true, opacity: 0.25, blending: THREE.AdditiveBlending, depthWrite: false }));
+  body.position.y = -0.17; cap.position.y = -0.06; base.position.y = -0.255; ring.position.y = -0.01; halo.position.y = -0.17; lampG.add(body, cap, base, ring, halo); meG.userData.aR.add(lampG); }
+const lampPos = new V3(); painter.userData.mats.cloak.color.set('#2e2a32'); painter.userData.mats.hat.color.set('#26232a');      // black, but a black that the lantern can find
+
+/* ---- the first picture: at the door of Palazzo Madama a servant carries out the shield, to be packed for Florence ---- */
+const F = F_MED;
+sbox(F, -1.35, -0.2, 1.9, 0.45, 3.8, 0.5, stoneM, true); sbox(F, 1.35, -0.2, 1.9, 0.45, 3.8, 0.5, stoneM, true); sbox(F, 0, -0.2, 4.0, 3.15, 0.5, 0.55, stoneM); sbox(F, 0, -0.02, 1.8, 2.3, 3.6, 0.1, black);
+const bearer = staged(F, 'youth', 0.1, -0.62, 0, -1); T(bearer, 'upperarmL', -38, 0, -14); T(bearer, 'forearmL', -62); T(bearer, 'upperarmR', -38, 0, 14); T(bearer, 'forearmR', -62);
+const shield = new THREE.Group(); { const face = new THREE.Mesh(new THREE.CircleGeometry(0.46, 40), new THREE.MeshLambertMaterial({ map: tMedusa, emissive: C('#ffffff'), emissiveMap: tMedusa, emissiveIntensity: 0.16 })), u = face.geometry.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, 0.5 + (u.getX(i) - 0.5) * 0.93, 0.5 + (u.getY(i) - 0.5) * 0.93);
+  const rim = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.022, 6, 40), iron), back = new THREE.Mesh(new THREE.CylinderGeometry(0.47, 0.47, 0.03, 30), darkWood); back.rotation.x = Math.PI / 2; back.position.z = -0.025; face.castShadow = back.castShadow = true; shield.add(face, rim, back);
+  const [x, z] = F.P(0.1, -1.02); shield.position.set(x, 1.2, z); shield.rotation.y = F.ang(0, -1); shield.rotation.x = -0.06; scene.add(shield); }
+torch(...F.P(1.95, -0.5), 2.6);
+
+/* ---- the second: a room open to the square before San Luigi. The table at the left, Christ and Peter at the right, the light coming in above them ---- */
+{ const F = F_CALL, W = 7.4, Dp = 3.3, H = 4.7;
+  sbox(F, 0, Dp / 2, 0.04, W, 0.08, Dp + 0.2, darkWood); sbox(F, 0, Dp, H / 2, W, H, 0.24, plaster, true); sbox(F, -W / 2, Dp / 2, H / 2, 0.24, H, Dp + 0.2, plaster, true); sbox(F, 0, Dp / 2, H + 0.1, W + 0.3, 0.2, Dp + 0.4, darkWood);
+  sbox(F, W / 2, Dp / 2, 1.25, 0.24, 2.5, Dp + 0.2, plaster, true); sbox(F, W / 2, Dp / 2, 4.2, 0.24, 1.0, Dp + 0.2, plaster);                    // the right-hand wall, with the high opening the light comes through
+  sbox(F, 0.78, Dp - 0.16, 2.72, 1.3, 1.5, 0.1, darkWood); for (const [r, y, w, h] of [[0.47, 3.06, 0.5, 0.62], [1.09, 3.06, 0.5, 0.62], [0.47, 2.36, 0.5, 0.62], [1.09, 2.36, 0.5, 0.62]]) sbox(F, r, Dp - 0.23, y, w, h, 0.04, lam({ color: '#8a7a54' }));      // the window with its oiled-paper panes
+  sbox(F, 1.5, Dp - 0.2, 2.72, 0.07, 1.5, 0.5, darkWood);                                                                                              // its shutter, standing open
+  sbox(F, -0.72, 1.95, 0.8, 1.75, 0.07, 0.82, wood, true); for (const [r, d] of [[-1.5, 1.62], [0.06, 1.62], [-1.5, 2.28], [0.06, 2.28]]) sbox(F, r, d, 0.4, 0.08, 0.78, 0.08, wood);
+  for (const [r, d, w] of [[-1.72, 1.95, 0.4], [-0.62, 2.72, 1.5], [0.02, 1.15, 0.42], [0.36, 2.42, 0.4]]) sbox(F, r, d, 0.24, w, 0.48, 0.4, darkWood);            // stools and the bench
+  for (let i = 0; i < 7; i++) { const c = new THREE.Mesh(new THREE.CylinderGeometry(0.035, 0.035, 0.012, 10), basic({ color: '#9a9aa2' })), [x, z] = F.P(-1.25 + (i % 4) * 0.13 + (i > 3 ? 0.05 : 0), 1.85 + (i > 3 ? 0.14 : 0)); c.position.set(x, 0.845, z); scene.add(c); }
+  const A = (g, S, ux, uz, fx) => { T(g, 'upperarm' + S, ux, 0, uz || 0); T(g, 'forearm' + S, fx == null ? -20 : fx); };
+  const counter = staged(F, 'youth', -1.72, 1.95, 1, 0.05, { sit: true }); T(counter, 'spine', 36); T(counter, 'head', 26); A(counter, 'L', -48, 0, -40); A(counter, 'R', -48, 0, -40);                    // the one who goes on counting
+  const old = staged(F, 'peter', -1.22, 2.72, 0.35, -1, { size: 1.08 }); T(old, 'spine', 24); T(old, 'head', 22, 0, -20); A(old, 'R', -30, 0, -70);                                                    // the old man who peers at the coins
+  const matthew = staged(F, 'matthew', -0.62, 2.7, 0.3, -1, { sit: true }); T(matthew, 'head', -4, 0, -34); A(matthew, 'L', -52, -22, -118); A(matthew, 'R', -42, 0, -30);                                // "Me?": his hand to his own chest
+  const gold = staged(F, 'gallant_gold', 0.36, 2.42, 1, -0.3, { sit: true }); T(gold, 'spine', -8); T(gold, 'head', -6, 0, 12); A(gold, 'R', -30, 0, -50);
+  const stripe = staged(F, 'gallant_stripe', 0.02, 1.15, 0.5, 1, { sit: true }); T(stripe, 'spine', 10); T(stripe, 'head', 0, 0, -48); A(stripe, 'L', -28, 0, -55);
+  const peter = staged(F, 'peter', 1.66, 1.5, -1, 0.55, { size: 1.06 }); T(peter, 'spine', 26); T(peter, 'head', -6); A(peter, 'R', -40, 0, -12);
+  const christ = staged(F, 'christ', 1.98, 2.2, -1, -0.1, { size: 1.22 }); T(christ, 'head', 4, 0, 8); A(christ, 'R', -97, 0, -4);                                                                    // the hand that calls him
+}
+
+/* ---- the last: the door of Sant'Agostino. She stands on the step with the child; two pilgrims kneel before her with their backs to us ---- */
+{ const F = F_END;
+  sbox(F, -1.55, -0.22, 2.0, 0.55, 4.0, 0.5, stoneM, true); sbox(F, 0.75, -0.22, 2.0, 0.55, 4.0, 0.5, stoneM, true); sbox(F, -0.4, -0.22, 4.25, 2.9, 0.5, 0.55, stoneM); sbox(F, -0.4, -0.03, 1.9, 1.85, 3.8, 0.1, black);
+  sbox(F, -0.2, -0.75, 0.13, 3.2, 0.26, 1.2, stoneM);
+  const madonna = staged(F, 'madonna', -0.2, -0.62, 0.55, -0.85, { y: 0.26, size: 1.16 }); T(madonna, 'head', 24, 0, -14); T(madonna, 'spine', 4, 0, 0); T(madonna, 'upperarmL', -34, 0, 24); T(madonna, 'forearmL', -78); T(madonna, 'upperarmR', -30, 0, -30); T(madonna, 'forearmR', -84);
+  // the child on her arm: too small and too particular for the figure builder, so made here
+  const skin = lam({ color: '#e8c4a0' }), child = new THREE.Group(), body = new THREE.Mesh(new THREE.SphereGeometry(0.115, 12, 10), skin), head = new THREE.Mesh(new THREE.SphereGeometry(0.085, 12, 10), skin), hair = new THREE.Mesh(new THREE.SphereGeometry(0.088, 10, 8, 0, 6.3, 0, 1.3), lam({ color: '#7a5a34' })), leg = new THREE.Mesh(new THREE.CylinderGeometry(0.04, 0.035, 0.26, 8), skin), leg2 = leg.clone(), cloth = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), lam({ color: '#d8d0c0' }));
+  body.scale.set(1, 1.5, 0.9); head.position.set(0, 0.25, 0.02); hair.position.set(0, 0.26, 0.0); leg.position.set(-0.05, -0.22, 0.08); leg.rotation.x = -0.9; leg2.position.set(0.05, -0.2, 0.1); leg2.rotation.x = -1.1; cloth.scale.set(1.05, 0.6, 1); cloth.position.y = -0.12; child.add(body, head, hair, leg, leg2, cloth); child.traverse(o => { if (o.isMesh) o.castShadow = true; });
+  { const [x, z] = F.P(0.2, -0.95); child.position.set(x, 0.26 + 1.14, z); child.rotation.y = F.ang(1, -0.5); child.rotation.z = 0.2; scene.add(child); }
+  const pm = staged(F, 'pilgrim_man', 0.52, -1.6, -0.7, 0.7, { kneel: true }); T(pm, 'spine', 10); T(pm, 'head', -14); T(pm, 'upperarmL', -34, 0, -20); T(pm, 'forearmL', -112, 0, -16); T(pm, 'upperarmR', -34, 0, 20); T(pm, 'forearmR', -112, 0, 16);
+  const pw = staged(F, 'pilgrim_woman', 0.98, -1.2, -1, 0.5, { kneel: true, size: 1.06 }); T(pw, 'spine', 14); T(pw, 'head', -16); T(pw, 'upperarmL', -36, 0, -20); T(pw, 'forearmL', -112, 0, -16); T(pw, 'upperarmR', -36, 0, 20); T(pw, 'forearmR', -112, 0, 16);
+  for (const [r, d, tilt] of [[0.86, -1.78, 0.18], [1.32, -1.3, 0.12]]) { const st = new THREE.Mesh(new THREE.CylinderGeometry(0.018, 0.022, 1.9, 6), wood), [x, z] = F.P(r, d); st.position.set(x, 0.92, z); st.rotation.y = F.ry; st.rotation.z = tilt; st.castShadow = true; scene.add(st); }      // their staves
+  torch(...F.P(-3.4, -0.5), 2.7);
+}
+
+// people still about at this hour
+const walkers = []; { const WHO = ['youth', 'pilgrim_woman', 'gallant_gold', 'pilgrim_man', 'gallant_stripe', 'youth', 'pilgrim_woman', 'gallant_gold'], SPAN = [[16, S_MED - 20], [S_MED + 22, S_CALL - 22], [S_CALL + 24, LEN - 34]];
+  WHO.forEach((n, i) => { const [lo, hi] = SPAN[i % 3], g = FIG.spawn(n, { size: rnd(1.06, 1.14), adult: true }); walkers.push({ g, s: rnd(lo, hi), dir: i % 2 ? 1 : -1, off: (i % 2 ? 1 : -1) * rnd(0.9, 1.4), v: rnd(0.7, 1.1), ph: rnd(0, 6), lo, hi, said: 0 }); }); }
+const LINES = ['That is Merisi. Give him the wall.', 'Mind the gutter, boy.', 'Put up your light. You will wake the street.', 'Out late, the pair of you.', 'God keep you. And keep him off me.'];
+const CALLS = ['Light, boy! I cannot see my own boots.', 'Keep up. The dark is full of sergeants.', 'Closer with that lantern.', 'Do I pay you to dawdle?'];
+
+/* ================= play ================= */
+const nearStage = (x, z) => [F_MED, F_CALL, F_END].some(F => { const [sx, sz] = F.P(0, -3); return Math.hypot(x - sx, z - sz) < 11; });      // no street sign may stand in front of a picture
+const guide = makeGuide({ THREE, scene, map, nearest: (x, z) => nearest(x, z), at, LEN, blocked: (x, z) => blocked(x, z) || nearStage(x, z), groundY: () => LAND,
+  places: [{ n: 'Palazzo Madama', x: F_MED.ox, z: F_MED.oz, s: S_MED }, { n: 'San Luigi dei Francesi', x: F_CALL.ox, z: F_CALL.oz, s: S_CALL }, { n: "Sant'Agostino", x: F_END.ox, z: F_END.oz, s: LEN }],
+  style: { board: '#d8ceb4', ink: '#2a2018', post: '#4a4038', land: '#15141a', water: '#15141a', house: '#3c3630', street: '#8a8070', route: '#e8a040' } });
+let progS = S_START, state = 'title', time = 0, muted = false, endT = 0, pS = S_START + 10, pV = 0, pPh = 0, wpT = 0, wp = null, seen = {}, bubbleG = null, bubbleT = 0, hop = 0, lampK = 1, stageNow = null, callI = 0;
+const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
+const plate = (title, line) => { SC.award(title, null, title); $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
+const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
+// each stage: where it is on the route, where the boy and the painter stand, the painter's viewpoint, and where its shaft of light comes from
+const WAY = {
+  medusa: { F: F_MED, s: S_MED, quick: true, title: 'Medusa', line: 'Caravaggio, about 1597 · painted on a shield · Uffizi, Florence', img: 'images/medusa.jpg', after: 'My own face, boy. Nobody else would hold the scream. Come.',
+    boy: [2.3, -3.3], man: [-2.0, -1.5], look: [0.1, -1.0], cam: [[0.1, -4.3, 1.42], [0.1, -1.0, 1.24], 30], light: [[-2.6, -3.4, 4.6], [0.1, -0.9, 1.25], 0.2, 0.85] },
+  calling: { F: F_CALL, s: S_CALL, title: 'The Calling of Saint Matthew', line: "Caravaggio, 1599–1600 · San Luigi dei Francesi, Rome", img: 'images/calling.jpg', after: 'The light comes in before he does. Remember that. On.',
+    boy: [3.6, -3.6], man: [-3.3, -1.6], look: [0, 2], cam: [[0.12, -5.6, 1.5], [0.12, 2.4, 1.6], 29.5], light: [[7.5, 1.25, 5.3], [-0.5, 2.3, 1.2], 0.34, 1.1] } };
+const END = { F: F_END, boy: [2.5, -3.6], man: [-2.7, -3.9], look: [0, -0.8], cam: [[0.3, -6.0, 1.25], [0.22, -0.8, 1.27], 27], light: [[-3.6, -3.4, 4.8], [0.2, -0.9, 1.0], 0.3, 0.8] };
+const STAGES = [WAY.medusa, WAY.calling, END]; END.s = LEN;
+const SC = makeScore({ THREE, scene, key: 'caravaggio', at, nearest: (x, z) => nearest(x, z, progS), LEN, groundY: () => LAND, blocked, paintings: 3, thing: 'scudo', things: 'silver scudi', ditch: 'gutter', avoid: [S_MED, S_CALL, LEN - 6], half: 2.1, ditchColor: '#0a0c10', lipColor: '#5a544a' });
+function setShaft(st) { if (stageNow === st) return; stageNow = st; const [p, a, ang, k] = st.light, [px, pz] = st.F.P(p[0], p[1]), [ax, az] = st.F.P(a[0], a[1]); shaft.position.set(px, p[2], pz); shaft.target.position.set(ax, a[2], az); shaft.target.updateMatrixWorld(); shaft.angle = ang; shaft.userData.k = k;
+  const dir = new V3(ax - px, a[2] - p[2], az - pz), L = dir.length() * 1.25; beam.position.copy(shaft.position); beam.quaternion.setFromUnitVectors(new V3(0, -1, 0), dir.normalize()); beam.scale.set(Math.tan(ang) * L * 0.9, L, Math.tan(ang) * L * 0.9); }
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); pS = S_START + 7; pV = 0; endT = 0; { const q = at(pS); painter.position.set(q.x, LAND, q.z); painter.rotation.y = Math.atan2(q.dx, q.dz); } wp = null; seen = {}; progS = S_START; lampK = 1; callI = 0;
+  camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow', 'quick'); document.body.classList.remove('melting', 'quick'); }
+function begin() {
+  SND.start({ chords: [[38, 57, 62, 65, 69], [34, 53, 58, 62, 65], [31, 55, 58, 62, 67], [33, 52, 57, 64, 69]], scale: [50, 57, 62, 64, 65, 67, 69, 70, 73, 74, 76, 77] }); SND.setMuted(muted); reset(); SC.start(); state = 'play'; hop = time + 9;
+  $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
+  setTimeout(() => { if (state === 'play') say(painter, 'Hold the lantern high, boy, and keep close. Rome is no place to walk blind.', 5); }, 900);
+}
+const stand = (g, F, rd, look, k) => { const [x, z] = F.P(rd[0], rd[1]), [lx, lz] = F.P(look[0], look[1]); g.position.x += (x - g.position.x) * k; g.position.z += (z - g.position.z) * k; g.position.y = LAND; faceTo(g, lx, lz, Math.min(1, k * 1.6)); };
+function update(dt) {
+  time += dt; uni.uTime.value = time;
+  if (state === 'title') { meG.visible = painter.visible = false; const p = at(30); camera.position.set(p.x, 2.2, p.z); camera.lookAt(at(60).x, 1.5, at(60).z); }
+  else {
+    meG.visible = painter.visible = true;
+    let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.5 : 0) - stick.dy;
+    turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (state !== 'play') { turn = 0; go = 0; }
+    me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1); const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
+    me.speed += (go * 10 - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2)); let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
+    if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;      // slide along whatever is in the way
+      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
+      if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
+    const f = LAND; me.x = nx; me.z = nz; const jump = (keys.has('Space') || held.jump) && state === 'play';
+    if (jump && !me.air) { me.vy = 6.0 + Math.abs(me.speed) * 0.2; me.air = true; SND.whoosh(0.04); }
+    if (me.air) { me.vy -= (jump && me.vy < 0 ? 5 : 15) * dt; me.y += me.vy * dt; if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.06); } } else me.y += (f - me.y) * Math.min(1, dt * 14);
+    const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.9); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
+    me.lean += (turn * 0.2 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
+    if (state === 'play') { meG.position.set(me.x, me.y, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; FIG.pose(meG, me.ph, me.air ? 0.4 : pace, me.air, 0.08 * Math.min(1, pace)); }
+    else FIG.pose(meG, 0, 0);
+    meG.userData.aR.rotation.x = -0.95; meG.userData.aR.rotation.z = 0.22;                              // the lantern held out before him
+    if (SC.update(dt, me, state === 'play', time)) me.speed *= 0.2;
+    const prog = nearest(me.x, me.z, progS); progS = prog.s;
+
+    // the painter: a few strides ahead in his black cloak. He waits, and says so, if the light falls behind
+    if (state === 'play') {
+      const next = !seen.medusa ? S_MED + 1 : !seen.calling ? S_CALL + 2 : LEN - 3, gap = pS - prog.s, want = pS >= next ? 0 : gap < 5 ? 11.6 : gap < 10 ? 8.5 : gap < 18 ? 3.2 : 0;
+      pV += (want - pV) * Math.min(1, dt * 2.5); pS = Math.min(next, pS + pV * dt); pPh += dt * (2 + pV * 0.9);
+      const p = at(pS), [px, pz] = side(p, 0, inHouse(...side(p, 0, -2.2)) ? 0.4 : -1.2); painter.position.x += (px - painter.position.x) * Math.min(1, dt * 8); painter.position.z += (pz - painter.position.z) * Math.min(1, dt * 8); painter.position.y = LAND;      // a little to one side, so that the boy's own back does not hide him
+      if (pV < 0.5) { faceTo(painter, me.x, me.z, dt * 3); FIG.pose(painter, 0, 0); if (gap > 14 && time > hop) { hop = time + 7; say(painter, CALLS[callI++ % CALLS.length], 3.2); } }
+      else { let d = Math.atan2(p.dx, p.dz) - painter.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); painter.rotation.y += d * Math.min(1, dt * 6); FIG.pose(painter, pPh, Math.min(1.5, pV / 5)); }
+    }
+    // waypoints: the scene is set as the painting, the view takes the painter's place, melts into the picture, and lets the boy go
+    for (const k in WAY) if (state === 'play' && !seen[k] && prog.s > WAY[k].s - 5 && prog.s < WAY[k].s + 7) { state = 'way'; wp = WAY[k]; wp.key = k; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; $('melt').classList.toggle('quick', !!wp.quick); document.body.classList.toggle('quick', !!wp.quick); bubble.classList.remove('show'); SND.whoosh(0.07); }
+    if (state === 'way') { wpT += dt; const k = Math.min(1, dt * 2.5), q = wp.quick, t0 = q ? 2.2 : 3.0, t1 = q ? 3.2 : 4.6, t2 = q ? 7.0 : 10.0, t3 = q ? 8.8 : 12.0;
+      stand(meG, wp.F, wp.boy, wp.look, k); me.x = meG.position.x; me.z = meG.position.z; me.y = LAND; stand(painter, wp.F, wp.man, wp.look, k); FIG.pose(painter, 0, 0);
+      if (wpT > t0 && wpT < t0 + 0.1) plate(wp.title, wp.line); if (wpT > t1 && wpT < t2) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (wpT > t2) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
+      if (wpT > t3) { state = 'play'; me.yaw = Math.PI - meG.rotation.y; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); pS = nearest(painter.position.x, painter.position.z, wp.s).s; progS = nearest(me.x, me.z, wp.s).s; say(painter, wp.after, 4.2); hop = time + 8; const p = at(progS + 3); me.yaw = Math.atan2(p.dx, -p.dz); wp = null; } }
+    // the end, at the door of Sant'Agostino: the boy holds up the lantern, and the pilgrims' Madonna is there
+    if (state === 'play' && seen.medusa && seen.calling && prog.s > S_END) { state = 'tableau'; endT = 0; bubble.classList.remove('show'); $('melt').src = 'images/loreto.jpg'; $('melt').classList.add('slow'); [0, 2, 4, 6, 8, 9].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.45)); }
+    if (state === 'tableau') { endT += dt; const k = Math.min(1, dt * 1.6); stand(meG, END.F, END.boy, END.look, k); me.x = meG.position.x; me.z = meG.position.z; me.speed = 0; stand(painter, END.F, END.man, END.look, k); FIG.pose(painter, 0, 0);
+      if (endT > 1.2 && endT < 1.3) say(painter, 'Hold the lantern still, boy. There. Now look.', 4);
+      if (endT > 5.0 && endT < 5.1) plate('Madonna di Loreto', "Caravaggio, about 1604–06 · Sant'Agostino, Rome");
+      if (endT > 8.0) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (endT > 18) { state = 'done'; SC.finish(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); } }
+
+    // camera
+    const st = state === 'way' ? wp : state === 'tableau' || state === 'done' ? END : null;
+    if (st) { const [cp, cl, fov] = st.cam, [x, z] = st.F.P(cp[0], cp[1]), [lx, lz] = st.F.P(cl[0], cl[1]), k = Math.min(1, dt * (st === END ? 0.9 : 1.6)); camera.position.lerp(new V3(x, cp[2], z), k); camera.lookAt(lx, cl[2], lz); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); }
+    else { const alt = Math.max(0, me.y - LAND); let dist = 5.2 + Math.abs(me.speed) * 0.2 + alt * 0.5, cx, cz; for (let k = 0; k < 5; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
+      const k = Math.min(1, dt * 5.5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (me.y + 2.4 + alt * 0.25 - camera.position.y) * k;
+      camera.lookAt(me.x + fx * 6, me.y + 1.4, me.z + fz * 6); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 + Math.abs(me.speed) * 1.4 - camera.fov) * k; camera.updateProjectionMatrix(); }
+  }
+  // the lights. The lantern goes with the boy and is turned down while a picture is looked at, so that the shaft does the work
+  lampK += ((state === 'way' ? 0.3 : state === 'tableau' || state === 'done' ? 0.7 : 1) - lampK) * Math.min(1, dt * 1.5);
+  lampG.getWorldPosition(lampPos); if (state === 'title') lampPos.set(0, -50, 0); lantern.position.set(lampPos.x, lampPos.y - 0.12, lampPos.z); lantern.intensity = LIGHT.lantern * lampK * (0.92 + 0.08 * Math.sin(time * 9) * Math.sin(time * 5.3));
+  const ref = state === 'title' ? camera.position : meG.position; torches.sort((a, b) => Math.hypot(a.x - ref.x, a.z - ref.z) - Math.hypot(b.x - ref.x, b.z - ref.z));
+  torches.forEach((t, i) => { const fk = 0.85 + 0.15 * Math.sin(time * 11 + t.ph) * Math.sin(time * 6.7 + t.ph * 2); t.fl.scale.set(1, 0.8 + 0.4 * fk, 1); if (i < pool.length) { pool[i].position.set(t.x, t.y, t.z); pool[i].intensity = LIGHT.torch * fk; } });
+  let near = STAGES[0], nd = 1e9; for (const s of STAGES) { const d = Math.abs(s.s - progS); if (d < nd) { nd = d; near = s; } } setShaft(wp || near); shaft.intensity = LIGHT.shaft * shaft.userData.k; beam.material.opacity = 0.04 * sstep(9, 24, camera.position.distanceTo(shaft.target.position));      // the shaft is seen from down the street, and is gone by the time he stands before the picture hemi.intensity = LIGHT.hemi; moon.intensity = LIGHT.moon;
+  for (const w of walkers) {
+    w.s += w.dir * w.v * dt; if (w.s > w.hi) { w.s = w.hi; w.dir = -1; } if (w.s < w.lo) { w.s = w.lo; w.dir = 1; }
+    const p = at(w.s); let [x, z] = side(p, 0, w.off); const dx = x - me.x, dz = z - me.z, d = Math.hypot(dx, dz); if (d < 2.0 && d > 0.01 && state !== 'title') { const k = (2.0 - d) * 0.7; x += dx / d * k; z += dz / d * k; }
+    w.g.visible = state !== 'title'; w.g.position.set(x, LAND, z); w.ph += dt * (2 + w.v * 2.6); FIG.pose(w.g, w.ph, w.v / 1.6); const heading = Math.atan2(p.dx * w.dir, p.dz * w.dir); let dy = heading - w.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); w.g.rotation.y += dy * Math.min(1, dt * 4);
+    let look = 0; if (d < 9 && state !== 'title') { look = Math.atan2(me.x - x, me.z - z) - w.g.rotation.y; look = clamp(Math.atan2(Math.sin(look), Math.cos(look)), -1.2, 1.2); } const hd = w.g.userData.hd; hd.rotation.y += (look - hd.rotation.y) * Math.min(1, dt * 4);
+    if (d < 3.2 && state === 'play' && time > w.said && time > bubbleT) { w.said = time + 30; say(w.g, LINES[Math.floor(rnd(0, LINES.length))], 3); }
+  }
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; const cp = camera.position, bp = bubbleG.position; let hid = v.z > 1; for (let k = 0.12; k < 0.9 && !hid; k += 0.07) hid = inHouse(cp.x + (bp.x - cp.x) * k, cp.z + (bp.z - cp.z) * k); bubble.classList.toggle('show', !hid); } }
+  guide.update(me, painter.position, state === 'play');
+  SND.update(0.25 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
+}
+function draw() {
+  const w = innerWidth, h = innerHeight;
+  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); target.setSize(Math.round(w * PR), Math.round(h * PR)); post.uniforms.uPx.value.set(1 / (w * PR), 1 / (h * PR)); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); renderer.render(postScene, postCam);
+}
+let last = 0; function loop(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(loop); }
+reset(); requestAnimationFrame(loop);
+
+/* ================= input ================= */
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
+addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
+const cv = $('cv'), sk = $('stick');
+cv.addEventListener('pointerdown', e => { if (state !== 'play') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
+const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === held.id) held.jump = false; };
+cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
+$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
+$('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
+window.__road = { get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z, s) { me.x = x; me.z = z; me.speed = 0; progS = s != null ? s : nearest(x, z).s; pS = Math.min(LEN - 3, progS + 7); meG.position.set(x, LAND, z); const q = at(pS); painter.position.set(q.x, LAND, q.z); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; },
+  places: {}, route: s => at(s), LEN, S: { medusa: S_MED, calling: S_CALL, end: S_END }, LIGHT, dbg: { camera, painter, meG, walkers, torches, shaft, THREE, scene }, probe: (x, z) => ({ house: inHouse(x, z), f: floorAt(x, z), d: +nearest(x, z).d.toFixed(1) }) };
+</script>
+</body>
+</html>
