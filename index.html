@@ -3,68 +3,70 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Painting Rooms</title>
+<title>Painting Rooms: a journey through time</title>
 <style>
-  body { margin:0; min-height:100vh; background:#3a3f44; color:#f4efe2; display:flex; flex-direction:column; align-items:center;
-    justify-content:center; font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-align:center; padding:32px 16px; box-sizing:border-box; }
-  h1 { font-weight:400; font-size:clamp(30px,6vw,56px); margin:0 0 .1em; }
-  p { font-style:italic; opacity:.75; margin:0 0 2em; }
-  .rooms { display:flex; flex-wrap:wrap; gap:48px 40px; justify-content:center; align-items:flex-end; }
-  a.room { display:block; width:min(440px,92vw); color:inherit; text-decoration:none; }
-  a.room img { width:100%; display:block; border:14px solid #f4efe2; box-sizing:border-box; box-shadow:10px 14px 30px rgba(0,0,0,.4); }
-  a.room span { display:block; margin-top:1em; font-size:clamp(18px,3vw,24px); }
-  a.room small { display:block; opacity:.7; font-style:italic; margin-top:.2em; }
-  a.room em { display:block; font-size:.62em; letter-spacing:.08em; text-transform:uppercase; font-style:normal; opacity:.65; margin-bottom:.25em; }
-  a.room small.best { color:#f2c865; opacity:1; font-style:normal; }
-  #total { font-style:normal; color:#f2c865; opacity:1; margin:-1.2em 0 2em; min-height:1.2em; }
+  :root { --paper:#f4efe2; --gold:#f2c865; --ink:#23262c; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; color:var(--paper); font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; text-align:center; padding:clamp(18px,3vw,40px) 16px 56px;
+    background:radial-gradient(1200px 600px at 50% -10%, #5a4a3a 0%, rgba(90,74,58,0) 70%), linear-gradient(#2a2d34, #1f2228); }
+  a { color:inherit; }
+  h1 { font-weight:400; font-size:clamp(34px,6.5vw,72px); margin:0; letter-spacing:.01em; }
+  .sub { font-style:italic; opacity:.8; margin:.3em 0 1.2em; font-size:clamp(16px,2.2vw,24px); }
+  #progress { display:inline-flex; flex-wrap:wrap; gap:.4em 1.6em; justify-content:center; align-items:center; background:rgba(0,0,0,.28); border:1px solid rgba(242,200,101,.4); border-radius:999px; padding:.5em 1.4em; font-size:clamp(15px,1.9vw,21px); }
+  #progress b { color:var(--gold); font-size:1.5em; font-weight:600; font-variant-numeric:tabular-nums; }
+  #go { display:inline-block; margin:1.1em 0 .4em; text-decoration:none; font-size:clamp(20px,2.8vw,30px); color:var(--ink); background:linear-gradient(#ffe08a, #f2c865); border-radius:999px; padding:.55em 1.6em; box-shadow:0 10px 26px rgba(0,0,0,.45), inset 0 -3px 0 rgba(0,0,0,.15); }
+  #go:active { transform:translateY(2px); }
+  /* the journey: four stops on one line of time */
+  .road { position:relative; max-width:1280px; margin:clamp(22px,3vw,40px) auto 0; display:grid; grid-template-columns:repeat(4, 1fr); gap:clamp(12px,2vw,28px); }
+  .road::before { content:""; position:absolute; left:6%; right:6%; top:clamp(13px,1.6vw,19px); height:4px; background:linear-gradient(90deg, #c7a24c, #f2c865, #c7a24c); border-radius:2px; opacity:.8; }
+  a.stop { position:relative; text-decoration:none; display:flex; flex-direction:column; align-items:center; }
+  .year { position:relative; z-index:1; font-size:clamp(15px,1.8vw,21px); background:#2a2d34; border:2px solid #c7a24c; border-radius:999px; padding:.1em .8em; margin-bottom:.9em; font-variant-numeric:tabular-nums; }
+  .stop.done .year { background:var(--gold); color:var(--ink); border-color:var(--gold); } .stop.next .year { box-shadow:0 0 0 6px rgba(242,200,101,.25); }
+  .frame { width:100%; aspect-ratio:1.05; border:clamp(8px,1.1vw,14px) solid #c7a24c; border-image:linear-gradient(135deg, #e6c878, #8a6a2c, #e6c878) 1; background:#111 center/cover; box-shadow:0 14px 30px rgba(0,0,0,.5); transition:transform .2s; }
+  a.stop:hover .frame, a.stop:focus .frame { transform:translateY(-4px) scale(1.02); }
+  .stop.todo .frame { filter:saturate(.55) brightness(.75); } .stop.next .frame { filter:none; outline:3px solid var(--gold); outline-offset:5px; }
+  .stop b { display:block; font-weight:400; font-size:clamp(18px,2.3vw,28px); margin-top:.7em; }
+  .stop i { display:block; opacity:.75; font-size:clamp(13px,1.5vw,17px); }
+  .stop .state { margin-top:.45em; font-size:clamp(13px,1.5vw,17px); min-height:2.6em; } .stop .state span { color:var(--gold); }
+  .dots { letter-spacing:.25em; color:var(--gold); }
+  h2 { font-weight:400; font-style:italic; font-size:clamp(18px,2.4vw,26px); margin:2.4em 0 .8em; opacity:.85; }
+  .side { display:flex; flex-wrap:wrap; gap:18px; justify-content:center; } .side a { width:min(300px,44vw); text-decoration:none; } .side img { width:100%; aspect-ratio:1.5; object-fit:cover; border:8px solid var(--paper); box-shadow:8px 10px 22px rgba(0,0,0,.4); display:block; } .side span { display:block; margin-top:.5em; font-size:clamp(15px,1.8vw,19px); }
+  .foot { margin-top:2.6em; font-size:clamp(14px,1.6vw,18px); opacity:.85; } .foot a { color:var(--gold); }
+  @media (max-width:760px) { .road { grid-template-columns:repeat(2, 1fr); } .road::before { display:none; } }
 </style>
 </head>
 <body>
   <h1>Painting Rooms</h1>
-  <p>short games set inside paintings</p>
-  <p id="total"></p>
-  <p style="margin:-1.2em 0 2em"><a href="arcade/" style="color:#f2c865">all the games, and the family board</a></p>
-  <div class="rooms">
-  <a class="room" data-level="florence" href="florence/street.html">
-    <img src="florence/images/holiday.jpg" alt="Dante and Beatrice by Henry Holiday" style="aspect-ratio:1.26;object-fit:cover;object-position:50% 40%">
-    <span><em>Level 1 · about 1283</em>The New Life: Florence</span>
-    <small>follow Beatrice to the Arno, after Henry Holiday and Rossetti</small>
-    <small class="best" id="best-florence"></small>
-  </a>
-  <a class="room" data-level="caravaggio" href="caravaggio/street.html">
-    <img src="caravaggio/images/calling.jpg" alt="The Calling of Saint Matthew by Caravaggio" style="aspect-ratio:1.26;object-fit:cover;object-position:50% 60%">
-    <span><em>Level 2 · about 1600</em>The Painter's Light: Rome</span>
-    <small>carry the painter's lantern through the night, after Caravaggio</small>
-    <small class="best" id="best-caravaggio"></small>
-  </a>
-  <a class="room" data-level="vermeer" href="vermeer/street.html">
-    <img src="vermeer/images/little_street.jpg" alt="The Little Street by Johannes Vermeer" style="aspect-ratio:1.26;object-fit:cover;object-position:50% 80%">
-    <span><em>Level 3 · about 1665</em>The Girl in Delft: one street</span>
-    <small>chase a thieving magpie through Delft, after Johannes Vermeer</small>
-    <small class="best" id="best-vermeer"></small>
-  </a>
-  <a class="room" data-level="munch" href="munch/street.html">
-    <img src="munch/paintings/girls_bridge.jpg" alt="The Girls on the Bridge by Edvard Munch" style="aspect-ratio:1.26;object-fit:cover;object-position:50% 70%">
-    <span><em>Level 4 · 1901</em>The Night Road: one street</span>
-    <small>race your sisters to the pier on a summer night, after Edvard Munch</small>
-    <small class="best" id="best-munch"></small>
-  </a>
-  <a class="room" href="rousseau/">
-    <img src="rousseau/painting.jpg" alt="Tropical Forest with Monkeys by Henri Rousseau">
-    <span>Five Monkeys</span>
-    <small>inside a painting by Henri Rousseau</small>
-  </a>
-  <a class="room" href="seurat/">
-    <img src="seurat/painting.jpg" alt="A Sunday on La Grande Jatte by Georges Seurat">
-    <span>Sunday on the Island</span>
-    <small>inside a painting by Georges Seurat</small>
-  </a>
+  <p class="sub">one journey through six hundred years, a painting at a time</p>
+  <div id="progress"></div><br>
+  <a id="go" href="florence/street.html">Begin in Florence, 1283</a>
+  <div class="road" id="road"></div>
+
+  <h2>Two small rooms off the road</h2>
+  <div class="side">
+    <a href="rousseau/"><img src="rousseau/painting.jpg" alt="Tropical Forest with Monkeys by Henri Rousseau"><span>Five Monkeys, after Rousseau</span></a>
+    <a href="seurat/"><img src="seurat/painting.jpg" alt="A Sunday on La Grande Jatte by Georges Seurat"><span>Sunday on the Island, after Seurat</span></a>
   </div>
+  <p class="foot"><a href="/arcade/">Back to the Arcade: all the games and the family board</a></p>
+
 <script type="module">
   import { LEVELS, loadScores } from './common/score.js';
-  const all = loadScores(); let total = 0;
-  for (const l of LEVELS) { const r = all[l.key], el = document.getElementById('best-' + l.key); if (r && el) { total += r.best; el.textContent = `best ${r.best} points · ${r.paintings} paintings · ${Math.floor(r.time / 60)}:${String(r.time % 60).padStart(2, '0')}`; } }
-  if (total) document.getElementById('total').textContent = `${total} points across the four levels`;
+  const all = loadScores(), road = document.getElementById('road'); let total = 0, found = 0, of = 0, nextIdx = LEVELS.findIndex(l => !(all[l.key] && all[l.key].runs));
+  LEVELS.forEach((l, k) => {
+    const r = all[l.key], done = !!(r && r.runs), a = document.createElement('a'); a.href = l.href; a.className = 'stop ' + (done ? 'done' : k === nextIdx ? 'next' : 'todo'); of += l.paintings;
+    const n = done ? Math.min(l.paintings, r.paintings || 0) : 0; if (done) { total += r.best; found += n; }
+    const y = document.createElement('span'); y.className = 'year'; y.textContent = (done ? '✓ ' : '') + l.year;
+    const f = document.createElement('div'); f.className = 'frame'; f.style.backgroundImage = `url(${l.img})`;
+    const b = document.createElement('b'); b.textContent = l.place; const i = document.createElement('i'); i.textContent = `${l.title} · after ${l.by}`;
+    const s = document.createElement('div'); s.className = 'state';
+    if (done) { const d = document.createElement('div'); d.className = 'dots'; d.textContent = '●'.repeat(n) + '○'.repeat(l.paintings - n); const t = document.createElement('div'); t.innerHTML = `best <span>${r.best}</span> points`; s.append(d, t); }
+    else s.textContent = k === nextIdx ? 'next on the road' : `${l.paintings} paintings to find`;
+    a.append(y, f, b, i, s); road.append(a);
+  });
+  const p = document.getElementById('progress'), go = document.getElementById('go');
+  p.innerHTML = `<span><b>${total}</b> points</span><span><b>${found}</b> of ${of} paintings found</span><span><b>${LEVELS.filter(l => all[l.key] && all[l.key].runs).length}</b> of ${LEVELS.length} ages travelled</span>`;
+  if (nextIdx > 0) { go.href = LEVELS[nextIdx].href; go.textContent = `Continue: ${LEVELS[nextIdx].place}, ${LEVELS[nextIdx].year}`; }
+  else if (nextIdx < 0) { go.href = LEVELS[0].href; go.textContent = 'You have travelled the whole road. Go again and beat your best'; }
 </script>
 </body>
 </html>
