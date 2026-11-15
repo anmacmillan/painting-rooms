@@ -10,3 +10,6 @@ vangogh/research/commons_search.json
 sargent/research/*.html
 monet/research/other/*.html
 monet/research/other/overpass_*.json
+phidias/research/ref/
+phidias/research/athens_osm.xml
+phidias/research/commons_search.json
