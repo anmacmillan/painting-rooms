@@ -93,14 +93,16 @@ const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 
 
 /* ================= light and sky: the sun low in the east behind the rain, gold and white, with scraps of blue ================= */
 const hemi = new THREE.HemisphereLight(0xfff1d2, 0x8a7a58, 1.55), sunL = new THREE.DirectionalLight(0xffe0a2, 1.5); scene.add(hemi, sunL, sunL.target);
-const SUN = new V3(0.12, 0.42, 1).normalize(), uni = { uTime: { value: 0 }, uFog: { value: FOGC }, uSun: { value: SUN }, uDen: { value: 0.006 } };
+const SUN = new V3(0.12, 0.42, 1).normalize(), uni = { uTime: { value: 0 }, uFog: { value: FOGC }, uSun: { value: SUN }, uDen: { value: 0.006 }, uMood: { value: 0 } };
+// The field picture has its own weather: a still, hazy morning with the sun a pale glow in front of the painter. 'mood' eases these in while that picture is staged, and out again.
+const SUN0 = SUN.clone(), SUNF = new V3(-1, 0.27, 0.42).normalize(), FOG0 = FOGC.clone(), FOGF = C('#e3d6b4'), HEMI0 = [C(0xfff1d2), C(0x8a7a58), 1.55], HEMIF = [C('#e9d9b4'), C('#4a3620'), 0.78], SUNC0 = C(0xffe0a2), SUNCF = C('#ffd9a0'); let mood = 0;
 const GLSL_NOISE = `float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
     float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
     float fbm(vec2 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 5; i++) { s += a * noise(p); p = p * 2.03 + 7.1; a *= 0.5; } return s; }
     vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }`;
 const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: uni,
   vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-  fragmentShader: `uniform float uTime; uniform vec3 uFog, uSun; varying vec3 vDir; ${GLSL_NOISE}
+  fragmentShader: `uniform float uTime, uMood; uniform vec3 uFog, uSun; varying vec3 vDir; ${GLSL_NOISE}
     void main(){
       vec3 d = normalize(vDir); float el = max(d.y, 0.0), t = uTime * 0.014;
       vec2 p = d.xz / (d.y * 0.9 + 0.32);                                                   // the cloud as a low ceiling
@@ -111,8 +113,11 @@ const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: fals
       col = mix(col, grey, smoothstep(0.50, 0.28, n) * 0.45);
       col = mix(col, blue, smoothstep(0.5, 0.7, n2) * smoothstep(0.08, 0.4, el) * 0.85);
       col = mix(col, ochre, smoothstep(0.62, 0.85, fbm(q * 3.7 + 3.0)) * 0.28);
+      vec3 haze = mix(lin(vec3(0.95, 0.90, 0.75)), lin(vec3(0.56, 0.54, 0.49)), smoothstep(0.03, 0.42, el));                 // the field picture: pale at the horizon, a warm grey above, no blue
+      haze = mix(haze, lin(vec3(0.84, 0.72, 0.48)), smoothstep(0.42, 0.72, n) * 0.4); haze = mix(haze, lin(vec3(0.48, 0.45, 0.40)), smoothstep(0.55, 0.3, n2) * 0.25 * smoothstep(0.1, 0.5, el));
+      col = mix(col, haze, uMood * 0.92);
       float sd = max(dot(d, uSun), 0.0);
-      col += lin(vec3(1.0, 0.92, 0.70)) * (pow(sd, 5.0) * 0.13 + pow(sd, 40.0) * 0.3 + pow(sd, 700.0) * 0.9);    // the sun burning through
+      col += lin(vec3(1.0, 0.92, 0.70)) * (pow(sd, 5.0) * (0.13 + 0.30 * uMood) + pow(sd, 40.0) * (0.3 + 0.25 * uMood) + pow(sd, 700.0) * 0.9 * (1.0 - uMood));    // the sun burning through
       float veil = fbm(vec2(atan(d.z, d.x) * 5.0 + el * 7.0, el * 1.5 - uTime * 0.05));                          // slanting curtains of rain
       col = mix(col, uFog * 1.05, smoothstep(0.42, 0.8, veil) * 0.4 * (1.0 - el));
       col = mix(uFog, col, smoothstep(0.0, 0.2, d.y));
@@ -224,6 +229,7 @@ const fireGlow = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(128,
   train.add(merged([cyl(0.1, 0.16, 0.6, 10, 0, 2.9, E(bz0 + 1.3)), cyl(0.06, 0.1, 0.5, 8, 0, 3.6, E((FP_B + bz0) / 2)), ...[-1, 1].flatMap(sx => [new THREE.TorusGeometry(1.14, 0.05, 6, 20, Math.PI).rotateY(Math.PI / 2).translate(sx * 1.24, 1.067, E(drv))])], brassM));      // safety valve, and the brass rim of each splasher
   train.add(merged([bx(2.9, 0.45, 0.22, 0, 0.98, E(ENG_F))], redM)); train.add(merged([-1, 1].map(sx => cyl(0.2, 0.2, 0.45, 12, sx * 0.95, 0.98, E(ENG_F + 0.3), 'z')), ironM));
   const rail = []; for (const sx of [-1, 1]) { rail.push(bx(0.04, 0.04, FP_B - TEN_B - 0.3, sx * 1.3, 2.15, E((TEN_B + FP_B) / 2))); for (const s of [TEN_B + 0.2, FP_B - 0.15]) rail.push(bx(0.045, 1.0, 0.045, sx * 1.3, 1.67, E(s))); } train.add(merged(rail, ironM));
+  train.add(merged([cyl(0.035, 0.035, 0.5, 8, 0.3, 3.55, E((FP_B + bz0) / 2 - 0.25)), cyl(0.085, 0.085, 0.2, 10, 0.3, 3.88, E((FP_B + bz0) / 2 - 0.25)), cyl(0.012, 0.012, 1.3, 5, 0.3, 3.0, E(FP_B - 0.02))], brassM));      // the whistle on the firebox, and its cord down to the footplate
   const hole = new THREE.Mesh(new THREE.CircleGeometry(0.2, 14), new THREE.MeshBasicMaterial({ color: '#ff9a3a', fog: false })); hole.position.set(0, 1.62, E(FP_B) + 0.01); train.add(hole);            // the firehole, facing the footplate
   fireGlow.position.set(0, 1.75, E(sb1) - 0.35); fireGlow.scale.setScalar(2.6); train.add(fireGlow);
   // tender: six wheels, a tank with a low coping, coke on top
@@ -275,7 +281,12 @@ wagons.filter(w => !w.goods).forEach((w, k) => {
 
 /* ---- contents of the field (after the painting: horses and women on the left, the men at a broken harrow in the middle, a man in a white shirt with his back to us, cattle and a heap of turnips on the right, the castle pale on its hill) ---- */
 {
-  const soil = new THREE.Mesh(new THREE.PlaneGeometry(150, 110), lam({ map: daub('#a8874f', ['#b9965a', '#9a7a48', '#c4a468', '#8a6c42', '#b08c50'], 220, 10), color: '#f0dfb4' })); soil.rotation.x = -Math.PI / 2; soil.position.set(FCAM.x - 60, GROUND_Y + 0.03, 0); field.add(soil);
+  const soil = new THREE.Mesh(new THREE.PlaneGeometry(150, 110), lam({ map: daub('#a8874f', ['#b9965a', '#9a7a48', '#c4a468', '#8a6c42', '#b08c50'], 220, 10), color: '#f0dfb4' })), soilM = soil.material; soil.rotation.x = -Math.PI / 2; soil.position.set(FCAM.x - 60, GROUND_Y + 0.03, 0); field.add(soil);
+  field.userData.soilM = soilM;
+  { // the foreground lies in shadow, darkest on the left under the horses; the light falls on the bare ground to the right of the middle
+    const sh = new THREE.Mesh(new THREE.PlaneGeometry(150, 110), new THREE.MeshBasicMaterial({ transparent: true, depthWrite: false, opacity: 0, color: '#1c1810', map: canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#fff'; g.fillRect(0, 0, w, h); }) }));
+    sh.material.alphaMap = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#b4b4b4'; g.fillRect(0, 0, w, h); g.save(); g.translate(w * 0.80, h * 0.455); g.scale(1, 1.25); const r = g.createRadialGradient(0, 0, 1, 0, 0, w * 0.13); r.addColorStop(0, '#000'); r.addColorStop(0.5, '#303030'); r.addColorStop(1, 'rgba(180,180,180,0)'); g.fillStyle = r; g.fillRect(-w, -h, w * 2, h * 2); g.restore(); });      // painted in the plane's own frame: the painter is at the right-hand edge, his right is up
+    sh.rotation.x = -Math.PI / 2; sh.position.set(FCAM.x - 60, GROUND_Y + 0.045, 0); sh.renderOrder = 1; field.add(sh); field.userData.shade = sh.material; }
   const put = (g, d, r, ry, y) => { g.position.copy(FP(d, r, y)); g.rotation.y = ry; field.add(g); return g; }, TOWARD = Math.PI / 2, AWAY = -Math.PI / 2;      // facing the painter, or with the back to him
   put(beast({ len: 2.1, ht: 1.6, col: '#d8d2c4', horse: true }), 17.5, -5.0, 0.2); put(beast({ len: 2.1, ht: 1.62, col: '#3a2c22', horse: true }), 18.5, -6.9, 0.5); put(beast({ len: 2.1, ht: 1.6, col: '#4a3626', horse: true, down: true }), 17, -3.5, -0.4); put(beast({ len: 2.1, ht: 1.6, col: '#2e241c', horse: true }), 19.5, -8.6, 0.3);
   const w1 = FIG.spawn('field_woman', { size: 1.06, adult: true }); FIG.pose(w1, 0, 0); sit(w1, GROUND_Y + 0.28); put(w1, 13.2, -2.4, TOWARD + 0.3, w1.position.y);
@@ -283,20 +294,20 @@ wagons.filter(w => !w.goods).forEach((w, k) => {
   const tub = new THREE.Mesh(new THREE.CylinderGeometry(0.42, 0.36, 0.6, 12), woodM); put(tub, 12.4, -3.3, 0, GROUND_Y + 0.3);
   const m1 = stand('ploughman', field, 0, 0, 0, 0, { size: 1.1, tint: '#b9a27a' }); put(m1, 21, 0.1, TOWARD + 0.4);
   const m2 = stand('fireman', field, 0, 0, 0, 0, { size: 1.08 }); put(m2, 21.6, 1.7, AWAY + 0.9); FIG.turn(m2.userData, 'spine', 38, 0, 0); FIG.turn(m2.userData, 'upperarmL', -40, 0, 0); FIG.turn(m2.userData, 'upperarmR', -40, 0, 0);
-  const m3 = stand('gent', field, 0, 0, 0, 0, { size: 1.08, tint: '#6a5a44' }); put(m3, 22.4, 0.9, TOWARD); FIG.turn(m3.userData, 'spine', 22, 0, 0);
+  const m3 = stand('ploughman', field, 0, 0, 0, 0, { size: 1.08, tint: '#5a4a3a' }); put(m3, 22.4, 0.9, TOWARD); FIG.turn(m3.userData, 'spine', 22, 0, 0);
   put(merged([bx(0.1, 0.1, 2.6, 0, 0.42, 0), bx(1.5, 0.08, 0.1, 0, 0.3, -0.9), bx(1.5, 0.08, 0.1, 0, 0.3, 0.2), bx(0.07, 0.6, 0.07, 0.3, 0.6, 1.2), bx(0.07, 0.6, 0.07, -0.3, 0.6, 1.2)], woodM), 20.4, 1.0, 0.6);            // the harrow they are mending
   const back = stand('ploughman', field, 0, 0, 0, 0, { size: 1.14 }); put(back, 16.6, 2.5, AWAY + 0.15);
   put(beast({ len: 2.0, ht: 1.5, col: '#8a8478', horse: true }), 30, 5.2, 0.3); put(beast({ len: 2.0, ht: 1.5, col: '#5a4a3a', horse: true }), 31, 6.8, 0.2); const far = stand('ploughman', field, 0, 0, 0, 0, { size: 1.05, tint: '#8a6a4a' }); put(far, 29, 7.4, TOWARD);
   put(beast({ len: 2.3, ht: 1.5, col: '#a8683a', lying: true }), 17.5, 6.6, -1.3); put(beast({ len: 1.9, ht: 1.35, col: '#1e1a18', down: true }), 14.2, 5.0, 2.2); put(beast({ len: 2.2, ht: 1.4, col: '#8a4a2a', lying: true }), 20, 8.6, -1.0);
-  const turnipM = lam({ color: '#efe9da' }), topM = lam({ color: '#59663a', map: greyTex }); for (let i = 0; i < 16; i++) { const t = new THREE.Mesh(sph, turnipM); t.scale.setScalar(rnd(0.09, 0.13)); put(t, 12.4 + rnd(-0.4, 0.4), 3.6 + rnd(-0.5, 0.5), 0, GROUND_Y + 0.1 + (i % 3) * 0.08); }
-  for (let i = 0; i < 22; i++) { const lf = new THREE.Mesh(blob, topM); lf.scale.set(rnd(0.2, 0.36), 0.1, rnd(0.2, 0.36)); put(lf, rnd(5.5, 9), rnd(-2.5, 3.5), rnd(0, 6), GROUND_Y + 0.1); }                             // turnip tops in the foreground
+  const turnipM = lam({ color: '#efe9da' }), topM = lam({ color: '#46522c', map: greyTex }); for (let i = 0; i < 16; i++) { const t = new THREE.Mesh(sph, turnipM); t.scale.setScalar(rnd(0.09, 0.13)); put(t, 12.4 + rnd(-0.4, 0.4), 3.6 + rnd(-0.5, 0.5), 0, GROUND_Y + 0.1 + (i % 3) * 0.08); }
+  for (let i = 0; i < 22; i++) { const lf = new THREE.Mesh(blob, topM); const a = rnd(0, 6.3), q = Math.sqrt(rnd(0, 1)); lf.scale.set(rnd(0.13, 0.26), rnd(0.05, 0.09), rnd(0.1, 0.2)); put(lf, 8.6 + Math.cos(a) * q * 1.5, 0.5 + Math.sin(a) * q * 1.9, rnd(0, 6), GROUND_Y + 0.07); }                             // turnip tops in the foreground
   for (const [d, r, k] of [[44, -14, 0.8], [52, -20, 0.6], [80, -3, 0.5], [84, 30, 0.45], [88, -40, 0.6]]) put(tree(k), d, r, rnd(0, 6));
   for (const [d, r] of [[92, -62], [98, -26], [94, 12], [100, 48], [96, 84], [120, -90], [124, -44], [118, 0], [126, 40], [120, 86], [128, 124], [122, -134]]) put(hedge(40, rnd(2.4, 3.6)), d, r, Math.PI / 2 + rnd(-0.2, 0.2));
   for (const r of [-110, -70, -30, 10, 50, 90, 130]) put(hedge(44), 132, r, Math.PI / 2 + rnd(-0.1, 0.1));
   const smoke = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(128, 128, (g, w, h) => { const r = g.createRadialGradient(64, 64, 2, 64, 64, 64); r.addColorStop(0, 'rgba(255,250,236,.8)'); r.addColorStop(1, 'rgba(255,250,236,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); }), depthWrite: false, transparent: true })); smoke.scale.set(26, 14, 1); put(smoke, 84, 1.5, 0, GROUND_Y + 7);
   // Windsor Castle on its hill: the long north front, the Round Tower with its flagstaff, towers at the ends. Kept pale and outside the fog so that it floats as he painted it.
-  const hill = new THREE.Mesh(sph, new THREE.MeshBasicMaterial({ color: '#8d8c74', fog: false, transparent: true, opacity: 0.62 })); hill.scale.set(110, 50, 640); put(hill, 640, 22, 0, GROUND_Y - 8);
-  const paleM = new THREE.MeshBasicMaterial({ color: '#c3c2bd', fog: false, transparent: true, opacity: 0.8 }), cg = [bx(40, 15, 300, 0, 7.5, 0), bx(34, 24, 60, 0, 12, -40), cyl(21, 26, 12, 16, -6, 21, 52), cyl(17, 18, 30, 16, -6, 36, 52), cyl(0.6, 0.6, 22, 5, -6, 62, 52), bx(30, 27, 18, 0, 13.5, 150), bx(30, 25, 16, 0, 12.5, -150), bx(26, 23, 12, 0, 11.5, -95), bx(24, 22, 12, 0, 11, 105), bx(24, 20, 10, 0, 10, 5), bx(20, 34, 13, 6, 17, -205), bx(22, 40, 15, 6, 20, -245)];
+  const hill = new THREE.Mesh(sph, new THREE.MeshBasicMaterial({ color: '#a39f86', fog: false, transparent: true, opacity: 0.5 })); hill.scale.set(110, 50, 640); put(hill, 640, 22, 0, GROUND_Y - 8);
+  const paleM = new THREE.MeshBasicMaterial({ color: '#d6d0c2', fog: false, transparent: true, opacity: 0.62 }), cg = [bx(40, 15, 300, 0, 7.5, 0), bx(34, 24, 60, 0, 12, -40), cyl(21, 26, 12, 16, -6, 21, 52), cyl(17, 18, 30, 16, -6, 36, 52), cyl(0.6, 0.6, 22, 5, -6, 62, 52), bx(30, 27, 18, 0, 13.5, 150), bx(30, 25, 16, 0, 12.5, -150), bx(26, 23, 12, 0, 11.5, -95), bx(24, 22, 12, 0, 11, 105), bx(24, 20, 10, 0, 10, 5), bx(20, 34, 13, 6, 17, -205), bx(22, 40, 15, 6, 20, -245)];
   const castle = merged(cg, paleM); castle.renderOrder = 2; put(castle, 660, 22, 0, GROUND_Y + 40);
   const mist = new THREE.Sprite(new THREE.SpriteMaterial({ map: canvasTex(8, 128, (g, w, h) => { const r = g.createLinearGradient(0, 0, 0, h); r.addColorStop(0, 'rgba(226,214,184,0)'); r.addColorStop(0.55, 'rgba(226,214,184,.85)'); r.addColorStop(1, 'rgba(226,214,184,.95)'); g.fillStyle = r; g.fillRect(0, 0, w, h); }), fog: false, depthWrite: false, transparent: true })); mist.scale.set(900, 46, 1); mist.renderOrder = 3; put(mist, 600, 0, 0, GROUND_Y + 30);      // the mist that parts the castle from the fields
 }
@@ -392,6 +403,15 @@ function begin() {
   tip(matchMedia('(pointer: coarse)').matches ? 'The train is leaving! Drag to run beside it · a second finger to leap aboard' : 'The train is leaving! Arrow keys to run beside it · space to leap aboard', 10);
 }
 function aboard() { onTrain = true; me.from = -1; me.speed *= 0.25; SC.gain(30, 'Aboard!', 2); tip('Now forward to the engine: leap from wagon to wagon', 7); station.userData.left = true; }
+// On the footplate the driver lets her sound the whistle (space, or a tap): steam from the whistle, a few points for the first blasts, and nothing to lose.
+// Holding the run key keeps the regulator open, which he praises once. Neither is needed: the train reaches the bridge whatever she does.
+const WHISTLE = new V3(0.3, 4.05, -(FP_B + 0.375)), wh = { t: -9, n: 0, reg: 0, regPaid: false, ac: null };
+function whistleSound() { try { const AC = window.AudioContext || window.webkitAudioContext; if (!AC || muted) return; const ac = wh.ac || (wh.ac = new AC()); if (ac.state === 'suspended') ac.resume(); const t = ac.currentTime, out = ac.createGain(), dur = 0.62;
+    out.gain.setValueAtTime(0.0001, t); out.gain.exponentialRampToValueAtTime(0.11, t + 0.06); out.gain.setValueAtTime(0.11, t + dur - 0.12); out.gain.exponentialRampToValueAtTime(0.0001, t + dur); out.connect(ac.destination);
+    for (const [f, a, type] of [[1150, 1, 'sine'], [1163, 0.6, 'sine'], [2310, 0.22, 'triangle'], [3470, 0.08, 'sine']]) { const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.setValueAtTime(f * 0.93, t); o.frequency.exponentialRampToValueAtTime(f, t + 0.09); g.gain.value = a; o.connect(g); g.connect(out); o.start(t); o.stop(t + dur + 0.05); }
+    const nb = ac.createBuffer(1, Math.floor(ac.sampleRate * dur), ac.sampleRate), d = nb.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const ns = ac.createBufferSource(), nf = ac.createBiquadFilter(), ng = ac.createGain(); ns.buffer = nb; nf.type = 'bandpass'; nf.frequency.value = 2400; nf.Q.value = 0.8; ng.gain.value = 0.5; ns.connect(nf); nf.connect(ng); ng.connect(out); ns.start(t); } catch (_) {} }      // the breath of steam in the note
+function whistle() { if (state !== 'footplate' || time - wh.t < 0.55) return; wh.t = time; wh.n++; whistleSound();
+  if (wh.n <= 5) SC.gain(5, wh.n === 1 ? 'The whistle!' : 'Whee-eee!', 0); if (wh.n === 1) say(driver, 'That’s the way! Let them hear us coming!', 3); }
 function fell() { const v = VEH[me.last] || VEH[0]; SC.lose(15, 'Down between the wagons!'); SND.whoosh(0.12); Object.assign(me, { x: 0, z: -(v.a + 1.0), y: v.y + 1.4, vy: 0, air: true, speed: 0, yaw: 0, from: -1 }); fellT = time; }
 function startField() { field.visible = true; field.position.z = me.z - 92; fieldAt = time; }
 function startBridge(d = 170) { valley.visible = true; valley.position.z = BRIDGE_AT - d; landW.visible = true; hare.visible = true; valleyTex.offset.set((1500 / TILE) % 1, (((-valley.position.z + 1500) / TILE + fieldTex.offset.y) % 1 + 1) % 1); }      // its ground is painted to run on from the ground already under the train
@@ -462,6 +482,7 @@ function update(dt) {
     const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.95); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
     me.lean += (turn * 0.22 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
     meG.position.set(me.x, me.y, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; FIG.pose(meG, me.ph, me.air ? 0.4 : pace, me.air);
+    if (state === 'footplate' && time - wh.t < 0.5) meG.userData.aR.rotation.x = -2.5;                 // her arm goes up to the whistle cord
     if (SC.update(dt, me, state === 'play', time)) me.speed *= 0.2;
     const s = -me.z;
 
@@ -472,15 +493,19 @@ function update(dt) {
     if (field.visible && !seenField) { const d = me.z - field.position.z; if (d < 55) fogWant = 0.0042;
       if (state === 'play' && d < 9 && !me.air && vehAt(-me.z)) { state = 'turnips'; seenField = true; wpT = 0; me.speed = 0; $('melt').src = 'images/ploughing_turnips.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.whoosh(0.1); bubbleG = null; } }
     if (state === 'turnips') {
-      wpT += dt; if (window.__road.dbg.hold) wpT = Math.min(wpT, 4);
+      wpT += dt; if (window.__road.dbg.hold) wpT = Math.min(wpT, 4); fogWant = 0.0075;
       if (wpT > 2.6 && wpT < 2.7) plate('Ploughing Up Turnips, near Slough', 'J. M. W. Turner, shown in 1809 · Tate');
       if (wpT > 4.2 && wpT < 7.6) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
       if (wpT > 7.6) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
       if (wpT > 9.8) { state = 'play'; fogWant = 0.006; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').src = 'images/rain_steam_speed.jpg'; tip('On to the engine!', 4); }
     }
     // ---- the footplate, and the bridge
-    if (state === 'play' && onTrain && seenField && !me.air && s > TEN_B + 0.25) { state = 'footplate'; footT = 0; fogWant = 0.017; SC.gain(30, 'The footplate!', 2); say(driver, 'Hold fast, now. Maidenhead bridge!', 4.5); SND.hiss(); }
-    if (state === 'footplate') { footT += dt; me.x += (-0.1 - me.x) * dt * 2; me.z += (-(TEN_B + 1.05) - me.z) * dt * 2; me.yaw += (0 - me.yaw) * dt * 3; me.speed = 0;
+    if (state === 'play' && onTrain && seenField && !me.air && s > TEN_B + 0.25) { state = 'footplate'; footT = 0; fogWant = 0.017; SC.gain(30, 'The footplate!', 2); say(driver, 'Hold fast, now. Maidenhead bridge! Go on: sound the whistle!', 4.5); SND.hiss(); Object.assign(wh, { t: -9, n: 0, reg: 0, regPaid: false });
+      tip(matchMedia('(pointer: coarse)').matches ? 'Tap to sound the whistle' : 'Space to sound the whistle · hold the up arrow to keep the regulator open', 8); }
+    if (state === 'footplate') { footT += dt;
+      if (time - wh.t < 0.6 && Math.floor(time * 22) !== Math.floor((time - dt) * 22)) { const p = puffs[puffI++ % puffs.length]; p.t = 0; p.life = rnd(0.9, 1.4); p.s.visible = true; p.s.position.copy(WHISTLE); p.v.set(rnd(-0.4, 0.4), rnd(5, 7), 0); p.k = rnd(0.3, 0.42); p.w = 1; p.s.material.rotation = rnd(-0.5, 0.5); }      // a jet of steam from the whistle
+      if (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') || stick.dy < -0.4) { wh.reg += dt; if (wh.reg > 1.6 && !wh.regPaid) { wh.regPaid = true; SC.gain(10, 'Regulator wide open!', 0); say(driver, 'Steady on the regulator. You’ll make a driver yet.', 3.5); } }
+      if (footT > 4.6 && footT < 4.7 && !wh.n) say(driver, 'Pull the cord, there. She won’t bite!', 3); me.x += (-0.1 - me.x) * dt * 2; me.z += (-(TEN_B + 1.05) - me.z) * dt * 2; me.yaw += (0 - me.yaw) * dt * 3; me.speed = 0;
       if (footT > 6.5 && footT < 6.6) say(fireman, 'A hare on the line! See her go!', 4);
       if (!valley.visible && footT > 1.3) startBridge();
       if (valley.visible) fogWant = bridgeLeft() < 125 ? 0.0046 : 0.017;
@@ -498,7 +523,7 @@ function update(dt) {
     const lerpTo = (p, look, fov, k) => { camera.position.x += (p[0] - camera.position.x) * k; camera.position.y += (p[1] - camera.position.y) * k; camera.position.z += (p[2] - camera.position.z) * k; const q = lerpTo.q || (lerpTo.q = new V3(...look)); q.lerp(new V3(...look), lerpTo.fresh ? 1 : Math.min(1, k * 1.5)); lerpTo.fresh = false; camera.lookAt(q); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); };
     if (state === 'tableau' || state === 'done') lerpTo(CAMF.pos, CAMF.look, CAMF.fov, Math.min(1, dt * 1.1));
     else if (state === 'turnips') lerpTo([FCAM.x, FCAM.y, field.position.z], [FCAM.look[0], FCAM.look[1], field.position.z + FCAM.look[2]], FCAM.fov, Math.min(1, dt * 1.7));
-    else if (state === 'footplate') lerpTo([3.6, 3.6, -(TEN_B - 0.6)], [0.2, 0.5, -(ENG_F + 30)], 62, Math.min(1, dt * 1.6));
+    else if (state === 'footplate') lerpTo([3.3, 3.9, -(TEN_B - 2.0)], [0.0, 0.9, -(ENG_F + 30)], 62, Math.min(1, dt * 1.6));
     else {
       const dist = 4.5 + Math.abs(me.speed) * 0.08, cx = me.x - fx * dist + (onTrain ? 0 : 0.5), cz = me.z - fz * dist, cy = me.y + 2.55, k = Math.min(1, dt * (time - fellT < 0.6 ? 12 : 5.5));
       camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (cy - camera.position.y) * k;
@@ -509,7 +534,10 @@ function update(dt) {
   if (window.__road.dbg.cam) { const c = window.__road.dbg.cam; camera.position.set(...c.pos); camera.lookAt(...c.look); camera.fov = c.fov || 50; camera.updateProjectionMatrix(); }      // a fixed camera for test shots
   if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.getWorldPosition(new V3()); v.y += 2.3; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 130, innerWidth - 130) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1); } }
   // ---- the air
-  fogD += (fogWant - fogD) * Math.min(1, dt * (fogWant > fogD ? 2.2 : 0.9)); scene.fog.density = fogD; uni.uDen.value = fogD; { const dry = state === 'turnips' ? 0.06 : state === 'tableau' || state === 'done' ? 0.6 : 1, k = Math.min(1, dt * 2); post.uniforms.uRain.value += (dry - post.uniforms.uRain.value) * k; rainMat.uniforms.uAlpha.value += (0.22 * dry - rainMat.uniforms.uAlpha.value) * k; }
+  { const want = state === 'turnips' && wpT < 8.4 ? 1 : 0; mood += (want - mood) * Math.min(1, dt * (want ? 1.6 : 1.1)); if (Math.abs(want - mood) < 0.002) mood = want; const k = mood * mood * (3 - 2 * mood); uni.uMood.value = k;
+    SUN.copy(SUN0).lerp(SUNF, k).normalize(); FOGC.copy(FOG0).lerp(FOGF, k); scene.fog.color.copy(FOGC); hemi.color.copy(HEMI0[0]).lerp(HEMIF[0], k); hemi.groundColor.copy(HEMI0[1]).lerp(HEMIF[1], k); hemi.intensity = mix(HEMI0[2], HEMIF[2], k);
+    sunL.color.copy(SUNC0).lerp(SUNCF, k); sunL.intensity = mix(1.5, 1.15, k); field.userData.shade.opacity = 0.62 * k; field.userData.soilM.color.set('#f0dfb4').lerp(C('#b8a470'), k); }
+  fogD += (fogWant - fogD) * Math.min(1, dt * (fogWant > fogD ? 2.2 : 0.9)); scene.fog.density = fogD; uni.uDen.value = fogD; { const dry = state === 'turnips' ? 0 : state === 'tableau' || state === 'done' ? 0.6 : 1, k = Math.min(1, dt * 2); post.uniforms.uRain.value += (dry - post.uniforms.uRain.value) * k; rainMat.uniforms.uAlpha.value += (0.22 * dry - rainMat.uniforms.uAlpha.value) * k; }
   sunL.position.copy(camera.position).addScaledVector(SUN, 400); sunL.target.position.copy(camera.position);
   SND.update(0.35 + 0.5 * Math.min(1, V / VMAX), clamp(0.25 + V / VMAX * 0.6 + (me.air ? 0.15 : 0), 0, 1));
 }
@@ -526,10 +554,10 @@ let last = 0; function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 
 reset(); requestAnimationFrame(frame);
 
 /* ================= input ================= */
-addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Space' && !e.repeat) whistle(); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
 addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
 const cv = $('cv'), sk = $('stick');
-cv.addEventListener('pointerdown', e => { if (state !== 'play') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointerdown', e => { if (state === 'footplate') { whistle(); return; } if (state !== 'play') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
 cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
 const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === held.id) held.jump = false; };
 cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);

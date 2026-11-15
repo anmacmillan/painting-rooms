@@ -14,7 +14,7 @@
   #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(16px) saturate(1.2); transition:opacity 2.4s ease, filter 2.8s ease; pointer-events:none; z-index:8; }
   #melt.show { opacity:1; filter:none; } #melt.slow { transition-duration:5s, 6s; } #cv { transition:filter 2.6s ease; } body.melting #cv { filter:brightness(.28) blur(4px); }
 </style>
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }</script>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 </head>
 <body>
 <canvas id="cv"></canvas>
@@ -41,6 +41,7 @@ import * as THREE from 'three';
 import { canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
 import { makeGuide } from '../common/guide.js';
 import { makeScore } from '../common/score.js';
+import { makeFigures } from '../common/figure.js';
 const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
 const map = await (await fetch('map.json')).json();
 
@@ -154,14 +155,18 @@ const waterMat = new THREE.ShaderMaterial({ uniforms: uni, vertexShader: 'varyin
       vec3 col = mix(deep, light, smoothstep(-0.4, 0.9, band) * 0.75); col = mix(col, mix(lin(vec3(0.92, 0.86, 0.66)), lin(vec3(1.0, 0.72, 0.46)), uDusk), smoothstep(0.9, 1.0, band2) * 0.35);      // gold where the low sun lies on it
       float g = smoothstep(0.0, 260.0, 130.0 - (p.x + 180.0)); col += lin(vec3(1.0, 0.7, 0.36)) * g * 0.10 * (0.4 + uDusk); gl_FragColor = vec4(col, 1.0); }` });
 { const w = new THREE.Mesh(new THREE.PlaneGeometry(3000, 3000), waterMat); w.rotation.x = -Math.PI / 2; w.position.set(-200, -0.6, 200); scene.add(w); }
-// the far bank: one painted panorama standing beyond the water, its sky faded into ours
-{ const rd = (() => { const a = map.water[0]; return [0.866, 0.5]; })(), ang = Math.atan2(0.52, 0.855), fm = new THREE.ShaderMaterial({ uniforms: { tMap: { value: tFar }, uDusk: uni.uDusk }, transparent: true, depthWrite: false, fog: false,
-    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-    fragmentShader: `uniform sampler2D tMap; uniform float uDusk; varying vec2 vUv; void main(){ vec2 uv = vec2(abs(fract(vUv.x * 0.5) * 2.0 - 1.0), vUv.y); vec4 c = texture2D(tMap, uv); float a = (1.0 - smoothstep(0.38, 0.52, vUv.y)) * smoothstep(0.0, 0.03, vUv.y) * smoothstep(0.0, 0.25, vUv.x) * (1.0 - smoothstep(3.75, 4.0, vUv.x));
-      vec3 col = pow(c.rgb, vec3(2.2)) * mix(vec3(1.0), vec3(1.25, 0.95, 0.8), uDusk); gl_FragColor = vec4(col, a); }` });
-  tFar.wrapS = THREE.MirroredRepeatWrapping; const W_ = 1500, H_ = W_ / 4 / (2400 / 1018), pl = new THREE.Mesh(new THREE.PlaneGeometry(W_, H_), fm); pl.geometry.attributes.uv.array.forEach((v, i, a) => { if (i % 2 === 0) a[i] = v * 4; });
+// the far bank: one painted panorama standing along the far side of the water. Its painted sky is cut away along the skyline (tex/oltrarno_mask.jpg, from tools/prep_florence_bank.py),
+// so the hills stand against our own sky; its painted quay comes down to our water; and it runs on up and down the river until it is lost in the haze, so that no end of it is seen.
+{ const tMask = await L.loadAsync('tex/oltrarno_mask.jpg'); tMask.wrapS = THREE.MirroredRepeatWrapping; tFar.wrapS = THREE.MirroredRepeatWrapping; const REP = 12, W_ = REP * 360, H_ = 360 / (2400 / 1018), QUAY = 0.105;
+  const fm = new THREE.ShaderMaterial({ uniforms: { tMap: { value: tFar }, tMask: { value: tMask }, uDusk: uni.uDusk }, transparent: true, depthWrite: false, fog: false,
+    vertexShader: 'varying vec2 vUv; varying vec3 vW; void main(){ vUv = uv; vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
+    fragmentShader: `uniform sampler2D tMap, tMask; uniform float uDusk; varying vec2 vUv; varying vec3 vW; vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }
+      void main(){ vec4 c = texture2D(tMap, vUv); float d = distance(vW.xz, cameraPosition.xz), a = smoothstep(0.35, 0.65, texture2D(tMask, vUv).r) * (1.0 - smoothstep(1500.0, 2050.0, d));
+        vec3 haze = mix(lin(vec3(0.95, 0.86, 0.66)), lin(vec3(0.97, 0.62, 0.38)), uDusk), col = c.rgb * mix(vec3(1.0), vec3(1.12, 0.84, 0.66), uDusk);
+        col = mix(col, haze, 0.07 + 0.83 * smoothstep(420.0, 1700.0, d)); gl_FragColor = vec4(col, a); }` });
+  const pl = new THREE.Mesh(new THREE.PlaneGeometry(W_, H_), fm); pl.geometry.attributes.uv.array.forEach((v, i, a) => { if (i % 2 === 0) a[i] = v * REP; });
   const rv = [0.898, 0.439], ns = [-rv[1], rv[0]];                       // the river's run, and the direction across it to the south bank
-  pl.position.set(-290 + ns[0] * 250, H_ / 2 - 9, 40 + ns[1] * 250); pl.rotation.y = Math.atan2(-ns[0], -ns[1]); pl.renderOrder = -5; scene.add(pl); }
+  pl.position.set(-290 + ns[0] * 250, H_ / 2 - 0.6 - QUAY * H_, 40 + ns[1] * 250); pl.rotation.y = Math.atan2(-ns[0], -ns[1]); pl.renderOrder = -5; scene.add(pl); }
 
 /* ================= batcher ================= */
 const batches = new Map();
@@ -241,52 +246,29 @@ for (let s = S_RIVER + 4; s < S_BRIDGE - 5; s += 2.5) { const p = at(s); let v =
 flush();
 
 /* ================= people: Florentines in long gowns, with the painted faces ================= */
-const faceTex = await L.loadAsync('faces.jpg'); faceTex.colorSpace = THREE.SRGBColorSpace;
-const faceMat = i => { const t = faceTex.clone(); t.needsUpdate = true; t.wrapS = THREE.RepeatWrapping; t.repeat.set(-1 / 8, 1); t.offset.set((i + 1) / 8, 0); return lam({ map: t }); };
-const FACES = [2, 4, 5, 1, 6].map(faceMat), shadowM = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22, depthWrite: false });
-const WRAP = {}; for (const n of ['beatrice', 'vanna', 'maid', 'dante']) { const t = await L.loadAsync('tex/gown_' + n + '.jpg'); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; t.repeat.set(0.68, 0.92); t.offset.set(0.16, 0.02); WRAP[n] = t; }      // each gown painted flat (tools/gen_florence.py) and wrapped round the figure
-const lathe = (pts, m, seg) => { const me = new THREE.Mesh(new THREE.LatheGeometry(pts.map(p => new THREE.Vector2(p[0], p[1])), seg || 14), m); me.castShadow = true; return me; };
-const limb = (len, r0, r1, m) => { const g = new THREE.Group(), c = new THREE.Mesh(new THREE.CylinderGeometry(r0, r1, len, 7), m); c.position.y = -len / 2; c.castShadow = true; g.add(c); return g; };
-function person(o) {             // o: gown, sleeve, head ('hood' | 'veil' | 'hair' | 'cap'), headCol, hairCol, face (index into the painted faces), size
-  const g = new THREE.Group(), rig = new THREE.Group(); g.add(rig); const skin = lam({ color: '#ecd0b0' }), gown = o.wrap ? lam({ map: WRAP[o.wrap] }) : lam({ color: o.gown, map: tDrape }), dark = lam({ color: '#2a2018' });
-  const body = new THREE.Mesh(new THREE.LatheGeometry([[0.02, 0.02], [0.47, 0.02], [0.46, 0.08], [0.38, 0.4], [0.27, 0.84], [0.205, 1.0], [0.215, 1.1], [0.25, 1.25], [0.245, 1.35], [0.17, 1.44], [0.07, 1.48]].map(q => new THREE.Vector2(q[0], q[1])), 24, Math.PI, Math.PI * 2), gown); body.castShadow = true;
-  { const ps = body.geometry.attributes.position, uv = body.geometry.attributes.uv; for (let k = 0; k < uv.count; k++) uv.setY(k, ps.getY(k) / 1.48); } rig.add(body);      // the seam at the back, the picture's height up the figure
-  const gird = new THREE.Mesh(new THREE.TorusGeometry(0.212, 0.018, 6, 20), lam({ color: o.girdle || (o.head === 'hair' ? '#d9b25a' : '#3a2a20') })); gird.rotation.x = Math.PI / 2; gird.position.y = 1.0; if (!o.wrap) rig.add(gird);
-  for (const sx of [-1, 1]) { const sh = new THREE.Mesh(new THREE.SphereGeometry(0.095, 10, 8), lam({ color: o.sleeve || o.gown })); sh.position.set(sx * 0.235, 1.35, 0); sh.scale.set(1, 0.85, 1.05); sh.castShadow = true; rig.add(sh); }
-  if (o.head === 'hood') { const cp = new THREE.Mesh(new THREE.CylinderGeometry(0.085, 0.33, 0.24, 16, 1, true), lam({ color: o.headCol, map: tDrape, side: THREE.DoubleSide })); cp.position.y = 1.4; cp.castShadow = true; rig.add(cp); }
-  const nk = new THREE.Mesh(new THREE.CylinderGeometry(0.05, 0.06, 0.12, 8), skin); nk.position.y = 1.5; rig.add(nk);
-  const hd = new THREE.Group(); hd.position.y = 1.64; const r = 0.135, s = new THREE.Mesh(new THREE.SphereGeometry(r, 14, 12), skin); s.scale.set(0.92, 1.14, 0.96); s.castShadow = true; hd.add(s);
-  const f = new THREE.Mesh(new THREE.SphereGeometry(r * 1.02, 12, 10, Math.PI / 2 - 1.0, 2.0, 0.5, 1.75), faceMat(o.face)); f.scale.set(0.92, 1.14, 0.96); hd.add(f);
-  const back = (col, grow) => { const b = new THREE.Mesh(new THREE.SphereGeometry(r * (grow || 1.05), 12, 10, Math.PI / 2 + 0.95, Math.PI * 2 - 1.9), lam({ color: col, map: strokeTex })); b.scale.set(0.94, 1.16, 1.0); hd.add(b); return b; };
-  if (o.head === 'hood') { back(o.headCol, 1.1); const t = new THREE.Mesh(new THREE.SphereGeometry(r * 1.1, 12, 8, 0, 6.3, 0, 1.2), lam({ color: o.headCol, map: strokeTex })); t.scale.set(0.96, 1.05, 1.02); t.position.y = 0.03; hd.add(t);
-    const band = new THREE.Mesh(new THREE.TorusGeometry(r * 0.99, 0.022, 6, 16), lam({ color: '#f1ecdc' })); band.rotation.x = Math.PI / 2; band.position.y = 0.05; band.scale.set(0.95, 1.0, 1); hd.add(band);
-    const tail = new THREE.Group(), tm = new THREE.Mesh(new THREE.SphereGeometry(1, 8, 6), lam({ color: o.headCol, map: strokeTex })); tm.scale.set(0.06, 0.12, 0.05); tm.position.y = -0.1; tail.add(tm); tail.position.set(0, 0.06, -0.13); hd.add(tail); g.userData.tail = tail; }
-  else if (o.head === 'veil') { back('#f1ecdc', 1.08); const t = new THREE.Mesh(new THREE.SphereGeometry(r * 1.08, 12, 8, 0, 6.3, 0, 1.15), lam({ color: '#f1ecdc' })); t.position.y = 0.03; hd.add(t); const dr = new THREE.Mesh(new THREE.ConeGeometry(0.2, 0.34, 10, 1, true), lam({ color: '#f1ecdc', side: THREE.DoubleSide })); dr.position.set(0, -0.2, -0.05); hd.add(dr); }
-  else { back(o.hairCol || '#7a4a24', 1.08); const t = new THREE.Mesh(new THREE.SphereGeometry(r * 1.07, 12, 8, 0, 6.3, 0, 1.2), lam({ color: o.hairCol || '#7a4a24', map: strokeTex })); t.position.y = 0.03; hd.add(t);
-    if (o.head === 'hair') { const tail = new THREE.Group(), tm = new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), lam({ color: o.hairCol || '#7a4a24', map: strokeTex })); tm.scale.set(0.12, 0.3, 0.05); tm.position.y = -0.3; tail.add(tm); tail.position.set(0, 0.02, -0.11); hd.add(tail); g.userData.tail = tail;
-      const circ = new THREE.Mesh(new THREE.TorusGeometry(r * 1.0, 0.014, 6, 16), lam({ color: '#d9b25a' })); circ.rotation.x = Math.PI / 2; circ.position.y = 0.07; hd.add(circ); }
-    else { const cap = new THREE.Mesh(new THREE.SphereGeometry(r * 1.12, 12, 8, 0, 6.3, 0, 1.0), lam({ color: o.headCol || '#3a2a20' })); cap.position.y = 0.05; hd.add(cap); } }
-  rig.add(hd);
-  const arm = () => { const a = limb(0.5, 0.078, 0.105, lam({ color: o.sleeve || o.gown, map: tDrape })), h = new THREE.Mesh(new THREE.SphereGeometry(0.045, 8, 6), skin); h.scale.set(0.8, 1.5, 0.6); h.position.y = -0.55; a.add(h); return a; };
-  const aL = arm(), aR = arm(); aL.position.set(-0.25, 1.36, 0); aR.position.set(0.25, 1.36, 0); rig.add(aL, aR);
-  const fL = new THREE.Mesh(new THREE.BoxGeometry(0.1, 0.07, 0.24), dark), fR = fL.clone(); fL.position.set(-0.1, 0.035, 0); fR.position.set(0.1, 0.035, 0); g.add(fL, fR);
-  const sh = new THREE.Mesh(new THREE.CircleGeometry(0.42, 14), shadowM); sh.rotation.x = -Math.PI / 2; sh.position.y = 0.03; g.add(sh);
-  Object.assign(g.userData, { rig, body, hd, aL, aR, fL, fR }); g.scale.setScalar(o.size || 1.06); scene.add(g); return g;
+const shadowM = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.22, depthWrite: false });
+// Every figure is modelled and skinned in Blender (tools/blender/figure.py, world 'florence') and moved by common/figure.js. The four named ones wear the gowns of tex/gown_*.jpg;
+// the townspeople wear pale cloth that is stained here, a colour to each, with the hood, cloak or cap in another.
+const FIG = makeFigures({ THREE, scene, shadowM, castShadow: true }); await FIG.load('models/', ['dante', 'beatrice', 'vanna', 'maid', 'town_hood', 'town_coif', 'town_elder', 'town_veil', 'town_goodwife', 'town_boy', 'town_girl']);
+function person(o) {             // o: name (the model), size, child (the livelier walk), gown, hood, cloak, hat, hose (colours)
+  const g = FIG.spawn(o.name, { size: (o.size || 1.06) * 1.1, adult: !o.child, hose: o.hose }), m = g.userData.mats; g.userData.size0 = g.scale.x;
+  if (o.gown && m.dress) m.dress.color.set(o.gown); if (o.hood) for (const k of ['hair', 'cape']) if (m[k]) m[k].color.set(o.hood); if (o.cloak && m.cloak) m.cloak.color.set(o.cloak); if (o.hat && m.hat) m.hat.color.set(o.hat);
+  return g;
 }
-function pose(g, phase, pace, air, lean) {
-  const u = g.userData, s = Math.sin(phase), c = Math.cos(phase);
-  u.rig.position.y = Math.abs(c) * 0.035 * pace; u.rig.rotation.z = s * 0.035 * pace; u.rig.rotation.x = (lean || 0) + 0.05 * pace;
-  u.aL.rotation.x = s * 0.6 * pace; u.aR.rotation.x = -s * 0.6 * pace; u.aL.rotation.z = -0.1 - (air ? 0.9 : 0); u.aR.rotation.z = 0.1 + (air ? 0.9 : 0);
-  u.fL.position.z = s * 0.22 * pace; u.fR.position.z = -s * 0.22 * pace; u.fL.position.y = 0.035 + Math.max(0, c) * 0.07 * pace; u.fR.position.y = 0.035 + Math.max(0, -c) * 0.07 * pace;
-  u.body.scale.set(1 + 0.04 * s * pace + (air ? 0.18 : 0), 1, 1 + 0.06 * c * pace + (air ? 0.18 : 0)); if (u.tail) u.tail.rotation.x = 0.1 + 0.5 * Math.min(1.4, pace) + 0.12 * s + (air ? 0.5 : 0);
-}
+const pose = (g, phase, pace, air, lean) => FIG.pose(g, phase, pace, air, lean), TURN = (g, bone, x, y, z) => FIG.turn(g.userData, bone, x || 0, y || 0, z || 0);
+// she sinks to her knees (k from 0 to 1), her face lifted and her hands open in her lap, as in Beata Beatrix
+function kneel(g, k) { for (const S of 'LR') { const sg = S === 'L' ? 1 : -1; TURN(g, 'thigh' + S, 4 * k); TURN(g, 'shin' + S, 92 * k); TURN(g, 'upperarm' + S, -26 * k, sg * 7 * k); TURN(g, 'forearm' + S, -14 - 62 * k, sg * 16 * k); }
+  TURN(g, 'spine', -6 * k); g.userData.rig.position.y = -0.385 * k; g.userData.hd.rotation.x = -0.42 * k; }
+const smooth01 = t => t * t * (3 - 2 * t), hands = (g, fw) => { g.updateMatrixWorld(true); const a = g.userData.B.forearmL.getWorldPosition(new V3()), b = g.userData.B.forearmR.getWorldPosition(new V3()), q = 0.27 * g.scale.x; return new V3((a.x + b.x) / 2 + fw[0] * q, (a.y + b.y) / 2 + 0.03, (a.z + b.z) / 2 + fw[1] * q); };      // where her open hands lie
 const faceTo = (g, x, z, k) => { let d = Math.atan2(x - g.position.x, z - g.position.z) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * k; };
 // Dante as Holiday dressed him: a green gown, the red hood with its white band
-const meG = person({ wrap: 'dante', gown: '#3f6a3a', sleeve: '#24402a', head: 'hood', headCol: '#b3362c', face: 3, size: 1.08 });
-const beatrice = person({ wrap: 'beatrice', gown: '#ece0b4', sleeve: '#e2d29c', head: 'hair', hairCol: '#b5622a', face: 1, size: 1.04 }), vanna = person({ wrap: 'vanna', gown: '#c9452b', sleeve: '#b83a24', head: 'hair', hairCol: '#a8522a', face: 0, size: 1.04 }), maid = person({ wrap: 'maid', gown: '#2f5d8a', sleeve: '#28507a', head: 'hair', hairCol: '#8a6a3a', face: 2, size: 1.0 });
+const meG = person({ name: 'dante', size: 1.08, child: true });
+const beatrice = person({ name: 'beatrice', size: 1.04 }), vanna = person({ name: 'vanna', size: 1.04 }), maid = person({ name: 'maid', size: 1.0 });
 const trio = [beatrice, vanna, maid];
-const KIT = [{ gown: '#8a2e26', head: 'cap', headCol: '#3a2a20' }, { gown: '#5a6a3a', head: 'veil' }, { gown: '#3c4a7a', head: 'hood', headCol: '#7a2e26' }, { gown: '#b08a3c', head: 'veil' }, { gown: '#6a4a5a', head: 'cap', headCol: '#5a3a24' }, { gown: '#7a5a3a', head: 'hair', hairCol: '#5a3a24' }, { gown: '#a8603c', head: 'hood', headCol: '#2f4a38' }, { gown: '#4a4a44', head: 'veil' }];
-const walkers = []; for (let i = 0; i < 56; i++) { const g = person(Object.assign({ face: [2, 4, 5, 1, 6, 0][i % 6], size: rnd(0.98, 1.12) }, KIT[i % KIT.length]));
+const KIT = [{ name: 'town_coif', gown: '#9a3a2e' }, { name: 'town_veil', gown: '#66784a' }, { name: 'town_hood', gown: '#4a5a8e', hood: '#7a2e26' }, { name: 'town_goodwife', gown: '#c09a4a', cloak: '#4a3a34' },
+  { name: 'town_elder', gown: '#7a2e36', cloak: '#2a2420', hat: '#5a1f1c' }, { name: 'town_veil', gown: '#8a6a44' }, { name: 'town_hood', gown: '#b8703f', hood: '#2f4a38' }, { name: 'town_boy', gown: '#7a8a52', child: true, size: 0.8 },
+  { name: 'town_goodwife', gown: '#5a5a66', cloak: '#5a3a2a' }, { name: 'town_coif', gown: '#62748a', hose: '#7a3a2a' }, { name: 'town_girl', gown: '#c8ae7a', child: true, size: 0.82 }, { name: 'town_veil', gown: '#9a4456' }, { name: 'town_hood', gown: '#8a7a44', hood: '#3c4a6a', hose: '#3a4a3a' }];
+const walkers = []; for (let i = 0; i < 56; i++) { const K = KIT[i % KIT.length], g = person(Object.assign({}, K, { size: (K.size || 1) * rnd(0.98, 1.1) }));
   walkers.push({ g, s: rnd(12, S_BRIDGE - 12), dir: i % 2 ? 1 : -1, off: rnd(1.3, 3.2) * (i % 2 ? 1 : -1), v: rnd(0.8, 1.4), ph: rnd(0, 6), lo: 8, hi: S_BRIDGE - 8, said: 0 }); }
 const LINES = ['God keep you, Dante.', 'She went by the river, with her friends.', 'Wool from Flanders! Dyed in the Arno!', 'They say you write verses now.', 'Mind the cart!'];
 // pigeons on the Lungarno, and the red dove of the last picture
@@ -318,7 +300,7 @@ const WAY = {
     cam() { const [x, z] = sideR(P0, 9.6, WALL_V - 3.3), [tx, tz] = sideR(P0, -30, WALL_V - 2.2); return [new V3(x, LAND + 1.6, z), new V3(tx, LAND + 2.2, tz), 56]; } } };
 // points: the paintings first, then what lies on the road and the drains to leap (common/score.js)
 const SC = makeScore({ THREE, scene, isHouse: inHouse, walkers, slops: true, cry: '“Guarda sotto!”', key: 'florence', at, nearest: (x, z) => nearest(x, z, progS), LEN, groundY: (x, z) => floorAt(x, z) ?? LAND, blocked, paintings: Object.keys(WAY).length + 1, thing: 'florin', things: 'gold florins', ditch: 'drain', wet: false, avoid: Object.values(WAY).map(w => w.s), half: 2.6, ditchColor: '#3d3a34', lipColor: '#a39a84' });
-function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); triS = S_START + 12; triV = 0; endT = 0; wp = null; seen = {}; leg = 1; dusk = 0; progS = S_START; dove.visible = false; for (const g of trio) { g.userData.hd.rotation.set(0, 0, 0); g.userData.rig.position.y = 0; g.scale.setScalar(g === maid ? 1.0 : 1.04); }
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); triS = S_START + 12; triV = 0; endT = 0; wp = null; seen = {}; leg = 1; dusk = 0; progS = S_START; dove.visible = false; for (const g of trio) { g.userData.hd.rotation.x = 0; g.userData.hd.rotation.y = 0; g.scale.setScalar(g.userData.size0); pose(g, 0, 0); }
   camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
 function begin() {
   SND.start({ track: 'music.mp3', chords: [[41, 60, 64, 67, 72], [38, 57, 60, 65, 69], [36, 55, 60, 64, 67], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
@@ -361,16 +343,16 @@ function update(dt) {
     // waypoints: the scene is set as the painting, the view takes the painter's place, melts into the picture, and lets him go
     for (const k in WAY) if (state === 'play' && !seen[k] && prog.s > WAY[k].s - 6 && prog.s < WAY[k].s + 6) { state = 'way'; wp = WAY[k]; wp.key = k; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); SND.whoosh(0.07); }
     if (state === 'way') { wpT += dt; const [ds, dv] = wp.stage(), p = at(ds), [tx, tz] = side(p, 0, dv); me.x += (tx - me.x) * Math.min(1, dt * 2.5); me.z += (tz - me.z) * Math.min(1, dt * 2.5); me.y = floorAt(me.x, me.z) ?? LAND; meG.position.set(me.x, me.y, me.z);
-      faceTo(meG, beatrice.position.x, beatrice.position.z, dt * 4); pose(meG, 0, 0); meG.userData.aR.rotation.x = -1.2; meG.userData.aR.rotation.z = -0.5;                                     // his hand goes to his heart
+      faceTo(meG, beatrice.position.x, beatrice.position.z, dt * 4); pose(meG, 0, 0); TURN(meG, 'upperarmR', -24, -10); TURN(meG, 'forearmR', -118, -38);                                     // his hand goes to his heart
       if (wpT > 2.6 && wpT < 2.7) plate(wp.title, wp.line); if (wpT > 3.8 && wpT < 7.8) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
       if (wpT > 7.8) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
       if (wpT > 10) { state = 'play'; me.yaw = Math.PI - meG.rotation.y; beatrice.userData.aR.rotation.x = 0; beatrice.userData.hd.rotation.y = 0; if (wp.after[1]) say(wp.after[0] || meG, wp.after[1], 4);
         if (wp.key === 'greet') { leg = 2; triS = S_TURN + 4; progS = S_TURN + 1; } else { leg = 3; triS = S_BRIDGE + 6; } wp = null; hop = time + 6; } }
     // the end, out on the bridge at sunset: she kneels, her face lifted and her eyes closed, and a red dove comes to her hands
     if (state === 'play' && leg === 3 && prog.s > sEnd - 9) { state = 'tableau'; endT = 0; SND.setTrack('aria.mp3', 4); bubble.classList.remove('show'); $('melt').src = 'images/beata.jpg'; $('melt').classList.add('slow'); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.3)); }
-    if (state === 'tableau') { endT += dt; const p = at(sEnd), k = Math.min(1, endT / 3); stand(beatrice, sEnd, 0, sEnd + 2, -12); beatrice.userData.rig.position.y = -0.42 * k; beatrice.userData.hd.rotation.x = -0.42 * k; beatrice.userData.aL.rotation.x = -0.7 * k; beatrice.userData.aR.rotation.x = -0.7 * k; beatrice.userData.aL.rotation.z = 0.35 * k; beatrice.userData.aR.rotation.z = -0.35 * k;
+    if (state === 'tableau') { endT += dt; const p = at(sEnd), k = Math.min(1, endT / 3); stand(beatrice, sEnd, 0, sEnd + 2, -12); kneel(beatrice, smooth01(k));
       const [tx, tz] = side(at(sEnd - 7), 0, 2.5); me.x += (tx - me.x) * dt * 1.5; me.z += (tz - me.z) * dt * 1.5; me.speed = 0; me.y = floorAt(me.x, me.z) ?? DECK; meG.position.set(me.x, me.y, me.z); faceTo(meG, beatrice.position.x, beatrice.position.z, dt * 3); pose(meG, 0, 0);
-      dove.visible = endT > 2; const fw = [Math.sin(beatrice.rotation.y), Math.cos(beatrice.rotation.y)], dk = clamp((endT - 2) / 4, 0, 1), hp = new V3(beatrice.position.x + 0.4 * fw[0], DECK + 0.72, beatrice.position.z + 0.4 * fw[1]); dove.position.set(mix(hp.x + 6 * fw[0], hp.x, dk), mix(DECK + 4, hp.y, dk), mix(hp.z + 6 * fw[1], hp.z, dk)); faceTo(dove, beatrice.position.x, beatrice.position.z, 1);
+      dove.visible = endT > 2; const fw = [Math.sin(beatrice.rotation.y), Math.cos(beatrice.rotation.y)], dk = clamp((endT - 2) / 4, 0, 1), hp = hands(beatrice, fw); dove.position.set(mix(hp.x + 6 * fw[0], hp.x, dk), mix(DECK + 4, hp.y, dk), mix(hp.z + 6 * fw[1], hp.z, dk)); faceTo(dove, beatrice.position.x, beatrice.position.z, 1);
       const fl = Math.sin(time * 20) * (1 - dk * 0.7); dove.userData.wL.rotation.z = fl; dove.userData.wR.rotation.z = -fl;
       if (endT > 5.0 && endT < 5.1) plate('Beata Beatrix', 'Dante Gabriel Rossetti, about 1864–70 · this version, Art Institute of Chicago');
       if (endT > 8.0) { $('melt').classList.add('show'); document.body.classList.add('melting'); }

@@ -119,11 +119,11 @@ const sky = new THREE.Mesh(new THREE.SphereGeometry(2000, 32, 16), new THREE.Sha
       gl_FragColor = vec4(col, 1.0); }` }));
 sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
 
-/* ================= materials: the painted fronts, paving and stone made for Florence, here by lantern ================= */
+/* ================= materials: Roman house fronts (tools/gen_rome_fronts.py); the paving and stone made for Florence, here by lantern ================= */
 const TL = new THREE.TextureLoader(), lam = o => new THREE.MeshLambertMaterial(o), basic = o => new THREE.MeshBasicMaterial(o);
 const tex = async (f, rep) => { const t = await TL.loadAsync(f.includes('/') ? f : 'tex/' + f); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; if (rep) { t.wrapS = t.wrapT = THREE.RepeatWrapping; } return t; };
-const [tPave, tStone, tA, tB, tC, tD, tMedusa] = await Promise.all([tex('paving.jpg', 1), tex('stone.jpg', 1), tex('facade_a.jpg', 1), tex('facade_b.jpg', 1), tex('facade_c.jpg', 1), tex('facade_d.jpg', 1), tex('images/medusa.jpg')]);
-const FRONT = [tA, tB, tC, tD].map(t => lam({ map: t })), stoneM = lam({ map: tStone, color: '#d8d0c0' }), paveM = lam({ map: tPave, color: '#b8b0a4' });
+const [tPave, tStone, tMedusa, ...tFronts] = await Promise.all([tex('paving.jpg', 1), tex('stone.jpg', 1), tex('images/medusa.jpg'), ...['a', 'b', 'c', 'd', 'e'].map(c => tex('roma_' + c + '.jpg', 1))]);
+const FRONT = tFronts.map(t => lam({ map: t })), stoneM = lam({ map: tStone, color: '#d8d0c0' }), paveM = lam({ map: tPave, color: '#b8b0a4' });
 const FR = makeFronts({ THREE, scene }), hAt = FR.hAt;
 const plaster = lam({ color: '#6c6454' }), darkWood = lam({ color: '#3a2a1c' }), wood = lam({ color: '#6a4a2c' }), iron = lam({ color: '#1c1a18' }), black = basic({ color: '#030304' }), shadowM = basic({ color: 0x000000, transparent: true, opacity: 0.3, depthWrite: false });
 
@@ -141,11 +141,12 @@ const CUTS = [{ x: F_CALL.ox, z: F_CALL.oz, hw: 2.75, h: 3.6 }];      // an open
 map.buildings.forEach((b, i) => {
   const p = b.p; if (p.length < 3 || /Obelisco/.test(b.n || '')) return; let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9, near = 1e9; for (const q of p) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); z0 = Math.min(z0, q[1]); z1 = Math.max(z1, q[1]); near = Math.min(near, nearest(q[0], q[1]).d); }
   if (near > 100) return; blocks.push({ p, x0, x1, z0, z1 });
-  const big = BIG.find(k => k[0].test(b.n || '')), H = big ? big[1] : 10.2 + ((i * 7) % 5) * 1.1, mat = big ? big[2] : FRONT[i % 4];
+  const big = BIG.find(k => k[0].test(b.n || '')), H = big ? big[1] : 10.2 + ((i * 7) % 5) * 1.1, mat = big ? big[2] : FRONT[(i * 3 + (i >> 2)) % FRONT.length];
   for (let k = 0; k < p.length; k++) { let a = p[k], c = p[(k + 1) % p.length]; const L = Math.hypot(c[0] - a[0], c[1] - a[1]); if (L < 0.3) continue;
     let nx = -(c[1] - a[1]) / L, nz = (c[0] - a[0]) / L; const mx = (a[0] + c[0]) / 2, mz = (a[1] + c[1]) / 2; if (inPoly(p, mx + nx * 0.15, mz + nz * 0.15)) { nx = -nx; nz = -nz; }
     if (-(c[1] - a[1]) * nx + (c[0] - a[0]) * nz < 0) [a, c] = [c, a];                                   // wind it so that it faces outward
-    const n = big ? L / 5 : Math.max(1, Math.round(L / 7)), v = big ? H / 5 : 1, N6 = [nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz];
+    const n = big ? L / 5 : L < 4.5 ? L / 7 : Math.round(L / 7),      // a short wall shows part of a front, not a whole one squeezed
+     v = big ? H / 5 : 1, N6 = [nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz, nx, 0, nz];
     const piece = (t0, t1, y0, y1) => { const x0 = mix(a[0], c[0], t0), z0 = mix(a[1], c[1], t0), x1 = mix(a[0], c[0], t1), z1 = mix(a[1], c[1], t1); put(mat, [x0, y0, z0, x1, y0, z1, x1, y1, z1, x0, y0, z0, x1, y1, z1, x0, y1, z0], N6, [t0 * n, y0 / H * v, t1 * n, y0 / H * v, t1 * n, y1 / H * v, t0 * n, y0 / H * v, t1 * n, y1 / H * v, t0 * n, y1 / H * v]); };
     const cut = CUTS.find(q => { const t = ((q.x - a[0]) * (c[0] - a[0]) + (q.z - a[1]) * (c[1] - a[1])) / (L * L); return t > 0 && t < 1 && Math.hypot(q.x - mix(a[0], c[0], t), q.z - mix(a[1], c[1], t)) < 0.8; });
     let cutT = null; if (cut) { const t = ((cut.x - a[0]) * (c[0] - a[0]) + (cut.z - a[1]) * (c[1] - a[1])) / (L * L); cutT = [t - cut.hw / L, t + cut.hw / L]; piece(0, cutT[0], 0, H); piece(cutT[1], 1, 0, H); piece(cutT[0], cutT[1], cut.h, H); } else piece(0, 1, 0, H);
