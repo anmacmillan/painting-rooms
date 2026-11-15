@@ -30,6 +30,7 @@ export function makeGuide(o) {
         const board = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 0.55), m); board.position.z = 0.05; grp.add(board); const back = new THREE.Mesh(new THREE.BoxGeometry(2.62, 0.67, 0.08), postM); grp.add(back);
         grp.position.set(x, groundY(x, z) + 2.75, z); grp.rotation.y = Math.atan2(nx, nz); scene.add(grp); placed.push([x, z]); mine.push([g.mx, g.mz]); n++; continue; }
       // In open country, a post well back from the way, its board short enough never to reach across it
+      if (o.posts === false) continue;      // a town of stone: no name at all is better than a board on a post
       for (const off of [4.4, -4.4, 5.6, -5.6]) { const x = g.mx + px * off, z = g.mz + pz * off; if (!blocked(x, z) && nearest(x, z).d > 3.6 && !placed.some(q => Math.hypot(q[0] - x, q[1] - z) < 7)) { spot = [x, z]; break; } }
       if (!spot) continue; const [x, z] = spot, y = groundY(x, z), p = at(g.s), ry = Math.atan2(p.dx, p.dz), grp = new THREE.Group();
       const post = new THREE.Mesh(new THREE.BoxGeometry(0.14, 3.3, 0.14), postM); post.position.y = 1.65; post.castShadow = true; grp.add(post);
