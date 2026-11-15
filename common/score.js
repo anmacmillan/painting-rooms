@@ -79,14 +79,40 @@ export function makeScore(o) {
     const [x, z, p] = spot(s, k % 2 ? 1.0 : -1.0); if (o.blocked(x, z)) return; const g = new THREE.Group();
     for (const e of [-0.42, 0.42]) { const b = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.31, 0.86, 14), barrelM); b.position.set(e, 0.43, 0); b.castShadow = true; g.add(b); for (const hy of [0.2, 0.66]) { const h = new THREE.Mesh(new THREE.TorusGeometry(0.355, 0.022, 5, 16), hoopM); h.rotation.x = Math.PI / 2; h.position.set(e, hy, 0); g.add(h); } }
     g.position.set(x, o.groundY(x, z), z); g.rotation.y = Math.atan2(p.dx, p.dz) + Math.PI / 2; scene.add(g); hurdles.push({ x, z, hit: false, over: false, vaulted: false }); });
+  // ---- the life of the street: washing hung across the lane, slops emptied from a window, a drunk weaving out of a tavern ----
+  const isHouse = o.isHouse || o.blocked, wallFrom = (p, sg, max = 9.5) => { for (let d = 1.6; d <= max; d += 0.25) { const x = p.x - p.dz * sg * d, z = p.z + p.dx * sg * d; if (isHouse(x, z)) return isHouse(x - p.dz * sg * 0.8, z + p.dx * sg * 0.8) ? [x, z, d] : null; } return null; };
+  const free = s => clear(s) && !ditches.some(d => Math.abs(d.s - s) < 9);
+  const lines = [], clothM = ['#f1ede2', '#e6dcc4', '#9fb4c8', '#b5543f', '#e9e4d6'].map(c => new THREE.MeshLambertMaterial({ color: c, side: THREE.DoubleSide })), ropeM = lam({ color: '#6a5a44' });
+  if (o.washing !== false) for (const f of [0.1, 0.27, 0.41, 0.63, 0.78, 0.93]) { if (lines.length >= 4) break; const s = f * LEN; if (!free(s)) continue; const p = at(s), a = wallFrom(p, 1), b = wallFrom(p, -1); if (!a || !b) continue;
+    const y0 = o.groundY(p.x, p.z) + 3.5, L = Math.hypot(a[0] - b[0], a[1] - b[1]), g = new THREE.Group(), rope = new THREE.Mesh(new THREE.BoxGeometry(L, 0.03, 0.03), ropeM); g.add(rope); const hung = [];
+    for (let u = -L / 2 + 0.7, k = 0; u < L / 2 - 0.6; k++) { const w = 0.45 + ((k * 37) % 5) * 0.12, h = 0.6 + ((k * 53) % 4) * 0.16, c = new THREE.Mesh(new THREE.PlaneGeometry(w, h), clothM[(k + lines.length) % clothM.length]); c.geometry.translate(0, -h / 2, 0); c.position.set(u + w / 2, -0.02, 0); c.rotation.y = Math.PI / 2; g.add(c); hung.push(c); u += w + 0.14; }
+    g.position.set((a[0] + b[0]) / 2, y0, (a[1] + b[1]) / 2); g.rotation.y = -Math.atan2(a[1] - b[1], a[0] - b[0]); scene.add(g); lines.push({ hung, ph: lines.length * 1.3 });
+    addPick(p.x, p.z, y0 - 1.45, 200 + lines.length); }      // a coin hangs under the washing, a leap away
+  const slops = [], slopM = lam({ color: '#5a4a2a' }), shadeM = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.0, depthWrite: false });
+  if (o.slops) for (const f of [0.2, 0.46, 0.7, 0.88]) { let s = f * LEN; for (let n = 0; n < 5 && (!free(s) || hurdles.some(h => Math.hypot(h.x - at(s).x, h.z - at(s).z) < 7)); n++) s += 8; if (!free(s)) continue;
+    const p = at(s), sg = slops.length % 2 ? 1 : -1, w = wallFrom(p, sg) || wallFrom(p, -sg); if (!w) continue; const k = Math.max(0.15, 1 - 1.3 / w[2]), x = p.x + (w[0] - p.x) * (1 - k) * 0.5, z = p.z + (w[1] - p.z) * (1 - k) * 0.5, gy = o.groundY(x, z);
+    const shade = new THREE.Mesh(new THREE.CircleGeometry(1.25, 20), shadeM.clone()); shade.rotation.x = -Math.PI / 2; shade.position.set(x, gy + 0.05, z); scene.add(shade);
+    const blob = new THREE.Group(); for (let i = 0; i < 7; i++) { const b = new THREE.Mesh(new THREE.SphereGeometry(0.16 + (i % 3) * 0.06, 8, 6), slopM); b.position.set(Math.cos(i * 2.4) * 0.35, i * 0.22, Math.sin(i * 2.4) * 0.35); blob.add(b); } blob.visible = false; scene.add(blob);
+    const pail = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.16, 0.3, 10), lam({ color: '#6a4a30' })); pail.position.set(x + (w[0] - x) * 0.82, gy + 4.3, z + (w[1] - z) * 0.82); pail.visible = false; scene.add(pail);
+    slops.push({ s, x, z, gy, shade, blob, pail, state: 'idle', t: 0, near: false }); }
+  // a few of the townspeople have had too much: they weave right across the way, and walking into one costs you
+  const drunks = (o.walkers || []).filter((w, i) => i % 9 === 4).slice(0, 4).map((w, i) => ({ w, base: w.off, ph: i * 2.1, cool: 0 }));
+  // ---- two gifts on the road: wings on her heels (she runs much faster for a while) and a laurel crown (every gain is doubled) ----
+  const powers = [], power = { wings: 0, laurel: 0 };
+  if (o.powerups !== false) [['wings', 0.3], ['laurel', 0.62]].forEach(([kind, f]) => { let s = f * LEN; for (let n = 0; n < 6 && !free(s); n++) s += 8; if (!free(s)) return; const p = at(s); if (o.blocked(p.x, p.z)) return; const g = new THREE.Group();
+    if (kind === 'wings') for (const e of [-1, 1]) { const w = new THREE.Mesh(new THREE.ConeGeometry(0.22, 0.7, 3), glow('#f4f8ff')); w.scale.z = 0.25; w.rotation.z = e * 1.15; w.position.set(e * 0.3, 0.05, 0); g.add(w); }
+    else { g.add(new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.06, 6, 20), glow('#4f9a4a'))); for (let i = 0; i < 6; i++) { const b = new THREE.Mesh(new THREE.SphereGeometry(0.05, 6, 5), glow('#f2c865')); b.position.set(Math.cos(i * 1.05) * 0.3, Math.sin(i * 1.05) * 0.3, 0.05); g.add(b); } }
+    const h = new THREE.Sprite(new THREE.SpriteMaterial({ map: haloTex, color: kind === 'wings' ? 0xbfe0ff : 0xc8ffb0, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); h.scale.setScalar(2.4); g.add(h);
+    const y = o.groundY(p.x, p.z) + 1.05; g.position.set(p.x, y, p.z); scene.add(g); powers.push({ kind, g, x: p.x, z: p.z, y }); });
+  const gm = () => mult * (power.laurel > 0 ? 2 : 1);
   let pts = 0, got = 0, leaps = 0, seen = new Set(), clock = 0, running = false, toastT = 0, lastS = 0, streak = 0, lastGain = -9, mult = 1;
   const flow = n => { streak = clock - lastGain < 3.2 ? streak + n : n; lastGain = clock; const m = 1 + Math.min(3, Math.floor(streak / 4)); if (m > mult) say(`×${m}  keep it flowing!`); mult = m; };
   const lose = (n, msg) => { pts = Math.max(0, pts - n); streak = 0; mult = 1; say(msg); show(); hud.classList.remove('hurt'); void hud.offsetWidth; hud.classList.add('hurt'); if (SND && SND.puff) SND.puff(0.12); };
   hud.innerHTML = '<span class="coin"></span><span class="n">0</span><span><small class="p"></small><small class="c"></small></span>'; const hN = hud.querySelector('.n'), hP = hud.querySelector('.p'), hC = hud.querySelector('.c');
-  const show = () => { hN.textContent = pts; hP.textContent = `${seen.size} of ${o.paintings} paintings`; hC.innerHTML = `${got} ${o.things || 'coins'}` + (mult > 1 ? ` <span class="x">×${mult}</span>` : ''); };
+  const show = () => { hN.textContent = pts; hP.textContent = `${seen.size} of ${o.paintings} paintings`; hC.innerHTML = `${got} ${o.things || 'coins'}` + (gm() > 1 ? ` <span class="x">×${gm()}</span>` : '') + (power.wings > 0 ? ` <span class="x">🪽${Math.ceil(power.wings)}</span>` : '') + (power.laurel > 0 ? ` <span class="x">🌿${Math.ceil(power.laurel)}</span>` : ''); };
   const bump = gain => { hud.classList.remove('bump'); void hud.offsetWidth; hud.classList.add('bump'); const r = hud.getBoundingClientRect(), f = document.createElement('div'); f.className = 'scFly'; f.textContent = '+' + gain; f.style.left = (r.left + 40) + 'px'; f.style.top = (r.bottom + 4) + 'px'; document.body.appendChild(f); setTimeout(() => f.remove(), 950); };
   const chime = () => { if (!SND || !SND.bell) return; const k = Math.min(6, Math.floor(streak / 2)); SND.bell(5 + k, 0.075); SND.bell(7 + k, 0.07, 0.07); SND.bell(9 + k, 0.05, 0.15); };      // three quick rising notes, higher as the run of coins grows      // three quick rising notes: a coin taken
-  function start() { pts = 0; got = 0; leaps = 0; seen = new Set(); clock = 0; running = true; lastS = 0; for (const g of picks) { g.visible = true; g.userData.pop = 0; g.scale.setScalar(1); for (const m of g.userData.mats) m.opacity = 1; } for (const d of ditches) d.wet = d.leapt = d.inside = false; for (const h of hurdles) h.hit = h.over = h.vaulted = false; streak = 0; mult = 1; lastGain = -9; hud.style.display = ''; show(); const c = document.getElementById('scCard'); if (c) c.remove(); }
+  function start() { pts = 0; got = 0; leaps = 0; seen = new Set(); clock = 0; running = true; lastS = 0; for (const g of picks) { g.visible = true; g.userData.pop = 0; g.scale.setScalar(1); for (const m of g.userData.mats) m.opacity = 1; } for (const d of ditches) d.wet = d.leapt = d.inside = false; for (const h of hurdles) h.hit = h.over = h.vaulted = false; power.wings = power.laurel = 0; for (const q of powers) q.g.visible = true; for (const q of slops) { q.state = 'idle'; q.blob.visible = false; q.pail.visible = false; q.shade.material.opacity = 0; } streak = 0; mult = 1; lastGain = -9; hud.style.display = ''; show(); const c = document.getElementById('scCard'); if (c) c.remove(); }
   function award(id, n, label) { if (!running || seen.has(id)) return; seen.add(id); pts += n ?? PTS.painting; say(`+${n ?? PTS.painting}  ${label || id}`); show(); bump(n ?? PTS.painting); if (SND && SND.bell) [4, 6, 8, 11].forEach((k, i) => SND.bell(k, 0.07, i * 0.09)); }
   // returns true on the frame she blunders into a ditch, so the game can check her speed
   function update(dt, me, playing, time = performance.now() / 1000) {
@@ -96,18 +122,34 @@ export function makeScore(o) {
       if (u.pop > 0) { u.pop -= dt; const k = 1 - Math.max(0, u.pop) / 0.45; g.rotation.y += dt * 18; g.position.y = u.y + k * 1.5; g.scale.setScalar(1 + k * 1.3); for (const m of u.mats) m.opacity = 1 - k * k; if (u.pop <= 0) g.visible = false; }
       else { g.rotation.y += dt * 2.2; g.position.y = u.y + Math.sin(time * 2.4 + u.ph) * 0.09; } }
     if (!running || !playing) return false; clock += dt; let stumble = false;
-    for (const g of picks) if (g.visible && !g.userData.pop) { const u = g.userData; if (Math.abs(me.x - u.x) < 1.1 && Math.abs(me.z - u.z) < 1.1 && Math.abs(me.y + 0.9 - u.y) < 1.3) { u.pop = 0.45; got++; flow(1); const gain = PTS.pick * mult; pts += gain; show(); bump(gain); chime(); } }
+    for (const g of picks) if (g.visible && !g.userData.pop) { const u = g.userData; if (Math.abs(me.x - u.x) < 1.1 && Math.abs(me.z - u.z) < 1.1 && Math.abs(me.y + 0.9 - u.y) < 1.3) { u.pop = 0.45; got++; flow(1); const gain = PTS.pick * gm(); pts += gain; show(); bump(gain); chime(); } }
     const s = o.nearest(me.x, me.z).s;
     for (const d of ditches) { const inside = Math.abs(s - d.s) < d.w / 2 - 0.3 && Math.hypot(me.x - d.x, me.z - d.z) < half + 0.5;
       if (inside && !me.air && !d.wet) { d.wet = true; stumble = true; lose(15, `${o.wet === false ? 'Oof!' : 'Splash!'} −15. Leap the ${o.ditch || 'ditch'}!`); }
-      if (d.inside && !inside && !d.wet && !d.leapt && s > d.s) { d.leapt = true; leaps++; flow(2); const gain = PTS.leap * mult; pts += gain; say(`+${gain}  Leapt the ${o.ditch || 'ditch'}!`); show(); bump(gain); if (SND && SND.bell) { SND.bell(9, 0.07); SND.bell(12, 0.06, 0.1); } }
+      if (d.inside && !inside && !d.wet && !d.leapt && s > d.s) { d.leapt = true; leaps++; flow(2); const gain = PTS.leap * gm(); pts += gain; say(`+${gain}  Leapt the ${o.ditch || 'ditch'}!`); show(); bump(gain); if (SND && SND.bell) { SND.bell(9, 0.07); SND.bell(12, 0.06, 0.1); } }
       if (!inside && d.wet && Math.abs(s - d.s) > 6) d.wet = false;      // she may come back and try it again, but the leap only pays once
       d.inside = inside; }
     const alt = me.y - o.groundY(me.x, me.z);
+    for (const q of powers) { q.g.rotation.y += dt * 1.8; q.g.position.y = q.y + Math.sin(time * 2 + q.x) * 0.12; if (q.g.visible && Math.hypot(me.x - q.x, me.z - q.z) < 1.3 && alt < 2.2) { q.g.visible = false; power[q.kind] = q.kind === 'wings' ? 9 : 14; say(q.kind === 'wings' ? 'Wings on your heels! Run!' : 'A laurel crown! Everything counts double'); show(); if (SND && SND.bell) [5, 7, 9, 12].forEach((k, i) => SND.bell(k, 0.08, i * 0.08)); } }
+    for (const k of ['wings', 'laurel']) if (power[k] > 0) { const was = Math.ceil(power[k]); power[k] -= dt; if (Math.ceil(power[k]) !== was) show(); }
+    if (power.wings > 0 && me.speed > 1 && !me.air) { const ex = Math.sin(me.yaw) * me.speed * 0.7 * dt, ez = -Math.cos(me.yaw) * me.speed * 0.7 * dt; if (!o.blocked(me.x + ex, me.z + ez)) { me.x += ex; me.z += ez; } }      // the wings: she covers the ground much faster
     for (const h of hurdles) { const d = Math.hypot(me.x - h.x, me.z - h.z);
       if (d < 0.95) { if (alt < 0.7 && !h.hit) { h.hit = true; h.over = false; stumble = true; lose(10, 'Oof! −10. Leap the barrels!'); } else if (alt >= 0.7 && !h.hit) h.over = true; }
-      else { if (h.over && !h.vaulted && d > 1.2) { h.vaulted = true; leaps++; flow(2); const gain = 20 * mult; pts += gain; say(`+${gain}  Vaulted!`); show(); bump(gain); if (SND && SND.bell) { SND.bell(8, 0.07); SND.bell(11, 0.06, 0.1); } } if (d > 2.6) { h.hit = false; h.over = false; } } }
+      else { if (h.over && !h.vaulted && d > 1.2) { h.vaulted = true; leaps++; flow(2); const gain = 20 * gm(); pts += gain; say(`+${gain}  Vaulted!`); show(); bump(gain); if (SND && SND.bell) { SND.bell(8, 0.07); SND.bell(11, 0.06, 0.1); } } if (d > 2.6) { h.hit = false; h.over = false; } } }
     if (mult > 1 && clock - lastGain > 3.2) { mult = 1; streak = 0; show(); }
+    for (const q of slops) {
+      const ds = q.s - s, d = Math.hypot(me.x - q.x, me.z - q.z);
+      if (q.state === 'idle' && ds > 2.5 && ds < 12 && d < 14) { q.state = 'warn'; q.t = 0; q.near = false; q.pail.visible = true; say(o.cry || '“Mind below!”'); if (SND && SND.bell) SND.bell(2, 0.05); }
+      else if (q.state === 'warn') { q.t += dt; q.shade.material.opacity = 0.42 * Math.min(1, q.t / 0.9); q.shade.scale.setScalar(0.4 + 0.6 * Math.min(1, q.t / 0.9)); q.pail.rotation.z = Math.min(1.9, q.t * 2.2); if (d < 2.2) q.near = true;
+        if (q.t > 1.05) { q.state = 'fall'; q.t = 0; q.blob.visible = true; q.blob.position.set(q.x, q.gy + 4.0, q.z); q.blob.scale.setScalar(1); if (SND && SND.whoosh) SND.whoosh(0.07); } }
+      else if (q.state === 'fall') { q.t += dt; q.blob.position.y = q.gy + 4.0 * Math.max(0, 1 - (q.t / 0.34) ** 2);
+        if (q.t > 0.34) { q.state = 'splat'; q.t = 0; q.blob.scale.set(2.4, 0.18, 2.4); if (d < 1.3 && alt < 2.6) { stumble = true; lose(15, 'Ugh! −15. Slops from the window!'); } else if (q.near || d < 5) { flow(2); const gain = 15 * gm(); pts += gain; say(`+${gain}  Dodged the slops!`); show(); bump(gain); if (SND && SND.puff) SND.puff(0.1); } } }
+      else if (q.state === 'splat') { q.t += dt; q.shade.material.opacity = 0.42 * Math.max(0, 1 - q.t / 2.5); if (q.t > 2.5) { q.blob.visible = false; q.pail.visible = false; q.pail.rotation.z = 0; q.state = 'spent'; } }
+      else if (q.state === 'spent' && Math.abs(ds) > 26) q.state = 'idle';
+    }
+    for (const k of drunks) { const w = k.w; w.off = k.base * 0.3 + 2.3 * Math.sin(time * 1.15 + k.ph); w.g.rotation.z = 0.16 * Math.sin(time * 2.3 + k.ph); k.cool -= dt;
+      const p = at(w.s), x = p.x - p.dz * w.off, z = p.z + p.dx * w.off; if (k.cool <= 0 && !me.air && Math.abs(me.speed) > 2 && Math.hypot(me.x - x, me.z - z) < 0.85) { k.cool = 4; stumble = true; lose(10, 'Oof! −10. Mind the drunk!'); } }
+    for (const l of lines) l.hung.forEach((c, i) => { c.rotation.x = 0.1 * Math.sin(time * 1.4 + l.ph + i * 0.7); });
     lastS = s; return stumble;
   }
   function finish() {
@@ -136,5 +178,5 @@ export function makeScore(o) {
     } catch (e) { bd.textContent = ''; } };      // no network: the card simply has no board
     draw();
   }
-  const api = { start, award, update, finish, get points() { return pts; }, picks, ditches, hurdles }; window.__sc = api; return api;
+  const api = { start, award, update, finish, get points() { return pts; }, picks, ditches, hurdles, slops, lines, drunks, powers }; window.__sc = api; return api;
 }
