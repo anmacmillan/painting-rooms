@@ -44,7 +44,7 @@ export function makeScore(o) {
   // --- what lies on the road
   const lam = c => new THREE.MeshLambertMaterial(c), glow = c => new THREE.MeshBasicMaterial({ color: c });
   // the coin of the place and time: Florence's gold florin, Rome's silver scudo, the Dutch gold ducat, the Norwegian silver krone
-  const COINS = { florin: ['#f0c13a', '#b8861c'], scudo: ['#d4d8de', '#8a9098'], ducat: ['#f3cf4a', '#a8781a'], krone: ['#dfe3e8', '#7f8894'] };
+  const COINS = { florin: ['#f0c13a', '#b8861c'], scudo: ['#d4d8de', '#8a9098'], ducat: ['#f3cf4a', '#a8781a'], krone: ['#dfe3e8', '#7f8894'], shilling: ['#e6e9ee', '#8a929c'] };
   function thing() {
     const g = new THREE.Group(), [face, rim] = COINS[o.thing] || COINS.florin, mats = [new THREE.MeshBasicMaterial({ color: face, transparent: true }), new THREE.MeshBasicMaterial({ color: rim, transparent: true })];
     const c = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.04, 22), mats[0]); c.rotation.x = Math.PI / 2; g.add(c); const r = new THREE.Mesh(new THREE.TorusGeometry(0.21, 0.024, 6, 24), mats[1]); g.add(r);
@@ -178,5 +178,8 @@ export function makeScore(o) {
     } catch (e) { bd.textContent = ''; } };      // no network: the card simply has no board
     draw();
   }
-  const api = { start, award, update, finish, get points() { return pts; }, picks, ditches, hurdles, slops, lines, drunks, powers }; window.__sc = api; return api;
+  // for a level's own events (a leap between carriages, a fall): the same score, streak, sound and display
+  const gain = (n, label, steps = 1) => { if (!running) return; flow(steps); const g = n * gm(); pts += g; say(`+${g}  ${label}`); show(); bump(g); if (SND && SND.bell) { SND.bell(8, 0.07); SND.bell(11, 0.06, 0.1); } };
+  const penalty = (n, label) => { if (running) lose(n, `${label} −${n}`); };
+  const api = { start, award, update, finish, gain, lose: penalty, get points() { return pts; }, picks, ditches, hurdles, slops, lines, drunks, powers }; window.__sc = api; return api;
 }
