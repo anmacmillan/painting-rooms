@@ -1,0 +1,63 @@
+SOURCE: https://en.wikipedia.org/wiki/Metic
+TITLE: Metic
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+In ancient Greece, a metic (Ancient Greek: μέτοικος, métoikos: from μετά, metá, indicating change, and οἶκος, oîkos 'dwelling') was a resident of Athens and some other cities who was a citizen of another polis. They held a status broadly analogous to modern permanent residency, being permitted indefinite residence without political rights.
+
+
+== Origin ==
+The history of foreign migration to Athens dates back to the archaic period. Solon was said to have offered Athenian citizenship to foreigners who would relocate to his city to practice a craft.  However, metic status did not exist during the time of Solon.
+Scholars have tended to date the development of metic status to the reforms of Cleisthenes in 508 BC.  However, the rate of the increase in the Athenian population in the years following 480 BC is difficult to explain by purely natural growth – suggesting that immigrants to Athens could still become Athenians citizens at this point, and metic status did not yet exist.  The first known use of the word metoikos is in Aeschylus' play Persians, first performed in 472 BC.  However, James Watson argues that the word was used in Persians in a non-technical sense, meaning nothing more than "immigrant". Rebecca Futo Kennedy dates the origin of metic status in Athens to the 460s, while Watson argues that the legal status of being a metic did not develop until 451 BC – the same year as Pericles introduced his citizenship law.
+
+
+== Metics in classical Athens ==
+One estimate of the population of Attica at the start of the Peloponnesian War in 431 BC found the male metic population to be ~25,000, roughly a third of the total. The majority of metics probably came to Athens from nearby cities, seeking economic opportunities or fleeing from persecution, although there are records of immigrants from non-Greek places such as Thrace and Lydia.
+In other Greek cities (poleis), foreign residents were few, with the exception of cosmopolitan Corinth, of which however we do not know their legal status. In Sparta and Crete, as a general rule with few exceptions, foreigners were not allowed to stay (Xenelasia). There are also reported immigrants to the court of tyrants and kings in Thessaly, Syracuse and Macedon, whose status is decided by the ruler. Due to these complications, the legal term metic is most closely associated with classical Athens. At Athens, the largest city in the Greek world at the time, they amounted to roughly half the free population. The status applied to two main groups of people—immigrants and former slaves. As slaves were almost always of foreign origin they can be thought of as involuntary immigrants, drawn almost exclusively from non-Greek speaking areas, while freeborn metics were usually of Greek origin. Mostly they came from mainland Greece rather than the remote parts of the Greek world.
+Metics held lower social status primarily due to cultural rather than economic restraints. Some were poor artisans and ex-slaves, while others were some of the wealthiest inhabitants of the city. As citizenship was a matter of inheritance and not of place of birth, a metic could be either an immigrant or the descendant of one. Regardless of how many generations of the family had lived in the city, metics did not become citizens unless the city chose to bestow citizenship on them as a gift. This was rarely done. From a cultural viewpoint such a resident could be completely "local" and indistinguishable from citizens. They had no role in the political community but might be completely integrated into the social and economic life of the city. In the urbane scene that opens Plato's Republic—the dialogue takes place in a metic household—the status of the speakers as citizen or metic is never mentioned.
+Metics typically shared the burdens of citizenship without any of its privileges. Like citizens, they had to perform military service and, if wealthy enough, were subject to the special tax contributions (eisphora) and tax services ("liturgies", for example, paying for a warship or funding a tragic chorus) contributed by wealthy Athenians. Citizenship at Athens brought eligibility for numerous state payments such as jury and assembly pay, which could be significant to working people. During emergencies the city could distribute rations to citizens. None of these rights were available to metics. They were not permitted to own real estate in Attica, whether farm or house, unless granted a special exemption. Neither could they sign contracts with the state to work in the silver mines, since the wealth beneath the earth was felt to belong to the political community. Metics were subject to a tax called the metoikion, assessed at twelve drachmas per year for metic men and their households, and six for independent metic women. In addition to the metoikion, non-Athenians wishing to sell goods in the agora, including metics, seem to have been liable to another tax known as the xenika.
+Although metics were barred from the assembly and exempted from jury service, they did have the same access to the courts as citizens. They could both prosecute others and be prosecuted themselves. A great many migrants came to Athens to do business and were in fact essential to the Athenian economy. It would have been a severe disincentive if they had been unable to pursue commercial disputes under law. At the same time they did not have exactly the same rights there as citizens. Unlike citizens, metics could be made to undergo judicial torture and the penalties for killing them were not as severe as for killing a citizen. Metics were also subject to enslavement for a variety of offences. These might either be failures to abide by their status obligations, such as not paying the metoikon tax or not nominating a citizen sponsor, or they might be "contaminations" of the citizen body like marrying a citizen or claiming to be citizens themselves.
+How long a foreigner could remain in Athens without counting as a metic is not known. In some other Greek cities the period was a month, and it may well have been the same at Athens. All metics there were required to register in the deme (local community) where they lived. They had to nominate a citizen as their sponsor or guardian (prostates, literally 'one who stands on behalf of'). The Athenians took this last requirement very seriously. A metic without a sponsor was vulnerable to a special prosecution. If convicted, his property would be confiscated and he himself sold as a slave. For a freed slave the sponsor was automatically his former owner. This arrangement exacted some extra duties on the part of the metic, yet the child of an ex-slave metic apparently had the same status as a freeborn metic. Citizenship was very rarely granted to metics. More common was the special status of "equal rights" (isoteleia) under which they were freed from the usual liabilities. Metics, regardless of status, could participate in most religious rituals; only a few were reserved to citizens.
+The status divide between metic and citizen was not always clear. In the street no physical signs distinguished citizen from metic or slave. Sometimes the actual status a person had attained became a contested matter. Although local registers of citizens were kept, if one's claim to citizenship was challenged, the testimony of neighbours and the community was decisive. (In Lysias 23, a law court speech, a man presumed to be a metic claims to be a citizen, but upon investigation—not by consulting official records but by questions asked at the cheese market—it transpires that he may well be a runaway slave, so the hostile account attests.)
+Metics whose family had lived in Athens for generations may have been tempted to "pass" as citizens. On a number of occasions there were purges of the citizen lists, effectively changing people who had been living as citizens into metics. In typical Athenian fashion, a person so demoted could mount a challenge in court. If however the court decided the ejected citizen was in fact a metic, he would be sent down one further rung and sold into slavery.
+In studying the status of the metics, it is easy to gain the impression they were an oppressed minority. But by and large those who were Greek and freeborn had at least chosen to come to Athens, attracted by the prosperity of the large, dynamic, cosmopolitan city and the opportunities not available to them in their place of origin. Metics remained citizens of their cities of birth, which, like Athens, had the exclusionary ancestral view of citizenship common to ancient Greek cities.
+The large non-citizen community of Athens allowed ex-slave metics to become assimilated in a way not possible in more conservative and homogenised cities elsewhere. Their participation in military service, taxation (for the rich of Athens a matter of public display and pride) and cult must have given them a sense of involvement in the city, and of their value to it. Though notably, while Athenians tended to refer to metics by their name and deme of residence (the same democratic scheme used for citizens), on their tombstones freeborn metics who died in Athens preferred to name the cities from which they had come and of which they were citizens still.
+The term metic began to lose its distinctive legal status in 4th century BC, when metics were allowed to act in the court without a prostate (patron) and came to an end in Hellenistic Athens, when the purchase of citizenship became very frequent. The census of Demetrius Phalereus in ca. 317 BC gave 21,000 citizens, 10,000 metics and 400,000 slaves (Athenaeus, vi. p. 272 B). In the Greco-Roman world, free people (non-citizens) living on the territory of a polis were called paroikoi (see etymology of parish), and in Asia Minor katoikoi.
+
+
+== Modern French usage ==
+In French, métèque was revived as a xenophobic term for immigrants to France. This sense was popularized in the late 19th century by the nationalist writer Charles Maurras, who identified metics as one of the four primary constituents of the traitorous "Anti-France", along with Protestants, Jews, and Freemasons. This pejorative sense remains current in the French language, and has to some extent been reappropriated by French people of immigrant background. In 1969 the Greco-French singer Georges Moustaki recorded a song, "Le Métèque", which has since been covered by several artists of immigrant descent.
+
+
+== Notable metics ==
+Anacharsis
+Aristotle
+Aspasia
+Diogenes of Sinope
+Lysias
+Protagoras
+
+
+== In popular culture ==
+Corinna, in The Crown of Violet
+
+
+== See also ==
+History of Athens
+Xenelasia
+
+
+== References ==
+
+
+== Sources ==
+Hansen M.H. 1987, The Athenian Democracy in the age of Demosthenes. Oxford.
+Whitehead D. 1977,  The ideology of the Athenian metic. Cambridge.
+Garlan, Y 1988, Slavery in Ancient Greek. Ithaca. (trans. Janet Lloyd)
+
+
+== Further reading ==
+Adak, Mustafa (2003). Metöken als Wohltäter Athens. Untersuchungen zum sozialen Austausch zwischen ortsansässigen Fremden und der Bürgergemeinde in klassischer und hellenistischer Zeit (ca. 500 - 150 v.Chr.) [Metics as benefactors of Athens. Studies on the social exchange between local foreigners and the civil community in the Classical and Hellenistic periods (ca. 500 - 150 BC)]. Munich: Tuduv, ISBN 3-88073-591-3.
+Luppa, Franziska (2023). Die ansässigen Fremden im klassischen Athen [The resident foreigners in classical Athens]. Hermes Einzelschriften, vol. 124. Stuttgart: Steiner, ISBN 978-3-515-13423-1.
+Guicharrousse, Romain (2022). Athènes en partage. Les étrangers au sein de la cité (Ve-IIIe siècle avant notre ère [Sharing Athens. The foreigners in the city, 5th-3th century BC]. Paris: Editions de la Sorbonne, ISBN 979-10-351-0840-3.
+Mansouri, Saber (2011). Athènes vue par ses métèques, Ve - IVe siècles av. J.-C. [Athens as seen through the eyes of its metics, 5th - 4th centuries BC.] Paris: Tallandier, ISBN 978-2-84734-756-2.
+Niku, Maria (2007). The official status of the foreign residents in Athens, 322 - 120 B.C. Helsinki: Suomen Ateenan-Instituutin Säätiö, ISBN 978-951-98806-7-9.

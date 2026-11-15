@@ -1,0 +1,10 @@
+SOURCE: https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus:text:2008.01.0055:chapter=14
+FETCHED: 2026-11-15 (Perseus Digital Library, TEI XML chunk; tags stripped, section numbers in square brackets)
+
+[ch. 14]
+
+[1]
+
+Thucydides and his party kept denouncing Pericles for playing fast and loose with the public moneys and annihilating the revenues. Pericles therefore asked the people in assembly whether they thought he had expended too much, and on their declaring that it was altogether too much, Well then, said he, let it not have been spent on your account, but mine, and I will make the inscriptions of dedication in my own name.'
+
+[2] When Pericles had said this, whether it was that they admired his magnanimity or vied with his ambition to get the glory of his works, they cried out with a loud voice and bade him take freely from the public funds for his outlays, and to spare naught whatsoever. And finally he ventured to undergo with Thucydides the contest of the ostracism, wherein he secured his rival's banishment, [note: 442. B.C.] and the dissolution of the faction which had been arrayed against him.

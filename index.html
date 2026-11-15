@@ -25,8 +25,8 @@
   #enter { display:block; margin:.7em auto 0; font:inherit; font-size:clamp(15px,1.7vw,20px); color:var(--ink); background:linear-gradient(#ffe08a, #f2c865); border:0; border-radius:999px; padding:.45em 1.3em; cursor:pointer; box-shadow:0 8px 18px rgba(0,0,0,.4); } .how { text-align:center; font-style:italic; opacity:.75; font-size:clamp(13px,1.4vw,16px); margin:.6em 0 0; } #map .route { fill:none; stroke:#f2c865; stroke-width:6; stroke-dasharray:2 14; stroke-linecap:round; } #map .route.done { stroke-dasharray:none; stroke:#ffe08a; stroke-width:5; opacity:.95; }
   #map a { cursor:pointer; } #map .ring { fill:none; stroke:#c7a24c; stroke-width:6; } #map .done .ring { stroke:#ffe08a; } #map .next .ring { stroke:#fff; }
   #map .pulse { fill:none; stroke:#fff; stroke-width:4; opacity:.8; transform-origin:center; transform-box:fill-box; animation:pulse 1.6s ease-out infinite; } @keyframes pulse { from { transform:scale(1); opacity:.8; } to { transform:scale(1.9); opacity:0; } }
-  #map text { font-family:"Iowan Old Style",Palatino,Georgia,serif; fill:#fff8ea; paint-order:stroke; stroke:#1a2430; stroke-width:6px; stroke-linejoin:round; } #map .pl { font-size:30px; } #map .yr { font-size:22px; fill:#ffe08a; } #map .num { font-size:24px; font-weight:700; fill:#23262c; stroke:none; }
-  #map .sea { font-size:26px; font-style:italic; fill:#7f9bb0; stroke:none; letter-spacing:.3em; }
+  #map text { font-family:"Iowan Old Style",Palatino,Georgia,serif; fill:#fff8ea; paint-order:stroke; stroke:#1a2430; stroke-width:6px; stroke-linejoin:round; } #map .pl { font-size:27px; } #map .yr { font-size:20px; fill:#ffe08a; } #map .num { font-size:24px; font-weight:700; fill:#23262c; stroke:none; }
+  #map .sea { font-size:21px; font-style:italic; fill:#7f9bb0; stroke:none; letter-spacing:.3em; }
   .stops { display:flex; flex-direction:column; gap:clamp(8px,1vw,14px); } .stops h2 { margin:.1em 0 .3em; text-align:left; }
   a.stop { display:grid; grid-template-columns:auto clamp(64px,7vw,96px) 1fr auto; gap:clamp(10px,1.2vw,18px); align-items:center; text-decoration:none; padding:clamp(8px,1vw,12px) clamp(10px,1.2vw,16px); border-radius:16px; background:rgba(255,255,255,.06); border:2px solid transparent; transition:transform .15s, background .15s; }
   a.stop:hover, a.stop:focus, a.stop.hot { background:rgba(255,255,255,.12); transform:translateX(4px); } a.stop.next { border-color:var(--gold); background:rgba(242,200,101,.12); }
@@ -43,7 +43,7 @@
 </head>
 <body>
   <h1>Painting Rooms</h1>
-  <p class="sub">one journey through six hundred years, a painting at a time</p>
+  <p class="sub">one journey through two thousand years, a picture at a time</p>
   <div id="progress"></div><br>
   <a id="go" href="florence/street.html">Begin in Florence, 1283</a>
   <div class="journey">
@@ -72,7 +72,7 @@
     stops.append(a); rows.push(a); });
   const any = document.createElement('p'); any.className = 'any'; any.textContent = 'You can visit the stops in any order. The road only shows which came first.'; stops.append(any);
   document.getElementById('progress').innerHTML = `<span><b>${total}</b> points</span><span><b>${found}</b> of ${of} paintings found</span><span><b>${LEVELS.filter(done).length}</b> of ${LEVELS.length} ages travelled</span>`;
-  const go = document.getElementById('go'); if (nextIdx > 0) { go.href = LEVELS[nextIdx].href; go.textContent = `Continue: ${LEVELS[nextIdx].place}, ${LEVELS[nextIdx].year}`; } else if (nextIdx < 0) { go.href = LEVELS[0].href; go.textContent = 'You have travelled the whole road. Go again and beat your best'; }
+  const go = document.getElementById('go'); if (nextIdx === 0) { go.href = LEVELS[0].href; go.textContent = `Begin in ${LEVELS[0].place}, ${LEVELS[0].year}`; } else if (nextIdx > 0) { go.href = LEVELS[nextIdx].href; go.textContent = `Continue: ${LEVELS[nextIdx].place}, ${LEVELS[nextIdx].year}`; } else if (nextIdx < 0) { go.href = LEVELS[0].href; go.textContent = 'You have travelled the whole road. Go again and beat your best'; }
   // the map: the coast of western Europe (Natural Earth, public domain), the stops where they really are, and the road between them in order of time
   const E = await (await fetch('./common/europe.json')).json(), [W, Ea, S, N] = E.box, merc = lat => Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)), y0 = merc(S), y1 = merc(N);
   const P = ([lon, lat]) => [(lon - W) / (Ea - W) * E.w, (1 - (merc(lat) - y0) / (y1 - y0)) * E.h], map = document.getElementById('map'); map.setAttribute('viewBox', `0 0 ${E.w} ${E.h}`);
@@ -80,8 +80,8 @@
   for (let y = 40; y < E.h; y += 46) map.append(el('path', { d: `M0,${y} C${E.w * 0.25},${y - 9} ${E.w * 0.5},${y + 9} ${E.w},${y}`, fill: 'none', stroke: '#9fb6c2', 'stroke-width': 1, opacity: 0.1 }));      // a ruled sea
   map.append(defs, el('path', { class: 'shore2', d: E.land }), el('path', { class: 'shore', d: E.land }), el('path', { class: 'land', d: E.land }));
   { const g = el('g', { class: 'rose', transform: `translate(${E.w * 0.1},${E.h * 0.86})` }); for (let k = 0; k < 8; k++) { const L = k % 2 ? 34 : 62; g.append(el('path', { class: k % 2 ? 'd' : '', d: `M0,0 L7,-9 L0,${-L} L-7,-9 Z`, transform: `rotate(${k * 45})` })); } g.append(el('text', { x: 0, y: -70, 'text-anchor': 'middle' }, 'N')); map.append(g); }
-  map.append(el('text', { class: 'sea', x: 150, y: 330, 'text-anchor': 'middle' }, 'ATLANTIC'), el('text', { class: 'sea', x: 470, y: 420, 'text-anchor': 'middle' }, 'NORTH SEA'));
-  const pts = LEVELS.map(l => P(l.at)); for (let n = 0; n < 12; n++) for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) { const dx = pts[j][0] - pts[i][0], dy = pts[j][1] - pts[i][1], d = Math.hypot(dx, dy) || 1, need = 86; if (d < need) { const k = (need - d) / 2 / d; pts[i][0] -= dx * k; pts[i][1] -= dy * k; pts[j][0] += dx * k; pts[j][1] += dy * k; } }      // pins that would overlap are eased apart
+  for (const [name, lon, lat] of [['ATLANTIC', -8.6, 46.6], ['NORTH SEA', 3.2, 56.4], ['MEDITERRANEAN', 6.2, 38.3]]) { const [x, y] = P([lon, lat]); map.append(el('text', { class: 'sea', x, y, 'text-anchor': 'middle' }, name)); }
+  const pts = LEVELS.map(l => P(l.at)); for (let n = 0; n < 40; n++) for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) { const dx = pts[j][0] - pts[i][0], dy = pts[j][1] - pts[i][1], d = Math.hypot(dx, dy) || 1, need = 104; if (d < need) { const k = (need - d) / 2 / d; pts[i][0] -= dx * k; pts[i][1] -= dy * k; pts[j][0] += dx * k; pts[j][1] += dy * k; } }      // pins that would overlap are eased apart
   const curve = (a, b, k) => { const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, o = Math.min(70, L * 0.22) * (k % 2 ? 1 : -1); return `M${a[0]},${a[1]} Q${mx - dy / L * o},${my + dx / L * o} ${b[0]},${b[1]}`; };
   const legs = []; for (let k = 0; k < pts.length - 1; k++) { const r = el('path', { class: 'route' + (done(LEVELS[k]) && done(LEVELS[k + 1]) ? ' done' : ''), d: curve(pts[k], pts[k + 1], k) }); map.append(r); legs.push(r); }
   LEVELS.forEach((l, k) => { const [x, y] = pts[k], R = 38, d = done(l), a = el('a', { href: l.href, class: d ? 'done' : k === nextIdx ? 'next' : 'todo' });
@@ -89,8 +89,12 @@
     if (k === nextIdx) a.append(el('circle', { class: 'pulse', cx: x, cy: y, r: R }));
     a.append(el('image', { href: l.img, x: x - R, y: y - R, width: R * 2, height: R * 2, preserveAspectRatio: 'xMidYMid slice', 'clip-path': `url(#c${k})` }), el('circle', { class: 'ring', cx: x, cy: y, r: R }));
     const bx = x - R * 0.72, by = y - R * 0.72; a.append(el('circle', { cx: bx, cy: by, r: 17, fill: d ? '#ffe08a' : '#f4efe2', stroke: '#23262c', 'stroke-width': 2 }), el('text', { class: 'num', x: bx, y: by + 8, 'text-anchor': 'middle' }, d ? '✓' : k + 1));
-    // the name goes on whichever side is clear of the next pin
-    const left = x > E.w * 0.62 || pts.some((q, j) => j !== k && q[0] > x && q[0] - x < 260 && Math.abs(q[1] - y) < 60), tx = left ? x - R - 12 : x + R + 12; a.append(el('text', { class: 'pl', x: tx, y: y - 2, 'text-anchor': left ? 'end' : 'start' }, l.place), el('text', { class: 'yr', x: tx, y: y + 26, 'text-anchor': left ? 'end' : 'start' }, l.year));
+    // the name goes on the side away from the pins crowding it, and up or down a little where they crowd from the side
+    const near = pts.filter((q, j) => j !== k && Math.hypot(q[0] - x, q[1] - y) < 210), cx = near.length ? near.reduce((t, q) => t + q[0], 0) / near.length : x - 1, cy = near.length ? near.reduce((t, q) => t + q[1], 0) / near.length : y;
+    if (near.length >= 2) {      // in a crowd the name goes above or below, whichever is the open side
+      const up = y < cy, ty = up ? y - R - 34 : y + R + 30; a.append(el('text', { class: 'pl', x, y: ty, 'text-anchor': 'middle' }, l.place), el('text', { class: 'yr', x, y: ty + 23, 'text-anchor': 'middle' }, l.year));
+    } else { const left = near.length ? x < cx : x > E.w * 0.62, tx = left ? x - R - 12 : x + R + 12;
+      a.append(el('text', { class: 'pl', x: tx, y: y - 2, 'text-anchor': left ? 'end' : 'start' }, l.place), el('text', { class: 'yr', x: tx, y: y + 24, 'text-anchor': left ? 'end' : 'start' }, l.year)); }
     a.addEventListener('mouseenter', () => rows[k].classList.add('hot')); a.addEventListener('mouseleave', () => rows[k].classList.remove('hot'));
     a.addEventListener('click', e => { if (here !== k || walking) { e.preventDefault(); walkTo(k); } }); map.append(a); });      // a tap walks her there; a second tap goes in
   // the traveller: she stands at a city, walks the road from one to the next, and steps into a painting when asked

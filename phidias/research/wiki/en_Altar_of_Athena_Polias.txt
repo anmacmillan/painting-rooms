@@ -1,0 +1,9 @@
+SOURCE: https://en.wikipedia.org/wiki/Altar_of_Athena_Polias
+TITLE: Altar of Athena Polias
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Altar of Athena Polias was an altar on the Acropolis of Athens dedicated to the goddess Athena in her aspect as "Athena Polias"; "Athena of the City".
+The altar's foundations were laid in 525 B.C. by the sons of the Athenian dictator Peisistratus, but may have overlaid an earlier temple constructed between 599 and 550. The altar itself stood within a narrow temple atop a marble pediment depicting battles between gods and giants. Images of Athena are shown as dominant and victorious within the armies of the gods.
+
+
+== References ==

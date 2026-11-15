@@ -1,0 +1,57 @@
+SOURCE: https://en.wikipedia.org/wiki/Panathenaea
+TITLE: Panathenaea
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Panathenaia (or Panathenaea) was a multi-day ancient Greek festival held annually in Athens that would always conclude on 28 Hekatombaion, the first month of the Attic calendar. The main purpose of the festival was for Athenians and non-Athenians to celebrate the goddess Athena. Every four years, the festival was celebrated in a larger manner over a longer time period with increased festivities and was known as the Great (or Greater) Panathenaea. In the years that the festival occurred that were not considered the Great Panathenaea, the festival was known as the Lesser Panathenaea. The festival consisted of various competitions and ceremonies, culminating with a religious procession that ended in the Acropolis of Athens.
+
+
+== History ==
+The inaugural celebration of the Great Panathenaea occurred in 566 BC and possibly continued until around 410 AD. Edicts issued by Theodosius I in 391 AD banned sacrifices and closed the temples in Athens, making it very unlikely the festival continued until 410 AD despite some archeological evidence that indicates it may have. There is some uncertainty surrounding the creation of the festival but Peisistratos is commonly credited with the solidification of the festival in 566 BC, organizing it and turning it into a significant Athenian celebration.
+
+
+=== Mythology ===
+There are multiple mentions of the founding of the Panathenaea in Greek mythology that most notably include the stories of Theseus and Erectheus (also referred to as Erichthonius in mythological texts). The Iliad holds the earliest mention of the festival and attributes its creation to Erechtheus. The son of Gaia and Hephaestus, Erechtheus created the festival and dedicated it to Athena after becoming the king of Athens. In Plutarch's Life of Theseus, Theseus unifies multiple Attic communities into one state, giving it the name of Athens and creating a feast known as Panathenaea or "the sacrifice of all the united Athenians".
+
+
+== Religious festival ==
+
+
+=== Banquets ===
+Athenians would begin the festival with a banquet during the first night in the Agora where meat would be cut up to be distributed using a ceremonial kopis. There was also a major banquet on the second day and a smaller banquet-style meal after the procession on the last day of the festival where people would eat bread alongside parts of the animals that were sacrificed to Athena.
+
+
+=== Procession ===
+The most significant aspect of the festival was the procession to the Acropolis on the last day of the festival (28 Hekatombaion), where Athenians would make sacrifices to the goddess Athena. Such as a Hekatomb (sacrifice of 100 oxen or cows) The night before this procession, the younger population of Athens would have a vigil known as a pannychis where the people would dance on the Acropolis. During this vigil, the people of Athens would sing a paean for Athena, a song of praise that typically would not be sung at celebrations for Athena but at celebrations for the god Apollo instead.
+During the Lesser Panathenaea young girls known as arrephoroi would carry a specially woven peplos robe to place on the wooden cult image of Athena located in the Erechtheum, a temple on the north side of the Acropolis that was dedicated to Athena. In line with the occurrence of the Great Panathenaea every four years a larger peplos tapestry would be woven to be put on the statue of Athena in the Parthenon, a temple in the centre of the Acropolis.
+
+Athenians would begin their procession in the Kerameikos neighbourhood and would continue south until they reached the Acropolis. The procession consisted of over 1,000 people from a wide range of backgrounds but was led by the high priestess and the treasurers of the temple followed by the arrephoros carrying the peplos robe. This lead group would be followed by other priests (hieropoios), priestesses (athlothetai), and unmarried young women (kanephoros), magistrates, soldiers, athletes, representatives from other states, musicians, and herdsmen among others. The procession would conclude with more than one hundred cows and sheep being sacrificed on the altar of Athena in the Acropolis in a religious ceremony known as a hecatomb. Non-Athenians also participated in the procession, with female metics carrying hydriai  and male metics carrying bread used for the meal after the festival or other non-animal offerings on ornate trays known as skaphai.
+
+
+== Competitions ==
+
+During the festival many competitions were held including a chariot race, a stadion, and various other athletic events. There would also be singing and poetry competitions, where participants would perform selections from Homer's Iliad and Odyssey.
+
+
+=== Prizes ===
+After the conclusion of the competitions at the festival, prizes were awarded to the victors. The reward that is most synonymous with the festival was the Panathenaic prize amphora with images on the sides that would remain similar year to year. These prize amphoras were filled with valuable high-class sacred olive oil and the victors would also sometimes receive monetary prizes in the form of Greek drachma instead of amphoras. The victors' names were carved into stone victor lists, which were displayed in various parts of Athens. They were placed primarily near churches or religious shrines, with the most notable of these places being the Acropolis.
+
+
+=== Prize amphoras ===
+The prize amphoras were the major reward victors received during the festival. People in ancient Greece associated olive oil with Athena because of the mythological story of her gifting the first Moria to Athens, using the tree to claim the city over the god Poseidon. Olive oil and the prize amphoras were associated with power, wealth, and prosperity due to this association with Athena. The standardized versions of these amphoras would typically depict an image of Athena with roosters standing on two columns on each side of the goddess. On the other side of the amphora, there would typically be images related to the event or competition that the amphora was won for. These images were believed to be included in an attempt to show the rest of the world that Athens was the self-proclaimed head of ancient Greek civilization. An armed Athena was meant to indicate that the goddess was the protector of Athens. The roosters supported this image as the people of Athens saw the birds as having a "fighting spirit" with the columns being used to emphasize the rooster's presence.
+
+
+== Archeological influence ==
+The Parthenon Frieze is a marble sculpture in the Parthenon in the Acropolis of Athens that has a portion that is interpreted to be depicting people of Athens participating in the religious procession that takes place during the Panathenaea. There are images of the high priestess, priests, a young girl meant to resemble an arrephoros, and people herding animals to be sacrificed to the gods.
+
+
+== Current relevance ==
+
+The Panathenaea ended around the conclusion of the 4th century AD, but it still holds some relevance in the present day. The Panathenaic Stadium was initially a small racetrack with seating on a hill overlooking the track used for the athletic competitions until it was upgraded in the 4th century BC by the logographer Lykourgos. He upgraded the track to a small stadium with stone seating, remaining until Herodes Atticus upgraded the stadium again in the middle of the 2nd century AD. He made the stadium much larger and used marble instead of stone. The stadium was abandoned after Theodosius I banned the festival and was not used again until the Zappas Olympics in the late 19th century AD. Before the inaugural 1896 Summer Olympics the stadium was completely renovated, going on to host both the opening and closing ceremonies as well as a number of the competitions. The stadium has hosted many athletic events since then, most notably the archery competition and marathon finish for the 2004 Summer Olympics. One side of the Olympic medals from the 2004 Summer Olympics also depicts an image of the Panathenaic Stadium. The modern Olympic Games are more directly inspired by the ancient Olympic Games than the Panathenaic Games.
+
+
+== See also ==
+Pamboeotia
+Panionia
+
+
+== References ==

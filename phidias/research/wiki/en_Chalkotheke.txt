@@ -1,0 +1,16 @@
+SOURCE: https://en.wikipedia.org/wiki/Chalkotheke
+TITLE: Chalkotheke
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Chalkotheke (Greek for "bronze store") was a structure on the Athenian Acropolis, Greece. Its name and function are only known from 4th century BC inscriptions. One decree orders the listing of all objects stored in the Chalkotheke and the erection of a stele inscribed with that list in front of the building.
+Remains of a structure discovered to the east of the sanctuary of Artemis Brauronia and immediately to the southwest of the Parthenon have been suggested to be those of the Chalkotheke. Only scant limestone foundations and rock-cut foundation trenches survive. The building stood in front of the southern Acropolis wall and was circa 43 m long and 14 m wide, fronted on its northern long side by a portico of 4.5 m width. To make room for that portico, the southernmost portion of the rock-cut steps leading up to the west facade of the Parthenon had to be cut away. Thus, the portico is assumed to have been an early fourth century BC addition, while the main part of the structure is thought to be roughly contemporary with the Parthenon, i.e. to date to the mid-fifth century. A major renovation appears to have taken place during Roman times, as indicated by numerous fragments of architectural members that are definitely Roman in date and have dimensions matching those of the Chalkotheke.
+
+
+== References ==
+
+
+== Bibliography ==
+Maria S. Brouscaris: The monuments of the Acropolis. Athens, 1978, pp. 56–57.
+Laetitia La Follette, The Chalkotheke on the Athenian Akropolis, Hesperia, 55, 1986, pp.75-87
+Gorham Phillips Stevens, The Setting of the Periclean Parthenon, Hesperia Supplements, Vol. 3, 1940, pp.1-91
+J. A. Bundgaard, The Excavation of the Athenian Acropolis, 1882-1890, Copenhagen. 1974

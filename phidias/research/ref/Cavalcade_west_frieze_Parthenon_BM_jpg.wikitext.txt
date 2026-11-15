@@ -1,0 +1,30 @@
+== {{int:filedesc}} ==
+{{Artwork
+ |artist           = {{unknown|artist}}
+ |title            =
+ |description      = {{en|Cavalcade. Block II from the west frieze of the Parthenon, ca. 447–433 BC.}}
+{{fr|Cavaliers. Plaque II de la frise Ouest du Parthénon, vers 447-433 av. J.-C.}}
+ |date             = 
+ |medium           =
+ |dimensions       = H. 1 m (3 ft. 3 ¼ in.), D. 60 cm (23 ½ in.)
+ |gallery          = {{:Museum:British Museum}}
+ |location         = Main floor, room 16, Greek & Rome
+ |references       = 
+ |object history   =
+ |credit line      = Elgin Collection
+ |notes            =
+ |accession number = 
+ |source           = [[User:Jastrow|Jastrow]] (2006)
+ |permission       = 
+ |other versions   = 
+}}
+
+== {{int:license-header}} ==
+{{PD-self}}
+
+[[Category:Cavalcades]]
+[[Category:Equestrian reliefs]]
+[[Category:Frieze of the Parthenon - West Block II|001.002]]
+{{cc-by-2.0}}
+[[Category:Nude males in ancient Greek sculpture]]
+[[Category:Taken with Nikon D70]]

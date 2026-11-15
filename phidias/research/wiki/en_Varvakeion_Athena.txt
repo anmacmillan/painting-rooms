@@ -1,0 +1,20 @@
+SOURCE: https://en.wikipedia.org/wiki/Varvakeion_Athena
+TITLE: Varvakeion Athena
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Varvakeion Athena is a Roman-era statue of Athena Parthenos now part of the collection of the National Archaeological Museum of Athens. It is generally considered to be the most faithful reproduction of the chryselephantine statue made by Phidias and his assistants, which once stood in the Parthenon. It is dated to 200–250 AD.
+
+
+== Description ==
+The statue is 1.05 m (41 in) tall, approximately one twelfth the estimated height of the original. It is carved of pentelic marble and bears traces of red and yellow paint. Athena is dressed in a peplos belted with a zone in the form of two snakes; over this she wears the aegis, decorated with snakes and with the gorgoneion in the center. She wears an Attic helmet with the cheek guards upturned; it has three crests, the center sporting a sphinx and those on the sides a pegasus. Her left hand rests on the rim of a shield which also bears the gorgoneion; the shield rests against the oikouros ophis (guardian snake) identified with Erichthonios, the city's legendary founder. The outstretched right hand is supported by a column and holds a winged figure of Nike, the head of which is missing. This smaller image is likewise garbed in a peplos and is turned somewhat towards the main figure. The whole assemblage rests on a rectangular base.
+
+
+== Differences from the original ==
+Certain differences between the original as described by Pausanias and Pliny may be noted. The original base was decorated with a frieze showing the birth of Pandora, whereas the copy is plain; Pausanias also describes a spear which the copy lacks. The shield lacks the amazonomachy on the front which Pliny describes. The presence of the column is cited by many in the argument over whether the original required a similar support, though many reconstructions omit it (e.g. that in the Nashville Parthenon).
+
+
+== Discovery ==
+The statue is named for the locale of its discovery in 1880, in the ruins of a Roman house near the original site of the Varvakeion School.
+
+
+== References ==

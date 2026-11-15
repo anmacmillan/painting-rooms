@@ -1,0 +1,14 @@
+SOURCE: https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus:text:1999.01.0200:book=1:chapter=20
+FETCHED: 2026-11-15 (Perseus Digital Library, TEI XML chunk; tags stripped, section numbers in square brackets)
+
+[ch. 20]
+
+[1]
+
+Having now given the result of my inquiries into early times, I grant that there will be a difficulty in believing every particular detail. The way that most men deal with traditions, even traditions of their own country, is to receive them all alike as they are delivered, without applying any critical test whatever.
+
+[2] The general Athenian public fancy that Hipparchus was tyrant when he fell by the hands of Harmodius and Aristogiton; not knowing that Hippias, the eldest of the sons of Pisistratus, was really supreme, and that Hipparchus and Thessalus were his brothers; and that Harmodius and Aristogiton suspecting, on the very day, nay at the very moment fixed on for the deed, that information had been conveyed to Hippias by their accomplices, concluded that he had been warned, and did not attack him, yet, not liking to be apprehended and risk their lives for nothing, fell upon Hipparchus near the temple of the daughters of Leos, and slew him as he was arranging the Panathenaic procession.
+
+[3]
+
+There are many other unfounded ideas current among the rest of the Hellenes, even on matters of contemporary history which have not been obscured by time. For instance, there is the notion that the Lacedaemonian kings have two votes each, the fact being that they have only one; and that there is a company of Pitane, there being simply no such thing. So little pains do the vulgar take in the investigation of truth, accepting readily the first story that comes to hand.

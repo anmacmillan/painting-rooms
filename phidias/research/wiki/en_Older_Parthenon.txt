@@ -1,0 +1,21 @@
+SOURCE: https://en.wikipedia.org/wiki/Older_Parthenon
+TITLE: Older Parthenon
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Older Parthenon or Pre‐Parthenon, as it is frequently referred to, constitutes the first endeavour to build a sanctuary for Athena Parthenos on the site of the present Parthenon on the Acropolis of Athens. It was begun shortly after the battle of Marathon (c. 490–88 BC) upon a massive limestone foundation that extended and leveled the southern part of the Acropolis summit. This building replaced a hekatompedon (meaning "hundred‐footer") and would have stood beside the archaic temple dedicated to Athena Polias.
+
+
+== History ==
+The Old Parthenon was still under construction when the Persians sacked the city in the Destruction of Athens in 480 BC, and razed the acropolis during the Second Persian invasion of Greece. The existence of the proto‐Parthenon and its destruction was known from Herodotus and the drums of its columns were plainly visible built into the curtain wall north of the Erechtheum. Further material evidence of this structure was revealed with the excavations of Panagiotis Kavvadias of 1885–1890. The findings of this dig allowed Wilhelm Dörpfeld, then director of the German Archaeological Institute, to assert that there existed a distinct substructure to the original Parthenon, called Parthenon I by Dörpfeld,  not immediately below the present edifice as had been previously assumed. Dörpfeld’s observation was that the three steps of the first Parthenon consist of two steps of poros limestone, the same as the foundations, and a top step of Karrha limestone that was covered by the lowest step of the Periclean Parthenon. This platform was smaller and slightly to the north of the final Parthenon, indicating that it was built for a wholly different building, now wholly covered over. This picture was somewhat complicated by the publication of the final report on the 1885–90 excavations indicating that the substructure was contemporary with the Kimonian walls , and implying a later date for the first temple.
+If the original Parthenon was indeed destroyed in 480 BC, it invites the question of why the site was left a ruin for 33 years. One argument involves the oath sworn by the Greek allies before the battle of Plataea in 479 BC declaring that the sanctuaries destroyed by the Persians would not be rebuilt, an oath the Athenians were only absolved from with the Peace of Callias in 450. The mundane fact of the cost of reconstructing Athens after the Persian sack is at least as likely a cause. However the excavations of Bert Hodge Hill led him to propose the existence of a second Parthenon begun in the period of Kimon after 468 BC. Hill claimed that the Karrha limestone step Dörpfeld took to be the highest of Parthenon I was in fact the lowest of the three steps of Parthenon II whose stylobate dimensions Hill calculated to be 23.51x66.888m.
+One difficulty in dating the proto‐Parthenon is that at the time of the 1885 excavation the archaeological method of seriation was not fully developed: the careless digging and refilling of the site led to a loss of much valuable information. An attempt to make sense of the potsherds found on the acropolis came with the two-volume study by Graef and Langlotz published 1925–33. This inspired American archaeologist William Bell Dinsmoor to attempt to supply limiting dates for the temple platform and the five walls hidden under the re‐terracing of the acropolis. Dinsmoor concluded that the latest possible date for Parthenon I was no earlier 495 BC, contradicting the early date given by Dörpfeld. Further Dinsmoor denied that there were two proto‐Parthenons, and that the only pre‐Periclean temple was what Dörpfeld referred to as Parthenon II. Dinsmoor and Dörpfeld exchanged views in the American Journal of Archaeology in 1935.
+
+
+== Gallery ==
+
+
+== See also ==
+Old Temple of Athena
+
+
+== References ==

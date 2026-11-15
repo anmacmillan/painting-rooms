@@ -1,0 +1,17 @@
+=={{int:filedesc}}==
+{{Information
+|description={{fr|1=Plaque, dite des Ergastines - MR 825 - Ma 738 - Entre 445 et 438 avant J.-C. Marbre du mont Pentélique près d'Athènes -}}
+|date=2013-02-09 16:05:06
+|source={{own}}
+|author=[[User:Dinkum|Dinkum]]
+|permission=
+|other_versions=
+|other_fields=
+}}
+
+=={{int:license-header}}==
+{{self|cc-zero}}
+
+[[Category:Reliefs in the Louvre]]
+[[Category:Frieze of the Parthenon (Louvre, Ma 738)]]
+[[Category:Taken with Pentax K-30]]

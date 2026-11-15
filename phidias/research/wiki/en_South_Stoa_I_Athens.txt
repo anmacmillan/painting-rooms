@@ -1,0 +1,49 @@
+SOURCE: https://en.wikipedia.org/wiki/South_Stoa_I_%28Athens%29
+TITLE: South Stoa I (Athens)
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The South Stoa I of Athens was a two-aisled stoa located on the south side of the Agora, in Athens, Greece, between the Aiakeion and the Southeast Fountain House. It probably served as the headquarters and dining rooms for various boards of Athenian officials. It was built at the end of the 5th century BC and remained in use until the mid-second century BC, when it was replaced by South Stoa II.
+
+
+== Location ==
+The stoa stretched along most of the southern edge of the Classical Agora, facing north onto it. To the west was the Aiakeion and then the southwest fountainhouse. To the east was the southeast fountain house and then the mint. The north edge faced out onto a terrace which overlooked the Agora. Behind and above the stoa to the south was an east-west road, which had been in use since the Bronze Age. A set of staircases at either end of the stoa led down from this road to the ground level of the front of the stoa. Further to the south, there were more roads and housing, rising up the slope of the Areopagus.
+
+
+== Description ==
+
+The Stoa was 80.45 metres long east-west and 14.89 metres north-south. It consisted of a two-aisled colonnade facing north and a set of fifteen rooms running along the back wall. This became a common design for stoas, but South Stoa I appears to have been the earliest example. The foundations were made of poros stone. Most of the walls were made of unbaked bricks, but the back wall was made of stone in order to bear the weight. The "shoddy and makeshift" construction suggests a utilitarian building. Pottery found under the floor level indicates a date of construction in the late fifth century BC.
+The front, northern side was formed by a two-aisled colonnade. The outer colonnade was in the Doric order and consisted of 45 narrow columns, 0.53 metres in diameter, placed 1.745 metres apart. The close spacing of this colonnade may have been necessitated by a lack of good stone for the epistyle. The inner colonnade consisted of 22 columns, 3.49 metres apart; their order is unknown. The greater distance between them indicates that they were taller and supported a rising roof. All the columns were unfluted and made of poros, but covered in white stucco to give the appearance of marble. The columns stood on a poros stylobate. At some point after the original construction of the building, the easternmost section of the colonnade was separated off as a separate room, by building a rubble wall which passed through the second column of the inner colonnade.
+
+There were originally fifteen rooms (Rooms I-XV, numbered from east to west) at the back of the stoa, but only Rooms I-XI are preserved. All rooms measured roughly 4.86 metres square and have an off-set doorway on the northern side, except for the central room (Room VIII), which was entered from a narrow vestibule (1.45 metres wide) to the east, which itself had a door at the northern end. These doorways were 1.2 metres wide and have sockets for double doors. The floors were made of hard-packed brown clay, which was restored four or five times, sometimes with thin layer of white clay placed over the top. Some of the rooms contained rectangular areas paved with rock or reused roof tiles. A number of features indicate that these were designed as dining rooms, although it is not clear that all of them were used as such. The doorways are located off-centre, which allowed dining couches to be laid around all four sides of the room. Each of the rooms had space for seven couches, so the complex as a whole could have accommodated up to 105 diners. All the doorways have a drainage channel running through the centre of the threshold, which is also typical of dining rooms. Deposits of ash in the floor derive from braziers used for cooking and/or heating. Room I and X had small hearths in the centre, made from a wine jar placed upside down in the floor. The arrangement of Room VIII, with its separate entrance vestibule, is also typical of dining rooms. The clearest evidence comes from Room V, which originally had a floor of plain cement with a border of pebble-studded cement (0.05 metres high and ca. 1 metre wide), which was typically used in Classical dining rooms in order to support the dining couches.  However, no similar borders were found in the other preserved rooms. Around 200 BC, they  were replaced with a set of clay benches 0.44 metres high and 0.42 metres wide running around the south half of the room. Similar benches are attested in Room IX. These could have been used as seats, but not as dining couches.
+There may have been a second story, above the dining rooms. It cannot have extended over the colonnades, since the inner colonnade would not have been able to bear much weight. No direct traces of it have been found; it probably made of unbaked bricks and timber. This is suggested by a staircase, built in the narrow vestibule at the middle of the stoa, some time after construction of the building, which led up to the level of the road behind the stoa, but seems to have been laid out in order to leave space for access to a second story. Before the construction of this staircase, this upper story would only have been accessible from the road to the south. A large monument base was placed along the road to the south behind Rooms III and IV. This may have been located near the original entrance to the upper story.
+
+
+== Function and identification ==
+The stoa was probably the location where various Athenian magistrates conducted their business and took their meals. It was common in ancient Greece for officials to do their work in the colonnade of a stoa. The main evidence that South Stoa I was used in this way is an inscription found embedded in the floor of Room III (Ag. I 7030 = SEG 24.157), which records that the metronomoi (inspectors of weights and measures) of 222/1 BC had delivered the official weights and measures to their successors, the metronomoi for 221/0 BC. This seems to indicate that these officials were based in the Stoa. Several groups of Athenian officials, including the metronomoi consisted of boards of six men and a secretary, which would have fitted perfectly in the dining rooms.
+A small inscribed base (Ag. I 7015 = Agora XVIII no. C114) for a votive was found in the area of Rooms IV and V. It was apparently dedicated to an anonymous "Hero". This may indicate that some portion of the structure was used as a shrine. The function of the upper story, if it existed, is totally unknown.
+It is not clear whether South Stoa I can be identified with one mentioned in literary sources. Homer Thompson suggested identifying the stoa (or part of it) with the Thesmotheterion used by the six annual thesmothetai, while Eugene Vanderpool suggested that it was the Alphitopolis, the Agora's flour market. Neither of these suggestions are repeated in the latest edition of the Agora: Site Guide.
+
+
+== Destruction and excavation ==
+Between ca. 175 and 125 BC, the south end of the Agora was remodelled to create an enclosed space, called the South Square. The north edge of this was formed by the Middle Stoa, the east edge by the East buildings and the south edge by South Stoa II. South Stoa I was used as workshops by the builders during the construction of the other parts of the South Square and then it was demolishing to make way for South Stoa II, which obliterated all traces of the western half of South Stoa I. Since the new stoa did not cover the eastern portion of South Stoa I, the foundations of that section are better preserved. 
+The remains of the stoa were uncovered during the American School of Classical Studies' excavations of the Agora. The first traces were identified and excavated in 1936 under the direction of Eugene Vanderpool. Further excavations in 1952-1953 were directed by Margaret Crosby and in 1966-1967 by John McK. Camp.
+
+
+== References ==
+
+
+== Bibliography ==
+Thompson, Homer A. (1953). "Excavations in the Athenian Agora: 1952". Hesperia: The Journal of the American School of Classical Studies at Athens. 22 (1): 28–29. doi:10.2307/146786. ISSN 0018-098X.
+Thompson, Homer A. (1954). "Excavations in the Athenian Agora: 1953". Hesperia: The Journal of the American School of Classical Studies at Athens. 23 (1): 39–45. doi:10.2307/146723. ISSN 0018-098X.
+Thompson, Homer A. (1966). "Activity in the Athenian Agora 1960-1965". Hesperia: The Journal of the American School of Classical Studies at Athens. 35 (1): 47. doi:10.2307/147312. ISSN 0018-098X.
+Thompson, Homer A. (1968). "Activity in the Athenian Agora: 1966-1967". Hesperia: The Journal of the American School of Classical Studies at Athens. 37 (1): 43–56. doi:10.2307/147537. ISSN 0018-098X.
+Vanderpool, Eugene (1968). "Metronomoi". Hesperia: The Journal of the American School of Classical Studies at Athens. 37 (1): 73–76. doi:10.2307/147538. ISSN 0018-098X.
+Thompson, Homer A.; Wycherley, R. E. (1972). "The Agora of Athens: The History, Shape and Uses of an Ancient City Center". The Athenian Agora. 14: 74–78. doi:10.2307/3601981. ISSN 1558-8610.
+Camp, John McK.; Mauzy, Craig A. (2010). The Athenian Agora: Site Guide (5th ed.). The American School of Classical Studies at Athens. pp. 161–164. ISBN 978-0-87661-657-4.
+
+
+== External links ==
+ASCSA. "Agora Monument: South Stoa I". Agora Excavations. Retrieved 3 March 2024.
+ASCSA. "Agora Object: I 7015". Agora Excavations. Retrieved 3 March 2024.
+ASCSA. "Agora Object: I 7030". Agora Excavations. Retrieved 3 March 2024.
+"Athens, South Stoa I (Building)". Perseus Digital Library. Tufts University. Retrieved 2023-08-30.

@@ -1,0 +1,37 @@
+SOURCE: https://en.wikipedia.org/wiki/Chlamys
+TITLE: Chlamys
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The chlamys (Ancient Greek: χλαμύς, romanized: khlamús; genitive: χλαμύδος, khlamúdos) was a type of ancient Greek cloak. It was worn by men for military and hunting purposes during the Classical, Hellenistic and later periods. By the time of the Byzantine Empire it was part of the state costume of the emperor and high officials. It survived as such until at least the 12th century.
+The ephaptis (Ancient Greek: ἐφαπτίς, romanized: ephaptís) was a similar garment, typically worn by infantrymen.
+
+
+== Ancient Greece ==
+The chlamys was made from a seamless rectangle of woolen material about the size of a blanket, usually bordered. It was normally pinned with a fibula at the right shoulder. Originally it was wrapped around the waist like a loincloth, but by the end of the 5th century BC it was worn over the elbows. It could be worn over another item of clothing but was often the sole item of clothing for young soldiers and messengers, at least in Greek art. As such, the chlamys is the characteristic garment of Hermes (Roman Mercury), the messenger god usually depicted as a young man.
+The chlamys was typical Greek military attire from the 5th to the 3rd century BC. As worn by soldiers, it could be wrapped around the arm and used as a light shield in combat.
+
+
+== Byzantine period ==
+
+The chlamys continued into the Byzantine period, when it was often much larger and usually worn sideways, at least by emperors, and likely made of silk. It was held on with a fibula brooch at the wearer's right shoulder and nearly reached the ground at front and back.  With the even grander loros costume, the "chlamys costume" was the ceremonial wear of Byzantine emperors and the only option for high officials on very formal occasions. It is generally less common in surviving imperial portraits than the loros shown on coins, though the large numbers of Byzantine coins that survive provide many examples, with the fibula often the main indication in bust-length depictions.
+At the two edges of the cloak were large panels in a contrasting colour called tablia (sing. tablion), beginning about level with the armpit and reaching down to about the waist; typically only the one on the wearer's left is seen in portraits.  The emperor alone could wear a purple chlamys with gold tablia; officials sometimes wore white with purple tablia, as the two beside Justinian I at Ravenna do. In the miniature shown below the 11th-century emperor wears his open to the side, presumably to allow access to his sword, but the three officials have the opening at the centre of their bodies.
+By the Middle Byzantine period all parts of the chlamys were highly decorative, with bright patterned Byzantine silk and tablia and borders heavily embroidered and encrusted with gems. In the 12th century it seems to have begun to fall from favour, although it continued to be shown on coins until the 14th century, which was perhaps long after it was actually worn. Some high officials seem to have continued to wear a version of it long after the emperors had abandoned it. While the loros tended to represent the emperor in his religious role, the chlamys represented his secular functions as head of state, head of the administrative corps of the empire and giver of justice.
+Among women only the empress is recorded as wearing a chlamys; she was presented with it during the coronation ceremony. In art it is much rarer to see an empress in it than in a loros, but in the well-known ivory Romanos ivory (BnF, Paris) Eudokia Makrembolitissa wears one while her husband Constantine X Doukas (r. 1059–1067) wears the loros.
+
+
+== Gallery ==
+
+
+== See also ==
+Clothing in ancient Greece
+Byzantine dress
+
+
+== References ==
+
+
+== Bibliography ==
+
+Parani, Maria G. (2003). Reconstructing the Reality of Images: Byzantine Material Culture and Religious Iconography (11th–15th Centuries). Leiden: Brill. ISBN 9004124624.
+Sekunda, Nicholas (2000). Greek Hoplite, 480-330 BC. Warrior 27. Adam Hook (illustrator). Osprey Publishing. ISBN 1-85532-867-4.
+Ridgway, Brunilde Sismondo (1990). Hellenistic Sculpture: The Styles of ca. 331–200 B.C. University of Wisconsin Press. ISBN 0-299-16710-0.

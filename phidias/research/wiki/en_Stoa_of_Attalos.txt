@@ -1,0 +1,53 @@
+SOURCE: https://en.wikipedia.org/wiki/Stoa_of_Attalos
+TITLE: Stoa of Attalos
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Stoa of Attalos (also spelled Attalus; Greek: Στοά του Αττάλου) was a  stoa (covered walkway or portico) in the Agora of Athens, Greece. It was built by and named after King Attalos II of Pergamon, who ruled between 159 and 138 BC. The building was reconstructed from 1952 to 1956 by the American School of Classical Studies at Athens and currently houses the Museum of the Ancient Agora.
+The museum's exhibits are mostly connected with the Athenian democracy. The collection of the museum includes clay, bronze and glass objects, sculptures, coins and inscriptions from the 7th to the 5th century BC, as well as pottery of the Byzantine period and the Turkish conquest.
+
+
+== Building ==
+
+Typical of the Hellenistic age, the stoa was more elaborate and larger than the earlier buildings of ancient Athens and had two rather than the normal one storeys. The stoa's dimensions are 115 by 20 metres (377 by 66 ft) and it is made of Pentelic marble and limestone. The building skillfully makes use of different architectural orders. The Doric order was used for the exterior colonnade on the ground floor with Ionic for the interior colonnade. This combination had been used in stoas since the Classical period and was by Hellenistic times quite common. On the upper floor of the building, the exterior colonnade was Ionic and the interior Pergamene. 
+Each storey had two aisles and twenty-one rooms lining the western wall. The rooms of both stories were lighted and vented through doorways and small windows located on the back wall. There were stairways leading up to the upper storey at each end of the stoa.
+The building is similar in its basic design to the Stoa that Attalos' brother, and predecessor as king, Eumenes II, had erected on the south slope of the Acropolis next to the Theatre of Dionysus. The main difference is that Attalos' stoa had a row of 42 closed rooms at the rear on the ground floor which served as shops. The spacious colonnades were used as a covered promenade.
+
+
+== History ==
+A dedicatory inscription engraved on the architrave states that it was built by Attalos II, who was ruler of Pergamon. The stoa was a gift to the city of Athens for the education that Attalos received there under the philosopher Carneades. His elder brother and his father had previously made substantial gifts to the city.  The building was constructed on the east side of the Agora or market place of Athens and was used from approximately 150 B.C. onwards for a variety of purposes.
+The stoa was in frequent use until its woodwork was burned by the Heruli in AD 267. The ruins became part of a fortification wall, which made it easily seen in modern times. 
+Between 1859-62 and in 1898-1902 the ruins of the Stoa were cleared and identified by the Greek Archaeological Society. Their efforts were completed by the American School of Classical Studies during the course of its excavation of the Agora which had commenced in May 1931 under the supervision of T. Leslie Shear.
+
+In 1948, Homer Thompson (who was field director of the Agora excavations from 1946–1967 being undertaken by the American School of Classical Studies at Athens (ASCSA) proposed that the Stoa of Attalos be reconstructed to serve as a museum to house archaeological finds. The Stoa was a suitable size and enough architectural elements remained to assist in producing an accurate reconstruction. In particular enough of the northern end remained to allow engineers to ensure that the reconstructed building would be the same height as the original building. His proposal was accepted and so in June 1953, Ward M. Canaday (president of the Board of Trustees of ASCSA from 1949–1964) authorized the beginning of the work, and in January 1954, the landscape program was formally inaugurated.
+Funded by contributions from American donors (including a US$1 million financial contribution from John D. Rockefeller Jr., and  from industrialist and car manufacturer Ward Murphey Canaday, his wife Mariam Canaday née Coffin and their daughter Doreen Canaday Spitzer) the reconstruction of the Stoa was carried out by the ASCSA under the general supervision of the Department for Restoration of Ancient and Historic Monuments of the Ministry of Education, directed by Anastasios Orlandos. The plans were drawn by John Travlos, architect of the Agora excavations, while the reconstruction was supervised by the New York architecture firm of W. Stuart Thompson & Phelps Barnum. Greek civil engineer George Biris served as consulting engineer.
+
+The building was reconstructed on the original foundations but in order to facilitate its new role as a museum some changes were made to the basement storage area, window sizes and door positions while some internal walls were eliminated. The building incorporated as much of the original structure and materials as possible. In particular the north end, the southernmost shops, part of the south wall, and the south end of the outer steps were able to be retained.  Quarries in Piraeus and on Mount Pentelicus were opened so as to provide material similar to the original. The walls were built of limestone from Piraeus, while the facade, the columns and interior trim used Pentelic marble from Mt. Pentelicus, and the roof tiles, clay from Attica. As many as 150 workmen were employed, including 50 master masons, 20 carpenters, and five steelworkers.
+With the exception of the reconstruction of the Panathenaic Stadium for the 1896 Olympics, the rebuilding of the Stoa of Attalos was the most ambitious reconstruction of a freestanding ancient building carried out in Athens to that time. The reconstruction is particularly important in the study of ancient monuments because it is a faithful replica of the original building, to the degree possible within the limits of archaeological knowledge.
+
+The  Stoa was formally dedicated on 3 September 1956 at an event attended by members of the royal family, the Archbishop of Athens, various politicians and members of the public.
+In 1957, the Greek state assumed responsibility for the administration and security of the museum and the archaeological site.
+The ceremony of the signing of the 2003 Treaty of Accession of 10 countries – Cyprus, the Czech Republic, Estonia, Latvia, Lithuania, Hungary, Malta, Poland, Slovakia, and Slovenia – to the European Union was conducted in the Stoa of Attalos on 16 April 2003.
+The Greek Ministry of Culture undertook further renovations in 2003 to 2004.
+The second floor of the building was refurbished and reopened in 2012.
+
+
+== Museum of the Ancient Agora: exhibits ==
+
+
+== References ==
+
+
+== Further reading ==
+Camp, John McK.; Mauzy, Craig A. (2010). The Athenian Agora: Site Guide. Athens: American School of Classical Studies at Athens. ISBN 978-0-8766-1657-4.
+Coulton, J. J. (1976). The Architectural Development of the Greek Stoa. Oxford: Clarendon Press. ISBN 978-0-1981-3215-8.
+Lauter, H. (1986). Die Architektur des Hellenismus (in German). Wissenschaftliche Buchgesellschaft: Darmstadt. pp. 113–132. ISBN 3-534-09401-8.
+Saraga, Nicoletta (2004). Museum of Ancient Agora of Athens. Brief History and Tour. Athens: Hellenic Ministry of Culture.
+Thompson, Homer A. (1992). The Stoa of Attalos II in Athens. Athens/Princeton: American School of Classical Studies at Athens. ISBN 978-0-87661-634-5.
+Townsend, Rhys F. (1995). Agora XXVII: The East Side of the Agora: The Remains beneath the Stoa of Attalos. Princeton, NJ: American School of Classical Studies at Athens. pp. iii–248.
+
+
+== External links ==
+
+Ministry of Culture: The Museum
+The Museum
+Stoa of Attalos photos

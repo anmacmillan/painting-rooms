@@ -1,0 +1,55 @@
+SOURCE: https://en.wikipedia.org/wiki/Dipylon
+TITLE: Dipylon
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Dipylon (Greek: Δίπυλον, "Two-Gated") was the main gate in the city wall of Classical Athens. Located in the modern suburb of Kerameikos, it led to the namesake ancient cemetery, and to the roads connecting Athens with the rest of Greece. The gate was of major ceremonial significance as the starting point of the procession of the Great Panathenaea, and accordingly it was a large, monumental structure, "the largest gate of the ancient world". Erected in 478 BC as part of Themistocles' fortification of Athens and rebuilt in the 300s BC, it remained standing and in use until the 3rd century AD.
+
+
+== History ==
+The Dipylon gate was built, along with the neighbouring Sacred Gate, in 478 BC as part of Themistocles' fortification of Athens following the Persian Wars. The new circuit was much wider than the old one that was destroyed by the Persians, and many of the graves and monuments of the already existing Kerameikos cemetery were used in its construction, a fact which earned Themistocles the hostility of many Athenians whose relatives' tombs were despoiled. During the Peace of Nicias (421–416 BC), the wall was complemented by a moat and a secondary wall (proteichisma). The construction of the Pompeion in the empty space between the Dipylon and Sacred Gate began shortly after, but was not completed until the next century. The Themistoclean Wall was torn down after the Athenian defeat in the Peloponnesian War in 404 BC, but in 394 BC, with the help of Persian funds, the Athenian statesman Conon restored it. 
+
+The gate was not only the principal gate for the city's communication with the rest of Greece—with roads leading both north to Boeotia and south to the Peloponnese, but also played an important part in the city's rituals, as the starting point (along with the adjacent Pompeion) of the ceremonial procession to the Acropolis of Athens during the Great Panathenaea. Outside the gate lay the Kerameikos cemetery and specifically the Demosion Sema, the state cemetery where the city buried its most honoured citizens. According to the 2nd-century AD writer Lucian, the walls of the gate were written over with graffiti such as love messages.
+In its original state, it comprised a set of double gates set further back from the line of the walls, so that a square court was created that, covered by the walls and four towers set in its corners, served as a killing ground against attackers. The gate received its name in the 3rd century BC; before that—possibly in combination with the nearby Sacred Gate—it was known as the Thriasian Gates (Θριάσιαι Πύλαι), as it led to the Thriasian Plain. Repairs to the fortifications in the Kerameikos were carried out under Demosthenes after the Battle of Chaeronea in 338 BC, but the wall and the Dipylon suffered heavy damage in an earthquake in subsequent years, so that they were rebuilt, following the original outline, in c. 307/4 BC, when Athens was under the control of Demetrios Poliorketes. In 267–262 BC, Athens participated in the unsuccessful Chremonidean War against Macedon; lead tablets with the mark and price of horses and their owners that date to this period, probably a record of the Athenian cavalry, have been found in a well at the Dipylon.
+In 200 BC, however, when Philip V of Macedon attacked Athens, the fortifications of the Dipylon helped the Athenians fend off the Macedonian king. In late Hellenistic times, a second wall with a double gate was added at the outer side of the court, thus creating a fully walled-off enclosure. The walls could not hold off the Roman general Sulla, however, who in 86 BC sacked the city. Plutarch reports that the slaughter in the city was so great, that "blood flowed through the gate and flooded the suburb". The wall was repaired soon after, so that the city was able to withstand the attacks of Quintus Fufius Calenus in 48 BC. In the Roman Imperial period, the city experienced a revival, and potters and metalworkers settled in the buildings around the Dipylon. During the long Pax Romana, the walls were allowed to fall into disrepair. With the onset of the barbarian invasions in the 3rd century, Emperor Valerian (r. 253–260) restored the city wall, but this was not enough to prevent the sack of Athens by the Heruli in 267. In its aftermath, the city contracted to a small fortified core around the Acropolis of Athens, but gradually recovered and expanded again during Late Antiquity, so that Emperor Justinian I (r. 527–565) restored the Themosticlean Wall. Shortly after, however, the Slavic invasions began, and the Dipylon and the entire area were abandoned, fell quickly into ruin, and were buried.
+Archaeological excavations in the Kerameikos area began by the Greek Archaeological Society in 1870, under St. Koumanoudis. At the time, the site was covered by up to 8 m of soil. Since 1913, excavations in the area have been conducted by the German Archaeological Institute at Athens.
+
+
+== Layout and description ==
+
+The Dipylon was the "largest gate of the ancient world", with a surface of c. 1,800 square metres (19,000 sq ft). Its extraordinary size points to its use not only as a city gate, but also its ceremonial significance and monumental role as the starting point of the Panathenaic procession.
+
+
+=== Themistoclean structure ===
+The original, Themistoclean-era gate largely established the final shape of the structure and covered the same area as the Hellenistic structure, and was built of clay bricks on top of a pedestal of Poros limestone blocks. Its general shape resembles a right-angled trapezoid, with the gates located on the cityward, right-angled lateral side. The bases were of unequal length, with the southern one projecting a bit. Square towers were located at each corner of the trapezoid.
+Archaeological evidence shows traces of later repairs, possibly under Conon, when the pedestal was covered with flat limestone blocks. Parts of the Themistoclean wall are preserved only between the northwestern and southwestern towers, but the towers themselves preserved several Archaic-period funeral monuments that were used as spolia during their construction, and were recovered by archaeologists. The existence of two gates in the wall already during the Themistoclean phase is confirmed by preserved cart grooves; the southern gate is also crossed by a broad canal, which went parallel to the southern wall and then turned south, probably joining the Eridanos river nearby.
+
+
+=== Hellenistic structure ===
+The Hellenistic gate complex was an altogether more massive and elaborate affair, being built of large finely hewn ashlar blocks, comprising a breccia core and covered with fine Piraeus sandstone slabs. Apart from the north-eastern landward tower, the cores of the others survive to some height even today; originally they were probably covered with a tiled roof. The curtain wall connecting them, originally 9 metres (30 ft) high and 4 metres (13 ft) thick and crowned with crenelations, some of which survive on the southern wall. Access to both the walls and the towers was through staircases, one of which survives behind the cityward southeastern tower. The northern cityward gate is still visible, but the southern one has been destroyed through the construction of a modern canal. However, the remains of the gate frames show that the gates were rectangular, in contrast to the second set of gates added in the late Hellenistic period, which were surmounted by marble apses. The pedestal of the central pier of the later set was built of marble spolia; in front of it, facing outward from the city, is a square marble pedestal, which may have hosted an equestrian statue of a Roman emperor or general.
+
+
+=== Well house ===
+Just after the cityward gate, on the eastern side, between the gate and the stairway leading up to the wall, are the remnants of a well house, which was supplied with fresh water through underground aqueducts. The present structure was probably erected during the gate's reconstruction in 307/4 BC, but likely also had a Themistoclean antecedent, of which two pipes and a few Ionic column bases survive. The structure was rectangular, divided into an L-shaped basin with low walls into which water flowed, and a small entrance hall that was supported by three Ionic columns. The entrance was between the second and third column. The floor, which largely survives, was built of marble slabs from Hymettus. 
+
+
+=== Proteichisma ===
+The proteichisma (προτείχισμα, "fore-wall"), which includes a wall as well as a moat in front of it, was erected during the Peloponnesian War, most likely as part of the repairs to the walls following an earthquake in 420 BC. They were extensively rebuilt under Conon, and again under Demetrios Poliorketes in the late 4th century. Traces of the proteichisma survive particularly intact in the Kerameikos area, including remnants of 4th-century BC pitfall traps against siege engines, consisting of 2 metres (6.6 ft) high pithoi let into the ground.
+The proteichisma comprised an 8 metres (26 ft)–high wall, placed some 6 metres (20 ft) in front of the main wall. As the ground sloped heavily between the two walls, the space had to be filled in, thus creating a flat surface that served as a ring road, that in the 4th century ran around the entire circuit of the wall and was used to connect the various quarters of the city. Following the reconstruction of the walls in 307/4 BC, however, this ceased to be the case, as the proteichisma received a roofed chemin de ronde, blocking the road. The late 4th-century BC proteichisma was built of fine ashlar breccia masonry.
+
+
+== See also ==
+Dipylon Master
+Funerary naiskos of Aristonautes
+
+
+== References ==
+
+
+== Sources ==
+Knigge, Ursula (1988). Der Kerameikos von Athen. Führung durch Ausgrabungen und Geschichte [The Kerameikos of Athens. Tour through Excavations and History] (in German). Krene Verlag.
+
+
+== External links ==
+ Media related to Dipylon at Wikimedia Commons
+
+3d reconstruction of the city wall in the Keremikos area, by ancientathens3d.com

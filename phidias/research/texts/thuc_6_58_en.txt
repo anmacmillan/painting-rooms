@@ -1,0 +1,10 @@
+SOURCE: https://www.perseus.tufts.edu/hopper/xmlchunk?doc=Perseus:text:1999.01.0200:book=6:chapter=58
+FETCHED: 2026-11-15 (Perseus Digital Library, TEI XML chunk; tags stripped, section numbers in square brackets)
+
+[ch. 58]
+
+[1]
+
+When the news was brought to Hippias in the Ceramicus, he at once proceeded not to the scene of action, but to the armed men in the procession, before they, being some distance away, knew anything of the matter, and composing his features for the occasion, so as not to betray himself, pointed to a certain spot, and bade them repair thither without their arms.
+
+[2] They withdrew accordingly, fancying he had something to say; upon which he told the mercenaries to remove the arms, and there and then picked out the men he thought guilty and all found with daggers, the shield and spear being the usual weapons for a procession.

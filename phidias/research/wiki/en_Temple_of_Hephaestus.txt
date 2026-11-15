@@ -1,0 +1,104 @@
+SOURCE: https://en.wikipedia.org/wiki/Temple_of_Hephaestus
+TITLE: Temple of Hephaestus
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Temple of Hephaestus or Hephaisteion (also "Hephesteum" or "Hephaesteum"; Ancient Greek: Ἡφαιστεῖον, Greek: Ναός Ηφαίστου, and formerly called in error the Theseion or "Theseum"; Ancient Greek: Θησεῖον, Greek: Θησείο), is a well-preserved Greek temple dedicated to Hephaestus; it remains standing largely intact today. It is a Doric peripteral temple, and is located at the north-west side of the Agora of Athens, on top of the Agoraios Kolonos hill. From the 7th century until 1834, it served as the Greek Orthodox church of Saint George Akamates. The building's condition has been maintained due to its history of varied use.
+
+
+== Name ==
+Hephaestus was believed to be the patron god of metal working, craftsmanship, and fire. There were numerous potters' workshops and metal-working shops in the vicinity of the temple, as befits the temple's honoree. Archaeological evidence suggests that there was no earlier building on the site except for a small sanctuary that was burned during the Second Persian invasion of Greece in 480 BC. The name Theseion or Temple of Theseus was attributed to the monument in modern times under the mistaken assumption that it housed the remains of the Athenian hero Theseus, brought back to the city from the island of Skyros by Kimon in 475 BC, but refuted after inscriptions from within the temple associated it firmly with Hephaestus.
+
+
+== Construction ==
+After the Battle of Plataea, the Greeks swore never to rebuild their sanctuaries destroyed by the Persians during their invasion of Greece, but to leave them in ruins, as a perpetual reminder of the war. The Athenians directed their funds towards rebuilding their economy and strengthening their influence in the Delian League. When Pericles came to power, he envisioned a grand plan for transforming Athens into the centre of Greek power and culture. Construction started in 449 BC, and some scholars believe the building not to have been completed for some three decades, funds and workers having been redirected towards the Parthenon. The western frieze was completed between 445–440 BC, during which time the statue of Athena Hephaistia had been added to the shrine next to the cult statue of Hephaestus, while the eastern frieze, the western pediment and several changes in the building's interior are dated by these scholars to 435–430 BC, largely on stylistic grounds. It was only during the Peace of Nicias (421–415 BC) that the roof was completed and the cult images were installed.
+Recent photogrammetric analysis of the north side of the cella has revealed a minute discrepancy in the architrave's leveling, suggesting that the builders adjusted the slope by a few centimeters to account for a subsidence in the limestone bedrock.
+
+
+== Description ==
+Many architects have been suggested but, without firm evidence, one refers simply to The Hephaisteion Master. The temple is built of marble from the nearby Mt. Penteli, excepting the bottom step of the krepis or platform. The architectural sculpture is in both Pentelic and Parian marble. The dimensions of the temple are 13.71 m north to south and 31.78 m east to west, with six columns on the short east and west sides and thirteen columns along the longer north and south sides (with each of the four corner columns being counted twice).
+
+The building has a pronaos, a cella housing cult images at the centre of the structure, and an opisthodomos. The alignment of the antae of the pronaos with the third flank columns of the peristyle is a design element unique to the middle of the 5th century BC. There is also an inner Doric colonnade with five columns on the north and south side and three across the end (with the corner columns counted twice).
+The decorative sculptures highlight the extent of mixture of the two styles in the construction of the temple. Both the pronaos and the opisthodomos are decorated with continuous Ionic friezes instead of the more typical Doric triglyphs, supplementing the sculptures at the pediments. In the pediments, the Birth of Athena (east) and the Return of Hephaistos to Olympos (west), and, as akroteria, the Nereids Thetis and Eurynome (west) accompanied by Nikai, the two ensembles are dated to ca. 430 and ca. 420–413 BC respectively. The frieze of the pronaos depicts a scene from the battle of Theseus with the Pallantides in the presence of gods while the frieze of the opisthodomos shows the battle of Centaurs and Lapiths.
+Only 18 of the 68 metopes of the temple of Hephaestus were sculpted, concentrated especially on the east side of the temple; the rest were perhaps painted. The ten metopes on the east side depict the Labours of Heracles. The four easternmost metopes on the long north and south sides depict the Labours of Theseus.
+According to Pausanias, the temple housed bronze statues of Athena and Hephaestus. An inscription records payments between 421–415 BC for two bronze statues but it does not mention the sculptor. Tradition attributes the work to Alcamenes. Pausanias described the temple in the 2nd century:
+
+Above the Kerameikos [in Athens] and the portico called the King's Portico is a temple of Hephaistos. I was not surprised that by it stands a statue of Athena, because I knew the story about Erichthonius [i.e. the first king of Athens, a son of Hephaistos and Athena, birthed by Gaia the Earth].
+In the 3rd century BC a small garden of pomegranate, myrtle, and laurel trees and shrubs was planted around the temple.
+The sanctuary would have been closed during the persecution of pagans in the late Roman Empire.
+
+
+== Cult and festivals ==
+
+
+=== Theseus ===
+The Hephaisteion’s religious role extended beyond its inner sanctuary. The temple’s iconography emphasized Athenian civic ideals by featuring the hero Theseus alongside Heracles. Only 18 of the 68 external metopes were sculpted; ten on the east front showed the Labors of Heracles, and the four corner metopes on the north and south sides depicted the deeds of Theseus. These mythological scenes celebrated Athens’s founding hero – indeed, in later times the temple was mistakenly called the "Theseion" (Theseus’s shrine). Plutarch recounts that in 475 BC the general Kimon retrieved what were believed to be the bones of Theseus and reinterred them "in the heart of the city, near the gymnasium," with splendid processions and sacrifices. Thereafter the tomb of Theseus was revered as a sanctuary and place of asylum for the disadvantaged. Eighteenth-century travelers, noting the temple’s Theseus-themed metopes, assumed it was this hero’s tomb. The association with Theseus highlights how the Hephaisteion blended hero cult with divine worship in Athenian religious life.
+
+
+=== Chalkeia festival ===
+
+Chalkeia (Χαλκεῖα), one of the annual festivals connected to the temple's gods, was a joint feast of Hephaestus and Athena celebrated on the last day of the month Pyanepsion (late autumn). The name "Chalkeia" means "Bronze (Workers') Festival," reflecting its roots as an occasion for metal-smiths. In early times it was a popular public festival, later observed mainly by craftsmen (chalkeis, "bronze-workers"). During the Chalkeia, artisans closed their workshops and joined a procession making offerings of grain and sacrifice of animal, honoring Hephaestus as the divine blacksmith and Athena in her aspect as patroness of craft and weaving. A significant ritual at the Chalkeia was the formal setting up of the loom for weaving the new peplos (robe) of Athena. Historical sources note that on this day the priestesses of Athena Polias, together with the young Arrephoroi (sacred maiden attendants), began preparing the sacred peplos that would be presented to Athena at the Great Panathenaia nine months later. This intertwined the Chalkeia with the civic calendar of Athens, inaugurating the long labor of weaving Athena's robe. Ancient lexicographers record that some Athenians even called the festival the "Athenaia" or "Pandemos" (common festival of all the people). However, at least one antiquarian (Phanodemus) insisted the Chalkeia was celebrated "not for Athena but for Hephaestus", underscoring Hephaestus's importance in the event.
+
+
+=== Hephaisteia festival ===
+Hephaisteia (Ἡφαίστεια), the primary festival of Hephaestus in Athens, was a state-sanctioned celebration that likewise emphasized the god's role in the civic and creative life of the city. Originally held every year, the Hephaisteia was reorganized in the late 5th century BC: a fragmentary inscription from 421/0 BC records a decree of the Athenian Assembly making new arrangements for the festival. Although the text is fragmentary, it alludes to traditional events such as a torch race and a bull sacrifice or "bull-lifting" contest. (The torch relay in particular was closely associated with Hephaestus; according to the historian Istros, the Athenians instituted their first ever torch-race in sacrifices to Hephaestus, commemorating the god’s gift of fire). After this reorganization, the Hephaisteia grew in prominence. By the 4th century BC it was no longer annual but celebrated on a multi-year cycle – Aristotle notes that by 329 BC it was being held as a penteteric festival (i.e. every fifth year) rather than yearly. The Hephaisteia featured a grand procession (pompe) through the city, culminating in animal sacrifice at the temple of Hephaestus. During the festivities, hundred of citizens took part: ancient accounts mention special officials (20 hieropoioi or "sacred organizers") elected to run the event, and up to 200 men responsible for the sacrificial rites, procession, and contests. The festival’s events underscored themes of craft, fire, and civic unity. For example, the 421 BC decree hints at a ceremony involving a bull; later authors describe Hephaestus in connection with a peculiar "bull-lifting" rite, perhaps an athletic feat symbolizing the taming of raw power. In Athens the festival helped integrate smiths, metalworkers, and craftsmen into the city's religious life, giving them a public venue to honor their patron. The processions and games would have started at or passed through the Agora and ended at the Hephaisteion, reaffirming the temple as the communal hub of Hephaestus's worship.
+
+
+=== Cultic significance for metal workers ===
+
+Archaeological evidence from the Athenian Agora excavations corroborates the temple's cultic functions. In and around the Hephaisteion, excavators discovered numerous small dedications and tools left by worshippers: pottery shards, metal slag, casting molds and other debris of craft-production. These findings indicate that ancient artisans treated the area as sacred to their trade. Classical authors even referred to a nearby "Chalkeion" (smithy or bronze workshop) adjacent to the temple, suggesting that craft guilds or metalworking families maintained altars or workspaces under Hephaestus's auspices. Offerings to Hephaestus and Athena likely included miniature bronze tools, terra cotta models of hammers and tongs, and other symbols of workmanship. Although few votive objects survive, inscribed bases of the cult statues have been found built into the temple's walls, confirming the statues' presence and the identity of the deities honored.
+
+
+=== Civic significance ===
+In front of the temple, archaeologists identified the remains of an altar where sacrifices would have been performed as part of the festivals. The temple’s architectural sculpture—such as the east frieze showing Theseus’s battle with the Pallantides (usurpers of Athens) and the west frieze depicting the Centauromachy further indicates the civic significance of its cult. Scholars interpret these scenes as political allegories: by likening Hephaestus’s sanctuary to other civic monuments (the nearby Royal Stoa and Stoa Poikile also celebrated Athens’s heroes and victories), the temple proclaimed Athens’s identity as a city of ingenuity, order, and civilized endeavor.
+
+
+== Church ==
+
+Around AD 700, the temple was turned into a Christian church, dedicated to Saint George. Exactly when the temple was converted to a Christian church remains unknown. There are assumptions however that this possibly occurred in the 7th century.
+The addition of adjectives to churches, or their commemorated saints, is commonplace in Greek Orthodox tradition. The characterization as Saint George "Akamates" has been given many explanations. One states that it probably derives from the name of Akamantas, the son of Theseus and Pheadra, later transformed to Akamatos, and later still to Akamates. Another is based on the literal sense of the word akamates (= flaneur, or loiterer), because during the Ottoman Era the temple was used only once a year, on the day of the feast of St. George. A third option is that the name is from Archbishop of Athens Michael Akominatos, who might have been the first to celebrate a Divine Liturgy in the church.
+The last Divine Liturgy in the temple took place on 21 February 1833, during the celebrations for the arrival of Otto of Greece to his new kingdom. In the presence of the Athenians and of many others the bishop Neophytos Talantiou of Atalante gave a speech.
+
+
+== 19th century ==
+When Athens became the official capital of Greece in 1834, the publication of the relevant royal edict was made in this temple that was the place of the last public turnout of the Athenians. It was used as a burial place for non-Orthodox Europeans in the 19th century, among whom were many philhellenes who gave their lives in the cause of Greek War of Independence (1821–1830). Among those buried in the site was John Tweddel, a friend of Lord Elgin, while excavations also revealed a slab from the grave of George Watson with a Latin epitaph by Lord Byron. In 1834, the first King of Greece, Otto I, was officially welcomed there. Otto ordered the building to be used as a museum, in which capacity it remained until 1934, when it reverted to its status of an ancient monument and extensive archaeological research was allowed.
+
+
+== Works modeled on, or inspired by, the Temple of Hephaestus ==
+Hagley Park, Worcestershire (1758) West Midlands, by James "Athenian" Stuart
+English garden (1795) Söderfors, Sweden
+Arlington House, The Robert E. Lee Memorial (1802–1817), Arlington National Cemetery, Virginia, US
+Monument to Sir Alexander Ball, (1810), Valletta, Malta
+Dundalk Courthouse (1813), Dundalk, Ireland
+Theseus Temple (1821) in the Volksgarten in Vienna, Austria, by Pietro di Nobile
+Old Royal High School (1829), Edinburgh, Scotland
+McKim Free School (1833), Baltimore, Maryland, US
+Penshaw Monument (1844), Penshaw, Tyne and Wear, England
+Old Montgomery County Court House (1844–1850), Dayton, Ohio, US
+Vermont State House (1857–1859), Montpelier, Vermont, US
+
+
+== See also ==
+List of Ancient Greek temples
+Architecture of Ancient Greece
+Hexastyle
+List of Greco-Roman roofs
+
+
+== References ==
+
+
+== Further reading ==
+Cruciani, C. 1998. I Modelli del Moderato. Naples.
+Dinsmoor, W. 1941. "Observations on the Hephaisteion", Hesperia Supplements V. Baltimore.
+Gottlieb, Carla (1957). "The Pediment Sculpture and Acroteria from the Hephaisteion and Temple of Ares in the Agora at Athens". American Journal of Archaeology. 61 (2): 161–165. doi:10.2307/500354. ISSN 0002-9114. JSTOR 500354.
+Koch, Herbert (1955). Studien zum Theseustempel in Athen. Berlin.{{cite book}}:  CS1 maint: location missing publisher (link)
+Harrison, E. (1977). "Alkamenes Sculptures for the Hephaisteion". American Journal of Archaeology. 81: 137–78. doi:10.2307/503175. JSTOR 503175. S2CID 191390829.
+Olsen, E. (1938). "An Interpretation of the Hephaisteion Reliefs". American Journal of Archaeology. 42 (2): 276–87. doi:10.2307/499672. JSTOR 499672. S2CID 191412064.
+Thompson, Homer A. (1949). "The Pedimental Sculpture of the Hephaisteion". Hesperia: The Journal of the American School of Classical Studies at Athens. 18 (3): 230–268. ISSN 0018-098X. JSTOR 146756.
+Thompson, H. (1962). "The Sculptural Adornment of the Hephaisteion". American Journal of Archaeology. 66 (3): 339–47. doi:10.2307/501469. JSTOR 501469. S2CID 193064420.
+"The Temple of Hephaestus" by Leo Masuda Architectonic Research Office
+
+
+== External links ==
+
+High-resolution 360° Panorama of the Temple of Hephaestus | Art Atlas

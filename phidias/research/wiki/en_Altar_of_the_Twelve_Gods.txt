@@ -1,0 +1,62 @@
+SOURCE: https://en.wikipedia.org/wiki/Altar_of_the_Twelve_Gods
+TITLE: Altar of the Twelve Gods
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Altar of the Twelve Gods (also called the Sanctuary of the Twelve Gods), was an important altar and sanctuary at Athens, located in the northwest corner of the Classical Agora. The altar was set up by Pisistratus the Younger, (the grandson of the tyrant Pisistratus) during his archonship, in 522/1 BC. It marked the central point from which distances from Athens were measured and was a place of supplication and refuge.
+The exact  identities of the twelve gods to whom the altar was dedicated is uncertain, but they were most likely substantially the same as the twelve Olympian gods represented on the east frieze of the Parthenon: Zeus, Hera, Poseidon, Demeter, Apollo, Artemis, Hephaestus, Athena, Ares, Aphrodite, Hermes,  and Dionysus, though there are reasons to suppose that Hestia may have been one of the twelve.
+It was formerly thought that during the Roman period, the altar became known as the Altar of Pity (Eleos); however, that altar is now believed to have been located further east in the Roman Agora. The altar was dismantled c. 267 AD.
+
+
+== Construction ==
+The altar was set up by Pisistratus the Younger—the son of Hippias, and the grandson of the tyrant Pisistratus—during his archonship. The fifth-century historian Thucydides gives the following account of the dedication of the altar and its subsequent modification:
+
+"Among others who thus held the annual archonship at Athens was Pisistratus, a son of the tyrant Hippias. He was named after his grandfather Pisistratus, and during his term of office he dedicated the altar of the Twelve Gods in the Agora, and another altar in the temple of the Pythian Apollo. The Athenian people afterwards added to one side of the altar in the Agora and so concealed the inscription upon it; but the other inscription on the altar of the Pythian Apollo may still be seen, although the letters are nearly effaced. It runs as follows: —
+'Pisistratus the son of Hippias dedicated this
+memorial of his archonship in the sacred precinct
+of the Pythian Apollo.'
+The dedication has thus been dated to 522/1 BC, the most probable date for the archonship of Pisistratus the Younger, while the expansion of the Altar, noted by Thucydides above, has been dated to the last third of the fifth century BC, thus probably during the Peloponnesian War.
+
+
+== Geographic center ==
+From at least the 5th century BC, the altar became the zero point from which distances to Athens were calculated. A milestone, c. 400 BC, found near the gate to the Acropolis reads: "The city set me up, a truthful monument to show all mortals the measure of their journeying: the distance to the altar of the twelve gods from the harbor is forty-five stades". The historian Herodotus, writing c. 440 BC, tells us that the distance from Heliopolis to the sea is similar to the distance "from the altar of the twelve gods at Athens to the temple of Olympian Zeus at Pisa."
+Pindar may have been referring to the Altar of the Twelve Gods and its central status, as is supposed by many scholars, when (probably sometime during the first half of the fifth century BC) he wrote:
+
+"Come to the chorus, Olympians,
+and send over it glorious grace, you gods
+who are coming to the city's crowded, incense-rich navel
+in holy Athens
+and to the glorious, richly adorned agora."
+Possibly as early as its founding, the altar may have been the zero point from which the herms, erected by Hipparchus, marked the halfway points of the roads from Athens to its demes.
+
+
+== Dionysia ==
+The altar apparently had played some role in the City Dionysia. Pindar's quote may be in reference to the Dionysia, and Xenophon mentions that during the Dionysia choruses performed dances in honor of the Twelve, presumably at their Altar during the Dionysia procession:
+
+"As for the processions, I think they would be most acceptable both to the gods and to the spectators if they included a gala ride in the market place. The starting point would be the Herms; and the cavalry would ride round saluting the gods at their shrines and statues. So at the Great Dionysia the dance of the choruses forms part of the homage offered to the Twelve and to other gods."
+
+
+== Supplication and refuge ==
+The altar also functioned as a place of supplication and refuge. In 519 BC, when the Plataeans came to Athens seeking protection from Thebes, according to Herodotus, while "the Athenians were making sacrifices to the twelve gods, they [the Plataeans] sat at the altar as suppliants and put themselves under protection." In 431 BC, as the result of accusations of  the misappropriation of public funds involving Pericles and the sculptor Phidias, some of Phidias's assistants probably sat as suppliants at the Altar. And, shortly before his execution at Athens (in about 355 BC), the Athenian general Callistratus took refuge there as well.
+
+
+== Modern discovery ==
+The exact location of the altar within the Classical Agora, unspecified in ancient sources, was discovered through excavations, in 1891 and 1934, at a site just opposite the Stoa of Zeus, and adjacent to the Panathenaic Way, which connected the Agora with the Acropolis. Two short sections of wall were uncovered in 1891, during construction of the Athens-Piraeus Electric Railway. In 1934 during excavations conducted by the American School of Classical Studies at Athens in the Agora, to the south of the railway, the southwest corner of an enclosure was discovered, which was identified as the continuation of the sections of wall discovered in 1891. Also discovered abutting the west wall, was a Pentelic marble statue base inscribed on its front:
+
+Leagros, son of Glaukon, dedicated [this]
+to the Twelve Gods
+thus identifying the enclosure as that of the Altar of the Twelve Gods.
+As of 1992, "nearly nine-tenths" of the altar lay buried beneath the Athens-Piraeus Electric Railway, with only the southwest corner of the enclosure visible. More of the altar was uncovered by Greek archaeologists in 2011 when the train tracks were temporarily removed for maintenance work. Once the altar was exposed, archaeologists and a group promoting the revival of ancient Greek polytheism filed legal injunctions to prevent replacement of the tracks of the Athens-Piraeus Railway. The court ruled that public transportation needs prevailed, and the altar was covered up again in August 2011.
+
+
+== Reconstruction ==
+The Altar's rectangular enclosure or peribolos, was roughly square, 9.5m per side, with its north-south axis oriented just to the west of north.  A parapet wall surrounded a paved enclosure containing a rectangular altar proper, presumably at its center. The parapet had a central opening to the west, into the agora, and probably another central opening to the east opening onto the Panathenaic Way. Four three-figure reliefs with mythological subjects, known only from copies, perhaps decorated the parapet enclosure.
+
+
+== Other literary and epigraphic testimonia ==
+When the Athenian herms were mutilated in 415 BC, according to Plutarch, a man castrated himself on the Altar. A fifth-century dedication by a victorious athlete at the Nemean and Isthmian Games, and two fourth-century dedications, one by the Athenian trierarch, Philippos, son of Iasodemos, the other by the Athenian Boule, have been associated with the Altar. A bronze statue of Demosthenes was erected near the altar in the "archonship of Gorgias", probably in 280/279 BC. References to the altar cease after the 3rd c. BC. A second-century AD inscription indicates a reserved seat for the priest of the Twelve Gods in the Theater of Dionysus.
+
+
+== Notes ==
+
+
+== References ==

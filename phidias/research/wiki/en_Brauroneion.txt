@@ -1,0 +1,22 @@
+SOURCE: https://en.wikipedia.org/wiki/Brauroneion
+TITLE: Brauroneion
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Brauroneion was the sanctuary of Artemis Brauronia on the Athenian Acropolis, located in the southwest corner of the Acropolis plateau, between the Chalkotheke and the Propylaea in Greece. It was originally dedicated during the reign of Peisistratos. Artemis Brauronia, protector of women in pregnancy and childbirth, had her main sanctuary at Brauron, a demos on the east coast of Attica.
+The sanctuary on the Acropolis was of an unusual trapezoidal shape and did not contain a formal temple. Instead, a portico or stoa served that function. The stoa measured circa 38 by 6.8 m; it stood in front of the southern Acropolis wall, facing north. At its corners, there were two risalit-like side wings, each about 9.3 m long, the western one facing east and vice versa. North of the east wing stood a further short west-facing stoa. All of the sanctuary's western part, now lost, stood on the remains of the Mycenaean fortification wall. All that remains of the eastern pare are foundations for walls, cut into the bedrock, as well as some very few architectural members of limestone.
+One of the wings contained the wooden cult statue (xoanon) of the goddess. Women who petitioned Artemis for help habitually dedicated items of clothing, which were draped around the statue. In 346 BC, a second cult statue was erected. According to Pausanias, it was a work by Praxiteles.
+Pausanias wrote:
+
+There is also a sanctuary [at Athens] of Artemis Brauronia (of Brauron); the image is the work of Praxiteles, but the goddess derives her name from the parish of Brauron. The old wooden image is in Brauron, Artemis Tauria (of Tauros) as she is called.
+Pausanias also records the presence of an over-life-sized bronze horse representing the Trojan Horse.
+
+Then there is a sanctuary of the Brauronian Artemis... The horse one sees here, referred to as wooden, is in bronze... But tradition has it that inside that horse were hidden the most valiant of the Greeks, and indeed the design (schema) of the bronze figure fits in well with this story. Menestheus and Teucer are peeping out of it, and behind them also the sons of Theseus.
+Further evidence is provided by the scholion to Aristophanes mentioning the name of the dedicator, Chairedemos. This is corroborated by the survival of the base of the sculpture on the Acropolis, which is inscribed with the names of Chairedemos and its sculptor Strongylion. The reference in Aristophanes allows for a terminus ante quem of the statue of 415/414.
+The entrance to the small sacred precinct, near its northeast corner, is still marked by seven rock-cut steps. They, and its northern enclosure, were probably created by Mnesicles during the building of the Propylaea. The date of the complex in its final shape is unclear, but a date around 430 BC, similar to that of the adjacent Propylaea, is commonly assumed.
+If still in use by the 4th-century, the temple would have been closed during the persecution of pagans in the late Roman Empire, when the Christian Emperors issued edicts prohibiting non-Christian worship.
+
+
+== Notes ==
+
+
+== Bibliography ==

@@ -1,0 +1,14 @@
+SOURCE: https://en.wikipedia.org/wiki/Desultor
+TITLE: Desultor
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+In antiquity, the term desultor (Latin; "one who leaps down") or in Greek apobates (ἀποβάτης) and metabates (μεταβάτης) (both meaning "one who gets/leaps off") has been applied to individuals skilled at leaping from one horse or chariot to another.
+As early as the Homeric times, we find the description of a man, who keeps four horses abreast at full gallop, and leaps from one to another, amidst a crowd of admiring spectators. Eustathius on Homer's Iliad, Lib. IV, assures us that riders might have up to six horses all abreast. In the games of the Roman circus, this sport was also very popular. The Roman desultor generally rode only two horses at the same time, sitting on them without a saddle, and vaulting upon either of them at his pleasure. He wore a hat or cap made of felt. The taste for these exercises was carried to so great an extent, that young men of the highest rank not only drove bigae and quadrigae in the circus, but exhibited these feats of horsemanship.
+Among other nations, this level of equestrian dexterity was applied to the purposes of war. Livy mentions a troop of horse in the Numidian army, in which each soldier was supplied with a couple of horses, and in the heat of battle, and when clad in armor, would leap with the greatest ease and celerity from a horse which was tired or disabled, upon the back of the horse which was still sound and fresh.
+
+
+== Notes and citations ==
+
+
+== References and sources ==
+ This article incorporates text from a publication now in the public domain: Smith, William, ed. (1870). "Desultor". Dictionary of Greek and Roman Antiquities. London: John Murray.

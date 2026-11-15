@@ -1,0 +1,24 @@
+SOURCE: https://en.wikipedia.org/wiki/Kanephoros
+TITLE: Kanephoros
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Kanephoros (Ancient Greek: Κανηφόρος, [kanɛːpʰóros], pl. Kanephoroi (Greek: Κανηφόροι); latinate plural form Canephorae; lit. "Basket Bearers") was an honorific office given to unmarried young women in ancient Greece, which involved the privilege of leading the procession to sacrifice at festivals; the highest honour was to lead the pompe (πομπή) at the Panathenaic Festival. The role was given to a virgin selected from amongst the aristocratic or Eupatrid families of Athens whose purity and youth was thought essential to ensure a successful sacrifice. Her task was to carry a basket or kanoun (κανοῦν), which contained the offering of barley or first fruits, the sacrificial knife and fillets to decorate the bull, in procession through the city up to the altar on the acropolis.
+From Aristophanes’s Lysistrata we have evidence that the office of kanephoros was the last in a sequence of religious duties that an unmarried Athenian girl might undertake; first as an arrhephoros, later an aletris, then as an arktos (ἄρκτος). The passage continues, "[f]inally, when I had grown to be a beautiful girl, I was a kanephoros and wore a necklace of dried figs." Though the precise age of the kanephoros is not known, this suggests the girl was probably between 11 and 15. 
+In such a conspicuous and ritually important office the chosen girl was expected to have a blameless reputation. In 514 BCE the sister of Harmodios, whose name is unknown, was rebuffed as kanephoros in the Greater Panathenaia; this insult is cited as the cause of her brother’s later assassination of the tyrant Hipparchos which hastened the fall from power of the Peisistratid family. 
+The cult practice of bearing the basket in a sacrificial procession may date back to the Minoan period; however, the Athenian usage seems to belong to the beginnings of the Panathenaia. The role is also referred to in myth with the abduction of Oreithyia by Boreas. A girl who acted as kanephoros would have advertised the central place of her family in Athenian society, and her own availability for a dynastic marriage.
+The depiction of the kanephoros in art presents an interesting problem.  Unlike the ephebos there are few representations of such girls, possibly because of the restriction on mentioning the name of honourable women in ancient Greek society. Excluding the Parthenon there are only some 44 images of girls and kanoun in the period 550 to 330 BCE. Otherwise she must be identified by her dress: while serving her office, the kanephoros wore a distinctive full-length mantle. One example is in the kylix by Makron, Toledo, Ohio 1972.55. On the Parthenon Frieze, none of the maidens (who may be identified by their long hair) are depicted carrying the kanoun and all of them wear the festival mantle. However, Linda Jones Roccos suggests that the maidens wearing both peplos and mantle implies they are kanephoroi, which would be consistent with the evidence of contemporary vase painting and wedding iconography. This would solve the problem of the curious absence of the basket bearers from the processional frieze.
+The kanephoros was not exclusive to the Panathenaia or to Athens. She may be found at a number of festivals across the Greek world, including: the Country Dionysia of Attica; Mother of the Gods in Athens, and Apollo Pythais, Artemis Brauronia, Asklepios; Demeter and Isis at Eleusis; Zeus Disoterien in Piraeus; Zeus Basileus in Lebadeia; Argive Hera; Xphrodite; Hermes at Salamis; Hekate on Delos; Sarapis and Isis; Herakles; Heros Iatros; Neoptolemos. The ruler cult of the Ptolemaic kingdom included a kanephoros of the deified queen Arsinoe II.
+
+
+== See also ==
+Ergastinai
+
+
+== References ==
+
+
+== Sources ==
+Brulé, Pierre (translated by Antonia Nevill). Women of Ancient Greece. Edinburgh University Press, 2003, ISBN 0-7486-1643-8, 2003.
+Dillon, Matthew. Girls and Women in Classical Greek Religion. Routledge, 2003, ISBN 0-415-31916-1.
+Goff, Barbara E. Citizen Bacchae: Women’s Ritual Practice in Ancient Greece. University of California Press, 2004, ISBN 0-520-23998-9.
+Roccos, Linda Jones. "The Kanephoros and her Festival Mantle in Greek Art", American Journal of Archaeology, Vol. 99, No. 4, October 1995, pp. 641–666.

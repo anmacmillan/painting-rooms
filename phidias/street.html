@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>The Procession: Athens, the Great Panathenaia, about 438 BC</title>
+<link rel="stylesheet" href="../common/world.css">
+<style>
+  :root { --go:#2456a8; } html, body { background:#1c2a44; } #title { background:#16203a; } #title > img, #end > img { background:#16203a; } #end { background:#1c2740; } #end > img { max-height:40vh; border-color:#d9cdb4; }
+  #bubble { font-size:17px; }
+  #plate { position:fixed; left:50%; bottom:max(30px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 1.6s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.9); z-index:9; color:#fff8e8; width:min(92vw, 900px); }
+  #plate.show { opacity:1; } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.95; display:block; } #plate em { display:block; font-size:clamp(13px,1.8vw,16px); margin-top:.3em; }
+  #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(14px); transition:opacity 2.4s ease, filter 2.8s ease; pointer-events:none; z-index:8; }
+  #melt.show { opacity:1; filter:none; } #cv { transition:filter 2.6s ease; } body.melting #cv { filter:brightness(.45) blur(3px); }
+  #warn { position:fixed; left:50%; top:22%; transform:translateX(-50%); font:italic 600 clamp(18px,2.8vw,28px) "Iowan Old Style",Palatino,Georgia,serif; color:#fff3c8; text-shadow:0 2px 10px rgba(0,0,0,.9); opacity:0; transition:opacity .3s; pointer-events:none; z-index:9; white-space:nowrap; }
+  #warn.show { opacity:1; }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div><div id="warn"></div>
+<img id="melt" src="images/frieze.jpg" alt=""><div id="plate"></div>
+<button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+<div id="title" class="screen">
+  <img src="images/frieze.jpg" alt="Two horsemen: block II of the west frieze of the Parthenon, British Museum">
+  <div class="words"><h1>The Procession</h1><p>Athens, the Great Panathenaia, about 438 BC · after Phidias</p><button class="go" id="start">Take up the stool</button></div>
+</div>
+<div id="end" class="screen hidden">
+  <img src="images/peplos.jpg" alt="The peplos scene: block V of the east frieze of the Parthenon, British Museum">
+  <h2>An afterword: what is known, what is argued, what is ours</h2>
+  <p>What is known. The Parthenon was built on the Acropolis of Athens between 447 and 438 BC, and its sculpture went on until 432. Plutarch (Life of Pericles 13) names Kallikrates and Iktinos as its builders and says of the whole programme that “his general manager and general overseer was Pheidias”. Phidias made the Athena of gold and ivory that stood inside, installed about 438; Thucydides (2.13) says it carried forty talents of gold, “and it was all removable”. The frieze ran round the top of the inner building, behind the columns: about 160 metres long, a metre high, some 378 figures, carved about 443 to 438. The pediments came last (437 to 432), so in 438 they stood empty, as here. The great gateway, the Propylaia, was begun in 437, and the Erechtheion and the little temple of Nike are later still: in 438 you came in by an older gate. Phidias’ great bronze Athena already stood in the open (Pausanias 1.28.2). In the Agora the Altar of the Twelve Gods, the Royal Stoa, the Painted Stoa, the old council house, the round Tholos, the Aiakeion and the fountain house were standing; the long stoas a visitor sees there today were not. The blocks you saw are in the British Museum, London (the horsemen, west block II; the cattle, south blocks XLV and XLVI; the folded cloth, east block V) and the Louvre, Paris (the girls, east block VII).</p>
+  <p>What is argued. What the frieze shows is not agreed. Most scholars read it as the procession of the Great Panathenaia, held every fourth summer, which brought a new robe (the peplos) up to the old wooden statue of Athena: this level follows that reading. Others disagree: Joan Connelly (1996) reads the middle scene as a king’s daughter made ready for sacrifice in the story of Erechtheus, and John Boardman (1977) saw in the horsemen the Athenians who died at Marathon. Nor is it agreed who the five figures in the middle are (a priestess, a magistrate and a child are the usual names), who is handing the cloth to whom, or even whether the two girls carry stools or baskets. That the sculpture was painted is certain: Egyptian blue, white and a purple have been found on the stones (a study of 2023), and holes show where bronze reins and spears were fixed. But the blue ground of the frieze is the museums’ likely guess, not a find, and every colour of cloth, skin and horse here is ours. The statue is lost: ours is built from Pausanias (1.24), Pliny (36.18) and a small Roman copy in Athens, the Varvakeion Athena; whether Phidias’ statue had the column under its hand is disputed. Plutarch (31) says Phidias was accused over the gold, put his own likeness on the shield “as a bald old man”, and died in prison; another ancient account, not read for this level, has him go on to work at Olympia.</p>
+  <p>The ground. The plan is real: the excavated footprints and the line of the Panathenaic Way are OpenStreetMap’s, the walk is 762 metres and nothing is shortened. The heights are today’s, from a coarse European model: the cliffs come out as slopes and the summit about nine metres low. What stood above the foundations is mostly unknown, so walls and roofs are plain. Conjecture throughout: the gate and its steps, the wall beside it, the houses, the state of the unfinished temple on the hill (the Hephaisteion), the wreck of the old temple, the altar, the pose of the bronze Athena, the scaffold, the ornament on the temple’s peak. The old council house stands on the footprint of the building that replaced it. The plane trees rest on a passage of Plutarch that was not checked.</p>
+  <p>What is ours. The girl, her errand and her late start; her place on the stone as the smaller of the two stool-bearers; Phidias with his tablet; every word spoken or shouted. Above all the turning of people into stone: the frieze was carved in the years before 438 and cannot record that summer’s procession. The horsemen and the chariot overtaking, and the cattle and sheep loose on the ramp, are a game’s devices (the frieze has sheep on its north side only). The metopes and the frieze on the building are drawn small, not copied. “They were created in a short time for all time” is Plutarch on these buildings (Pericles 13, translated by Bernadotte Perrin, 1916).</p>
+  <p class="small">Photographs, via Wikimedia Commons: west frieze block II and south frieze blocks XLV–XLVI by Marie-Lan Nguyen (Jastrow), 2006, public domain; east frieze block VII (Louvre Ma 738) by Dinkum, CC0; east frieze block V by Twospoonfuls, 2008, CC BY 3.0 (creativecommons.org/licenses/by/3.0), reduced in size. Every texture in this level was painted by a script for it. Plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors. Heights: EU-DEM v1.1, European Union, Copernicus Land Monitoring Service. Sources for every statement: <a href="research/FINDINGS.md" style="color:inherit">research/FINDINGS.md</a>.</p>
+  <button class="go" id="again">Walk it again</button>
+</div>
+<div id="err">This world needs WebGL, which this browser could not start.</div>
+
+<script src="../common/sound.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { rnd, clamp, sstep, mix } from '../common/world.js';
+import { makeGuide } from '../common/guide.js';
+import { makeScore } from '../common/score.js';
+import { makeFigures } from '../common/figure.js';
+import { makeFronts } from './fronts.js';
+import { makeBeasts } from './beasts.js';
+const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c), D2R = Math.PI / 180;
+const map = await (await fetch('map.json')).json();
+
+/* ================= the route =================
+   Real plan (tools/prep_athens.py, from OpenStreetMap). From beside the Altar of the Twelve Gods the Panathenaic Way crosses the Agora on its diagonal to the south-east
+   corner, climbs past the Eleusinion to the foot of the Acropolis, turns up the west slope to the gate, and runs along the north side of the Parthenon to its east front.
+   As far as the foot of the rock the points are OpenStreetMap's own for the excavated Way; from there they are laid by hand: up to the gate on the line of today's path,
+   and on the summit ten metres off the Parthenon's north steps. Nothing is compressed in plan. x east, z south, metres from a point beside the altar. */
+const raw = [[52, 0], [56, 10], [62, 30], [81, 65], [104, 108], [113, 134], [128, 161], [135, 172], [146, 188], [156, 202], [166, 228], [174, 254], [179, 278], [180, 286], [181, 310], [182, 340], [183, 365], [183, 387], [178, 395], [169, 409], [156, 426], [148, 439], [149, 449], [158, 453], [175, 450],
+  [200, 446], [222, 442], [245, 440], [270, 443], [296, 447], [335, 438.6], [370, 430.6], [386, 428], [396, 436], [397, 446], [393.5, 452.5]];
+const ROUTE = raw; const cum = [0]; for (let i = 1; i < ROUTE.length; i++) cum.push(cum[i - 1] + Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]));
+const LEN = cum[cum.length - 1];
+function at(s) { s = clamp(s, 0, LEN - 0.01); let i = 1; while (cum[i] < s) i++; const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1]), a = ROUTE[i - 1], b = ROUTE[i], L = Math.hypot(b[0] - a[0], b[1] - a[1]); return { x: mix(a[0], b[0], t), z: mix(a[1], b[1], t), dx: (b[0] - a[0]) / L, dz: (b[1] - a[1]) / L }; }
+function nearest(x, z, hint) { let best = 1e9, s = 0, bd = 1e9; for (let i = 1; i < ROUTE.length; i++) { const a = ROUTE[i - 1], b = ROUTE[i], dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz), 0, 1), d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t), si = cum[i - 1] + t * (cum[i] - cum[i - 1]), cost = d + (hint == null ? 0 : 0.04 * Math.abs(si - hint)); if (cost < best) { best = cost; s = si; bd = d; } } return { s, d: bd }; }
+const side = (p, u, v) => [p.x + p.dx * u - p.dz * v, p.z + p.dz * u + p.dx * v];      // u metres on, v metres to the right of the way
+const S_START = 4, S_GATE = nearest(209, 444.4).s, S1 = 150, S2 = 385, S3 = 592;
+const corr = s => s < 196 ? 15 : s < S_GATE - 40 ? 8.5 : s < S_GATE + 14 ? 7.5 : 10;      // half the width she may use: the open square, the road up, the ramp, the summit
+
+/* ================= the ground =================
+   Heights are today's, from the EU-DEM 25 m model on a 20 m grid (research/athens_dem.json): coarse, so the cliffs of the Acropolis come out as steep slopes and its
+   summit about nine metres low. Inside the line of the citadel walls the summit is levelled to a terrace that rises from the gate to the Parthenon, as the DEM has it.
+   Along the Way the ground is smoothed to the Way's own profile, so that the road does not tilt sideways. BASE is the height of the Agora floor above the sea. */
+const BASE = 62, dem = map.dem, inPoly = (p, x, z) => { let c = false; for (let i = 0, j = p.length - 1; i < p.length; j = i++) { const a = p[i], b = p[j]; if ((a[1] > z) !== (b[1] > z) && x < a[0] + (z - a[1]) / (b[1] - a[1]) * (b[0] - a[0])) c = !c; } return c; };
+const hDem = (x, z) => { const fx = clamp((x - dem.x0) / dem.step, 0, dem.nx - 1.001), fz = clamp((z - dem.z0) / dem.step, 0, dem.nz - 1.001), i = Math.floor(fx), j = Math.floor(fz), tx = fx - i, tz = fz - j, g = (i, j) => dem.h[j * dem.nx + i]; return mix(mix(g(i, j), g(i + 1, j), tx), mix(g(i, j + 1), g(i + 1, j + 1), tx), tz) - BASE; };
+const WALL = map.walls.map(w => w.p).sort((a, b) => b.length - a.length)[0], inAcro = (x, z) => x > 214 && inPoly(WALL, x, z), plateau = x => 68.5 + 17 * sstep(214, 300, x);
+const hBase = (x, z) => inAcro(x, z) ? plateau(x) : hDem(x, z);
+const prof = []; { const rawp = []; for (let s = 0; s <= LEN + 2; s += 2) { const p = at(s); rawp.push(hBase(p.x, p.z)); } for (let i = 0; i < rawp.length; i++) { let a = 0, n = 0; for (let k = -6; k <= 6; k++) { const v = rawp[clamp(i + k, 0, rawp.length - 1)]; a += v; n++; } prof.push(a / n); } }
+const rYs = s => { const f = clamp(s / 2, 0, prof.length - 1.001), i = Math.floor(f); return mix(prof[i], prof[i + 1], f - i); };
+// five broad steps up to the gate
+const STEP0 = S_GATE - 13, STEPN = 5, STEPL = 2.2, rY = s => { if (s <= STEP0 || s >= STEP0 + STEPN * STEPL) return rYs(s); const a = rYs(STEP0), b = rYs(STEP0 + STEPN * STEPL); return a + (b - a) * (Math.floor((s - STEP0) / STEPL) + 1) / STEPN; };
+const ground = (x, z, stepped) => { const n = nearest(x, z), t = sstep(corr(n.s) * 0.75, corr(n.s) * 0.75 + 14, n.d); return mix(stepped ? rY(n.s) : rYs(n.s), hBase(x, z), t); };
+const hAt = (x, z) => ground(x, z, true);
+
+/* ================= renderer, and the rule of this world: marble in hard light =================
+   One sun, low in the east-south-east of a summer morning, with real cast shadows; the shadows are filled only by the blue of the sky. Nothing is filtered: edges stay sharp. */
+let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: true }); } catch (e) { $('err').style.display = 'flex'; throw e; }
+const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xcfe0f2, 260, 1500);
+const camera = new THREE.PerspectiveCamera(58, 1, 0.2, 4000);
+const LIGHT = { hemi: 1.55, sun: 3.3 }, SUN = new V3(-0.70, -0.62, -0.36).normalize();
+const hemi = new THREE.HemisphereLight(C('#8fb8ff'), C('#d9c49a'), LIGHT.hemi), sun = new THREE.DirectionalLight(C('#fff1d6'), LIGHT.sun); scene.add(hemi, sun, sun.target);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); { const c = sun.shadow.camera; c.left = c.bottom = -48; c.right = c.top = 48; c.near = 10; c.far = 420; } sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.06;
+const aimSun = (x, y, z) => { sun.target.position.set(x, y, z); sun.position.set(x - SUN.x * 200, y - SUN.y * 200, z - SUN.z * 200); };
+const sky = new THREE.Mesh(new THREE.SphereGeometry(3000, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: { uSun: { value: SUN.clone().negate() } },
+  vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+  fragmentShader: `uniform vec3 uSun; varying vec3 vDir; void main(){ vec3 d = normalize(vDir); float h = clamp(d.y, 0.0, 1.0), s = max(0.0, dot(d, uSun));
+    vec3 col = mix(vec3(0.80, 0.88, 0.96), vec3(0.16, 0.38, 0.78), pow(h, 0.5)); col = mix(col, vec3(0.86, 0.84, 0.74), smoothstep(0.0, -0.08, d.y)); col += vec3(1.0, 0.9, 0.7) * (pow(s, 240.0) * 1.5 + pow(s, 12.0) * 0.14);
+    gl_FragColor = vec4(col, 1.0);
+    #include <colorspace_fragment>
+    }` }));
+sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
+
+/* ================= materials: painted for this level by tools/blender/tex_phidias.py ================= */
+const TL = new THREE.TextureLoader(), lam = o => new THREE.MeshLambertMaterial(o), basic = o => new THREE.MeshBasicMaterial(o);
+const tex = async (f, rep = 1) => { const t = await TL.loadAsync('tex/' + f); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; if (rep) t.wrapS = t.wrapT = THREE.RepeatWrapping; return t; };
+const [tMarble, tPlaster, tTile, tRock, tEarth] = await Promise.all(['marble.jpg', 'plaster.jpg', 'tile.jpg', 'rock.jpg', 'earth.jpg'].map(f => tex(f)));
+const FR = makeFronts({ THREE, scene, T: { marble: tMarble, plaster: tPlaster, tile: tTile, rock: tRock } }), BE = makeBeasts({ THREE, scene }), M = FR.M;
+const shadowM = basic({ color: 0, transparent: true, opacity: 0, depthWrite: false }), prop = (c, paint) => { const m = lam({ color: c }); m.userData.paint = paint || c; return m; };
+const on = (o, cast = true, recv = true) => { o.traverse(m => { if (m.isMesh) { m.castShadow = cast; m.receiveShadow = recv; } }); return o; };
+
+/* ---- the ground itself: beaten earth in the town, bare grey rock on the slopes of the Acropolis, the Way a paler band of packed gravel ---- */
+{ const X0 = -200, Z0 = -130, N = 160, ST = 5, g = new THREE.PlaneGeometry(N * ST, N * ST, N, N), p = g.attributes.position, col = [], uv = g.attributes.uv, cE = C('#ead9b6'), cR = C('#b4b0a8'), cW = C('#fbf3dc'), cG = C('#8a9a5a'), c = new THREE.Color();
+  for (let i = 0; i < p.count; i++) { const x = X0 + N * ST / 2 + p.getX(i), z = Z0 + N * ST / 2 - p.getY(i), n = nearest(x, z), y = ground(x, z, false), e = 4, sl = Math.hypot(hBase(x + e, z) - hBase(x - e, z), hBase(x, z + e) - hBase(x, z - e)) / (2 * e);
+    p.setXYZ(i, x, y - (n.d < corr(n.s) + 3 ? 0 : 0.02), z); uv.setXY(i, x / 7, z / 7);
+    c.copy(cE).lerp(cR, Math.max(sstep(0.12, 0.34, sl) * (z > 250 ? 1 : 0.4), sstep(300, 400, z) * 0.75)); if (z > 300 && !inAcro(x, z)) c.lerp(cG, 0.25 * (1 - sstep(0.1, 0.5, sl)) * (0.5 + 0.5 * Math.sin(x * 0.13) * Math.cos(z * 0.11))); if (inAcro(x, z)) c.copy(cR).lerp(cE, 0.35);
+    c.lerp(cW, (1 - sstep(corr(n.s) * 0.5, corr(n.s) * 0.9, n.d)) * 0.8); col.push(c.r, c.g, c.b); }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.computeVertexNormals(); const m = new THREE.Mesh(g, lam({ map: tEarth, vertexColors: true })); m.receiveShadow = true; scene.add(m);
+  const far = new THREE.Mesh(new THREE.CircleGeometry(3000, 40), lam({ color: '#c9bd94' })); far.rotation.x = -Math.PI / 2; far.position.set(150, -6, 250); scene.add(far);
+  // far hills, for a skyline: outlines only
+  const hillM = basic({ color: '#9fb0c4' }); for (const [a, d, w, h] of [[0.4, 1900, 900, 300], [1.3, 2300, 1500, 420], [2.2, 2100, 1100, 260], [3.5, 2400, 1700, 180], [4.6, 2200, 1300, 330], [5.6, 2000, 1000, 240]]) { const hl = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), hillM); hl.scale.set(w, h, w * 0.5); hl.position.set(150 + Math.sin(a) * d, -10, 250 + Math.cos(a) * d); hl.rotation.y = a; scene.add(hl); } }
+
+/* ================= pictures drawn for the walls: the metopes and the frieze as they sit on the building (drawn small, not copied from the stones) ================= */
+const pics = { metope: [0, 1, 2, 3].map(k => FR.canvasTex(128, 128, (g, w) => { g.fillStyle = '#f3ecdc'; g.fillRect(0, 0, w, w); let sd = 7 + k * 13; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647; g.fillStyle = '#c9906a'; g.strokeStyle = '#8a5a3a'; g.lineWidth = 3;
+    for (let f = 0; f < 2; f++) { const x = 34 + f * 54 + r() * 8, lean = (f ? -1 : 1) * (0.15 + r() * 0.3); g.save(); g.translate(x, 112); g.rotate(lean); g.beginPath(); g.ellipse(0, -52, 13, 30, 0, 0, 7); g.fill(); g.beginPath(); g.arc(0, -92, 10, 0, 7); g.fill(); g.beginPath(); g.moveTo(-6, -26); g.lineTo(-16, 0); g.moveTo(6, -26); g.lineTo(18, 0); g.moveTo(8, -66); g.lineTo(32 * (f ? -1 : 1), -84 + r() * 30); g.stroke(); g.restore(); }
+    if (k % 2) { g.beginPath(); g.ellipse(52, 84, 30, 14, 0, 0, 7); g.fill(); } }).valueOf()).map(t => lam({ map: t })),
+  frieze: [0, 1, 2].map(k => FR.canvasTex(512, 64, (g, w, h) => { g.fillStyle = '#2456a8'; g.fillRect(0, 0, w, h); let sd = 3 + k * 17; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647; g.strokeStyle = '#b89a6a'; g.lineWidth = 2.5; g.lineCap = 'round';
+    for (let x = 14; x < w - 10; x += 26 + r() * 10) { const horse = k < 2 && r() < 0.6; g.fillStyle = ['#f3e8d2', '#e9c9a0', '#d9a88a', '#efe2c4'][Math.floor(r() * 4)];
+      if (horse) { g.beginPath(); g.ellipse(x, 36, 17, 8, -0.15, 0, 7); g.fill(); g.beginPath(); g.ellipse(x - 15, 22, 5, 11, 0.5, 0, 7); g.fill(); g.beginPath(); g.ellipse(x - 21, 13, 7, 3.5, 0.5, 0, 7); g.fill(); g.strokeStyle = g.fillStyle; g.lineWidth = 3; for (const e of [-13, -8, 9, 14]) { g.beginPath(); g.moveTo(x + e, 40); g.lineTo(x + e - (e < 0 ? 7 : -2), 60); g.stroke(); } g.fillStyle = '#f6eede'; g.beginPath(); g.ellipse(x + 2, 20, 5, 11, 0.1, 0, 7); g.fill(); g.beginPath(); g.arc(x + 1, 7, 4.5, 0, 7); g.fill(); x += 16; }
+      else { g.beginPath(); g.moveTo(x - 6, 62); g.lineTo(x - 4, 16); g.lineTo(x + 5, 16); g.lineTo(x + 7, 62); g.fill(); g.beginPath(); g.arc(x, 10, 5, 0, 7); g.fill(); } } })).map(t => lam({ map: t })) };
+
+/* ================= the buildings ================= */
+const B = n => map.buildings.find(b => b.n === n), mid = p => { let x = 0, z = 0; for (const q of p) { x += q[0] / p.length; z += q[1] / p.length; } return [x, z]; }, gAt = p => hAt(...mid(p));
+const START = at(S_START), feet = [];      // footprints that she cannot enter
+// --- the Agora in 438: on the excavated footprints (OpenStreetMap). Only plans survive: the walls and roofs are plain
+{ let b = B('Royal Stoa'); FR.stoa(b.p, gAt(b.p), [20, -30], { cols: 8, H: 4.4 }); feet.push(b.p);
+  b = B('Old Bouleuterion'); FR.hall(b.p, gAt(b.p), [0, 40], { H: 7, door: 1.6, doorH: 3.4 }); feet.push(b.p);      // the footprint is that of the later Metroon, which was built over the old council house
+  b = B('Tholos'); FR.tholos(b.p, gAt(b.p)); b = B('Aiakeion'); FR.enclosure(b.p, gAt(b.p), { H: 3.4 }); feet.push(b.p);
+  b = B('Southeast Fountain House'); FR.hall(b.p, gAt(b.p), [100, 150], { H: 4.6, door: 3.2, doorH: 3.0, doorM: M.dark }); feet.push(b.p);
+  b = B('Altar of the Twelve Gods'); { const g = gAt(b.p), [cx, cz] = mid(b.p); FR.enclosure(b.p, g, { H: 1.25, wall: M.marbleWarm }); FR.altar(cx - 1, cz + 1.2, 1.2, g, 2.4, 1.2, 0.9); feet.push(b.p); }
+  // the Painted Stoa: dug north of the railway, off the edge of the extract; set here from the excavators' plan (about 36 m by 12.5 m, facing south), with painted panels on its back wall
+  const paint = [['#8a3a2a', '#d9b06a'], ['#2f4f8a', '#e9d9a8'], ['#5a6a3a', '#e6c08a'], ['#7a2a3a', '#d9c9a0']].map(([a, c], k) => lam({ map: FR.canvasTex(128, 96, (g, w, h) => { g.fillStyle = a; g.fillRect(0, 0, w, h); g.fillStyle = c; for (let i = 0; i < 9; i++) { const x = 10 + i * 13 + (i * 7 % 5), y = 48 + ((i * 11 + k * 5) % 14); g.fillRect(x, y, 5, 30); g.beginPath(); g.arc(x + 2.5, y - 4, 4, 0, 7); g.fill(); } }) }));
+  const pk = [[-8, -86], [28, -92], [30, -104.5], [-6, -98.5]]; FR.stoa(pk, hAt(11, -90), [20, -40], { cols: 13, H: 5.2, pictures: paint }); feet.push(pk);
+  for (const [x, z, a] of [[-12, -64, 1.9], [-6, -68, 1.7], [0, -70, 1.6], [7, -70, 1.4]]) FR.herm(x, z, a, hAt(x, z));
+  FR.tyrannicides(47, 88, 1.2, hAt(47, 88));
+  // the temple on the hill above the square (the Hephaisteion): begun about 449 and not finished for a generation. How far it had got in 438 is not known: it is shown as a colonnade without a roof
+  b = B('Hephaisteion'); { const o = FR.obb(b.p), g = hAt(...o.c), S = FR.sides(o.corners, g); FR.box(M.marbleWarm, S[0], -0.5, S[0].W + 0.5, -4, 1.0, -S[1].W - 0.5, 0.5); S.forEach((F, i) => { const n = F.W > 20 ? 13 : 6; for (let k = 0; k < n; k++) { const [x, z] = F.P(1.2 + (F.W - 2.4) * k / (n - 1), -1.2); FR.column(x, z, g + 1.0, 5.7, 0.5, M.marbleWarm); } FR.box(M.marbleWarm, F, 0.6, F.W - 0.6, 6.7, 7.5, -1.8, -0.6); }); feet.push(b.p); } }
+// --- houses: plain, and conjectural. Where the Stoa of Attalos later stood, and along the road up between the square and the Eleusinion
+{ let k = 0; for (const [x, z, a, w, d] of [[140, 22, -1.57, 13, 10], [141, 38, -1.57, 12, 9], [143, 54, -1.57, 15, 11], [144, 73, -1.57, 12, 10], [146, 90, -1.57, 14, 9], [150, 128, -1.9, 12, 9]]) FR.house(x, z, a, w, d, hAt(x, z), k++);
+  for (let s = 212; s < 372; s += 15.5) { const p = at(s), [x, z] = side(p, 0, 12.2); if (s < 352) FR.house(x, z, Math.atan2(-p.dz * -1, p.dx * -1) + Math.PI, 13, 9, hAt(x, z), k++); const [x2, z2] = side(p, 0, -12.2); if (s > 322 || s < 214) FR.house(x2, z2, Math.atan2(-p.dz, p.dx), 13, 9, hAt(x2, z2), k++); } }
+// --- the Eleusinion: the walled sanctuary beside the road, on its footprint, with a small temple inside (the temple's place and size are approximate)
+{ const b = B('Eleusinion'); FR.enclosure(b.p, (x, z) => hDem(x, z), { H: 3.0 }); feet.push(b.p); const t = [[193, 240], [203, 243], [198, 262], [188, 259]]; FR.hall(t, hAt(196, 250), [196, 300], { H: 6, wall: M.marbleWarm, door: 1.3, doorH: 3.4, pitch: 0.24 }); }
+// --- the Acropolis: the walls on their line, the gate, the Parthenon, the bronze Athena, the wreck of the old temple, the altar
+const P = FR.parthenon([B('Parthenon').p[1], B('Parthenon').p[0], B('Parthenon').p[3], B('Parthenon').p[2]], plateau(340), pics);
+{ const closed = [...WALL, WALL[0]]; FR.wall(closed, (x, z) => plateau(x), (x, z) => Math.min(hDem(x, z), plateau(x) - 3), (x, z) => nearest(x, z).d < 11 || x < 214);
+  // from the gate the wall runs on to north and south across the west end (its line here is this level's: the real west end was rebuilt with the Propylaia)
+  const pg = at(S_GATE), ga = Math.atan2(-pg.dx, -pg.dz), gy = rY(S_GATE) ; FR.gate(pg.x, pg.z, ga, gy, 17);
+  for (const sd of [-1, 1]) { const a = side(pg, -3, sd * 8.5), b = side(pg, -3, sd * 34); FR.wall([a, b], (x, z) => gy + 3.5, (x, z) => hDem(x, z) - 2, () => false); FR.solids.push({ F: FR.front(a[0], a[1], b[0], b[1]), u0: 0, u1: 26, w0: -1, w1: 1 }); }
+  // the five steps below it
+  for (let i = 0; i < STEPN; i++) { const s = STEP0 + i * STEPL, p = at(s + STEPL / 2), F = FR.frontAt(p.x - p.dx * STEPL / 2, p.z - p.dz * STEPL / 2, Math.atan2(-p.dx, -p.dz), 17, 0), y = rY(s + 0.1); FR.box(M.marbleWarm, F, 0, 17, y - 2.5, y, -STEPL - 0.02, 0); }
+  FR.bronzeAthena(262, 424, Math.atan2(-0.95, 0.3), plateau(262));
+  // the old temple of Athena, burnt by the Persians in 480: its platform, some drums, and (a guess) the walls of its back rooms left standing without a roof
+  { const F = FR.frontAt(338, 428, Math.atan2(0.229, 0.974), 43, plateau(338)); FR.box(M.poros, F, 0, 43, -3, 0.7, -21, 0); for (let i = 0; i < 9; i++) { const [x, z] = F.P(2 + i * 4.9, -1.2 - (i % 3) * 0.3), h = 0.6 + ((i * 7) % 5) * 0.45; const d = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.66, h, 14), M.poros); d.position.set(x, plateau(338) + 0.7 + h / 2, z); on(d); scene.add(d); }
+    FR.box(M.poros, F, 30, 30.6, 0.7, 5.2, -17, -4); FR.box(M.poros, F, 30, 42, 0.7, 4.6, -17, -16.4); FR.box(M.poros, F, 41.4, 42, 0.7, 5.0, -17, -4); FR.solids.push({ F, u0: 0, u1: 43, w0: -21, w1: 0 }); }
+  FR.altar(402, 416, Math.atan2(-0.97, 0.22), plateau(400), 12, 4.4, 1.9);
+  // marble waiting in the yard west of the temple: the pediments are still to be carved
+  for (const [x, z, w, h, d, a] of [[288, 462, 2.6, 1.1, 1.4, 0.3], [284, 469, 1.8, 1.5, 1.5, 1.1], [291, 472, 3.2, 0.8, 1.2, -0.4], [279, 461, 1.4, 1.0, 1.4, 0.7]]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M.marble); m.position.set(x, plateau(x) + h / 2, z); m.rotation.y = a; on(m); scene.add(m); FR.rounds.push({ x, z, r: w * 0.6 }); } }
+const PAR = FR.parthenos(P.inside[0], P.inside[1], Math.atan2(P.FE.nx, P.FE.nz), P.cellaY, 1.0);
+const cellaL = new THREE.PointLight(C('#ffd890'), 900, 60, 1.4); cellaL.position.set(...FR.front(0, 0, 1, 0).P(0, 0), 0); { const [x, z] = P.FN.P(P.UE + 9, -P.mid); cellaL.position.set(x, P.cellaY + 7, z); } scene.add(cellaL);
+// plane trees in the square. Plutarch (Cimon 13) says Cimon planted the Agora with planes: not checked for this level, so the trees are marked unverified
+{ const leaf = [lam({ color: '#5f8a4a' }), lam({ color: '#6f9a52' }), lam({ color: '#4f7a48' })], trunk = lam({ color: '#8a7a66' });
+  for (const [x, z, h] of [[22, 34, 9], [-4, 58, 10], [26, 128, 9], [64, 152, 8], [8, 96, 10], [96, 30, 9], [104, 60, 8], [-20, 20, 9]]) { const y = hAt(x, z), tr = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.36, h * 0.6, 8), trunk); tr.position.set(x, y + h * 0.3, z); on(tr); scene.add(tr); FR.rounds.push({ x, z, r: 0.7 });
+    for (let i = 0; i < 7; i++) { const bl = new THREE.Mesh(new THREE.IcosahedronGeometry(2.0 + (i % 3) * 0.6, 1), leaf[i % 3]); bl.position.set(x + Math.cos(i * 2.2) * 2.0, y + h * 0.62 + (i % 3) * 1.3, z + Math.sin(i * 2.2) * 2.0); bl.scale.y = 0.7; on(bl); scene.add(bl); } } }
+FR.flush();
+const inFoot = (x, z) => feet.some(p => inPoly(p, x, z));
+const solid = (x, z) => FR.blocked(x, z) || inFoot(x, z);
+let progS = S_START;
+const blocked = (x, z) => { const n = nearest(x, z, progS); return n.d > corr(n.s) || solid(x, z); };
+
+/* ================= people: figures modelled in Blender (tools/blender/figure.py, world 'phidias'); the beasts are built in beasts.js ================= */
+const FIG = makeFigures({ THREE, scene, shadowM, castShadow: true });
+await FIG.load('models/', ['girl', 'kore_white', 'kore_red', 'kore_blue', 'priestess', 'rider', 'rider_hat', 'elder', 'magistrate', 'musician', 'carrier', 'phidias', 'boy']);
+const T = (g, bone, x, y, z) => FIG.turn(g.userData, bone, x || 0, y || 0, z || 0);
+const arms = (g, S, ux, uy, fx) => { T(g, 'upperarm' + S, ux, uy || 0, 0); T(g, 'forearm' + S, fx == null ? -20 : fx); };
+const onBone = (g, bone, obj, x, y, z) => { const b = g.userData.B[bone]; g.updateWorldMatrix(true, true); const p = new V3(x, y, z).applyMatrix4(g.matrixWorld); b.worldToLocal(p); obj.position.copy(p); const q = b.getWorldQuaternion(new THREE.Quaternion()).invert(), gq = g.getWorldQuaternion(new THREE.Quaternion()); obj.quaternion.copy(q.multiply(gq)); const sc = b.getWorldScale(new V3()); obj.scale.set(1 / sc.x, 1 / sc.y, 1 / sc.z).multiplyScalar(g.scale.x); b.add(obj); on(obj); return obj; };
+// things carried
+const stoolOf = () => { const g = new THREE.Group(), w = prop('#8a5a34', '#b0703a'), cu = prop('#b8473a', '#b63a28'); const seat = new THREE.Mesh(new THREE.BoxGeometry(0.42, 0.045, 0.32), w); seat.position.y = 0.2; g.add(seat); for (const [a, b] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) { const l = new THREE.Mesh(new THREE.CylinderGeometry(0.022, 0.028, 0.2, 6), w); l.position.set(a * 0.17, 0.1, b * 0.12); g.add(l); } const c = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.07, 0.3), cu); c.position.y = 0.255; g.add(c); return g; };
+const hydria = () => { const g = new THREE.Group(), m = prop('#b8643a', '#c9703a'), b = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10), m), n = new THREE.Mesh(new THREE.CylinderGeometry(0.07, 0.06, 0.14, 10), m), l = new THREE.Mesh(new THREE.CylinderGeometry(0.1, 0.07, 0.03, 10), m), f = new THREE.Mesh(new THREE.CylinderGeometry(0.08, 0.1, 0.05, 10), m); b.scale.y = 1.15; n.position.y = 0.24; l.position.y = 0.32; f.position.y = -0.2; g.add(b, n, l, f); return g; };
+const pipes = () => { const g = new THREE.Group(), m = prop('#c9a86a'); for (const e of [-1, 1]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.014, 0.46, 6), m); p.rotation.x = 1.2; p.rotation.z = e * 0.16; p.position.set(e * 0.04, 0, 0.2); g.add(p); } return g; };
+const kithara = () => { const g = new THREE.Group(), m = prop('#a8743a'), box = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.26, 0.07), m), bar = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.03, 0.03), m); bar.position.y = 0.42; g.add(box, bar); for (const e of [-1, 1]) { const a = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.34, 0.04), m); a.position.set(e * 0.16, 0.27, 0); g.add(a); } return g; };
+// the girl, with the stool on her head and a hand up to steady it. She stands in a holder of her own, so that she too can be pressed flat at the end
+const Hme = new THREE.Group(); scene.add(Hme); const meG = FIG.spawn('girl', { size: 0.92 }); Hme.add(meG); FIG.pose(meG, 0, 0); const stool = onBone(meG, 'head', stoolOf(), 0, 1.40, 0.0);
+const phid = FIG.spawn('phidias', { size: 1.12, adult: true }); FIG.pose(phid, 0, 0); { const tb = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.22, 0.02), prop('#d9c08a')); phid.userData.aL.add(tb); }
+const marshal = FIG.spawn('magistrate', { size: 1.14, adult: true });
+
+/* ================= the stagings: flesh to stone =================
+   Each staging is a surviving block. Its people wait near their places; when the girl comes up they step into line along a wall, the wall turns blue (the frieze's ground
+   was blue), they are pressed flat into relief and painted stone runs along them from one end; then the colour goes, as it has gone from the stones, and the view gives way
+   to a photograph of the block as it is today. A place on the block is u (0 at its left edge, 1 at its right), and a figure faces 0 (right), 90 (out at us) or 180 (left). */
+const MARBLE = C('#d6cbb8'), FLESH = '#eccba4', HAIRP = '#6a4426';
+const paintOf = (key, a) => C(key === 'dress' ? a.paint || '#efe6d2' : key === 'cloak' ? a.cloak || '#b63a28' : key === 'skin' || key === 'face' || key === 'hose' ? FLESH : key === 'hair' || key === 'beard' ? HAIRP : key === 'hat' ? '#c9a86a' : key === 'coat' ? a.coat || '#9a6a40' : key === 'mane' ? '#3a2a20' : key === 'hoof' || key === 'dark' ? '#4a3a2e' : '#efe6d2');
+function makeStage(o) {
+  const L = Math.hypot(o.look[0], o.look[1]), dx = o.look[0] / L, dz = o.look[1] / L, X = [dz, -dx], Hs = o.Ws / o.aspect, ry = Math.atan2(dx, dz), y0 = o.y != null ? o.y : hAt(o.O[0], o.O[1]) + 0.05;
+  const st = { ...o, dx, dz, ry, Hs, y0, k: 0, stone: 0, bare: 0, seen: false, actors: [], P: (u, d = 0) => [o.O[0] - X[0] * (u - 0.5) * o.Ws + dx * d, o.O[1] - X[1] * (u - 0.5) * o.Ws + dz * d] };
+  // the wall: blue, between two plain mouldings, on a ledge
+  const slab = new THREE.Group(); slab.position.set(o.O[0], y0, o.O[1]); slab.rotation.y = ry; scene.add(slab); st.slab = slab; const W2 = o.Ws + 0.5;
+  st.blueM = lam({ color: '#2456a8', transparent: true, opacity: 0 }); st.edgeM = lam({ color: '#f1e8d6', transparent: true, opacity: 0 });
+  const wall = new THREE.Mesh(new THREE.BoxGeometry(W2, Hs + 0.5, 0.2), st.blueM); wall.position.set(0, Hs / 2 - 0.1, 0.52); slab.add(wall); for (const [y, h, d] of [[Hs + 0.22, 0.24, 0.5], [-0.26, 0.5, 1.5]]) { const e = new THREE.Mesh(new THREE.BoxGeometry(W2 + 0.3, h, d), st.edgeM); e.position.set(0, y, 0.62 - d / 2); slab.add(e); }
+  const skirt = new THREE.Mesh(new THREE.BoxGeometry(W2 + 0.3, 12, 1.5), st.edgeM); skirt.position.set(0, -6.5, -0.13); slab.add(skirt); on(slab, false, true); slab.visible = false;
+  for (const a of o.actors) { const H = new THREE.Group(); H.rotation.y = ry; scene.add(H); let obj, mats = [];
+    const grab = (dict, src) => { for (const k in dict) mats.push({ m: dict[k], map: dict[k].map, col: dict[k].color.clone(), paint: paintOf(k, src) }); };
+    if (a.me) { obj = meG; a.H = Hme; }
+    else if (a.beast) { obj = BE.make(a.beast, a.o || {}); obj.scale.setScalar(a.size || 1); H.add(obj); grab(obj.userData.mats, a);
+      if (a.rider) { const r = FIG.spawn(a.rider.name, { size: a.rider.size || 1.0, adult: true }), u = obj.userData; u.body.add(r); r.position.set(0, u.seatY - 0.8 * (a.rider.size || 1.0), u.seatZ); r.userData.sh.visible = false; a.riderG = r; grab(r.userData.mats, a.rider); } }
+    else { obj = FIG.spawn(a.name, { size: a.size || 1.12, adult: true }); H.add(obj); grab(obj.userData.mats, a); obj.userData.sh.visible = false; }
+    if (a.carry) { const c = a.carry(obj); c.traverse(m => { if (m.isMesh && !mats.some(q => q.m === m.material)) mats.push({ m: m.material, map: null, col: m.material.color.clone(), paint: C(m.material.userData.paint || '#efe6d2') }); }); }
+    if (a.me) { grab(meG.userData.mats, { paint: '#e9b23a' }); stool.traverse(m => { if (m.isMesh && !mats.some(q => q.m === m.material)) mats.push({ m: m.material, map: null, col: m.material.color.clone(), paint: C(m.material.userData.paint) }); }); }
+    const slot = st.P(a.u, a.d || 0), idle = a.idle ? [slot[0] - X[0] * a.idle[0] - dx * a.idle[1], slot[1] - X[1] * a.idle[0] - dz * a.idle[1]] : slot;
+    Object.assign(a, { H: a.H || H, obj, mats, slot, idleAt: idle, yaw: Math.atan2(-Math.cos(a.face * D2R), -Math.sin(a.face * D2R)), on: false, ph: rnd(0, 6) }); if (!a.me) { obj.rotation.y = a.yaw; H.position.set(idle[0], hAt(idle[0], idle[1]), idle[1]); } st.actors.push(a); }
+  st.order = st.actors.slice().sort((p, q) => p.u - q.u); return st;
+}
+const petrify = (a, yes) => { if (a.on === yes) return; a.on = yes; for (const q of a.mats) { q.m.map = yes ? null : q.map; q.m.color.copy(yes ? q.paint : q.col); q.m.needsUpdate = true; } };
+const fade = (a, k) => { if (a.on) for (const q of a.mats) q.m.color.copy(q.paint).lerp(MARBLE, k); };
+// poses. Every one is held still; t is time, for a little life before the stone
+const sit = (g, spread = 20) => { for (const S of 'LR') { T(g, 'thigh' + S, -66, S === 'L' ? spread : -spread, 0); T(g, 'shin' + S, 58); } };
+const stoolArm = g => { T(g, 'upperarmR', -168, -14, 0); T(g, 'forearmR', -24); };
+const FE_N = [P.FE.nx, P.FE.nz], EM = P.eastMid;
+const STAGES = [
+  /* 1. West frieze, block II (British Museum): two horsemen riding to the left, their horses up on their hind legs. The first rider leans back with a hand to his head, his cloak flying. */
+  makeStage({ key: 'horsemen', s: S1, O: [103.5, 139], look: [-1, 0], Ws: 4.5, aspect: 1400 / 816, img: 'images/frieze.jpg', title: 'Two horsemen', line: 'West frieze of the Parthenon, block II · carved about 443–438 BC · British Museum', man: [-0.28, -2.2],
+    actors: [{ beast: 'horse', u: 0.35, face: 180, size: 0.95, rear: 0.8, coat: '#8a5a34', o: { coat: '#8a5a34' }, idle: [1.2, -3.2], rider: { name: 'rider', size: 0.98, paint: '#efe6d2', cloak: '#b63a28' }, rpose: (g, t) => { sit(g); T(g, 'spine', -16); T(g, 'head', -6, 0, 30); arms(g, 'R', -150, -30, -95); arms(g, 'L', -42, 0, -40); T(g, 'hair', 70); } },
+      { beast: 'horse', u: 0.80, face: 180, size: 0.95, rear: 0.9, coat: '#e6dccb', o: { coat: '#e9e2d6', mane: '#bcae98' }, idle: [2.6, -2.2], rider: { name: 'rider', size: 0.98, paint: '#efe6d2', cloak: '#2456a8' }, rpose: (g, t) => { sit(g); T(g, 'spine', 4); T(g, 'head', 6); arms(g, 'R', -46, 0, -52); arms(g, 'L', -46, 0, -52); T(g, 'hair', 30); } }] }),
+  /* 2. South frieze, blocks XLV-XLVI (British Museum): young men in mantles leading a heifer to the sacrifice; one lifts a hand to his head, one looks back over his shoulder. */
+  makeStage({ key: 'cattle', s: S2, O: [176.2, 356], look: [-1, 0], Ws: 2.75, aspect: 1400 / 1057, img: 'images/cattle.jpg', title: 'Cattle led to the sacrifice', line: 'South frieze of the Parthenon, blocks XLV–XLVI · British Museum', man: [-0.42, -2.0],
+    actors: [{ beast: 'ox', u: 0.52, d: 0.5, face: 0, size: 0.9, coat: '#e9e0cc', toss: 0.6, idle: [0.3, -1.0] },
+      { name: 'carrier', u: 0.04, face: 0, size: 1.16, paint: '#efe6d2', idle: [-0.5, -2.6], pose: g => { T(g, 'head', -4); arms(g, 'L', -30, 0, -60); } },
+      { name: 'carrier', u: 0.27, face: 70, size: 1.16, paint: '#d9a05a', idle: [-0.2, -3.6], pose: g => { T(g, 'head', 4, 0, 24); arms(g, 'R', -150, -30, -110); arms(g, 'L', -20, 0, -70); } },
+      { name: 'carrier', u: 0.55, face: 20, size: 1.16, paint: '#efe6d2', idle: [0.4, -2.4], pose: g => { T(g, 'spine', 6); T(g, 'head', 0, 0, 40); arms(g, 'L', -50, 0, -80); arms(g, 'R', -20, 0, -40); } },
+      { name: 'carrier', u: 0.78, face: 0, size: 1.16, paint: '#b63a28', idle: [0.9, -3.4], pose: g => { T(g, 'spine', 8); T(g, 'head', 8); arms(g, 'L', -36, 0, -70); } }] }),
+  /* 3. East frieze, block VII (Louvre, "the plaque of the Ergastinai"): girls walking to the right in pairs, in the peplos, met by two men who marshal them. */
+  makeStage({ key: 'girls', s: S3, O: [237.5, 429.5], look: [-0.7071, -0.7071], Ws: 4.3, aspect: 1400 / 656, img: 'images/girls.jpg', title: 'The girls at the head of the procession', line: 'East frieze of the Parthenon, block VII · Louvre, Paris', man: [-0.2, -2.2],
+    actors: [{ name: 'kore_white', u: 0.05, face: 0, size: 1.1, paint: '#efe6d2', idle: [-0.4, -2.2], pose: g => { arms(g, 'R', -40, 0, -60); } }, { name: 'kore_red', u: 0.17, face: 0, size: 1.1, paint: '#b63a28', idle: [-0.3, -3.3], pose: g => { arms(g, 'L', -30, 0, -40); } },
+      { name: 'magistrate', u: 0.315, face: 150, size: 1.13, paint: '#d9a05a', idle: [0, -4.2], pose: g => { T(g, 'head', 0, 0, -30); arms(g, 'L', -30, 0, -60); } },
+      { name: 'kore_blue', u: 0.455, face: 0, size: 1.1, paint: '#2456a8', idle: [0.1, -2.6] }, { name: 'kore_white', u: 0.545, d: 0.12, face: 0, size: 1.1, paint: '#efe6d2', idle: [0.3, -3.6] },
+      { name: 'elder', u: 0.665, face: 160, size: 1.13, paint: '#efe6d2', idle: [0.5, -2.2], pose: g => { arms(g, 'R', -34, 0, -50); } },
+      { name: 'kore_red', u: 0.80, face: 0, size: 1.1, paint: '#b63a28', idle: [0.5, -3.4], pose: g => { arms(g, 'R', -24, 0, -30); } }, { name: 'kore_blue', u: 0.93, face: 0, size: 1.1, paint: '#2456a8', idle: [0.9, -2.6] }] }),
+  /* 4. East frieze, block V (British Museum), the middle of the whole frieze: two girls with stools on their heads come to a woman; behind her a man and a child hold a folded cloth between them. */
+  makeStage({ key: 'peplos', end: true, s: LEN, O: [EM[0] + FE_N[0] * 7.5, EM[1] + FE_N[1] * 7.5], y: plateau(390) + 0.05, look: [-FE_N[0], -FE_N[1]], Ws: 3.9, aspect: 1400 / 761, img: 'images/peplos.jpg', title: 'The folded cloth', line: 'East frieze of the Parthenon, block V, over the east door · British Museum', quote: '“They were created in a short time for all time.” Plutarch, Pericles 13', man: [1.2, -2.4],
+    actors: [{ me: true, u: 0.085, face: 55, paint: '#e9b23a' },
+      { name: 'kore_white', u: 0.315, face: 10, size: 1.0, paint: '#efe6d2', idle: [0.2, -1.4], carry: g => onBone(g, 'head', stoolOf(), 0, 1.40, 0), pose: g => { T(g, 'upperarmL', -168, 14, 0); T(g, 'forearmL', -24); } },
+      { name: 'priestess', u: 0.53, face: 165, size: 1.14, paint: '#efe6d2', idle: [0.2, -1.0], pose: g => { arms(g, 'R', -50, 0, -50); T(g, 'head', 6); } },
+      { name: 'magistrate', u: 0.70, face: 10, size: 1.18, paint: '#d9a05a', idle: [0.5, -1.2], pose: g => { arms(g, 'R', -62, 0, -40); arms(g, 'L', -50, 0, -50); T(g, 'head', 10); T(g, 'spine', 6); } },
+      { name: 'boy', u: 0.925, face: 170, size: 0.86, paint: '#efe6d2', idle: [0.5, -1.0], pose: g => { arms(g, 'R', -80, 0, -30); arms(g, 'L', -66, 0, -40); T(g, 'head', -8); } }] })];
+const [ST1, ST2, ST3, ST4] = STAGES, byKey = Object.fromEntries(STAGES.map(s => [s.key, s]));
+// the folded cloth itself, between the man and the child: the robe for the old statue of Athena. It is held up only at the staging
+const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.72, 0.07), prop('#e9b23a', '#e9b23a')); { const [x, z] = ST4.P(0.815, -0.02); cloth.position.set(x, ST4.y0 + 1.02, z); cloth.rotation.y = ST4.ry; on(cloth); scene.add(cloth); ST4.actors[3].mats.push({ m: cloth.material, map: null, col: cloth.material.color.clone(), paint: C('#e9b23a') }); }
+
+/* ================= the crowd: Athens lining the Way. Plain shapes, set up by the hundred ================= */
+{ const spots = [], pal = ['#efe6d2', '#e6dcc6', '#d9c9a4', '#b8473a', '#4a6aa8', '#c9a05a', '#8a5a3a', '#f3eee2', '#a8443a', '#6a7a4a'];
+  const nearSlab = (x, z) => STAGES.some(s => { const rx = x - s.O[0], rz = z - s.O[1], d = rx * s.dx + rz * s.dz, r = rx * s.dz - rz * s.dx; return Math.abs(r) < s.Ws / 2 + 3.5 && d > -20 && d < 6; });
+  for (let s = 6; s < LEN - 4; s += 1.25) for (const sd of [-1, 1]) for (let row = 0; row < 2; row++) { if (((s * 7 + row * 3 + sd) % 5) < 1.2) continue; const p = at(s), lat = corr(s) + 0.9 + row * 1.0 + ((s * 13) % 7) * 0.08, [x, z] = side(p, ((s * 3) % 5) * 0.2, lat * sd); if (solid(x, z) || nearSlab(x, z) || nearest(x, z).d < corr(nearest(x, z).s) + 0.5 || (s > S_GATE - 16 && s < S_GATE + 8)) continue; spots.push([x, hAt(x, z), z, Math.atan2(-p.dz * sd * -1, p.dx * sd * -1) + Math.PI / 2 + (((s * 17) % 9) - 4) * 0.1, 0.9 + ((s * 11 + row) % 7) * 0.035, (Math.floor(s * 3) + row + (sd > 0 ? 3 : 0)) % pal.length]); }
+  const body = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.16, 0.27, 1.34, 8), lam({ color: '#ffffff' }), spots.length), head = new THREE.InstancedMesh(new THREE.SphereGeometry(0.115, 8, 6), lam({ color: '#e6c4a0' }), spots.length), d = new THREE.Object3D();
+  spots.forEach(([x, y, z, ry, k, ci], i) => { d.position.set(x, y + 0.67 * k, z); d.scale.setScalar(k); d.rotation.y = ry; d.updateMatrix(); body.setMatrixAt(i, d.matrix); body.setColorAt(i, C(pal[ci])); d.position.y = y + 1.47 * k; d.updateMatrix(); head.setMatrixAt(i, d.matrix); });
+  for (const m of [body, head]) { m.castShadow = true; m.frustumCulled = false; scene.add(m); } }
+
+/* ================= the procession on the move ================= */
+// walkers on foot, in the order of the frieze from its back to its head: elders, musicians, the youths with the water jars. They go at a walk and stop, as a procession does
+const walkers = [];
+{ const add = (name, s, off, o = {}) => { const g = FIG.spawn(name, { size: o.size || 1.12, adult: true, tint: o.tint }); if (o.carry) o.carry(g); walkers.push({ g, s, s0: s, off, kind: o.kind, ph: rnd(0, 6), pose: o.pose, cool: 0 }); };
+  for (let i = 0; i < 6; i++) add(i % 3 === 1 ? 'magistrate' : 'elder', 214 + Math.floor(i / 2) * 3.2, (i % 2 ? 1 : -1) * 2.3, { kind: 'elders', carry: i % 2 ? g => { const br = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.5, 5), prop('#5a7a3a')); br.position.set(0, 0.2, 0.05); g.userData.aR.add(br); on(br); } : null, pose: i % 2 ? g => arms(g, 'R', -46, 0, -70) : null });      // some carry a branch of olive
+  for (let i = 0; i < 4; i++) add('musician', 258 + Math.floor(i / 2) * 3.0, (i % 2 ? 1 : -1) * 2.0, { kind: 'music', tint: i < 2 ? undefined : '#e6dcc6', carry: i < 2 ? g => onBone(g, 'head', pipes(), 0, 1.40, 0.1) : g => onBone(g, 'spine', kithara(), 0.2, 1.0, 0.17), pose: i < 2 ? g => { arms(g, 'L', -62, 0, -112); arms(g, 'R', -62, 0, -112); } : g => { arms(g, 'L', -30, 0, -80); arms(g, 'R', -40, 0, -100 - 12 * Math.sin(time * 9)); } });
+  for (let i = 0; i < 4; i++) add('carrier', 300 + Math.floor(i / 2) * 3.4, (i % 2 ? 1 : -1) * 2.4, { kind: 'water', carry: g => onBone(g, 'spine', hydria(), 0.2, 1.47, 0.02), pose: g => { T(g, 'upperarmL', -150, 26, 0); T(g, 'forearmL', -70); } }); }
+// cattle and sheep on the ramp: they balk and wander
+const herd = []; { for (let i = 0; i < 3; i++) { const g = BE.make('ox', i === 1 ? { coat: '#b8946a' } : {}); g.scale.setScalar(1.05); on(g); herd.push({ g, kind: 'ox', s: 428 + i * 19, s0: 428 + i * 19, ph: i * 2.1, off: 0, cool: 0, A: 3.2 + i * 0.5, w: 0.5 + i * 0.13 }); }
+  for (let i = 0; i < 5; i++) { const g = BE.make('sheep', i % 3 === 2 ? { coat: '#8a7a66' } : {}); on(g); herd.push({ g, kind: 'sheep', s: 437 + i * 9.5, s0: 437 + i * 9.5, ph: i * 1.3, off: 0, cool: 0, A: 4.2, w: 0.9 + (i % 3) * 0.25, leapt: false }); } }
+// horsemen, and one chariot: they come up from behind and must be let through
+const mkRider = (name, coat, o) => { const h = BE.make('horse', { coat, ...o }), r = FIG.spawn(name, { size: 0.98, adult: true }), u = h.userData; u.body.add(r); r.position.set(0, u.seatY - 0.8 * 0.98, u.seatZ); r.userData.sh.visible = false; on(h); h.userData.rider = r; h.visible = false; return h; };
+const squad = [mkRider('rider', '#8a5a34'), mkRider('rider_hat', '#3a2e28', { mane: '#1c1612' }), mkRider('rider', '#e9e2d6', { mane: '#bcae98' })];
+const chariot = new THREE.Group(); { const w = prop('#8a5a34'), br = prop('#c9a23a'); for (const e of [-1, 1]) { const wh = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.035, 6, 20), w); wh.rotation.y = Math.PI / 2; wh.position.set(e * 0.62, 0.45, 0); chariot.add(wh); for (let k = 0; k < 2; k++) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.82, 0.03), w); sp.position.set(e * 0.62, 0.45, 0); sp.rotation.x = k * Math.PI / 2; wh.userData.sp = 1; chariot.add(sp); } }
+  const fl = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.06, 0.8), w); fl.position.set(0, 0.5, 0.05); chariot.add(fl); const fr = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.55, 14, 1, true, -Math.PI / 2, Math.PI), br); fr.material.side = THREE.DoubleSide; fr.position.set(0, 0.8, 0.1); chariot.add(fr); const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.6, 6), w); pole.rotation.x = Math.PI / 2; pole.position.set(0, 0.62, 1.7); chariot.add(pole);
+  const dr = FIG.spawn('musician', { size: 1.0, adult: true, tint: '#f3eee2' }), ap = FIG.spawn('rider', { size: 1.0, adult: true }); chariot.add(dr, ap); dr.position.set(-0.2, 0.52, 0.1); ap.position.set(0.28, 0.52, -0.12); dr.userData.sh.visible = ap.userData.sh.visible = false;
+  const shd = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.04, 18), prop('#c9a23a')); shd.rotation.z = Math.PI / 2; shd.position.set(0.18, 0.02, 0); ap.userData.aL.add(shd);
+  const crest = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.14, 0.3), prop('#b63a28')); onBone(ap, 'head', crest, 0, 1.66, 0); chariot.userData = { dr, ap }; on(chariot); chariot.visible = false; scene.add(chariot); }
+const team = [BE.make('horse', { coat: '#3a2e28', mane: '#1c1612' }), BE.make('horse', { coat: '#9a6a40' })]; team.forEach(h => { on(h); h.visible = false; });
+// what comes up behind her, and where: [route distance at which it starts, kind]
+const PASSES = [{ at: 26, kind: 'horse' }, { at: 84, kind: 'horse' }, { at: 186, kind: 'chariot' }, { at: 330, kind: 'horse' }].map(p => ({ ...p, state: 'wait', s: 0, v: 0 }));
+// every word spoken is invented (the end card says so)
+const LINES = { elders: 'Mind the elders, child!', music: 'Mind the pipers!', water: 'Splash! Mind the water jars!' };
+const CHEER = ['Run, little stool-bearer!', 'Up to the goddess!', 'Make way for the girl with the stool!', 'She is late! Let her through!'];
+
+/* ================= play ================= */
+const guide = makeGuide({ posts: false, THREE, scene, map: { streets: map.streets, buildings: map.buildings.filter(b => b.k !== 'later' && b.n !== 'Areopagus' && !/Older/.test(b.n)) }, nearest: (x, z) => nearest(x, z), at, LEN, blocked: () => false, groundY: hAt, bounds: [-200, -130, 600, 670],
+  places: [{ n: 'The horsemen', x: ST1.O[0], z: ST1.O[1], s: S1 }, { n: 'Eleusinion', x: 180, z: 262, s: 290 }, { n: 'The cattle', x: ST2.O[0], z: ST2.O[1], s: S2 }, { n: 'The gate of the Acropolis', x: 209, z: 444, s: S_GATE }, { n: 'The girls', x: ST3.O[0], z: ST3.O[1], s: S3 }, { n: 'The Parthenon, east front', x: 393, z: 452, s: LEN }],
+  style: { board: '#f1e8d6', ink: '#1c2a44', post: '#8a7a66', land: '#d9c9a0', water: '#2456a8', house: '#b89a7a', street: '#fff6dc', route: '#b63a28' } });
+let state = 'title', time = 0, muted = false, wpT = 0, wp = null, bubbleG = null, bubbleT = 0, warnT = 0, stageI = 0, wobble = 0, bump = 0, musicT = 0, cheerT = 0;
+const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
+const plate = (st) => { SC.award(st.title, null, st.title); $('plate').innerHTML = `<i>${st.title}</i><span>${st.line}</span>` + (st.quote ? `<em>${st.quote}</em>` : ''); $('plate').classList.add('show'); };
+const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
+const warn = (t, secs = 2.2) => { $('warn').textContent = t; $('warn').classList.add('show'); warnT = time + secs; };
+const SC = makeScore({ THREE, scene, key: 'phidias', at, nearest: (x, z) => nearest(x, z, progS), LEN, groundY: hAt, blocked, isHouse: () => false, walkers: [], slops: false, washing: false, hurdles: [], ditches: [], paintings: STAGES.length, thing: 'owl', things: 'silver owls', avoid: [S1, S2, S3, S_GATE - 6, LEN - 6], half: 3 });
+const phidAt = st => { const [x, z] = st.P(0.5 + st.man[0] * 1 + (st.man[0] < 0 ? -0.5 : 0.5), st.man[1]); return [x, z]; };
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: hAt(p.x, p.z) }); progS = S_START; stageI = 0; wp = null; wobble = bump = 0;
+  for (const st of STAGES) { st.seen = false; st.k = st.stone = st.bare = 0; st.slab.visible = false; for (const a of st.actors) { petrify(a, false); a.H.scale.set(1, 1, 1); } }
+  for (const w of walkers) w.s = w.s0; for (const h of herd) { h.s = h.s0; h.leapt = false; } for (const q of PASSES) q.state = 'wait'; squad.forEach(h => h.visible = false); chariot.visible = false; team.forEach(h => h.visible = false);
+  { const [x, z] = side(p, 1.5, 2.2); marshal.position.set(x, hAt(x, z), z); marshal.rotation.y = Math.atan2(p.x - x, p.z - z); }
+  Hme.rotation.y = 0; Hme.scale.set(1, 1, 1); camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); camera.near = 0.2; camera.updateProjectionMatrix(); $('plate').classList.remove('show'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); }
+function begin() {
+  SND.start({ chords: [[40, 52, 59, 64], [45, 52, 57, 64], [38, 50, 57, 62], [40, 47, 59, 64]], scale: [64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 86] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
+  $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
+  setTimeout(() => { if (state === 'play') say(marshal, 'The stool for the priestess! Your place is at the head, child, before the temple. Run, and let the horsemen by!', 5.5); }, 500);
+}
+// a figure standing in the staging: its own pose, and a breath of life while it is still flesh
+const poseActor = (a, moving) => { if (a.beast) { BE.pose(a.obj, a.ph + time * (moving ? 5 : 0.7), moving ? 0.7 : 0, (a.rear || 0) * (moving ? 0.2 : 0.75 + 0.25 * Math.sin(time * 1.3 + a.ph) * (a.on ? 0 : 1)), (a.toss || 0) * (a.on ? 0.6 : 0.5 + 0.5 * Math.sin(time * 0.9 + a.ph))); if (a.riderG) { FIG.pose(a.riderG, 0, 0); a.rpose(a.riderG, time); } }
+  else if (!a.me) { FIG.pose(a.obj, moving ? a.ph + time * 5 : 0, moving ? 0.5 : 0); if (!moving && a.pose) a.pose(a.obj); if (!a.on && !moving) T(a.obj, 'spine', 1.5 * Math.sin(time * 1.1 + a.ph), 0, 2 * Math.sin(time * 0.6 + a.ph)); } };
+function fitFov(st, D) { const hp = Math.min(innerHeight, innerWidth / st.aspect); return 2 * Math.atan(st.Hs * innerHeight / hp / 2 / D) / D2R; }
+function update(dt) {
+  time += dt;
+  if (state === 'title') { Hme.visible = phid.visible = marshal.visible = false; camera.position.set(30, hAt(30, -20) + 7, -24); camera.lookAt(150, 40, 260); camera.fov = 50; camera.updateProjectionMatrix(); aimSun(60, 0, 30); }
+  else {
+    phid.visible = marshal.visible = true; Hme.visible = !(state === 'way' && !wp.end && wpT > 1.2);
+    let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.5 : 0) - stick.dy;
+    turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (state !== 'play') { turn = 0; go = 0; }
+    me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1); const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
+    const slope = (hAt(me.x + fx * 2, me.z + fz * 2) - hAt(me.x, me.z)) / 2, top = 10 * clamp(1 - slope * 1.1, 0.62, 1.1);      // the hill takes something off her pace
+    me.speed += (go * top - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2)); let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
+    if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;
+      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
+      if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
+    const f = hAt(nx, nz); me.x = nx; me.z = nz; const jump = (keys.has('Space') || held.jump) && state === 'play';
+    if (jump && !me.air) { me.vy = 6.0 + Math.abs(me.speed) * 0.2; me.air = true; SND.whoosh(0.04); }
+    if (me.air) { me.vy -= (jump && me.vy < 0 ? 5 : 15) * dt; me.y += me.vy * dt; if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.06); wobble += 0.25; } } else me.y += (f - me.y) * Math.min(1, dt * 14);
+    const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.9); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
+    me.lean += (turn * 0.2 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
+    if (state === 'play') { Hme.position.set(me.x, me.y, me.z); Hme.rotation.y = 0; meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; FIG.pose(meG, me.ph, me.air ? 0.4 : pace, me.air, 0.08 * Math.min(1, pace)); } else { FIG.pose(meG, 0, 0); meG.rotation.z = 0; }
+    stoolArm(meG); wobble += (Math.abs(turn) * pace * 0.5 + bump - wobble) * Math.min(1, dt * 5); bump *= Math.exp(-dt * 2.2); stool.rotation.z = Math.sin(time * 9) * 0.1 * Math.min(1.6, wobble) * (state === 'play' ? 1 : 0) ; stool.rotation.x = Math.cos(time * 7) * 0.06 * Math.min(1.6, wobble) * (state === 'play' ? 1 : 0);
+    if (SC.update(dt, me, state === 'play', time)) me.speed *= 0.2;
+    const prog = nearest(me.x, me.z, progS); progS = prog.s; const alt = me.y - hAt(me.x, me.z), myOff = (() => { const p = at(prog.s); return (me.x - p.x) * -p.dz + (me.z - p.z) * p.dx; })();
+    const knock = (n, msg) => { SC.lose(n, msg); me.speed *= 0.25; bump = 2.2; };
+
+    // ---- horsemen and the chariot, coming up behind
+    for (const q of PASSES) { const hs = q.kind === 'horse' ? squad : team;
+      if (q.state === 'wait' && state === 'play' && prog.s > q.at && prog.s < q.at + 30 && !PASSES.some(o => o.state === 'ride')) { q.state = 'ride'; q.s = Math.max(0.5, prog.s - 36); q.told = false; warn(q.kind === 'horse' ? 'Horsemen behind you! Stand aside!' : 'A chariot! Out of the middle!'); hs.forEach(h => h.visible = true); if (q.kind === 'chariot') chariot.visible = true; }
+      if (q.state === 'ride' || q.state === 'on') { q.v = q.state === 'ride' ? Math.max(13, me.speed + 8) : 13; q.s += q.v * dt; const lane = q.kind === 'horse' ? [[0, -1.0], [-0.4, 1.0], [-3.4, 0]] : [[2.3, -0.62], [2.3, 0.62]];
+        hs.forEach((h, i) => { const p = at(q.s + lane[i][0]), [x, z] = side(p, 0, lane[i][1]); h.position.set(x, hAt(x, z), z); h.rotation.y = Math.atan2(p.dx, p.dz); BE.pose(h, time * 13 + i * 1.7, 2.4); const r = h.userData.rider; if (r) { FIG.pose(r, 0, 0); sit(r); T(r, 'spine', 10); arms(r, 'L', -44, 0, -50); arms(r, 'R', -44, 0, -50); T(r, 'hair', 60); } });
+        if (q.kind === 'chariot') { const p = at(q.s), u = chariot.userData; chariot.position.set(p.x, hAt(p.x, p.z), p.z); chariot.rotation.y = Math.atan2(p.dx, p.dz); for (const g of [u.dr, u.ap]) FIG.pose(g, 0, 0); arms(u.dr, 'L', -60, 0, -30); arms(u.dr, 'R', -60, 0, -30); T(u.ap, 'spine', 14); arms(u.ap, 'R', -70, 0, -20); u.ap.userData.aL.rotation.x = -0.6; }
+        if (Math.floor(time * 7) !== Math.floor((time - dt) * 7) && Math.abs(q.s - prog.s) < 30) SND.puff(0.05);
+        if (q.state === 'ride' && q.s + 2.4 > prog.s) { q.state = 'on'; const hit = Math.abs(myOff) < (q.kind === 'horse' ? 2.0 : 1.5) && alt < 1.2; if (state === 'play') { if (hit) knock(10, q.kind === 'horse' ? 'Out of the horses’ way!' : 'Out of the chariot’s way!'); else SC.gain(q.kind === 'horse' ? 15 : 20, q.kind === 'horse' ? 'Let the horsemen through' : 'Let the chariot through', 2); } }
+        if (q.s > prog.s + 85 || q.s > LEN - 250 || (state !== 'play' && q.s > prog.s + 30)) { q.state = 'done'; hs.forEach(h => h.visible = false); chariot.visible = false; } } }
+    // ---- the walkers: each file goes on at a walk while she is near, and halts
+    for (const w of walkers) { const near = prog.s > w.s - 70 && prog.s < w.s + 40, v = near && w.s < w.s0 + 46 && state === 'play' ? 1.15 : 0; w.s += v * dt; const p = at(w.s), [x, z] = side(p, 0, w.off); w.g.visible = Math.abs(prog.s - w.s) < 160; if (!w.g.visible) continue;
+      w.g.position.set(x, hAt(x, z), z); w.g.rotation.y = Math.atan2(p.dx, p.dz); w.ph += dt * (2 + v * 2.6); FIG.pose(w.g, w.ph, v / 1.6); if (w.pose) w.pose(w.g); w.cool -= dt;
+      const d = Math.hypot(x - me.x, z - me.z); if (d < 0.8 && w.cool <= 0 && state === 'play' && Math.abs(me.speed) > 3 && alt < 1) { w.cool = 4; knock(5, LINES[w.kind]); }
+      if (w.kind === 'music' && d < 26 && time > musicT && state === 'play') { musicT = time + 0.28; SND.bell([0, 2, 3, 5, 3, 2, 4, 6][Math.floor(time / 0.28) % 8], 0.03 * (1 - d / 30)); } }
+    for (const kind of ['elders', 'music', 'water']) { const ws = walkers.filter(w => w.kind === kind), s0 = Math.min(...ws.map(w => w.s)), s1 = Math.max(...ws.map(w => w.s)), g = ws[0]; if (!g.thru && state === 'play' && prog.s > s0 && prog.s < s1 + 1 && Math.abs(myOff) < 1.3) g.mid = true; if (!g.thru && prog.s > s1 + 1.5) { g.thru = true; if (g.mid && state === 'play') SC.gain(10, 'Straight through the middle!', 2); } if (prog.s < s0 - 20) { g.thru = false; g.mid = false; } }
+    // ---- the herd on the ramp
+    for (const h of herd) { const near = prog.s > h.s - 60 && prog.s < h.s + 40, sheep = h.kind === 'sheep', v = near && h.s < h.s0 + 16 ? (sheep ? 0.8 : 0.5) : 0; h.s += v * dt; h.g.visible = Math.abs(prog.s - h.s) < 150; if (!h.g.visible) continue;
+      const want = h.A * Math.sin(time * h.w + h.ph) * (sheep ? 1 : Math.sin(time * 0.23 + h.ph) > -0.3 ? 1 : 0.2), was = h.off; h.off += (want - h.off) * Math.min(1, dt * (sheep ? 2.5 : 0.9)); const lat = (h.off - was) / Math.max(dt, 1e-3);
+      const p = at(h.s), [x, z] = side(p, 0, h.off); h.g.position.set(x, hAt(x, z), z); const hd = Math.atan2(p.dx * (0.5 + v) - p.dz * lat * 0.6, p.dz * (0.5 + v) + p.dx * lat * 0.6); let dy = hd - h.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); h.g.rotation.y += dy * Math.min(1, dt * 3);
+      BE.pose(h.g, time * (sheep ? 9 : 5) + h.ph, Math.min(1.2, (Math.abs(lat) + v) * (sheep ? 0.9 : 0.8)), 0, sheep ? 0 : 0.5 + 0.5 * Math.sin(time * 0.8 + h.ph)); h.cool -= dt;
+      const d = Math.hypot(x - me.x, z - me.z), R = sheep ? 0.75 : 1.25; if (state === 'play' && d < R) { if (alt > (sheep ? 0.45 : 1.3)) { if (!h.leapt && sheep) { h.leapt = true; SC.gain(20, 'Leapt the sheep!', 2); } } else if (h.cool <= 0 && Math.abs(me.speed) > 2) { h.cool = 3.5; knock(sheep ? 5 : 10, sheep ? 'Baa! Mind the sheep!' : 'Moo! Mind the heifer!'); } } }
+    // ---- a cheer from the crowd now and then
+    if (state === 'play' && time > cheerT && me.speed > 6) { cheerT = time + rnd(16, 26); warn(CHEER[Math.floor(rnd(0, CHEER.length))], 2.6); }
+    if (time > warnT) $('warn').classList.remove('show');
+
+    // ---- the stagings
+    const next = STAGES[stageI];
+    if (next && state === 'play' && (next.end ? prog.s > LEN - 5 : prog.s > next.s - 6 && prog.s < next.s + 8)) { state = 'way'; wp = next; next.seen = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); $('warn').classList.remove('show'); SND.whoosh(0.07); wp.slab.visible = true; for (const q of PASSES) if (q.state === 'ride' || q.state === 'on') { q.state = 'done'; squad.forEach(h => h.visible = false); team.forEach(h => h.visible = false); chariot.visible = false; } }
+    for (const st of STAGES) { const act = st === wp, d = Math.abs(st.s - prog.s); if (!act && d > 170) { for (const a of st.actors) if (!a.me) a.H.visible = false; continue; }
+      for (const a of st.actors) { if (a.me) continue; a.H.visible = true; const k = act ? sstep(0, 2.2, wpT) : 0, y = mix(hAt(a.idleAt[0], a.idleAt[1]), st.y0 + (a.lift || 0), k); a.H.position.set(mix(a.idleAt[0], a.slot[0], k), y, mix(a.idleAt[1], a.slot[1], k)); poseActor(a, act && k > 0.05 && k < 0.95); } }
+    if (state === 'way') { const st = wp, E = st.end ? 5.5 : 0; wpT += dt; const hold = window.__road.holdStage; if (hold) wpT = Math.min(wpT, E + (hold === 2 ? 6.3 : 4.3));
+      const t = wpT - E;      // the last staging opens on the temple front and the gold inside it, and only then draws up its five figures
+      if (st.end) { const a = st.actors[0], k = sstep(0, 2.2, t); Hme.position.set(mix(me.x, a.slot[0], k), mix(me.y, st.y0, k), mix(me.z, a.slot[1], k)); Hme.rotation.y = st.ry; let d = a.yaw - meG.rotation.y + (k < 1 ? 0 : 0); if (k > 0) { if (!st._r) { st._r = true; meG.rotation.y = a.yaw; } } if (k >= 1) { me.x = a.slot[0]; me.z = a.slot[1]; me.y = st.y0; } T(meG, 'head', 0, 0, -30); cloth.visible = t > 1.6; }
+      st.k = sstep(0.6, 2.2, t); st.blueM.opacity = st.edgeM.opacity = st.k; st.slab.visible = t > 0.5;
+      st.order.forEach((a, i) => { const ta = 2.4 + i * (1.3 / st.order.length); if (t > ta && !a.on) { petrify(a, true); SND.bell(9 + (i % 4), 0.05); SND.puff(0.05); } a.H.scale.z = mix(1, 0.34, sstep(ta - 0.1, ta + 0.5, t)); fade(a, sstep(4.6, 6.2, t)); });
+      st.blueM.color.set('#2456a8').lerp(MARBLE, sstep(4.6, 6.2, t) * 0.92); st.edgeM.color.set('#f1e8d6').lerp(MARBLE, sstep(4.6, 6.2, t));
+      if (t > 3.9 && t < 4.0) plate(st); if (t > 6.4 && t < 11.2) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (t > 11.2 && !st.end) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); for (const a of st.actors) { petrify(a, false); a.H.scale.z = 1; } st.blueM.opacity = st.edgeM.opacity = 0; st.slab.visible = false; }
+      if (t > 13 && !st.end) { state = 'play'; stageI++; wp = null; camera.near = 0.2; camera.updateProjectionMatrix(); const p = at(progS + 3); me.yaw = Math.atan2(p.dx, -p.dz); if (st.after) say(phid, st.after, 4.5); }
+      if (st.end && t > 15.5) { state = 'done'; SC.finish(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); } }
+    // Phidias: always ahead of her, at the next staging, with his tablet, looking at the people he will make into stone. He says nothing
+    { const st = STAGES[Math.min(stageI, STAGES.length - 1)], [x, z] = st.P(st.man[0] < 0 ? st.man[0] : 1 + st.man[0], st.man[1]); phid.position.set(x, hAt(x, z), z); const [lx, lz] = st.P(0.5, 0); phid.rotation.y = Math.atan2(lx - x, lz - z); FIG.pose(phid, 0, 0); phid.userData.aL.rotation.x = -1.0; T(phid, 'upperarmR', -52, 0, -8); T(phid, 'forearmR', -70 - 8 * Math.sin(time * 4)); T(phid, 'head', 8 + 6 * Math.sin(time * 0.8)); phid.visible = Math.abs(st.s - prog.s) < 170; }
+    FIG.pose(marshal, 0, 0); T(marshal, 'upperarmR', -120, 0, -20); T(marshal, 'forearmR', -30 - 14 * Math.sin(time * 5)); marshal.visible = prog.s < 120;
+
+    // ---- camera
+    if (state === 'way' || state === 'done') { const st = wp, t = wpT - (st.end ? 5.5 : 0);
+      if (st.end && t < 0) { const [x, z] = [EM[0] + FE_N[0] * 30, EM[1] + FE_N[1] * 30], k = Math.min(1, dt * 1.4); camera.position.lerp(new V3(x, st.y0 + 2.2, z), k); camera.lookAt(EM[0] - FE_N[0] * 6, st.y0 + 7.6, EM[1] - FE_N[1] * 6); camera.fov += (46 - camera.fov) * k; camera.near = 0.2; camera.updateProjectionMatrix(); aimSun(EM[0], st.y0, EM[1]); }
+      else { const D = 17, k = Math.min(1, dt * 2.2), cy = st.y0 + st.Hs * 0.5; camera.position.lerp(new V3(st.O[0] - st.dx * D, cy, st.O[1] - st.dz * D), k); camera.lookAt(st.O[0], cy, st.O[1]); camera.fov += (fitFov(st, D) - camera.fov) * k; camera.near = Math.max(0.2, Math.min(D - 5.5, camera.position.distanceTo(new V3(st.O[0], cy, st.O[1])) - 5.5)); camera.updateProjectionMatrix(); aimSun(st.O[0], st.y0, st.O[1]); } }
+    else { let dist = 5.4 + Math.abs(me.speed) * 0.2 + Math.max(0, alt) * 0.5, cx, cz; for (let k = 0; k < 5; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!solid(cx, cz)) break; dist *= 0.6; }
+      const k = Math.min(1, dt * 5.5), cyT = Math.max(me.y + 2.5 + Math.max(0, alt) * 0.25, hAt(cx, cz) + 1.3); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (cyT - camera.position.y) * k;
+      camera.lookAt(me.x + fx * 6, me.y + 1.55 + slope * 5, me.z + fz * 6); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 + Math.abs(me.speed) * 1.2 - camera.fov) * k; camera.updateProjectionMatrix(); aimSun(me.x + fx * 14, me.y, me.z + fz * 14); }
+  }
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 150, innerWidth - 150) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1);
+    if (bubbleG === marshal && state === 'play' && (v.z > 1 || Math.abs(v.x) > 0.9)) { bubble.style.left = innerWidth / 2 + 'px'; bubble.style.top = innerHeight * 0.2 + 'px'; bubble.classList.add('show'); } } }
+  const stN = STAGES[Math.min(stageI, STAGES.length - 1)]; guide.update(me, { x: stN.O[0], z: stN.O[1] }, state === 'play');
+  SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
+}
+function draw() {
+  const w = innerWidth, h = innerHeight;
+  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  if (camHold) camHold();
+  renderer.render(scene, camera);
+}
+let camHold = null;      // a test hook: a still camera for looking at a building
+let last = 0; function loop(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(loop); }
+reset(); requestAnimationFrame(loop);
+
+/* ================= input ================= */
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
+addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
+const cv = $('cv'), sk = $('stick');
+cv.addEventListener('pointerdown', e => { if (state !== 'play') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
+const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === held.id) held.jump = false; };
+cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
+$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
+$('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
+window.__road = { get state() { return state; }, me, begin, freeze(f) { camHold = f; }, hAt, world: { found: new Set() }, go(x, z, s) { me.x = x; me.z = z; me.speed = 0; progS = s != null ? s : nearest(x, z).s; me.y = hAt(x, z); Hme.position.set(x, me.y, z); stageI = STAGES.findIndex(st => !st.end ? st.s > progS + 8 : true); for (const q of PASSES) if (q.at < progS - 5) q.state = 'done'; }, face(a) { me.yaw = a; }, see(k) { byKey[k].seen = true; },
+  route: s => at(s), LEN, S: { horsemen: S1, cattle: S2, girls: S3, gate: S_GATE, end: LEN }, STAGES, byKey, P, LIGHT, holdStage: false, get wpT() { return wpT; }, get progS() { return progS; }, get stageI() { return stageI; },
+  dbg: { camera, phid, meG, Hme, walkers, herd, squad, THREE, scene, sun, hemi, PASSES, FR }, probe: (x, z) => ({ solid: solid(x, z), blocked: blocked(x, z), y: +hAt(x, z).toFixed(1), d: +nearest(x, z).d.toFixed(1), s: +nearest(x, z).s.toFixed(0) }) };
+</script>
+</body>
+</html>

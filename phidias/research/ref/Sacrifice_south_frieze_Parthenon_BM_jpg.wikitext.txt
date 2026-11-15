@@ -1,0 +1,30 @@
+== {{int:filedesc}} ==
+{{Artwork
+ |artist           = {{unknown|artist}}
+ |title            =
+ |description      = {{en|Cattle led to the sacrifice. Blocks XLV, 137 and XLVI, 144 from the south frieze of the Parthenon, ca. 447–433 BC.}}
+{{fr|Bœufs menés au sacrifice. Plaques XLV, 137 et XVI, 144 de la frise Sud du Parthénon, vers 447-433 av. J.-C.}}
+ |date             = 
+ |medium           =
+ |dimensions       = H. 1 m (3 ft. 3 ¼ in.), D. 60 cm (23 ½ in.)
+ |gallery          = {{:Museum:British Museum}}
+ |location         = Main floor, room 16, Greek & Rome
+ |references       = 
+ |object history   =
+ |credit line      = Former Elgin collection
+ |notes            =
+ |accession number = 
+ |source           = [[User:Jastrow|Jastrow]] (2006)
+ |permission       = 
+ |other versions   = 
+}}
+
+== {{int:license-header}} ==
+{{PD-self}}
+
+
+[[Category:Animal sacrifice in ancient Greek art]]
+[[Category:Frieze of the Parthenon in the British Museum]]
+[[Category:Religion in ancient Greece]]
+[[Category:Reliefs of bulls in the United Kingdom]]
+[[Category:Taken with Nikon D70]]

@@ -1,0 +1,56 @@
+SOURCE: https://en.wikipedia.org/wiki/Herm_%28sculpture%29
+TITLE: Herm (sculpture)
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+A herma (Ancient Greek: ἑρμῆς, plural ἑρμαῖ hermai), commonly herm in English, is a sculpture with a head and perhaps a torso above a plain, usually squared lower section, on which male genitals may also be carved at the appropriate height. Hermae were so called either because the head of Hermes was most common or from their etymological connection with the Greek word ἕρματα (hérmata, meaning 'blocks of stone'), which originally had no reference to Hermes at all. The form originated in ancient Greece, and was adopted by the Romans (called mercuriae), and revived at the Renaissance in the form of term figures and atlantes.
+
+
+== Origin ==
+In the earliest times Greek divinities were worshipped in the form of a heap of stones or a shapeless column of stone or wood. In many parts of Greece there were piles of stones by the sides of roads, especially at their crossings, and on the boundaries of lands. The religious respect paid to such heaps of stones, especially at the meeting of roads, is shown by the custom of each passer-by throwing a stone on to the heap or anointing it with oil. Later there was the addition of a head and phallus to the column, which became quadrangular (the number four was sacred to Hermes).
+
+
+== Uses ==
+
+In ancient Greece the statues were thought to ward off harm or evil, an apotropaic function, and were placed at crossings, country borders and boundaries as protection, in front of temples, near to tombs, outside houses, in the gymnasia, palaestrae, libraries, porticoes, and public places, at the corners of streets, on high roads as sign-posts, with distances inscribed upon them. Before his role as protector of merchants and travelers, Hermes was a phallic god, associated with fertility, luck, roads and borders. His name perhaps comes from the word herma, referring to a square or rectangular pillar of stone, terracotta, or bronze; a bust of Hermes' head, usually with a beard, sat on the top of the pillar, and male genitals adorned the base. The surmounting heads were not, however, confined to those of Hermes; those of other gods and heroes, and even of distinguished mortals, were of frequent occurrence. In this case a compound was formed: Hermathena (a herm of Athena), Hermares (of Ares), Hermherakles (of Herakles), Hermaphroditus (of Aphrodite—not to be confused with the son of Hermes and Aphrodite with the same name, Hermaphroditus, who had the genitals of both sexes), Hermanubis, Hermalcibiades, and so on. In Athens, where the hermai were most numerous and most venerated, they were placed outside houses as apotropes for good luck. They would be rubbed or anointed with olive oil and adorned with garlands or wreaths. This superstition persists, for example the Porcellino bronze boar of Florence (and numerous others like it around the world), where the nose is shiny from being continually touched for good luck or fertility.
+
+In Roman and Renaissance versions (termini), the body was often shown from the waist up.  The form was also used for portrait busts of famous public figures, especially writers like Socrates and Plato. Anonymous female figures were often used from the Renaissance on, when herms were often attached to walls as decoration.
+
+
+== Trial of Alcibiades ==
+In 415 BC, on a night shortly before the Athenian fleet was about to set sail for Syracuse as part of the Sicilian Expedition of the Peloponnesian War, all of the Athenian hermai were vandalized. Many people at the time thought such an impious act would threaten the success of the expedition.
+Though it was never proven, the Athenians at the time believed it was the work of saboteurs, either from Syracuse or Spartan sympathizers from Athens itself; one suspect was the writer Xenophon. Enemies of Alcibiades, using the anger of the Athenians as a pretext to investigate further desecrations, accused him of other acts of impiety, including mutilations of other sacred objects and mocking performances of religious mystery ceremonies. He denied the accusations and offered to stand trial, but the Athenians did not want to disrupt the expedition any further, and his opponents wanted to use his absence to incite the people against him at a time when he would not be able to defend himself.
+Once he had left on the expedition, his political enemies had him charged and sentenced to death in absentia, both for the mutilation of the hermai, and the supposedly related crime of profaning the Eleusinian Mysteries.
+
+
+== Art and popular culture ==
+In Plato's Hipparchus, Socrates attributes the existence of these statues to Hipparchus. They were meant to educate the people in the country, outside of Athens, and make them admire Hipparchus' wisdom over the wisdom of the Delphic inscriptions. Hence he ordered the carvings of the following two inscriptions: "This is a memorial to Hipparchus: Walk thinking just thoughts" and "This is a memorial to Hipparchus: Don't deceive a friend" (229a–b). Socrates is making fun of Hipparchus, and his interlocutor, by this account.
+The J. Paul Getty Museum in Los Angeles has a large collection of Roman herma boundary marker stones in its stored collection.
+An Aesop's fable makes fun of a statue of Hermes. When a pious dog offers to "anoint" it, the god hastily assures his worshipper that this is not necessary.
+In the fantasy novel Lud-in-the-mist by Hope Mirrlees the main character unearths an important object by digging beneath an object called both a "berm" and a "herm". It is described as "the tree yet not a tree, the man yet not a man".
+
+
+== Gallery ==
+
+
+== See also ==
+Boundary marker § Greece
+Crossroads (folklore) – Places in folklore where the supernatural can happen
+Runestone – Raised stone with a runic inscription
+Cairn – Human-made pile of stones or burial monument
+Inuksuk – Inuit built stone landmark or cairn – Arctic North American landmark
+Caryatid – Load-bearing pillar in the figure of a female, Ancient Greece and later – Greek-style column carved in a female human form
+Atlas (architecture) – Architectural support sculpted in the form of a man – Greek-style column carved in a male human form
+Lingam – Aniconic representation of the Hindu god Shiva – devotional abstract image of Shiva
+Dōsojin – Type of Shinto kami - Japanese land-god stone carving & landmarks
+
+
+== References ==
+
+
+== External links ==
+
+Ancient Greek Art: Herm Statue, Theoi Project
+A Dictionary of Greek and Roman antiquities (1890), Perseus Project
+Herm (Greek religion)– Britannica Online Encyclopedia
+Influence of the Phallic Idea: Hermae, Termini, Pillars and "Groves"
+Ice Herms Archived 2009-05-11 at the Wayback Machine, with primary source passages on ancient herms and on the sacrilege trial of Alcibiades, images of ancient herms from sculpture and vase painting, and photos (including a step-by-step guide to the making) of the University of Chicago ice herms

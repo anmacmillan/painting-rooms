@@ -1,0 +1,13 @@
+SOURCE: https://en.wikipedia.org/wiki/Arrephoros
+TITLE: Arrephoros
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+An Arrephoros (Ancient Greek: Ἀρρήφορος) was a girl acolyte in the cult of Athena Polias on the Athenian Acropolis. They were seven to eleven years old. According to Pausanias, two Arrephoroi lived for a year on the Acropolis and concluded their term with a mystery rite called the Arrhephoria: they carried unknown objects into a cavern, and there exchanged them for other unknown objects.
+The lexicon of Harpocration states (s.v. Arrêphorein) that there were four Arrephoroi and that two supervised the weaving of the Panathenaic peplos.
+
+
+== Notes ==
+
+
+== Sources ==
+Joan Breton Connelly, Portrait of a priestess: Women and Ritual in Ancient Greece, p. 27  ISBN 0-691-12746-8
