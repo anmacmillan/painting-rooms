@@ -1,0 +1,94 @@
+{
+ "batchcomplete": "",
+ "query": {
+  "pages": {
+   "30582484": {
+    "pageid": 30582484,
+    "ns": 6,
+    "title": "File:La grenouillere 1869 monet.png",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 1061608,
+      "width": 707,
+      "height": 525,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/05/La_grenouillere_1869_monet.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:La_grenouillere_1869_monet.png",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=30582484",
+      "extmetadata": {
+       "DateTime": {
+        "value": "2014-01-11 23:08:27",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+       },
+       "ObjectName": {
+        "value": "<div class=\"fn\">\n<div style=\"font-weight:bold;display:inline-block;\"><div style=\"display:inline-block\" dir=\"ltr\" lang=\"en\"><i>La Grenouillère <span class=\"mw-valign-text-top noprint\" typeof=\"mw:File/Frameless\"><a href=\"https://www.wikidata.org/wiki/Q941549#P1476\" title=\"Edit this at Wikidata\"><img alt=\"Edit this at Wikidata\" src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/OOjs_UI_icon_edit-ltr-progressive.svg/20px-OOjs_UI_icon_edit-ltr-progressive.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"10\" height=\"10\" class=\"mw-file-element\" data-file-width=\"20\" data-file-height=\"20\"></a></span></i></div></div><div style=\"display: none;\">title QS:P1476,en:\"La Grenouillère <span class=\"mw-valign-text-top noprint\" typeof=\"mw:File/Frameless\"><a href=\"https://www.wikidata.org/wiki/Q941549#P1476\" title=\"Edit this at Wikidata\"><img alt=\"Edit this at Wikidata\" src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/OOjs_UI_icon_edit-ltr-progressive.svg/20px-OOjs_UI_icon_edit-ltr-progressive.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"10\" height=\"10\" class=\"mw-file-element\" data-file-width=\"20\" data-file-height=\"20\"></a></span>\"</div><div style=\"display: none;\">label QS:Len,\"La Grenouillère <span class=\"mw-valign-text-top noprint\" typeof=\"mw:File/Frameless\"><a href=\"https://www.wikidata.org/wiki/Q941549#P1476\" title=\"Edit this at Wikidata\"><img alt=\"Edit this at Wikidata\" src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/OOjs_UI_icon_edit-ltr-progressive.svg/20px-OOjs_UI_icon_edit-ltr-progressive.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"10\" height=\"10\" class=\"mw-file-element\" data-file-width=\"20\" data-file-height=\"20\"></a></span>\"</div><div style=\"display: none;\">label QS:Lit,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lhu,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Leu,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lru,\"Лягушатник\"</div><div style=\"display: none;\">label QS:Lde,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lpt,\"Banhistas na Grenouillière\"</div><div style=\"display: none;\">label QS:Lfa,\"آب‌تنی در گونویه\"</div><div style=\"display: none;\">label QS:Lro,\"Băi la La Grenouillère\"</div><div style=\"display: none;\">label QS:Lja,\"グルヌイユの海水浴場\"</div><div style=\"display: none;\">label QS:Lpl,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lnl,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lsl,\"La Grenouillére\"</div><div style=\"display: none;\">label QS:Lfr,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lko,\"라 그르누이예르의 수영객들\"</div><div style=\"display: none;\">label QS:Les,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lca,\"Bany a la Grenouillère\"</div></div>",
+        "source": "commons-desc-page"
+       },
+       "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+       },
+       "Categories": {
+        "value": "La Grenouillère, MET|Artworks with Wikidata item|Artworks with known accession number|19th-century oil on canvas paintings in the Metropolitan Museum of Art|CC-PD-Mark|Artworks with accession number from Wikidata|1869 oil on canvas paintings in the United States|PD-old-95-expired|Bequest of Mrs. H. O. Havemeyer|Artworks digital representation of 2D work",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Claude_Monet\" class=\"extiw\" title=\"w:en:Claude Monet\"><span title=\"French painter (1840–1926)\">Claude Monet</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "ImageDescription": {
+        "value": "Bain à la Grenouillère",
+        "source": "commons-desc-page"
+       },
+       "DateTimeOriginal": {
+        "value": "1869<div style=\"display: none;\">date QS:P571,+1869-00-00T00:00:00Z/9</div>",
+        "source": "commons-desc-page"
+       },
+       "Credit": {
+        "value": "<a rel=\"nofollow\" class=\"external free\" href=\"http://www.studyblue.com/notes/note/n/impressionism/deck/2405923\">http://www.studyblue.com/notes/note/n/impressionism/deck/2405923</a>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       },
+       "AttributionRequired": {
+        "value": "false",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Copyrighted": {
+        "value": "False",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "License": {
+        "value": "pd",
+        "source": "commons-templates",
+        "hidden": ""
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

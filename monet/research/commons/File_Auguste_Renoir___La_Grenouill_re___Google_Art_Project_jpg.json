@@ -1,0 +1,90 @@
+{
+ "batchcomplete": "",
+ "query": {
+  "pages": {
+   "22007128": {
+    "pageid": 22007128,
+    "ns": 6,
+    "title": "File:Auguste Renoir - La Grenouillère - Google Art Project.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 4258421,
+      "width": 3235,
+      "height": 2609,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/7/79/Auguste_Renoir_-_La_Grenouill%C3%A8re_-_Google_Art_Project.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Auguste_Renoir_-_La_Grenouill%C3%A8re_-_Google_Art_Project.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=22007128",
+      "extmetadata": {
+       "DateTime": {
+        "value": "2012-10-10 20:38:15",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+       },
+       "ObjectName": {
+        "value": "<div class=\"fn\">\n<div style=\"font-size:0.9em;display:inline-block;\">Swedish:  <div style=\"display:inline-block\" dir=\"ltr\" lang=\"sv\"><i>La Grenouillère</i></div></div><div style=\"display: none;\">title QS:P1476,sv:\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lsv,\"La Grenouillère\"</div> <div style=\"font-weight:bold;display:inline-block;\"><div style=\"display:inline-block\" dir=\"ltr\" lang=\"en\"><i>La Grenouillère</i></div></div><div style=\"display: none;\">title QS:P1476,en:\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Len,\"La Grenouillère\"</div></div>",
+        "source": "commons-desc-page"
+       },
+       "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+       },
+       "Categories": {
+        "value": "Google Art Project works in Nationalmuseum Stockholm|PD-old-100-expired|PD-Art (PD-old-auto-expired)|Artworks with Wikidata item|Artworks with known accession number|CC-PD-Mark|Google Art Project works by Pierre-Auguste Renoir|La Grenouillère (Nationalmuseum Stockholm)|Google Art Project paintings|Artworks with Wikidata item missing genre|Artworks digital representation of 2D work|Files from Google Arts & Culture",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Pierre-Auguste_Renoir\" class=\"extiw\" title=\"w:en:Pierre-Auguste Renoir\"><span title=\"French painter and sculptor (1841–1919)\">Pierre-Auguste Renoir</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "DateTimeOriginal": {
+        "value": "1869<div style=\"display: none;\">date QS:P571,+1869-00-00T00:00:00Z/9</div>",
+        "source": "commons-desc-page"
+       },
+       "Credit": {
+        "value": "<a rel=\"nofollow\" class=\"external text\" href=\"//www.google.com/culturalinstitute/asset-viewer/HgHrOyFUfcFtLw\">HgHrOyFUfcFtLw at Google Cultural Institute</a> maximum zoom level",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       },
+       "AttributionRequired": {
+        "value": "false",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Copyrighted": {
+        "value": "False",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "License": {
+        "value": "pd",
+        "source": "commons-templates",
+        "hidden": ""
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

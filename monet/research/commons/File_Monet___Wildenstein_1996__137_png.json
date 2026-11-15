@@ -1,0 +1,99 @@
+{
+ "batchcomplete": "",
+ "query": {
+  "pages": {
+   "79303953": {
+    "pageid": 79303953,
+    "ns": 6,
+    "title": "File:Monet - Wildenstein 1996, 137.png",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 491452,
+      "width": 502,
+      "height": 337,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/0/0d/Monet_-_Wildenstein_1996%2C_137.png?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Monet_-_Wildenstein_1996,_137.png",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=79303953",
+      "extmetadata": {
+       "DateTime": {
+        "value": "2019-05-29 13:05:41",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+       },
+       "ObjectName": {
+        "value": "<div class=\"fn\">\nBoote</div>",
+        "source": "commons-desc-page"
+       },
+       "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+       },
+       "Categories": {
+        "value": "Uploaded with pattypan|Artworks without Wikidata item|PD-Art (PD-old-auto-expired)|Artworks with known accession number|CC-PD-Mark|PD-old-95-expired|Images from wpi.art by Claude Monet|Claude Monet catalogue raisonné, 1996|Creator Claude Monet missing SDC depicts|Paintings of rowboats by Claude Monet",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Claude_Monet\" class=\"extiw\" title=\"w:en:Claude Monet\"><span title=\"French painter (1840–1926)\">Claude Monet</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "ImageDescription": {
+        "value": "Rowing Boats",
+        "source": "commons-desc-page"
+       },
+       "DateTimeOriginal": {
+        "value": "September 1869",
+        "source": "commons-desc-page"
+       },
+       "Credit": {
+        "value": "Clipped from <a rel=\"nofollow\" class=\"external free\" href=\"https://wpi.art/2019/01/16/monet/\">https://wpi.art/2019/01/16/monet/</a>",
+        "source": "commons-desc-page"
+       },
+       "Permission": {
+        "value": "public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       },
+       "AttributionRequired": {
+        "value": "false",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Copyrighted": {
+        "value": "False",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "License": {
+        "value": "pd",
+        "source": "commons-templates",
+        "hidden": ""
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

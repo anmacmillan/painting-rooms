@@ -1,0 +1,86 @@
+{
+ "batchcomplete": "",
+ "query": {
+  "pages": {
+   "117720946": {
+    "pageid": 117720946,
+    "ns": 6,
+    "title": "File:Renoir 1861.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 53838,
+      "width": 732,
+      "height": 400,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/45/Renoir_1861.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Renoir_1861.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=117720946",
+      "extmetadata": {
+       "DateTime": {
+        "value": "2022-05-06 02:02:45",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+       },
+       "ObjectName": {
+        "value": "Renoir 1861",
+        "source": "mediawiki-metadata"
+       },
+       "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+       },
+       "Categories": {
+        "value": "Uploaded with pattypan|Artworks without Wikidata item|PD-Art (PD-old)|CC-PD-Mark|PD-Art missing SDC copyright status|PD-old missing SDC copyright status|Creator Pierre-Auguste Renoir missing SDC depicts|Images from sitevasari.free.fr by Pierre-Auguste Renoir",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Pierre-Auguste_Renoir\" class=\"extiw\" title=\"w:en:Pierre-Auguste Renoir\"><span title=\"French painter and sculptor (1841–1919)\">Pierre-Auguste Renoir</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "Credit": {
+        "value": "<a rel=\"nofollow\" class=\"external free\" href=\"http://sitevasari.free.fr/Vasari/Tableaux/IMAGES/R/Renoir/\">http://sitevasari.free.fr/Vasari/Tableaux/IMAGES/R/Renoir/</a>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       },
+       "AttributionRequired": {
+        "value": "false",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Copyrighted": {
+        "value": "False",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "License": {
+        "value": "pd",
+        "source": "commons-templates",
+        "hidden": ""
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

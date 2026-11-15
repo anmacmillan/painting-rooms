@@ -1,0 +1,95 @@
+{
+ "batchcomplete": "",
+ "query": {
+  "pages": {
+   "13119284": {
+    "pageid": 13119284,
+    "ns": 6,
+    "title": "File:Pierre-Auguste Renoir - Frédéric Bazille.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 1637504,
+      "width": 1900,
+      "height": 2759,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/6a/Pierre-Auguste_Renoir_-_Fr%C3%A9d%C3%A9ric_Bazille.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Pierre-Auguste_Renoir_-_Fr%C3%A9d%C3%A9ric_Bazille.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=13119284",
+      "extmetadata": {
+       "DateTime": {
+        "value": "2011-02-06 14:13:41",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+       },
+       "ObjectName": {
+        "value": "Pierre-Auguste Renoir - Frédéric Bazille",
+        "source": "mediawiki-metadata"
+       },
+       "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+       },
+       "Categories": {
+        "value": "Frederic Bazille painting The Heron (Pierre-Auguste Renoir - Musée Fabre)|Taken with Panasonic Lumix DMC-TZ2|PD-old-100-expired|PD-Art (PD-old-auto-expired)|Artworks with Wikidata item|Artworks with known accession number|CC-PD-Mark|Artworks with accession number from Wikidata|Artworks digital representation of 2D work|Works by Pierre-Auguste Renoir by Fezzi number",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "ImageDescription": {
+        "value": "Frédéric Bazille at his Easel (1867). Oil on canvas, 105 × 73.5 cm (41 × 28.9 in). Musée Fabre, Montpellier, France <span class=\"mw-valign-text-top noprint\" typeof=\"mw:File/Frameless\"><a href=\"//commons.wikimedia.org/wiki/File:Pierre-Auguste_Renoir_-_Fr%C3%A9d%C3%A9ric_Bazille.jpg#ooui-php-4\" title=\"Edit this at Structured Data on Commons\"><img alt=\"Edit this at Structured Data on Commons\" src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/OOjs_UI_icon_edit-ltr-progressive.svg/20px-OOjs_UI_icon_edit-ltr-progressive.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"10\" height=\"10\" class=\"mw-file-element\" data-file-width=\"20\" data-file-height=\"20\"></a></span>",
+        "source": "commons-desc-page"
+       },
+       "Credit": {
+        "value": "<i>Renoir, peintre du bonheur : 1841-1919</i>, de Gilles Néret,  Köln, Taschen, 2001, p. 14. <span lang=\"en\" dir=\"ltr\"><a href=\"https://en.wikipedia.org/wiki/ISBN\" class=\"extiw\" title=\"en:ISBN\"><span lang=\"en\" dir=\"ltr\">ISBN</span></a></span> <a href=\"//commons.wikimedia.org/wiki/Special:BookSources/9783822857410\" title=\"Special:BookSources/9783822857410\">9783822857410</a>",
+        "source": "commons-desc-page"
+       },
+       "Artist": {
+        "value": " ",
+        "source": "commons-desc-page"
+       },
+       "AuthorCount": {
+        "value": 2,
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       },
+       "AttributionRequired": {
+        "value": "false",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Copyrighted": {
+        "value": "False",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "License": {
+        "value": "pd",
+        "source": "commons-templates",
+        "hidden": ""
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

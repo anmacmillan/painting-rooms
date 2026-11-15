@@ -1,0 +1,90 @@
+{
+ "batchcomplete": "",
+ "query": {
+  "pages": {
+   "173177147": {
+    "pageid": 173177147,
+    "ns": 6,
+    "title": "File:Renoir - La Grenouillère - Am Römerholz.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 1074738,
+      "width": 1587,
+      "height": 1110,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/6/6d/Renoir_-_La_Grenouill%C3%A8re_-_Am_R%C3%B6merholz.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Renoir_-_La_Grenouill%C3%A8re_-_Am_R%C3%B6merholz.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=173177147",
+      "extmetadata": {
+       "DateTime": {
+        "value": "2025-08-20 21:01:27",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+       },
+       "ObjectName": {
+        "value": "<div class=\"fn\">\n<div style=\"font-weight:bold;display:inline-block;\"><div style=\"display:inline-block\" dir=\"ltr\" lang=\"en\"><i>La Grenouillère</i></div></div><div style=\"display: none;\">label QS:Len,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lfr,\"La Grenouillère\"</div><div style=\"display: none;\">label QS:Lde,\"La Grenouillère\"</div></div>",
+        "source": "commons-desc-page"
+       },
+       "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+       },
+       "Categories": {
+        "value": "La Grenouillère (1869) by Pierre-Auguste Renoir in the Oskar Reinhart Collection 'Am Römerholz'|PD-old-100-expired|PD-Art (PD-old-100-expired)|Artworks with Wikidata item|Artworks with known accession number|CC-PD-Mark|Artworks with accession number from Wikidata|Artworks main subject 2D work|Artworks with Wikidata item missing genre",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Artist": {
+        "value": "<bdi><a href=\"https://en.wikipedia.org/wiki/en:Pierre-Auguste_Renoir\" class=\"extiw\" title=\"w:en:Pierre-Auguste Renoir\"><span title=\"French painter and sculptor (1841–1919)\">Pierre-Auguste Renoir</span></a></bdi>",
+        "source": "commons-desc-page"
+       },
+       "DateTimeOriginal": {
+        "value": "1869 <span class=\"mw-valign-text-top noprint\" typeof=\"mw:File/Frameless\"><a href=\"https://www.wikidata.org/wiki/Q91932601#P571\" title=\"Edit this at Wikidata\"><img alt=\"Edit this at Wikidata\" src=\"https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8a/OOjs_UI_icon_edit-ltr-progressive.svg/20px-OOjs_UI_icon_edit-ltr-progressive.svg.png?utm_source=commons.wikimedia.org&amp;utm_campaign=parser&amp;utm_content=thumbnail\" decoding=\"async\" loading=\"lazy\" width=\"10\" height=\"10\" class=\"mw-file-element\" data-file-width=\"20\" data-file-height=\"20\"></a></span>",
+        "source": "commons-desc-page"
+       },
+       "Credit": {
+        "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.roemerholz.ch/sor/fr/home/presse/expositions-_-retrospective/im-bad-der-farben/pressebilde-bad-der-farben-2023.html\">Am Römerholz</a> <a rel=\"nofollow\" class=\"external autonumber\" href=\"https://www.roemerholz.ch/sor/fr/home/presse/expositions-_-retrospective/im-bad-der-farben/pressebilde-bad-der-farben-2023/_jcr_content/par/slideshow_0/images/157_1643111355258/image.imagespooler.jpg/1680607763655/Renoir_Grenouillere_SOR.jpg\">[1]</a>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       },
+       "AttributionRequired": {
+        "value": "false",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Copyrighted": {
+        "value": "False",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "License": {
+        "value": "pd",
+        "source": "commons-templates",
+        "hidden": ""
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

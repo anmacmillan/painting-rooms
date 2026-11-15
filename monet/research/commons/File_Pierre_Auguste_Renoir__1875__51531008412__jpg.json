@@ -1,0 +1,103 @@
+{
+ "batchcomplete": "",
+ "query": {
+  "pages": {
+   "110693765": {
+    "pageid": 110693765,
+    "ns": 6,
+    "title": "File:Pierre-Auguste Renoir, 1875 (51531008412).jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 3488907,
+      "width": 3423,
+      "height": 2774,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Pierre-Auguste_Renoir%2C_1875_%2851531008412%29.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Pierre-Auguste_Renoir,_1875_(51531008412).jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=110693765",
+      "extmetadata": {
+       "DateTime": {
+        "value": "2021-10-04 02:10:25",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+       },
+       "ObjectName": {
+        "value": "Pierre-Auguste Renoir, 1875 (51531008412)",
+        "source": "mediawiki-metadata"
+       },
+       "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+       },
+       "Categories": {
+        "value": "Woman with a Parasol in a Garden (1875) by Pierre-Auguste Renoir in the Museo Thyssen-Bornemisza|Artworks with Wikidata item|Artworks with known accession number|Artworks with accession number from Wikidata|Flickr images reviewed by FlickreviewR 2|Artworks missing digital representation of for 2D work|Artworks with Wikidata item missing genre|Artworks with SDC link missing|Creator Pierre-Auguste Renoir missing SDC depicts|Photographs by Ángel M. Felicísimo",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "ImageDescription": {
+        "value": "<p>Mujer con sombrilla en un jardín,\n</p>\n1875. Óleo sobre lienzo. 55 x 65 cm. Inventario 724 (1974.43). Ficha en &lt;a href=\"<a rel=\"nofollow\" class=\"external free\" href=\"https://www.museothyssen.org/coleccion/artistas/renoir-pierre-auguste/mujer-sombrilla-jardin\">https://www.museothyssen.org/coleccion/artistas/renoir-pierre-auguste/mujer-sombrilla-jardin</a>\" rel=\"noreferrer nofollow\"&gt;www.museothyssen.org/coleccion/artistas/renoir-pierre-aug...&lt;/a&gt;",
+        "source": "commons-desc-page"
+       },
+       "DateTimeOriginal": {
+        "value": "2021-08-03 12:18",
+        "source": "commons-desc-page"
+       },
+       "Credit": {
+        "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/photos/elgolem/51531008412/\">Pierre-Auguste Renoir, 1875</a>",
+        "source": "commons-desc-page"
+       },
+       "Artist": {
+        "value": "<a rel=\"nofollow\" class=\"external text\" href=\"https://www.flickr.com/people/8146925@N08\">Ángel M. Felicísimo</a> from Mérida, España",
+        "source": "commons-desc-page"
+       },
+       "AuthorCount": {
+        "value": 2,
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "LicenseShortName": {
+        "value": "CC BY 2.0",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Creative Commons Attribution 2.0",
+        "source": "commons-desc-page"
+       },
+       "AttributionRequired": {
+        "value": "true",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "LicenseUrl": {
+        "value": "https://creativecommons.org/licenses/by/2.0",
+        "source": "commons-desc-page"
+       },
+       "Copyrighted": {
+        "value": "True",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "License": {
+        "value": "cc-by-2.0",
+        "source": "commons-templates",
+        "hidden": ""
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

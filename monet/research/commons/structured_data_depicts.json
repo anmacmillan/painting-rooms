@@ -1,0 +1,3509 @@
+{
+ "entities": {
+  "M23598834": {
+   "pageid": 23598834,
+   "ns": 6,
+   "title": "File:Pierre-Auguste Renoir - Luncheon of the Boating Party - Google Art Project.jpg",
+   "lastrevid": 1231572765,
+   "modified": "2026-06-15T02:00:56Z",
+   "type": "mediainfo",
+   "id": "M23598834",
+   "labels": {
+    "pt": {
+     "language": "pt",
+     "value": "Pierre-Auguste Renoir. O Almoço dos Barqueiros. 1881."
+    },
+    "fr": {
+     "language": "fr",
+     "value": "Pierre-Auguste renoir"
+    },
+    "ru": {
+     "language": "ru",
+     "value": "Пьер Огюст Ренуар(1841-1919)    \"ЗАВТРАК ГРЕБЦОВ\"(1880–1881)      холст, масло"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "f8af3172864b9e5998618b923b90fd7a1cdda9cd",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 1167907,
+         "id": "Q1167907"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$b133f174-4eda-dd15-dcde-1db37b34ff94",
+      "rank": "preferred"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "c15553d8f0c1be6a094311b109e186d1ed2e1399",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 200538,
+         "id": "Q200538"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$e4b9ba8a-492c-abd1-b894-0aba22f8aaff",
+      "rank": "preferred"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "8226c29d0e2cbba796c92b24a184093b170ac8e5",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 178659,
+         "id": "Q178659"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$85d7e5c9-457d-2eb0-8fe8-c6a7414609c6",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "1e8ed7475e05704934cb92dbf97de90e5125f5d3",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 1167907,
+         "id": "Q1167907"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$1C52A528-E3DB-4733-9D39-A9A413AB7A43",
+      "rank": "normal"
+     }
+    ],
+    "P6731": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6731",
+       "hash": "00effd845d313cc188e25302a8712c2d48647171",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 63348049,
+         "id": "Q63348049"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$F2EE6CC8-795C-46F1-A5A7-DDE7477BEFAD",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "fc2624b602f8325edace65c8e864ca3a66f91290",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 1167907,
+         "id": "Q1167907"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$ED83BDBA-E7C1-4A20-BDB7-BEDB940DA6E2",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$AA42661C-0A1E-414E-9B87-E6452CD9770E",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$7A12E819-8E31-423C-9141-975E83F7733A",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "2d17b955493f9b6edbceaf5bab49ccc991c3078d",
+       "datavalue": {
+        "value": {
+         "amount": "+20272414",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$712AB691-CF19-4EFD-BBC3-96594D428B44",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "e74f91712153ff9d3cdaf2a6f291c77d2ccd6774",
+       "datavalue": {
+        "value": {
+         "amount": "+6684",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$D2CBA4D3-3655-4C27-B775-62B11399A4AD",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "9a34b92106ce2e4c8e3e2e1222da9d4cac3da969",
+       "datavalue": {
+        "value": {
+         "amount": "+9025",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M23598834$67C457B8-FAF0-4841-9BD4-4B79DAA48301",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "f2ee26e6ad7677536f4e03ca3bb2d4b02ab1db5f",
+       "datavalue": {
+        "value": "7edd55de9786e632f621a23c6b456ff7aa3c19b2",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M23598834$CC73FAEB-EE7B-4886-A7B7-2BF19C8E21F6",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M21880338": {
+   "pageid": 21880338,
+   "ns": 6,
+   "title": "File:Frédéric Bazille - Bazille's Studio - Google Art Project.jpg",
+   "lastrevid": 1262466258,
+   "modified": "2026-08-17T01:28:41Z",
+   "type": "mediainfo",
+   "id": "M21880338",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "Bazille's Studio (1870). Oil on canvas, 48 × 65 cm (19 × 26 in). Musée d'Orsay, Paris. Among Bazille's friends portrayed are Pierre-Auguste Renoir sitting, and Édouard Manet next to Bazille, who portrays himself painting."
+    },
+    "fr": {
+     "language": "fr",
+     "value": "Huile sur toile 98×128,5cm  Musée d'Orsay-Paris-France"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "5f6cf9429ff9093a537b8c7c520e19d6f1d4a0c3",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 15877622,
+         "id": "Q15877622"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21880338$E2CAB104-6AA5-444E-95B2-27591F85D970",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "1a8d0f120a0e8efcef910e7200b8f5d05e340b89",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 15877622,
+         "id": "Q15877622"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21880338$C7240247-41F6-4A92-98C8-A13B9836E41A",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "3cd259065b0d1e620f6def0aeb4bede00ff5cc51",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 15877622,
+         "id": "Q15877622"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21880338$9A9650A7-5729-4B3D-A898-A222390CB486",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M21880338$3A561CE3-EDEB-4DFA-B9F8-9B831D65EF3C",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "92d053ccda5562395ed1b2b9e7a76f28cf9b4bdc",
+       "datavalue": {
+        "value": {
+         "amount": "+4921521",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M21880338$3D8699F0-5C62-4CD5-BA7F-8626AF9A326C",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "cff34f384512152f7159c42c881205d9eaec2b03",
+       "datavalue": {
+        "value": {
+         "amount": "+3465",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M21880338$7C6051C9-AB0A-4B4F-8C15-9730A1D5B576",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "35938f3bbacc8f455ba4d3b3ae37c640bb36a06d",
+       "datavalue": {
+        "value": {
+         "amount": "+4632",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M21880338$4133CF9E-5B7E-4D7F-BF56-1DD2F3E83CA6",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "6aa8543161049306b6f95c9643a1094b1fa6da08",
+       "datavalue": {
+        "value": "9d276b3da946bb4ba39faec3d8df36bdb147f3b2",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M21880338$3A15F56E-3700-49A1-A38E-19B5B3E5089B",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21880338$92D972D9-9429-433E-80D5-26B1AE499EE4",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M7743668": {
+   "pageid": 7743668,
+   "ns": 6,
+   "title": "File:Monet - Bathers at La Grenouillère.jpg",
+   "lastrevid": 1256843204,
+   "modified": "2026-08-05T07:28:16Z",
+   "type": "mediainfo",
+   "id": "M7743668",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "Bathers at la Grenouillére (1869). Oil on canvas, 74.6 x 99.7 cm. National Gallery, London"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "13c19fb1eac7d6ef1d0408bf0c4a59cf0b1b5365",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 3632885,
+         "id": "Q3632885"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M7743668$05373630-4E19-438B-911C-67AFA4E14E10",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "d476b2e6fdc87d809c46cdd4460a52b2c3c8f6fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 3632885,
+         "id": "Q3632885"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M7743668$7255D86E-0B25-41E8-9E11-0C5B821BCDF7",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "387ee1637f67b98287b5c0a997dee837fb7ad635",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 3632885,
+         "id": "Q3632885"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M7743668$1C6D8747-6A94-430A-B01E-23625DBC4C31",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M7743668$00040D58-A5E0-42A8-8EE9-A7F25126DEAE",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M13119284": {
+   "pageid": 13119284,
+   "ns": 6,
+   "title": "File:Pierre-Auguste Renoir - Frédéric Bazille.jpg",
+   "lastrevid": 1224007288,
+   "modified": "2026-06-01T10:26:49Z",
+   "type": "mediainfo",
+   "id": "M13119284",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "Frédéric Bazille at his Easel (1867). Oil on canvas, 105 × 73.5 cm (41 × 28.9 in). Musée Fabre, Montpellier, France"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "c1ddc333f6e7b9679ac887be2d4b1245764611b4",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 3089617,
+         "id": "Q3089617"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$0C85EB55-2230-4E40-BFBB-9052B941F882",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "c962849ea769c088a766ee111479d020078ea9d9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 3089617,
+         "id": "Q3089617"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$B472B727-CC22-4F94-9E72-A6C38FB54E75",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "ebd4cbdf4e67f1b0935f0fa796c1761f73ec81d7",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 3089617,
+         "id": "Q3089617"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$302AE04A-A7CE-406B-8C5A-195CCC246C2D",
+      "rank": "normal"
+     }
+    ],
+    "P6757": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6757",
+       "hash": "44b578d2b1754ea361ad99e16cba2586f82061fe",
+       "datavalue": {
+        "value": {
+         "amount": "+0.05",
+         "unit": "http://www.wikidata.org/entity/Q11574"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$E91C863F-9996-44E5-9BEE-C29DA11C5DDD",
+      "rank": "normal"
+     }
+    ],
+    "P6790": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6790",
+       "hash": "e8a5a9f0233d98f1f3e73ca9f9e105099ae5328a",
+       "datavalue": {
+        "value": {
+         "amount": "+3.8",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$0B03197F-6FA4-48B6-AA5F-F205F436CCAC",
+      "rank": "normal"
+     }
+    ],
+    "P2151": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2151",
+       "hash": "294c2884babb28d6d0a0a782aae3a4ea17bd545c",
+       "datavalue": {
+        "value": {
+         "amount": "+6.2",
+         "unit": "http://www.wikidata.org/entity/Q174789"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$8206BC1D-EB1D-4493-89C6-85D956269238",
+      "rank": "normal"
+     }
+    ],
+    "P6789": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6789",
+       "hash": "0da92ec36d908f4db3213c0a29dd32a394febb53",
+       "datavalue": {
+        "value": {
+         "amount": "+200",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$B40F8692-B210-4E84-9739-C0BD95092B43",
+      "rank": "normal"
+     }
+    ],
+    "P31": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "hash": "78817782cf2abc9d185934ba3b526591e12840f2",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 125191,
+         "id": "Q125191"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$40E2D4CF-B98C-4B77-B4ED-BDCC75E2CA47",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "b87d6736707c8d81da0bf337fa92c8fd857d7a38",
+       "datavalue": {
+        "value": {
+         "amount": "+1637504",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$A2F86E10-42DF-4A10-AA17-5DBCAFC97C72",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "af8e07b7da9cd1f42fd494f0072e6e5e83b6e072",
+       "datavalue": {
+        "value": {
+         "amount": "+2759",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$E08DAA54-3993-459E-8B33-9180CB1F6C3E",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "7c34edc606c465c5f918a3c384468f6c1f62ca0a",
+       "datavalue": {
+        "value": {
+         "amount": "+1900",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$2A3F9E2F-E3A9-4DA9-9C4D-727F146BE6F2",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$D2B3F4C8-2CDF-4131-8E4D-A0D926936537",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "173282ac64416d25560d46c2d973fcd0c0fa55bf",
+       "datavalue": {
+        "value": "af38b6b29ad95f6a85b70fba51abe4d9afd594ef",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M13119284$94B16686-F326-46BE-9BF7-46E802E80AF3",
+      "rank": "normal"
+     }
+    ],
+    "P4082": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4082",
+       "hash": "636cf7b278862385e19125b39efbacc3fe8db706",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 63615261,
+         "id": "Q63615261"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$99ED5BD8-D410-4746-88AF-731D4D3B673F",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13119284$D6CCAA0B-175C-4A20-ACAC-2A5D34AF0BFD",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M13254967": {
+   "pageid": 13254967,
+   "ns": 6,
+   "title": "File:Frédéric Bazille - Renoir.jpg",
+   "lastrevid": 981647953,
+   "modified": "2025-01-10T01:38:38Z",
+   "type": "mediainfo",
+   "id": "M13254967",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "Portrait of Renoir (1867). Oil on canvas, 61 x 50 cm. Musee d'Orsay, Paris"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "7e15d96789bf1d69bbcecc7d414eace035d898d8",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 12142552,
+         "id": "Q12142552"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$E9D37F25-706A-4173-8240-64A0394E5B80",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "a9406e987dda480b42c7665c1308478aced89459",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 12142552,
+         "id": "Q12142552"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$F64AA455-A6A1-4492-9CA8-B826710B7BCE",
+      "rank": "normal"
+     }
+    ],
+    "P6757": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6757",
+       "hash": "fe3990b74aa90745c0eba94c38db28c991c4368c",
+       "datavalue": {
+        "value": {
+         "amount": "+0.03333333333333333333",
+         "unit": "http://www.wikidata.org/entity/Q11574"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$2FC44BE2-7B1E-44E0-9010-B0BEAD052BF5",
+      "rank": "normal"
+     }
+    ],
+    "P6790": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6790",
+       "hash": "9c3f144d3e5bb0acdf448aa36d3a59f79df9e834",
+       "datavalue": {
+        "value": {
+         "amount": "+4.2",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$D5DE4BE5-56CD-4894-B7BA-9C5D32082334",
+      "rank": "normal"
+     }
+    ],
+    "P2151": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2151",
+       "hash": "c81304b0cdd5aca9c402be9861f14f805a3da6ce",
+       "datavalue": {
+        "value": {
+         "amount": "+8.2",
+         "unit": "http://www.wikidata.org/entity/Q174789"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$B3E7442D-3EC8-4556-926D-51FBC26D0188",
+      "rank": "normal"
+     }
+    ],
+    "P6789": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6789",
+       "hash": "0da92ec36d908f4db3213c0a29dd32a394febb53",
+       "datavalue": {
+        "value": {
+         "amount": "+200",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$E53941FE-BB65-4ECE-87B9-37FA93ABAD11",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "dfca22ec99b348f6f89dc0cbe08442fcbde3bfe7",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 12142552,
+         "id": "Q12142552"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$E0352C75-EC32-45E3-9278-BE0A51254116",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "f0520d04918542026543d183824863820602b380",
+       "datavalue": {
+        "value": {
+         "amount": "+1423912",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$B6B15014-7C80-44ED-9EA3-1095FE1B1D4D",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "e1aa3e155538de5d2353c0cbd938d5b46f09350e",
+       "datavalue": {
+        "value": {
+         "amount": "+2465",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$1222C011-516B-45A9-9E29-CA60F5198CCD",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "35089be707103c12b8acd3f5948d919c5bac97f3",
+       "datavalue": {
+        "value": {
+         "amount": "+2054",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$1DE997A8-BCBA-49F7-A098-5DA79A17F808",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$8F0B4215-B665-4B45-A5EB-C555F6C72EA9",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "633d5c44e81cc8a66838298bc6f6a6f053456fce",
+       "datavalue": {
+        "value": "50650b86f77725ba968cca2ac336aca81e3a9b91",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M13254967$82654DE2-297E-4101-999A-C3AFCAE72921",
+      "rank": "normal"
+     }
+    ],
+    "P4082": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4082",
+       "hash": "636cf7b278862385e19125b39efbacc3fe8db706",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 63615261,
+         "id": "Q63615261"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$BA482ECB-9D8F-4B1E-BF6F-F0C41CF740D6",
+      "rank": "normal"
+     }
+    ],
+    "P31": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "hash": "78817782cf2abc9d185934ba3b526591e12840f2",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 125191,
+         "id": "Q125191"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$E5DAB518-3756-4964-A4A0-64974A30A489",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M13254967$2C962725-C675-4A94-90EB-095AF5E9DCD2",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M21880321": {
+   "pageid": 21880321,
+   "ns": 6,
+   "title": "File:Henri Fantin-Latour - A Studio at Les Batignolles - Google Art Project.jpg",
+   "lastrevid": 1296472316,
+   "modified": "2026-11-05T22:39:04Z",
+   "type": "mediainfo",
+   "id": "M21880321",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "A Studio at Les Batignolles (1870). Oil on canvas, 204 × 273.5 cm (80 × 107.7 in). Musée d'Orsay, Paris"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "39e681c56b2f542a1a2c3f6618027d28d5bc34eb",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 8187529,
+         "id": "Q8187529"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21880321$EB4E1D13-0A15-480B-A302-151B706D4EEE",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "dc56de46c196a82666aeca73e8050348b1d5cdc0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 8187529,
+         "id": "Q8187529"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21880321$000B02B9-709D-4793-85CD-B3C6FCE6C0D7",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "5cbe60ffe91315f33d704425b06af98f9e3a0ce6",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 8187529,
+         "id": "Q8187529"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21880321$FEF3FAC5-E12E-46C6-A37B-65BF533F4D06",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M21880321$E1A5523E-323D-4812-9A1A-414FD7740043",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "fb6bdd7553ac4b2af7dc79d17d2eeb944c935e5b",
+       "datavalue": {
+        "value": {
+         "amount": "+2574437",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M21880321$E9D3A8E9-D6C6-4851-9195-19BCC66BE9A5",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "2e7d5075dd1c6d7eee20357eb8b29fbfe23429a2",
+       "datavalue": {
+        "value": {
+         "amount": "+3110",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M21880321$37D2EDF8-D5DD-4750-9D6D-5A6AEF86C292",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "666308cca3b154aaa82a800ec6c9ed99a6a43f61",
+       "datavalue": {
+        "value": {
+         "amount": "+4198",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M21880321$25F21F74-2C40-4AA2-B7BF-0399565A618E",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "081e21f1f00fdbacbfd3fe7d3b59d0b139d1ec2a",
+       "datavalue": {
+        "value": "4c99af9ebe8a7ee0d08830d1534f1d2040c55b4d",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M21880321$9BF29BD9-069E-4831-8AC6-AFE9E28109B4",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M21880321$A6AA23E4-1B9B-4E1C-A7ED-FBCF41571D06",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M199330244": {
+   "pageid": 199330244,
+   "ns": 6,
+   "title": "File:Gilbert Alexandre de Séverac - Portrait de Claude Monet.jpg",
+   "lastrevid": 1283717843,
+   "modified": "2026-10-06T09:48:04Z",
+   "type": "mediainfo",
+   "id": "M199330244",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "painting by Gilbert de Séverac"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "fd79e990399ea831f1d729ec02413dc3b0ba70d2",
+         "datavalue": {
+          "value": "https://www.marmottan.fr",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P973"
+      ],
+      "id": "M199330244$91BED9F2-7260-4A2C-AF02-DC4C56EBD1A8",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "5ff3308e5cbe5974b9b906abb07d6634855f3f91",
+       "datavalue": {
+        "value": {
+         "time": "+1865-00-00T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 9,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M199330244$A6D07ECE-F543-4F72-A32C-6BA35F8C6A60",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M199330244$88147559-46FF-4088-97F5-60E5AC339672",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "8be60aa3edf156076235b7d97890355ee1977797",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 141436317,
+         "id": "Q141436317"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M199330244$A3EB5AA8-D40C-4658-BCF6-7331EF232722",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "9e67718e459a84b26e02b745c515c26e537800fa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 141436317,
+         "id": "Q141436317"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M199330244$B2AC109F-DA74-481C-ABC7-BE39DB32036F",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M22007128": {
+   "pageid": 22007128,
+   "ns": 6,
+   "title": "File:Auguste Renoir - La Grenouillère - Google Art Project.jpg",
+   "lastrevid": 1069103430,
+   "modified": "2025-08-09T17:54:40Z",
+   "type": "mediainfo",
+   "id": "M22007128",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "4d094fcca45cbd6db69bd7c38fe28a451426e627",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 10908882,
+         "id": "Q10908882"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M22007128$59A112FD-BEC6-496B-9D5D-1DF6C724B06E",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "91a585f2e77bb4026385faaf80e5e302054502c2",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 10908882,
+         "id": "Q10908882"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M22007128$98637FCA-BE9A-4186-9D3D-E750D475F34D",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "6dd4e25f61e17f23df650cbaa7b2e04e541fc2aa",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 10908882,
+         "id": "Q10908882"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M22007128$77126FA7-1260-4A72-9A0C-42C92C8E9C74",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M22007128$6B2A17DB-EF52-4245-8F86-958BD1CCAF36",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "dcaa55908eef449f10ecbe6f10ccdcac2432b1f4",
+       "datavalue": {
+        "value": "85f0ccf52fce9a4760aada67523fe4fc0b1d5584",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M22007128$960B607E-8E7E-41C2-820E-6941D5E8DBFA",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "de790616a80a31b7f8ab41d562c759f422da5adb",
+       "datavalue": {
+        "value": {
+         "amount": "+4258421",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M22007128$E81C4EBD-C32F-4521-96A5-8B442C20B49E",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "b1bdce3afad62d031de6764902ae3e2a3630c44e",
+       "datavalue": {
+        "value": {
+         "amount": "+2609",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M22007128$604E9197-0BAF-41D3-8944-B3B9A2C4F367",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "7ea8f9aa3ad26dc0e7c9415e2745830bc955e087",
+       "datavalue": {
+        "value": {
+         "amount": "+3235",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M22007128$BB98761C-0C19-47AC-B572-2E2DB55433BB",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M22007128$96221438-2F42-4999-BB5F-0EA4C2F1B85F",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M81305978": {
+   "pageid": 81305978,
+   "ns": 6,
+   "title": "File:Auguste Renoir, Claude Monet, 1872, NGA 66433.jpg",
+   "lastrevid": 1296641937,
+   "modified": "2026-11-06T08:05:12Z",
+   "type": "mediainfo",
+   "id": "M81305978",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P195": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P195",
+       "hash": "72ddb9041a7bfb7f8b14391d611ec6089c54bc26",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 214867,
+         "id": "Q214867"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$6bc7bc8a-4ad8-8b18-c3bb-8cc84b2eac11",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "28a6efcc224656589c283263e9efa1effe56d682",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 6938433,
+         "id": "Q6938433"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$35C673AD-CF0B-4210-9630-6F28B9238C3D",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f88a8b9472789ca66067ed50ce20dc2650af5744",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 88088423,
+         "id": "Q88088423"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$5C5BDA6B-6D45-4805-92F9-8169428D5D98",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "7a48fa059abbcc15c503923f6eb87f73a00ba27a",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 20188747,
+         "id": "Q20188747"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$C107803D-6F6C-46F3-9CC4-0CD33279211B",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "48c736f64f6c7174310ffb7d68511a522ac1504d",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 20188747,
+         "id": "Q20188747"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$CD23E5F2-B44F-42EB-A6DB-92E670A3BD4C",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "6b50f9ea5c26056721c83f14ddedc07c12ebb81a",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 20188747,
+         "id": "Q20188747"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$8AD5BBA7-ECCE-47FA-97A3-D2650DBFF471",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$7DA9C7E8-2BC6-4E2F-BF3D-DDC802CADC37",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "23e6dd250948cbf8a5e043d610dbc7089153a378",
+       "datavalue": {
+        "value": "809e9b7cdbcec0975021b8103fcb6e3ab419fdc7",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M81305978$523BA943-7749-4FD2-97A4-355B8F9AE450",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "cd89da7b8a35be3e8fca82ad4d3fee9b8dd62718",
+       "datavalue": {
+        "value": {
+         "amount": "+13859514",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$9C9AA2C5-216B-4A3F-9B08-C29DE2D7C273",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "7474feef8e5500b9745929aad86d9619f508512f",
+       "datavalue": {
+        "value": {
+         "amount": "+4000",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$4AA0C506-6119-4CC5-AE13-247651FC7883",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "f1b8d13e93cb6534a3fac29547de5f3a0e4eece0",
+       "datavalue": {
+        "value": {
+         "amount": "+3042",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M81305978$423A1625-AB69-4F1E-B931-807396E4A6C8",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M80868453": {
+   "pageid": 80868453,
+   "ns": 6,
+   "title": "File:Carolus-Duran - Portrait de Claude Monet - Musée Marmottan Monet.jpg",
+   "lastrevid": 1209121011,
+   "modified": "2026-05-05T22:34:56Z",
+   "type": "mediainfo",
+   "id": "M80868453",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "Portrait of Claude Monet (c. 1867), by Carolus-Duran"
+    },
+    "ru": {
+     "language": "ru",
+     "value": "Портрет Клода Моне, Каролус-Дюран, ок. 1867 г."
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "73d10dce4401ff8ac9e687441906795703f8e5a9",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 65965660,
+         "id": "Q65965660"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M80868453$E5790F6D-EBCE-4F3F-B138-B41D4973CA11",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "1505c91b6d47962af67d255b6c244fe3764a422d",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 65965660,
+         "id": "Q65965660"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M80868453$4291A351-D2AB-4600-95CC-7B4320608B97",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "48097830b40d216a54e44c2fac839978120a99d1",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 65965660,
+         "id": "Q65965660"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M80868453$628F49A7-590B-4E12-BF1D-4EA5E9250C6B",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M80868453$B92AEC19-BB55-4536-BAA1-1B942E5D6BBC",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "1dda2ca8b3e7c170cd5f33b33b066a4684bc07e6",
+       "datavalue": {
+        "value": "0fcb89bde14e38496e1332b31d1bd8b1f99ba722",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M80868453$D4C72724-34C4-4729-B4B8-0EF318C0C7FC",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "5836b4e0419182db0b5fbd20bceccd2c06fab4b5",
+       "datavalue": {
+        "value": {
+         "amount": "+433312",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M80868453$F6646B8B-24F6-46CC-A93E-D91C405EC56B",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "2c3ba6bed22f5982cd9190364d1b34dd2aebe644",
+       "datavalue": {
+        "value": {
+         "amount": "+1024",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M80868453$1D901AA5-4311-4AE0-906B-5FC8CF32539D",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "4dc6d417ef8b68522d60ff5c601e7213119e4624",
+       "datavalue": {
+        "value": {
+         "amount": "+833",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M80868453$4027B567-4922-4495-9751-317B34B1610F",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M80868453$62636492-4D96-4562-A521-EE463C352AC9",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M110693765": {
+   "pageid": 110693765,
+   "ns": 6,
+   "title": "File:Pierre-Auguste Renoir, 1875 (51531008412).jpg",
+   "lastrevid": 1218442665,
+   "modified": "2026-05-22T20:08:55Z",
+   "type": "mediainfo",
+   "id": "M110693765",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P4082": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4082",
+       "hash": "10775b99cbd645da712a04c612648e8a4dc637e8",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 1040045,
+         "id": "Q1040045"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$34C1FDA4-BDF0-4D9C-95F1-9C028B85A347",
+      "rank": "normal"
+     }
+    ],
+    "P6757": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6757",
+       "hash": "7ac2241c962ab66d5539e55451e27f957316719c",
+       "datavalue": {
+        "value": {
+         "amount": "+0.008",
+         "unit": "http://www.wikidata.org/entity/Q11574"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$32830FC9-DF56-4E1D-98F2-163FE570EA92",
+      "rank": "normal"
+     }
+    ],
+    "P6790": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6790",
+       "hash": "4582c8db04a42b0c41b95d48f5f1e873cfc4e62e",
+       "datavalue": {
+        "value": {
+         "amount": "+5",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$E86EDD84-C830-4058-AB1F-91F2115D7F51",
+      "rank": "normal"
+     }
+    ],
+    "P2151": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2151",
+       "hash": "b88cf5d0c76c9422bb70c36a8ea58ce24595dc87",
+       "datavalue": {
+        "value": {
+         "amount": "+32",
+         "unit": "http://www.wikidata.org/entity/Q174789"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$DD9A09C0-BFC4-4A39-B1ED-09FEB76331DE",
+      "rank": "normal"
+     }
+    ],
+    "P6789": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6789",
+       "hash": "442cefba49d78731db8e7947e4efc6536e0bf691",
+       "datavalue": {
+        "value": {
+         "amount": "+3200",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$E0E6DFEC-E372-48A6-BE6E-4879A28BE6C8",
+      "rank": "normal"
+     }
+    ],
+    "P31": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "hash": "78817782cf2abc9d185934ba3b526591e12840f2",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 125191,
+         "id": "Q125191"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$9E7375A1-A410-4065-9CA4-C150898185FE",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "5570347fdc76d2a80732f51ea10ee4b144a084e0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 50423863,
+         "id": "Q50423863"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$FD5870EB-4703-4A29-B5C0-3EAB5449DA5A",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "82d5b402aa0a79040483a8c9264bd484c6c13f67",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19125117,
+         "id": "Q19125117"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$EF3EE02A-EDDD-4643-AE70-35192964B747",
+      "rank": "normal"
+     }
+    ],
+    "P7482": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P7482",
+       "hash": "b82dd47222a210c6dc1f428b693c2fbf7b0e0d6e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 74228490,
+         "id": "Q74228490"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P137": [
+        {
+         "snaktype": "value",
+         "property": "P137",
+         "hash": "3d8cd4c1ab91d3d9a14900210faaebf1a98b947b",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 103204,
+           "id": "Q103204"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ],
+       "P973": [
+        {
+         "snaktype": "value",
+         "property": "P973",
+         "hash": "65a1c8b2ab24417a4459e4840e53886ad10fdce0",
+         "datavalue": {
+          "value": "https://www.flickr.com/photos/elgolem/51531008412",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P137",
+       "P973"
+      ],
+      "id": "M110693765$CAF8895E-F4A1-4693-849B-05770D3F96BE",
+      "rank": "normal"
+     }
+    ],
+    "P12120": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P12120",
+       "hash": "96d4a5495fde7cbfc9a5da6592a290a14ade9d18",
+       "datavalue": {
+        "value": "51531008412",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$FCC1CFC2-1D75-4A6C-8CB3-DEBFD858A1F4",
+      "rank": "normal"
+     }
+    ],
+    "P170": [
+     {
+      "mainsnak": {
+       "snaktype": "somevalue",
+       "property": "P170",
+       "hash": "d3550e860f988c6675fff913440993f58f5c40c5"
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P3267": [
+        {
+         "snaktype": "value",
+         "property": "P3267",
+         "hash": "9672f07aafed1b7d81e54ab01ce4c7d7a8c79def",
+         "datavalue": {
+          "value": "8146925@N08",
+          "type": "string"
+         }
+        }
+       ],
+       "P2093": [
+        {
+         "snaktype": "value",
+         "property": "P2093",
+         "hash": "0395d90e8166f387b798aaafb0d416ececc9c7be",
+         "datavalue": {
+          "value": "Ángel M. Felicísimo",
+          "type": "string"
+         }
+        }
+       ],
+       "P2699": [
+        {
+         "snaktype": "value",
+         "property": "P2699",
+         "hash": "1945227d29e494318af18655ceba471c35f3d174",
+         "datavalue": {
+          "value": "https://www.flickr.com/people/elgolem/",
+          "type": "string"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P3267",
+       "P2093",
+       "P2699"
+      ],
+      "id": "M110693765$D0F1EBBD-2E58-48B4-9736-51B4B1146403",
+      "rank": "normal"
+     }
+    ],
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "d9f5503a3743ca9855a9a010c909740fb3f7ecf5",
+       "datavalue": {
+        "value": {
+         "time": "+2021-08-03T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 11,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$81813BCC-570B-4147-86F4-97F603BE1A90",
+      "rank": "normal"
+     }
+    ],
+    "P1433": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1433",
+       "hash": "42371a72aac2d430d87cc00de671b55cac1f5a79",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 103204,
+         "id": "Q103204"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P577": [
+        {
+         "snaktype": "value",
+         "property": "P577",
+         "hash": "de3c8d17c42268b71197b34094a06ea449d8a20d",
+         "datavalue": {
+          "value": {
+           "time": "+2021-09-29T00:00:00Z",
+           "timezone": 0,
+           "before": 0,
+           "after": 0,
+           "precision": 11,
+           "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+          },
+          "type": "time"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P577"
+      ],
+      "id": "M110693765$2535C1FA-0DD6-4781-8AA8-46608DACD1CD",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M110693765$23095E32-9C89-4B3F-8AC5-F79BB7924486",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M117720946": {
+   "pageid": 117720946,
+   "ns": 6,
+   "title": "File:Renoir 1861.jpg",
+   "lastrevid": 654215866,
+   "modified": "2022-05-06T05:02:52Z",
+   "type": "mediainfo",
+   "id": "M117720946",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P4082": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4082",
+       "hash": "42925e85ae4445e1c46a541fa3e0ed9e4b25022f",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 7130086,
+         "id": "Q7130086"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M117720946$2F59A51D-186B-4C25-91F8-838AFF7B4B5E",
+      "rank": "normal"
+     }
+    ],
+    "P6757": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6757",
+       "hash": "49f120186c4b8f37679dbe8be400a80d09464310",
+       "datavalue": {
+        "value": {
+         "amount": "+0.01666666666666666666",
+         "unit": "http://www.wikidata.org/entity/Q11574"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M117720946$1BBE9171-2912-469F-93D5-B5C9666A9B72",
+      "rank": "normal"
+     }
+    ],
+    "P6790": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6790",
+       "hash": "3eeb6ad13fecd3a04b73caf24de8ddfd9ecb9870",
+       "datavalue": {
+        "value": {
+         "amount": "+4.8",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M117720946$47EDB12B-CF8F-44B0-97E6-CC2DF60B5110",
+      "rank": "normal"
+     }
+    ],
+    "P2151": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2151",
+       "hash": "102cfaf6e58b74c2842a6149ea9273f2e2177383",
+       "datavalue": {
+        "value": {
+         "amount": "+24",
+         "unit": "http://www.wikidata.org/entity/Q174789"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M117720946$2B88DF3F-A9F2-4C21-A869-AE6A6339C018",
+      "rank": "normal"
+     }
+    ],
+    "P6789": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6789",
+       "hash": "0da92ec36d908f4db3213c0a29dd32a394febb53",
+       "datavalue": {
+        "value": {
+         "amount": "+200",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M117720946$A1C49377-52C3-428D-900B-440A5015DDA6",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M117720946$30B1D909-BDA6-48FF-89F0-A6CD8F6B9776",
+      "rank": "normal"
+     }
+    ],
+    "P31": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P31",
+       "hash": "78817782cf2abc9d185934ba3b526591e12840f2",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 125191,
+         "id": "Q125191"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M117720946$ECE73DD2-0825-454F-99F0-CEA6A3A4FEF1",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M30240974": {
+   "pageid": 30240974,
+   "ns": 6,
+   "title": "File:Pierre-Auguste Renoir, 1875, Claude Monet, oil on canvas, 84 x 60.5 cm, Musée d'Orsay, Paris.jpg",
+   "lastrevid": 1099471086,
+   "modified": "2025-10-14T19:34:20Z",
+   "type": "mediainfo",
+   "id": "M30240974",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "Portrait of the Painter Claude Monet (1875), by Pierre-Auguste Renoir. Musée d'Orsay, Paris"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "2c1f2937190e40e6745a526f023d4e25da6eb7c1",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 3937498,
+         "id": "Q3937498"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30240974$15F22E4C-DF2E-4AFF-BC5D-CF2D5A4CDDAF",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "09368e7e5c08e17bcc088c31dbb5787d12dd32a5",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 3937498,
+         "id": "Q3937498"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30240974$731D0CF4-2766-4847-B763-57C37883191D",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "b0564930a1c394f5e6972da85d9af57a860c0b50",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 3937498,
+         "id": "Q3937498"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30240974$0F8D0988-D8DA-4671-A067-BF140D3F8B2F",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M30240974$347DA397-2172-4D9F-845C-7AD368AFA5CD",
+      "rank": "normal"
+     }
+    ],
+    "P3575": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3575",
+       "hash": "85d96defe2e33c8d06c7933fe8b8b3444b1fb595",
+       "datavalue": {
+        "value": {
+         "amount": "+527598",
+         "unit": "http://www.wikidata.org/entity/Q8799"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M30240974$9073C31C-213F-4981-8F15-61E0C342AB41",
+      "rank": "normal"
+     }
+    ],
+    "P2048": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2048",
+       "hash": "610f86a2e3f5c1c5ffbc88c2f79d01a560600958",
+       "datavalue": {
+        "value": {
+         "amount": "+740",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M30240974$A87580B4-C766-4AE9-BA14-E57B8884FA7F",
+      "rank": "normal"
+     }
+    ],
+    "P2049": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2049",
+       "hash": "2672aec80884fb197c5a64dd6726c3ad26d5d732",
+       "datavalue": {
+        "value": {
+         "amount": "+534",
+         "unit": "http://www.wikidata.org/entity/Q355198"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M30240974$82B730F2-D60B-4C59-BA64-5C8012615B33",
+      "rank": "normal"
+     }
+    ],
+    "P4092": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P4092",
+       "hash": "e2617be602d7302734c0246915436755ed800eb9",
+       "datavalue": {
+        "value": "7ddf1b79aac86836bbba7ebc6f5ed43498f5869d",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "75dff03c151b13fbab93742164121c16a6aa0de1",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 13414952,
+           "id": "Q13414952"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M30240974$762F149F-7CD8-4A5B-8473-E7FD53717E3B",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f69dc45ce9c48664155022498b34100d801bd549",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 19652,
+         "id": "Q19652"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M30240974$1CCCBB6F-7838-44BD-9062-F11788D4BBE7",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M57670840": {
+   "pageid": 57670840,
+   "ns": 6,
+   "title": "File:La Grenouillère MET DT833.jpg",
+   "lastrevid": 1018308575,
+   "modified": "2025-04-07T00:22:54Z",
+   "type": "mediainfo",
+   "id": "M57670840",
+   "labels": {
+    "en": {
+     "language": "en",
+     "value": "La Grenouillére (or Bain à la Grenouillère) (1869). Oil on canvas, 74.6 × 99.7 cm (29.4 x 39.3 in). Metropolitan Museum of Art, New York City (MET, 29.100.112)"
+    }
+   },
+   "descriptions": {},
+   "statements": {
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "81ee3e9549b6bbe14386aafa95fbc74a95e5e33e",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 941549,
+         "id": "Q941549"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M57670840$606C8664-AE21-4981-A45F-7B74E2649F56",
+      "rank": "normal"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "5237e025c5261eeef013c4afb03858f7b4031b30",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 4022,
+         "id": "Q4022"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "4db454aac50b6716547327621134b08c2591b8a8",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 106429444,
+           "id": "Q106429444"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M57670840$8F6137DC-1E17-4168-AC0D-E991C6DF57D0",
+      "rank": "normal",
+      "references": [
+       {
+        "hash": "6ab7cf21be661e881f47ed2f8b233084e00e2104",
+        "snaks": {
+         "P248": [
+          {
+           "snaktype": "value",
+           "property": "P248",
+           "hash": "a3c99df7dc46329fa322ea4a31aa5d3e8f5cd1f6",
+           "datavalue": {
+            "value": {
+             "entity-type": "item",
+             "numeric-id": 106429444,
+             "id": "Q106429444"
+            },
+            "type": "wikibase-entityid"
+           }
+          }
+         ],
+         "P813": [
+          {
+           "snaktype": "value",
+           "property": "P813",
+           "hash": "fcca75eeaa7da6580a473455013c7e8e9b4eb419",
+           "datavalue": {
+            "value": {
+             "time": "+2022-04-26T00:00:00Z",
+             "timezone": 0,
+             "before": 0,
+             "after": 0,
+             "precision": 11,
+             "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+            },
+            "type": "time"
+           }
+          }
+         ],
+         "P854": [
+          {
+           "snaktype": "value",
+           "property": "P854",
+           "hash": "71628989a96db53848a8d675f6ec5b66508ad311",
+           "datavalue": {
+            "value": "https://collectionapi.metmuseum.org/public/collection/v1/objects/437135",
+            "type": "string"
+           }
+          }
+         ]
+        },
+        "snaks-order": [
+         "P248",
+         "P813",
+         "P854"
+        ]
+       }
+      ]
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "14ef2f3fd0f3d8ea88032217a56c9c087e964d74",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 35872,
+         "id": "Q35872"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "qualifiers": {
+       "P459": [
+        {
+         "snaktype": "value",
+         "property": "P459",
+         "hash": "4db454aac50b6716547327621134b08c2591b8a8",
+         "datavalue": {
+          "value": {
+           "entity-type": "item",
+           "numeric-id": 106429444,
+           "id": "Q106429444"
+          },
+          "type": "wikibase-entityid"
+         }
+        }
+       ]
+      },
+      "qualifiers-order": [
+       "P459"
+      ],
+      "id": "M57670840$B0D8D499-642F-4343-9438-3B4327F8D2D9",
+      "rank": "normal",
+      "references": [
+       {
+        "hash": "6ab7cf21be661e881f47ed2f8b233084e00e2104",
+        "snaks": {
+         "P248": [
+          {
+           "snaktype": "value",
+           "property": "P248",
+           "hash": "a3c99df7dc46329fa322ea4a31aa5d3e8f5cd1f6",
+           "datavalue": {
+            "value": {
+             "entity-type": "item",
+             "numeric-id": 106429444,
+             "id": "Q106429444"
+            },
+            "type": "wikibase-entityid"
+           }
+          }
+         ],
+         "P813": [
+          {
+           "snaktype": "value",
+           "property": "P813",
+           "hash": "fcca75eeaa7da6580a473455013c7e8e9b4eb419",
+           "datavalue": {
+            "value": {
+             "time": "+2022-04-26T00:00:00Z",
+             "timezone": 0,
+             "before": 0,
+             "after": 0,
+             "precision": 11,
+             "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+            },
+            "type": "time"
+           }
+          }
+         ],
+         "P854": [
+          {
+           "snaktype": "value",
+           "property": "P854",
+           "hash": "71628989a96db53848a8d675f6ec5b66508ad311",
+           "datavalue": {
+            "value": "https://collectionapi.metmuseum.org/public/collection/v1/objects/437135",
+            "type": "string"
+           }
+          }
+         ]
+        },
+        "snaks-order": [
+         "P248",
+         "P813",
+         "P854"
+        ]
+       }
+      ]
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "2b7a1a2ded4e1c20ab8b069024709b00e1157f4f",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 941549,
+         "id": "Q941549"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M57670840$C72A2CB5-115C-4A8A-941C-04258EF74630",
+      "rank": "normal"
+     }
+    ],
+    "P275": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P275",
+       "hash": "28a6efcc224656589c283263e9efa1effe56d682",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 6938433,
+         "id": "Q6938433"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M57670840$285CEAB1-E8C2-40B4-B727-D0803E56BBCC",
+      "rank": "normal"
+     }
+    ],
+    "P6216": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6216",
+       "hash": "f88a8b9472789ca66067ed50ce20dc2650af5744",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 88088423,
+         "id": "Q88088423"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M57670840$29A72953-B492-4E37-96EA-42D727A15D9C",
+      "rank": "normal"
+     }
+    ],
+    "P3634": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P3634",
+       "hash": "2fe5661efad74fd356ba0fb2cb07a2f5e275fab9",
+       "datavalue": {
+        "value": "437135",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M57670840$18B39488-7263-4241-9085-D11F5E76CBF9",
+      "rank": "normal"
+     }
+    ],
+    "P195": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P195",
+       "hash": "27fc736028ceb26ce581215acf582090dce4ef2b",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 160236,
+         "id": "Q160236"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M57670840$ACEF012D-3C81-41EC-80B8-52C33ABCD102",
+      "rank": "normal"
+     },
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P195",
+       "hash": "9978f845fbd9b56628523e71fdc24f560628e21c",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 67429134,
+         "id": "Q67429134"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M57670840$755D69C1-E638-4472-9C9E-1F101343DB00",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "ebb2a39b402b6f5935ba40b1dd246572d296305f",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 941549,
+         "id": "Q941549"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M57670840$3C5FDA1D-C34C-46F2-961C-1D19FE6E8126",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M57670840$D1E8BE8A-EDEC-4CF7-891C-4AA65C025273",
+      "rank": "normal"
+     }
+    ]
+   }
+  },
+  "M52177903": {
+   "pageid": 52177903,
+   "ns": 6,
+   "title": "File:Zola Maître Bazille Monet.jpg",
+   "lastrevid": 1193756716,
+   "modified": "2026-04-08T11:08:28Z",
+   "type": "mediainfo",
+   "id": "M52177903",
+   "labels": {},
+   "descriptions": {},
+   "statements": {
+    "P571": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P571",
+       "hash": "04f791b64ee8eb58baf222a9477ab0373b83b3f6",
+       "datavalue": {
+        "value": {
+         "time": "+1870-01-01T00:00:00Z",
+         "timezone": 0,
+         "before": 0,
+         "after": 0,
+         "precision": 9,
+         "calendarmodel": "http://www.wikidata.org/entity/Q1985727"
+        },
+        "type": "time"
+       }
+      },
+      "type": "statement",
+      "id": "M52177903$67D85914-386A-4A6E-8DF4-3F6791CD10A1",
+      "rank": "normal"
+     }
+    ],
+    "P180": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P180",
+       "hash": "39e681c56b2f542a1a2c3f6618027d28d5bc34eb",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 8187529,
+         "id": "Q8187529"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M52177903$98A7744E-A0E8-40D8-BDA5-CE92C8C3719F",
+      "rank": "normal"
+     }
+    ],
+    "P6243": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6243",
+       "hash": "dc56de46c196a82666aeca73e8050348b1d5cdc0",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 8187529,
+         "id": "Q8187529"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M52177903$10E422A3-5D23-4891-AA21-5055B6B0293D",
+      "rank": "normal"
+     }
+    ],
+    "P6789": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6789",
+       "hash": "75dd56c4cb95b1144a13940c2f3f61848bb86e82",
+       "datavalue": {
+        "value": {
+         "amount": "+1600",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M52177903$E2B9457D-F1B4-4233-9DAB-F752292E7A42",
+      "rank": "normal"
+     }
+    ],
+    "P6757": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6757",
+       "hash": "69ea20a0ba5b50e870934e815f3b1a4fa10eec6d",
+       "datavalue": {
+        "value": {
+         "amount": "+0.1",
+         "unit": "http://www.wikidata.org/entity/Q11574"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M52177903$B1E0476D-3820-4BC2-B5E9-14BADBAB269B",
+      "rank": "normal"
+     }
+    ],
+    "P6790": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P6790",
+       "hash": "50b3baa77d65cf3f696474e95269dc558104bdd1",
+       "datavalue": {
+        "value": {
+         "amount": "+4",
+         "unit": "1"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M52177903$181D722F-5673-4136-806F-E9393121F7FF",
+      "rank": "normal"
+     }
+    ],
+    "P2151": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P2151",
+       "hash": "aabaf5921a27a58fcf1c9b9dd601e1bfb0521307",
+       "datavalue": {
+        "value": {
+         "amount": "+13.489",
+         "unit": "http://www.wikidata.org/entity/Q174789"
+        },
+        "type": "quantity"
+       }
+      },
+      "type": "statement",
+      "id": "M52177903$65D63DEB-7FBD-461A-974B-C43CBADC4676",
+      "rank": "normal"
+     }
+    ],
+    "P921": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P921",
+       "hash": "5cbe60ffe91315f33d704425b06af98f9e3a0ce6",
+       "datavalue": {
+        "value": {
+         "entity-type": "item",
+         "numeric-id": 8187529,
+         "id": "Q8187529"
+        },
+        "type": "wikibase-entityid"
+       }
+      },
+      "type": "statement",
+      "id": "M52177903$46308646-8761-430E-A886-1446512FD1E0",
+      "rank": "normal"
+     }
+    ],
+    "P1163": [
+     {
+      "mainsnak": {
+       "snaktype": "value",
+       "property": "P1163",
+       "hash": "723d30b878d4a8deb968b0db429888e5353661a2",
+       "datavalue": {
+        "value": "image/jpeg",
+        "type": "string"
+       }
+      },
+      "type": "statement",
+      "id": "M52177903$CAD03E2C-8ECD-4384-B29C-EC57FEA082B6",
+      "rank": "normal"
+     }
+    ]
+   }
+  }
+ },
+ "success": 1
+}

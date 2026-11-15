@@ -1,0 +1,86 @@
+{
+ "batchcomplete": "",
+ "query": {
+  "pages": {
+   "52177903": {
+    "pageid": 52177903,
+    "ns": 6,
+    "title": "File:Zola Maître Bazille Monet.jpg",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 6024957,
+      "width": 3864,
+      "height": 5152,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/2/27/Zola_Ma%C3%AEtre_Bazille_Monet.jpg?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Zola_Ma%C3%AEtre_Bazille_Monet.jpg",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=52177903",
+      "extmetadata": {
+       "DateTime": {
+        "value": "2016-10-10 14:42:48",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+       },
+       "ObjectName": {
+        "value": "Zola Maître Bazille Monet",
+        "source": "mediawiki-metadata"
+       },
+       "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+       },
+       "Categories": {
+        "value": "Files with no machine-readable author|Edmond Maître|PD-old-100-expired|PD-Art (PD-old-100-expired)|Artworks with Wikidata item|Artworks with known accession number|CC-PD-Mark|Artworks with accession number from Wikidata|A Studio at Batignolles by Henri Fantin-Latour|PD-Art missing SDC copyright status|PD-old missing SDC copyright status|Artworks digital representation of 2D work|Portraits of Émile Zola|Portraits of Frédéric Bazille",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "DateTimeOriginal": {
+        "value": "1870",
+        "source": "commons-desc-page"
+       },
+       "Credit": {
+        "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+        "source": "commons-desc-page"
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       },
+       "AttributionRequired": {
+        "value": "false",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Copyrighted": {
+        "value": "False",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "License": {
+        "value": "pd",
+        "source": "commons-templates",
+        "hidden": ""
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}

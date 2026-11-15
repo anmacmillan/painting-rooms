@@ -1,0 +1,99 @@
+{
+ "batchcomplete": "",
+ "query": {
+  "pages": {
+   "13042142": {
+    "pageid": 13042142,
+    "ns": 6,
+    "title": "File:Bathing in the Siene IMG 6906.JPG",
+    "imagerepository": "local",
+    "imageinfo": [
+     {
+      "size": 4825102,
+      "width": 3648,
+      "height": 2736,
+      "url": "https://upload.wikimedia.org/wikipedia/commons/8/8a/Bathing_in_the_Siene_IMG_6906.JPG?utm_source=commons.wikimedia.org&utm_campaign=imageinfo&utm_content=original",
+      "descriptionurl": "https://commons.wikimedia.org/wiki/File:Bathing_in_the_Siene_IMG_6906.JPG",
+      "descriptionshorturl": "https://commons.wikimedia.org/w/index.php?curid=13042142",
+      "extmetadata": {
+       "DateTime": {
+        "value": "2011-02-05 13:29:05",
+        "source": "mediawiki-metadata",
+        "hidden": ""
+       },
+       "ObjectName": {
+        "value": "Bathing in the Siene IMG 6906",
+        "source": "mediawiki-metadata"
+       },
+       "CommonsMetadataExtension": {
+        "value": 1.2,
+        "source": "extension",
+        "hidden": ""
+       },
+       "Categories": {
+        "value": "Taken with Canon Digital IXUS 970 IS|La Grenouillere (1869) by Pierre-Auguste Renoir in the Pushkin Museum|PD-Art (PD-old-auto)|Artworks with Wikidata item|Artworks with known accession number|PD-old-100|CC-PD-Mark|Artworks with accession number from Wikidata|Artworks with Wikidata item missing genre|Artworks digital representation of 2D work",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "Assessments": {
+        "value": "",
+        "source": "commons-categories",
+        "hidden": ""
+       },
+       "ImageDescription": {
+        "value": "Mosco",
+        "source": "commons-desc-page"
+       },
+       "DateTimeOriginal": {
+        "value": "2009-10-07",
+        "source": "commons-desc-page"
+       },
+       "Credit": {
+        "value": "<span class=\"int-own-work\" lang=\"en\">Own work</span>",
+        "source": "commons-desc-page"
+       },
+       "Artist": {
+        "value": "<a href=\"//commons.wikimedia.org/wiki/User:Deror_avi\" title=\"User:Deror avi\">deror_avi</a>",
+        "source": "commons-desc-page"
+       },
+       "AuthorCount": {
+        "value": 2,
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "LicenseShortName": {
+        "value": "Public domain",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "UsageTerms": {
+        "value": "Public domain",
+        "source": "commons-desc-page"
+       },
+       "AttributionRequired": {
+        "value": "false",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Copyrighted": {
+        "value": "False",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "Restrictions": {
+        "value": "",
+        "source": "commons-desc-page",
+        "hidden": ""
+       },
+       "License": {
+        "value": "pd",
+        "source": "commons-templates",
+        "hidden": ""
+       }
+      }
+     }
+    ]
+   }
+  }
+ }
+}
