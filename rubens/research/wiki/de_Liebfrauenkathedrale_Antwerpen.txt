@@ -1,0 +1,76 @@
+SOURCE: https://de.wikipedia.org/wiki/Liebfrauenkathedrale_%28Antwerpen%29
+TITLE: Liebfrauenkathedrale (Antwerpen)
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+Die Liebfrauenkathedrale oder niederländisch Onze-Lieve-Vrouwekathedraal in Antwerpen ist die Domkirche des Bistums Antwerpen. Die Kirche zählt zu den Höhepunkten der Brabanter Gotik; ihr Turm gehört seit 1999 zum Weltkulturerbe „Belfriede von Belgien und Frankreich“ der UNESCO.
+
+
+== Geschichte ==
+Seit dem 10. Jahrhundert befand sich an der Stelle der heutigen Kathedrale eine Marienkapelle. Mit der Übergabe der Pfarrkirche St. Michael an die Prämonstratenser wurde die Marienkapelle 1124 in den Rang einer Pfarrkirche erhoben und in der Folgezeit zu einer größeren, romanischen Kirche ausgebaut. Im Jahr 1352 wurde mit dem Bau einer neuen Kirche in gotischem Stil mit Mittelschiff und sechs Seitenschiffen begonnen, doch 1521 wurden die Bauarbeiten eingestellt. Bei einem Brand 1533 wurde die Kirche stark beschädigt. In der Folgezeit bauten die Antwerpener sie wieder auf.
+Im Jahr 1559 wurde das Bistum Antwerpen gegründet und die Kirche zur Kathedrale erhoben. Am 20. August 1566 zerstörten calvinistische Bilderstürmer einen großen Teil der Kunstwerke und des Mobiliars der Kathedrale. 1581 kam Antwerpen unter protestantische Herrschaft, was zur weiteren Vernichtung bzw. zum Verkauf unschätzbarer Kunstwerke führte.
+Infolge der Französischen Revolution plünderten französische Besatzungstruppen 1794 das Gebäude, das zeitweise als Viehstall benutzt wurde und schwere Schäden erlitt. Im Laufe der folgenden Zeit wurde die Kathedrale mehrfach verändert (das Tympanon des Hauptportals entstand erst im Jahr 1903). 1965 begann die Provinz Antwerpen die Restaurierung, die 1993 im Wesentlichen fertig gestellt wurde.
+
+
+== Architektur ==
+
+Die Liebfrauenkathedrale ist die einzige siebenschiffige gotische Kirche mit Querhaus und Umgangschor mit Radialkapellen. Das Bauwerk ist 117 m lang und innen 40 m hoch und wird von 125 Pfeilern getragen. Von der geplanten Zweiturmfassade im Westen wurde im 16. Jahrhundert nur der Nordturm vollendet, der allerdings sowohl mit seiner Höhe von 123 m, als auch durch seine filigrane Bauweise mit aufsitzender Laterne ein Meisterwerk spätgotischer Architektur darstellt. Der Vierungsturm war wohl (wie der Turm der Sint-Niklaaskerk in Gent) als Laternenturm konzipiert; er wurde jedoch nicht fertiggestellt und im 17. Jahrhundert durch eine dreistufige hölzerne Haubenkonstruktion geschlossen. Das leicht und beinahe schwebend wirkende Maßwerkoktogon, welches vom quadratischen Querschnitt des Vierungsturmes zur Haube überleitet, ist ebenfalls beachtenswert.
+
+
+== Ausstattung ==
+In der Kathedrale hängen vier Gemälde von Peter Paul Rubens:
+
+Die Kreuzaufrichtung (1609–1610), Tafel 460 cm × 340 cm, Seitentafel 460 cm × 150 cm. Das Werk gelangte 1816 in die Kathedrale.
+Maria Himmelfahrt (1626), Tafel 490 cm × 325 cm. Das Bild wurde als Ersatz für einen alten Altar verwendet.
+Die Auferstehung Christi (1612), Mitteltafel 138 cm × 98 cm, Seitentafel 136 cm × 40 cm, ein Bild für das Grab der Familie Plantin Moretus aus Antwerpen.
+Die Kreuzabnahme (1612), Mitteltafel 421 cm × 311 cm, Seitentafel 421 cm × 153 cm, das Bild wurde im Auftrag der Schützengilde erstellt und ist eines der berühmtesten Bilder von Rubens und gleichzeitig eines der bedeutendsten Meisterwerke der Barockmalerei (Am linken äußeren Flügel ist der heilige Christophorus zu sehen).
+Weitere beachtenswerte Werke:
+
+Ein Bildnis des in ein geflicktes Gewand gekleideten betenden Franz von Assisi von Bartolomé Esteban Murillo.
+Das reich mit Figuren ausgestattete neugotische Chorgestühl von Karel Hendrik Geerts.
+Eine Madonnenfigur im schönen Stil mit dem Jesusknaben auf ihrem angewinkelten linken Arm entging den protestantischen Bilderstürmern.
+
+
+== Orgeln ==
+
+In der Kathedrale gibt es zwei große Orgeln.
+
+
+=== Schyven-Orgel (Hauptorgel) ===
+Die Hauptorgel wurde 1891 von dem Orgelbauer Pierre Schyven (Brüssel) in einem bereits lange bestehenden Gehäuse erbaut, finanziert durch eine Spende eines Gemeindemitgliedes. Das Instrument hat 90 Register auf vier Manualen und Pedal und ist weitgehend in seinem Originalzustand erhalten. Das Orgelgehäuse, datiert 1657, wurde Mitte des 17. Jahrhunderts von Peter Verbrugghen dem Älteren und Michel Boursoy erbaut.
+2018 fand eine umfangreiche Restaurierung der Orgel durch die Firma Schumacher aus Eupen statt. In diesem Zuge wurden auch die Klangabstrahlung der einzelnen Teilwerke optimiert.
+
+Koppeln: I/II, III/I, III/II, III/III (Suboktavkoppel), IV/II, IV/IV (Suboktavkoppel), Grand Orgue à la machine, I/P, II/P, III/P, IV/P
+Spielhilfen: Forté général, Anches Positif, Anches Grand Orgue, Anches Récit, Anches Bombarde, Anches Pédale.
+
+
+=== Metzler-Orgel (Querschifforgel) ===
+
+An der Ostwand des südlichen Querhausschiffs, direkt an der Vierung, hängt die Transeptorgel als Schwalbennestorgel. Das Instrument wurde 1993 von der Schweizer Orgelbaufirma Metzler erbaut. Es hat 44 klingende Register und eine Transmission auf drei Manualwerken und Pedal.
+
+
+== Geläut und Carillon ==
+Im 123 Meter hohen Nordturm hängt ein Geläut aus acht Glocken für die liturgischen Dienste, deren größte Glocke der sogenannte Karolus ist.
+Aufgrund der engen Platzverhältnisse im Glockenstuhl können die beiden größten Glocken nur getrennt voneinander geläutet werden; das Vollgeläut erklingt ohne die zweitgrößte Glocke.
+Im Folgenden eine Datenübersicht zum liturgischen Geläut:
+
+Im Nordturm ist außerdem ein 47-stimmiges Carillon mit einer Gesamtmasse von 27.648 kg und einem Tonumfang von vier Oktaven untergebracht.
+
+
+== Siehe auch ==
+Unfertige Bauwerke
+
+
+== Literatur ==
+J. van Brabant: De Onze Lieve Vrouwekathedraal van Antwerpen. Antwerpen 1972.
+Willem Aerts (Hrsg.): De Onze-Lieve-Vrouwekathedraal van Antwerpen. Mercatorfonds, Antwerpen 1993, ISBN 90-6153-285-X.
+Patrick Rynck: The Cathedral of Our Lady in Antwerp. Gent 2005.
+
+
+== Weblinks ==
+
+Offizielle Website
+Historische Ansicht von Lodovico Guicciardini von 1588 als (Digitalisat)
+De Inventaris van het Bouwkundig Erfgoed: Onze-Lieve-Vrouwekathedraal (niederländisch)
+
+
+== Einzelnachweise ==

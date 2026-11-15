@@ -1,0 +1,9 @@
+SOURCE: https://inventaris.onroerenderfgoed.be/themas/1029
+TITLE: Ernest Van Dijckkaai (Ernest Van Dijckkaai (Antwerpen))
+PUBLISHER: Inventaris Onroerend Erfgoed (agentschap Onroerend Erfgoed, Vlaamse overheid)
+FETCHED: 2026-11-15 (JSON API; HTML stripped)
+
+KORTE BESCHRIJVING: Zie Scheldekaaien.
+
+[Basistekst] Ernest Van Dijckkaai
+De Scheldekaaien bestaan van zuid naar noord uit: Ledeganckkaai, De Gerlache-, Cockerill-, Sint-Michiels-, Plantin-, Ernest Van Dijck-, Jordaens-, Ortelius-, Van Meteren-, Taverenier- en Rijnkaai.

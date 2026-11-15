@@ -1,0 +1,8 @@
+SOURCE: https://nl.wikipedia.org/wiki/Nikolaas_Rockox
+TITLE: Nikolaas Rockox
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+Nikolaas Rockox kan verwijzen naar:
+
+Nikolaas Rockox sr. (1514-1577), burgemeester van Antwerpen, oom van Nikolaas Rockox jr.
+Nikolaas Rockox jr. (1560-1640), burgemeester van Antwerpen

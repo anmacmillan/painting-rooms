@@ -1,0 +1,86 @@
+SOURCE: https://en.wikipedia.org/wiki/Fortifications_of_Antwerp
+TITLE: Fortifications of Antwerp
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+Antwerp was developed as a fortified city, but very little remains of the 10th century enceinte. Only some remains of the first city wall can be seen near the Vleeshuis museum at the corner of Bloedberg and Burchtgracht, and a replica of a burg (castle) named Steen has been partly rebuilt near the Scheldt-quais during the 19th century. Parts of the canals that protected the city between the 12th and 16th century have been covered and used as a sewage system. Both the 16th century city walls and the 19th century fortifications have been covered up by major infrastructure works during the 19th and 20th century.
+
+
+== Overview ==
+Antwerp's development as a fortified city is documented between the 10th and the 20th century. The fortifications were developed in six phases:
+
+First fortification 980 AD: first fortified wall and ditch, improved around 1100
+Second fortification 12th century: first vlieten and ruien (city canals) were dug
+Expanded second fortification during 13th and 14th century:
+expansion to the north with more ruien
+expansion to the south with vesten
+Third fortification before the 16th century: on the south and east side of the city
+Fourth fortification, 16th century: construction of the Spanish fortifications
+Fifth fortification, early 19th century: construction of a 1st ring of Brialmont fortresses about 10 km from the original burg
+Sixth fortification, 19th century after the independence of Belgium: construction of a 2nd ring of Brialmont fortresses about 20 km from the original burg
+From the 18th century major works and construction projects have changed the nature of the original innercity canals, and in the 19th and 20th century the projects for the development of the port have destroyed all visible signs of the fortification works and made the canals disappear from view.
+Some of the fortifications are still being used as military installations.
+
+
+== First fortification ca. 10th century AD ==
+
+Since the Treaty of Verdun (843) the river Scheldt was the natural and political border between the County of Flanders (belonging to the Kingdom of France) to the west and the Holy Roman Empire to the east. In 980 the German Emperor Otto II awarded Antwerp a margraviate, and ordered a fortification built on the wharf, part of his fortification program for his western border. Around 1106 the Counts of Leuven, the later Dukes of Brabant, acquired the Margraviate of Antwerp, and it continued to be part of the Duchy of Brabant until the end of the Ancien Régime.
+The first fortification consisted of a wall and ditch surrounding an enceinte built partly on the wharf. The wall was about 5 metres (16 ft) high and 1.35 metres (4.4 ft) thick and the ditch (on the north and southside of the fortification wall) was about 5 metres (16 ft)-10 metres (33 ft) wide. The ditch was located at the north and eastside at the current location of the  street called Burchtgracht (a name that translates literally into "fortress ditch"), in the south it was at the Palingbrug. In 1104 Emperor Hendrik IV reinforced the walls to 12 metres (39 ft) high and 2 metres (6.6 ft) thick. The remnants of this wall can still be seen near the west face of the Vleeshuis at the end of the Vleeehuisstraat.
+The wharf was a dry landmass, a dry hill protruding about 30 m into the main track of the river Scheldt (measured from the current 19th-century Scheldt-quayside). The enceinte within the wall was about 2.5 hectares (270,000 sq ft) in size, and contained 3 streets: the old Steenstraat (the current ramp leading to the het Steen building), the Zakstraat and the Mattestraat, and there was a square : the Burgplein. The river shore sloped steeply into the river at the south and west of the wharf and more gently at the northside (the quays in the drawings to the right were constructed at a later date). On the westside there was only a fortification wall (no ditch) facing the river with a tollhouse at the wharf gate.  Within the enceinte the most important buildings were:
+
+house het Steen, (part of the current monument),
+house het hof van Cruyninghe (the Margrave's residence),
+the church dedicated to St Walburga, (which has entirely disappeared)
+the Vierschaer (the tribunal)
+a refuge of the Affligem Abbey
+a brewery.
+
+During recent excavations behind the Vleeshuis on the intersection of the current Vleeshuisstraat and Burchtgracht, the remainder of the medieval wall structure was excavated and also the floor of the cellar of house De Gans (The Goose, an inn) and a well. Another part of the fortification wall that had been enclosed in the old "badhuis" building (formerly the public baths) was made visible again when that building was demolished (a new structure has been built on the badhuis site, but the remainder of the medieval fortification wall is now better preserved, see gallery).
+
+
+== Before the 13th century ==
+The city developed quickly outside its initial fortification, and by 1200 it had quadrupled in surface. Because trade had become the main activity of the city, canals were dug around its extremities, to allow barges to bring cargo into the city to and from the ships moored at the wharf. Those canals were called ruien . The canals flooded at high tide and emptied at low tide. The canals that connected with the main river Scheldt were called vliet
+Initially the barges moored in the early canals would come to rest on the muddy bottom making cargo handling nearly impossible. So at certain places attempts were made to build wooden jetties and stone fortified quays to replace the sloping embankments of the canals such that barges could be moored alongside and be discharged and loaded even if the canal was empty of river water.
+The canals were considered the second fortification of Antwerp. The triangle of canals (ruiendriehoek) enclosed about 20 hectares (2,200,000 sq ft). All of the ruien and vlieten of the ruiendriehoek have been covered and serve as the city sewage system; the system is open for visits by tourists. The current street names still remind of the "rui", "vliet" below it and the "brug" (bridge) reminded of bridges allowing access to the city. 
+The ruiendriehoek  consisted of following streets: 
+
+Koolkaai is the remainder of the Holenvliet or Kolenvliet which was covered in the 13th century where charcoal would come to the city
+Koepoortbrug is the first visual remainder of the first canal system, through the Koepoortbridge and citygate cattle would be brought to the nearby cattle market (Veemarkt) where it was bought by the butchers; the cattle went directly to the Vleeshuis (which was a nearly industrial slaughterhouse in that era)
+Minderbroedersrui is over the actual location of this pre 13th century canal, and refers to the order of the Minderbroeders (Order of Friars Minor)
+Wijngaardbrug was the most eastern corner of the city (at the end of the current Wolstraat)
+Jezuïtenrui is partly on the map but is not aligned with the old canal, the canal runs in a fairly straight line form the Wijngaardbrug under the Saint Carolus Borromeus church towards the Melkmarkt
+Reinoldsbrug (current Melkmarkt) has disappeared but would have been at the intersection of the Melkmarkt and Korte Nieuwstraat
+Kaasrui was moved north to its current location, but runs in a fairly straight line to the Suikerrui
+also the Broodbrug has disappeared currently the intersection of Suikerrui and Hoogstraat
+Suikerrui is not on top but on the south embankment of its covered namesake
+Botervliet was the most southern canal but it has disappeared completely with the 19th century works on the waterfront
+
+
+== During the 13th century ==
+However, buildings would soon be constructed on the outside of the ruien, and as trade increased two expansions occurred during the 13th century.
+Before 1250 an extension of the ruien was dug to the south. The canals were named vliet (connected to the Scheldt and vest.
+
+the St Cathelijnevest, connected at the Wijngardbridge to the Jezuitenrui  and the Minderbroedersrui,
+another vest (name lost, but suspected Huidevettersvest) at the current trace of the Wiegstraat
+and then right back to the Scheldt Lombardenvest
+St Jansvliet.
+To the north the Dominican order decided to build a monastery, the "Predikherenklooster". The Holenrui was filled up again, which meant there was no water passage between the end of the Kool- or Kolenvliet (a current street, name Koolkaai) and the Minderbroedersui and Koepoortbridge.  In order to create a passage to the Minderbroedersrui 3 new canals were dug around the monastery, the Verversrui, Falconrui and one of which the name has disappeared from the maps. North of the Koolrui a new access canal was dug between the Scheldt and the Verversrui: the St Pietersvliet.
+At the end of the 13th century (1295) John II, Duke of Brabant decided to create new fortifications, which made the city grow to 156 hectares (0.60 sq mi). He started in the south incorporating the St Michielsadbij that had been built south of the St Jansvliet) inside the fortifications, and built the Kronenburg-tower on the river bank. The fortification went in a nearly straight line  east to the Bluetower (currently Blauwtorenplein) where the fortification went north through the Wapper (where Rubens had his residence and atelier) and Cauwenberg right up to the Paardenmarkt (horse market) where it joined the north fortification of the Falconrui.
+
+
+== 16th century ==
+
+The 16th century "Spanish fortifications" and the old citadel defended by General Chassé in 1832, have totally vanished. Modern Antwerp's broad city-center boulevard (Italielei, Frankrijklei, Britselei and Amerikalei) marks the position of the original (second) Spanish fortifications.
+
+
+== 19th and 20th centuries ==
+
+At the time of the establishment of Belgian independence, Antwerp was defended by the citadel and an enceinte around the city. In 1859, seventeen of the twenty-two fortresses constructed under Wellington's supervision in 1815–1818 were dismantled and the old citadel and enceinte were removed. A new enceinte 8 miles (13 km) long was constructed, and the villages of Berchem and Borgerhout, now boroughs of Antwerp, were absorbed within the city.
+This enceinte is protected by a broad wet ditch, and in the caponiers are the magazines and store chambers of the fortress. The enceinte has nineteen openings or gateways, but of these seven are not used by the public. As soon as the enceinte was finished, eight detached forts from 2 to 2.5 miles (3.2 to 4.0 kilometres) from the enceinte were constructed. They begin in the north near Wijnegem and the zone of inundation, and terminate in the south at Hoboken. In 1870 Fort Merksem and the redoubts of Berendrecht and Oorderen were built for the defence of the area to be inundated north of Antwerp.
+In the 1870s, the fortifications of Antwerp were deemed to be out of date, given the increased range and power of artillery and explosives. Antwerp was transformed into a fortified position by constructing an outer line of forts and batteries 6 to 9 miles (14 km) from the enceinte.
+
+
+== Literature ==
+De Stad Antwerpen van de romeinse tijd tot de 17de eeuw, Topografische studie rond het plan van Virgilius Bononiensis 1565; Authors: Voet, Asaert, Soly, Verhulst, De Nave & Van Roey; 1978; Publisher: Gemeentekrediet van Belgie, Brussels.
+
+
+== References ==

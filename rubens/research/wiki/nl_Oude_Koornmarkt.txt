@@ -1,0 +1,9 @@
+SOURCE: https://nl.wikipedia.org/wiki/Oude_Koornmarkt
+TITLE: Oude Koornmarkt
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+De Oude Koornmarkt is een straat in het historische centrum van Antwerpen. De straat loopt van de Grote Markt tot aan de Kammenstraat en staat bekend om zijn talrijke restaurants en cafés. Langs de onpare kant van de Oude Koornmarkt zijn er de Tempelstraat en de Papenstraat, en langs de pare kant de Pelgrimstraat. De Vlaaikensgang is een zijsteeg langs de pare kant van de Oude Koornmarkt.
+
+
+== Geschiedenis ==
+De Oude Koornmarkt dankt haar naam aan de wekelijkse graanmarkten die hier tot in de 15de eeuw werden gehouden. De brouwerijen waren in de Kammenstraat dichtbij. In de 16de eeuw verplaatste de graanmarkt zich naar de "Brabantse Korenmarkt".

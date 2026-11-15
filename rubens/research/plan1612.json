@@ -1,0 +1,485 @@
+{
+ "rename": {
+  "Meir": "Meere",
+  "Groenplaats": "Groen Kerkhof",
+  "Wapper": "Vaartstraat",
+  "Schoenmarkt": "Kerckhofstrate"
+ },
+ "off": [
+  "Ernest Van Dijckkaai",
+  "Jordaenskaai",
+  "Steenplein"
+ ],
+ "on_walk": [
+  "Wapper",
+  "Meir",
+  "Meirbrug",
+  "Schoenmarkt",
+  "Groenplaats",
+  "Handschoenmarkt",
+  "Maalderijstraat",
+  "Grote Markt",
+  "Suikerrui"
+ ],
+ "walk": [
+  [
+   606,
+   366
+  ],
+  [
+   531,
+   353
+  ],
+  [
+   530,
+   262
+  ],
+  [
+   508,
+   247
+  ],
+  [
+   265.6,
+   211.1
+  ],
+  [
+   203.6,
+   200.1
+  ],
+  [
+   133.9,
+   212.2
+  ],
+  [
+   41.1,
+   201.2
+  ],
+  [
+   3,
+   176
+  ],
+  [
+   -6,
+   50
+  ],
+  [
+   -5,
+   36
+  ],
+  [
+   -10,
+   2
+  ],
+  [
+   -80,
+   -6
+  ],
+  [
+   -80,
+   -38
+  ],
+  [
+   -92,
+   -95
+  ],
+  [
+   -160,
+   -70
+  ],
+  [
+   -167,
+   -56
+  ],
+  [
+   -292,
+   -115
+  ],
+  [
+   -247,
+   -243
+  ],
+  [
+   -268,
+   -318
+  ],
+  [
+   -232,
+   -320
+  ]
+ ],
+ "keep": 170,
+ "cleared": [
+  {
+   "why": "the house on the Wapper and its garden: built by the level (rubens/fronts.js) as it may have stood about 1612",
+   "p": [
+    [
+     533,
+     330
+    ],
+    [
+     613,
+     330
+    ],
+    [
+     613,
+     383
+    ],
+    [
+     533,
+     383
+    ]
+   ]
+  },
+  {
+   "why": "north side of the Grote Markt: the guild houses are built by the level as fronts",
+   "p": [
+    [
+     -137.5,
+     -141
+    ],
+    [
+     -90.3,
+     -127.8
+    ],
+    [
+     -87,
+     -139.5
+    ],
+    [
+     -134.2,
+     -152.8
+    ]
+   ]
+  },
+  {
+   "why": "the site given for St Walburga's (nl.wikipedia: 'ter hoogte van de Zakstraat, ongeveer 50 m ten noorden van waar tegenwoordig het Steenplein ligt'): the church is built by the level; its exact footprint is not known",
+   "p": [
+    [
+     -267,
+     -334
+    ],
+    [
+     -206,
+     -334
+    ],
+    [
+     -206,
+     -306
+    ],
+    [
+     -267,
+     -306
+    ]
+   ]
+  },
+  {
+   "why": "the round footprint on the Handschoenmarkt is the well ('de oude waterput van Quinten Matsijs', nl.wikipedia Handschoenmarkt), not a house: the level builds a well there",
+   "p": [
+    [
+     -89,
+     -38
+    ],
+    [
+     -79,
+     -38
+    ],
+    [
+     -79,
+     -28
+    ],
+    [
+     -89,
+     -28
+    ]
+   ]
+  }
+ ],
+ "bank": [
+  [
+   -150,
+   -720
+  ],
+  [
+   -199.5,
+   -596
+  ],
+  [
+   -225.8,
+   -532
+  ],
+  [
+   -248.8,
+   -470
+  ],
+  [
+   -276.8,
+   -401
+  ],
+  [
+   -304.8,
+   -333
+  ],
+  [
+   -334.2,
+   -265
+  ],
+  [
+   -341.4,
+   -193
+  ],
+  [
+   -366,
+   -134
+  ],
+  [
+   -499.8,
+   124.6
+  ],
+  [
+   -570,
+   290
+  ],
+  [
+   -640,
+   470
+  ]
+ ],
+ "named": {
+  "Stadhuis Antwerpen": "stadhuis",
+  "Onze-Lieve-Vrouwekathedraal": "cathedral",
+  "Het Steen": "steen",
+  "Vleeshuis": "vleeshuis",
+  "Rubenshuis Museum": "rubenshuis",
+  "Rubenshuis": "rubenshuis"
+ },
+ "river_side": -1,
+ "places": [],
+ "extra": [
+  {
+   "why": "houses on the vault over the Herentalse Vaart at the Meir end of the Wapper (nl.wikipedia Wapper: a row was built on the vaulting, the Geleyhuis of 1545 'tegen de Meir'; pulled down 1966-69). Footprints are the level's",
+   "p": [
+    [
+     513.5,
+     258
+    ],
+    [
+     526,
+     258
+    ],
+    [
+     526,
+     271
+    ],
+    [
+     513.5,
+     271
+    ]
+   ]
+  },
+  {
+   "why": "as above",
+   "p": [
+    [
+     513.5,
+     271
+    ],
+    [
+     526,
+     271
+    ],
+    [
+     526,
+     284
+    ],
+    [
+     513.5,
+     284
+    ]
+   ]
+  },
+  {
+   "why": "as above",
+   "p": [
+    [
+     513.5,
+     284
+    ],
+    [
+     526,
+     284
+    ],
+    [
+     526,
+     296
+    ],
+    [
+     513.5,
+     296
+    ]
+   ]
+  },
+  {
+   "why": "the row of houses that parted the churchyard from the Schoenmarkt until about 1804 (INV th_983). Footprints are the level's; a gap is left where the errand passes",
+   "p": [
+    [
+     9,
+     180
+    ],
+    [
+     21,
+     181
+    ],
+    [
+     21,
+     189.5
+    ],
+    [
+     9,
+     188.5
+    ]
+   ]
+  },
+  {
+   "why": "as above",
+   "p": [
+    [
+     21,
+     181
+    ],
+    [
+     33,
+     182
+    ],
+    [
+     33,
+     190.5
+    ],
+    [
+     21,
+     189.5
+    ]
+   ]
+  },
+  {
+   "why": "as above",
+   "p": [
+    [
+     33,
+     182
+    ],
+    [
+     45,
+     183
+    ],
+    [
+     45,
+     191.5
+    ],
+    [
+     33,
+     190.5
+    ]
+   ]
+  },
+  {
+   "why": "as above",
+   "p": [
+    [
+     -22,
+     174
+    ],
+    [
+     -9,
+     177
+    ],
+    [
+     -9,
+     185.5
+    ],
+    [
+     -22,
+     182.5
+    ]
+   ]
+  }
+ ],
+ "canals": [
+  {
+   "n": "Herentalse Vaart",
+   "why": "a rui dug in 1490 down the middle of what is now the Wapper; vaulting began in the first half of the 16th century and was complete only in 1819 (nl.wikipedia Wapper). Open here south of the houses on the vault; 4 m wide (nl.wikipedia Herentalse Vaart: 'nauwelijks vier meter breed')",
+   "w": 2.0,
+   "l": [
+    [
+     519.7,
+     297
+    ],
+    [
+     519.8,
+     350
+    ],
+    [
+     520.5,
+     420
+    ]
+   ]
+  },
+  {
+   "n": "Meere",
+   "why": "a canal dug in 1489 between the Meirbrug and the Wapper, 'gedeeltelijk overwelfd' in 1541 (nl.wikipedia Meir). Which part lay open in 1612 is not known: the level leaves the eastern stretch open",
+   "w": 2.2,
+   "l": [
+    [
+     504,
+     242.5
+    ],
+    [
+     470,
+     236.5
+    ],
+    [
+     400,
+     227.5
+    ],
+    [
+     330,
+     219.5
+    ],
+    [
+     290,
+     214.5
+    ]
+   ],
+   "bridges": [
+    [
+     304,
+     216.5
+    ]
+   ]
+  },
+  {
+   "n": "Suikerrui",
+   "why": "an open rui with water down the middle until most of it was vaulted in 1661, the Boterrui end in 1832 (nl.wikipedia Suikerrui)",
+   "w": 2.0,
+   "l": [
+    [
+     -188.1,
+     -51.0
+    ],
+    [
+     -297.3,
+     -104.2
+    ],
+    [
+     -325,
+     -117.5
+    ]
+   ]
+  }
+ ],
+ "rename_why": {
+  "Meere": "INV th_11207 'Meere'; Blaeu 1649 '90. De Meer'",
+  "Groen Kerkhof": "INV th_922: 'Groot Kerkhof', later 'Groen Kerkhof'; Blaeu 1649 'Kerck hoff'",
+  "Vaartstraat": "en.wikipedia Rubenshuis 'the then-Vaartstraat'; Blaeu legend '75. Vaert-straet' (not located on the plan): partly verified",
+  "Kerckhofstrate": "INV th_983: older names 'Tien Gebodenstrate', 'Kerckhofstrate', Schoenmarkt only after the French period; Blaeu 1649 '62. Kerchof-straet': partly verified"
+ }
+}

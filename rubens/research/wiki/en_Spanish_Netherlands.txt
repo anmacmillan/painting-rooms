@@ -1,0 +1,62 @@
+SOURCE: https://en.wikipedia.org/wiki/Spanish_Netherlands
+TITLE: Spanish Netherlands
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+The Spanish Netherlands were a collection of States of the Holy Roman Empire in the Low Countries, held in personal union by the Spanish Habsburgs, but not annexed to the Spanish Crown, thus encompassing the second period in history of the Habsburg Netherlands, that lasted from 1556 to 1714. This region comprised most of the modern states of the Netherlands, Belgium and Luxembourg, as well as parts of northern France and western Germany, with the capital being Brussels. The Army of Flanders was given the task of defending the territory.
+The Imperial fiefs in the former Burgundian Netherlands had been inherited by the House of Habsburg from the extinct House of Valois-Burgundy upon the death of Mary of Burgundy in 1482. The Seventeen Provinces formed the core of the Habsburg Netherlands, which passed to the Spanish Habsburgs upon the abdication of Holy Roman and Spain's emperor Charles V in 1556. 
+Spanish hegemony in the south of the Netherlands was solidified following their victory in the fall of Antwerp during the Eighty Years' War. This war would lead to the northern part of Spanish Netherlands separating to form the autonomous Dutch Republic in 1581. The remainder of the area stayed under Spanish rule for over a century until the War of the Spanish Succession led to a handover to the Austrian Habsburgs, thus becoming the Austrian Netherlands.
+
+
+== History ==
+
+
+=== Background ===
+
+A common administration of fiefs in the Low Countries, centered in the Duchy of Brabant, already existed under the rule of the Burgundian Duke Philip the Good with the implementation of a stadtholder and the first convocation in 1464 of the States General in which 17 Burgundian polities in the Low Countries were represented. His granddaughter Mary confirmed a number of privileges to the States by signing the Great Privilege in 1477. After the government takeover by her husband Archduke Maximilian I of Austria, the States insisted on their privileges, culminating in a Hook rebellion in Holland and Flemish revolts. Maximilian prevailed with the support of Duke Albert III of Saxony and his son Philip the Handsome, husband of Joanna of Castile, could assume the rule over the Habsburg Netherlands in 1493. 
+Philip as well as his son and successor Charles V retained the title of a "Duke of Burgundy" referring to their Burgundian inheritance, but not having the Duchy of Burgundy in their possession, since it was taken by the French already in 1477. Only the Free County of Burgundy, in the Holy Roman Empire, remained in Habsburg rule, since 1493. The Habsburgs often used the term Burgundy to refer to their hereditary lands both in historical Burgundy and the Low Countries (e.g. in the name of the Imperial Burgundian Circle established in 1512), actually until 1795, when the Austrian Netherlands were lost to the French Republic. The Governor-general of the Netherlands was responsible for the administration of the Habsburg lands in the Low Countries. Charles V was born and raised in the Low Countries and often stayed at the Palace of Coudenberg in Brussels.
+By the Pragmatic Sanction of 1549, Charles V declared the Seventeen Provinces a united and indivisible Habsburg dominion. Between 1555 and 1556, the House of Habsburg split into an Austrian and a Spanish branch as a consequence of Charles's abdications: the Netherlands were left to his son Philip II of Spain, while his brother King Ferdinand I succeeded him as Holy Roman Emperor. The Seventeen Provinces, de jure still fiefs of the Holy Roman Empire, from that time on de facto were ruled by the Spanish branch of the Habsburgs.
+
+
+=== Eighty Years' War ===
+
+Philip's stern Counter-Reformation measures sparked the Dutch Revolt in the mainly Calvinist Netherlandish provinces, which led to the outbreak of the Eighty Years' War in 1568. In January 1579 the seven northern provinces formed the Protestant Union of Utrecht, which declared independence from the Spanish branch of the Habsburgs as the Republic of the Seven United Netherlands by the 1581 Act of Abjuration. The Spanish branch of the Habsburgs could retain the rule only over the partly Catholic Southern Netherlands, completed after the Fall of Antwerp in 1585. 
+Better times came, when in 1598 the Spanish Netherlands passed to Philip's daughter Isabella Clara Eugenia and her husband Archduke Albert VII of Austria. The couple's rule brought a period of much-needed peace and stability to the economy, which stimulated the growth of a separate South Netherlandish identity and consolidated the authority of the House of Habsburg reconciling previous anti-Spanish sentiments. In the early 17th century, there was a flourishing court at Brussels. Among the artists who emerged from the court of the "Archdukes", as they were known, was Peter Paul Rubens. Under Isabella and Albert, the Spanish Netherlands actually had formal independence from Spain, but always remained unofficially within the Spanish sphere of influence. With Albert's death in 1621 they returned to formal Spanish control, although the childless Isabella remained on as governor until her death in 1633.
+The failing wars intended to regain the 'heretical' northern Netherlands meant significant loss of (still mainly Catholic) territories in the north, which was consolidated in 1648 in the Peace of Westphalia, and given the peculiar inferior status of Generality Lands (jointly ruled by the United Republic, not admitted as member provinces): Zeelandic Flanders (south of the River Scheldt), the present Dutch province of North Brabant and Maastricht (in the present-day Dutch province of Limburg).
+
+
+=== Spanish Withdrawal ===
+As the power of the Spanish branch of the Habsburgs waned in the latter decades of the 17th century, the territory of the Netherlands under Habsburg rule was repeatedly invaded by the French and an increasing portion of the territory came under French control in successive wars. By the Treaty of the Pyrenees of 1659 the French annexed most of Artois, and Dunkirk was ceded to the English. By the Treaty of Aix-la-Chapelle (ending the War of Devolution in 1668) and Nijmegen (ending the Franco-Dutch War in 1678), further territory up to the current Franco-Belgian border was ceded, including Cambrai, Walloon Flanders, as well as half of the County of Hainaut (including Valenciennes), and further to the south Spanish Habsburgs also lost the Free County of Burgundy. Later, in the War of the Reunions and the Nine Years' War, France annexed other parts of the region that were restored to Spain by the Treaty of Rijswijk 1697.
+During the War of the Spanish Succession, in 1706 the Habsburg Netherlands became an Anglo-Dutch condominium for the remainder of the conflict. By the peace treaties of Utrecht and Rastatt in 1713/14 ending the war, the Southern Netherlands returned to the Austrian Habsburg monarchy forming the Austrian Netherlands.
+
+
+== Provinces ==
+From 1581 the Habsburg Netherlands consisted of the following territories, all part of modern Belgium unless otherwise stated:
+
+the Duchy of Brabant, except for North Brabant part of the Generality Lands of the Dutch Republic in 1648, including the former Margraviate of Antwerp (now mostly Belgium, some in Netherlands)
+the Duchy of Limburg, except for Limburg of the States part of the Dutch Generality Lands from 1648
+the Duchy of Luxembourg, a sovereign state from 1815 (parts in modern Belgium, France and Germany)
+the Upper Quarter (Bovenkwartier) of the Duchy of Guelders (Now Netherlands and Germany: the area around Venlo and Roermond, in the present Dutch province of Limburg, and the town of Geldern in the present German district of Kleve)
+the County of Artois, ceded to France by the 1659 Treaty of the Pyrenees (now in France)
+the County of Flanders, except for Zeelandic Flanders part of the Dutch Generality Lands from 1648, Walloon Flanders ceded to France by the 1678 Peace of Nijmegen (now in Belgium and France French Flanders)
+the County of Namur
+the County of Hainaut, southern part with Valenciennes ceded to France by the 1678 Peace of Nijmegen (now in Belgium and France)
+the Lordship of Mechelen
+the Tournaisis
+the Prince-Bishopric of Cambrai (the Cambrésis), not part of the Seventeen Provinces, incorporated by King Philip II in 1559, ceded to France by the 1678 Peace of Nijmegen (now in France: roughly the central part of the département Nord)
+
+
+== See also ==
+History of Spain
+History of Netherlands
+History of Belgium
+Alternate flag
+Religious reorganization of the Spanish Netherlands
+
+
+== Notes ==
+
+
+== References ==
+
+
+== Sources ==

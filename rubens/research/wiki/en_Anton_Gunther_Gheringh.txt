@@ -1,0 +1,11 @@
+SOURCE: https://en.wikipedia.org/wiki/Anton_Gunther_Gheringh
+TITLE: Anton Gunther Gheringh
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+Anton Ghering (died 1668) was a Flemish Baroque painter who specialized in architectural church interiors. He is best known for his interior of the St. Walburga Church in Antwerp, which records the original placement along with the frame and predella paintings of Peter Paul Rubens's Raising of the Cross.
+
+
+== Sources ==
+
+Hans Jantzen, Das Niederländische Architekturbild, Braunschweig, Klinkhardt & Biermann, 1910
+Bernard G. Maillet, La Peinture Architecturale des Ecoles du Nord : les Intérieurs d'Eglises 1580-1720, Pandora Publishers Wijnegem, 2012, ISBN 9789052353371

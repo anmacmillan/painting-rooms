@@ -1,0 +1,9 @@
+SOURCE: https://inventaris.onroerenderfgoed.be/themas/1005
+TITLE: Vleeshouwersstraat (Vleeshouwersstraat (Antwerpen))
+PUBLISHER: Inventaris Onroerend Erfgoed (agentschap Onroerend Erfgoed, Vlaamse overheid)
+FETCHED: 2026-11-15 (JSON API; HTML stripped)
+
+KORTE BESCHRIJVING: Begrensd door Peterseliestraat en Gorterstraat ten noorden, Zakstraat en Zirkstraat ten zuiden.
+
+[Basistekst] Vleeshouwersstraat
+Begrensd door Peterseliestraat en Gorterstraat ten noorden, Zakstraat en Zirkstraat ten zuiden. Heette begin 19de eeuw "Lange Beenhouwersstraat"; in 1825 herdoopt in "Vleeshouwersstraat" naar een oudere benaming, naar de nabijheid van Veemarkt en Vleeshuis. In het kader van de sanering van de binnenstad vrijwel totaal gesloopt, met uitzondering van het Vleeshuis en het hoekpand met de Zirkstraat uit 1577. Zie ook Kuipersstraat).

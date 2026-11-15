@@ -1,0 +1,13 @@
+SOURCE: https://inventaris.onroerenderfgoed.be/themas/994
+TITLE: Steenplein (Steenplein (Antwerpen))
+PUBLISHER: Inventaris Onroerend Erfgoed (agentschap Onroerend Erfgoed, Vlaamse overheid)
+FETCHED: 2026-11-15 (JSON API; HTML stripped)
+
+KORTE BESCHRIJVING: Beboomd plein bezet met banken; deels parkeerruimte; in het midden kiosk in de vorm van Flandriaboot, ten oosten begrensd door Ernest Van Dijckkaai, ten noorden gezicht op Sint-Annastrand en nieuwbouw linkeroever.
+
+[Basistekst] Steenplein
+Op de Scheldekaai, ter hoogte van de Suikerrui; aangelegd op de plaats van de vroegere "Vismarkt".
+ Beboomd plein bezet met banken; deels parkeerruimte; in het midden kiosk in de vorm van Flandriaboot, ten oosten begrensd door Ernest Van Dijckkaai, ten noorden gezicht op Sint-Annastrand en nieuwbouw linkeroever.
+ Aansluitend bij het Steenplein, de beschermde wandelterassen noord en zuid, naar een idee van Frans Gittens, ca. 1880, eindigend op paviljoenen, noord in neogotische stijl, zuid in neoclassicistische stijl. Het hellend straatje dat via het Steen naar het noorderterras leidt volgt het tracé van de vroegere "Gevangenisstraat"; het is gekasseid en afgezet met arduinen borstwering; aan de voet hiervan bronzen beeld van Lange Wapper door Albert Poels, opgericht in 1963; in de tuintjes links en rechts, respectievelijk boeganker en gedenksteen voor gesneuveld ballonvaarder (namelijk Hans Bartsch von Sigsfeld, 1902; verweerd opschrift); aan de top: de Steenpoort met daarachter het vroegere "Steenstraatje"; rechts kruis met Christusbeeld in Franse grès op arduinen voetstuk versierd met medaillon met Antwerps wapenschild 1722 gedateerd en voorzien van smeedijzeren lichtarm. Tot 1884 stond dit kruis, geflankeerd door de beelden van Maria en Johannes, op de leuning van de "Gevang-" of "Burchtbrug", net voor de Steenpoort.
+ De noordelijke gevelwand van het Steenplein, namelijk een zware zandsteenmuur Tudorboogvormig doorbroken, sluit aan bij de restauratiestijl van het Steen.
+ De zuidzijde is afgewerkt met een neoclassicistische arcade van zes traveeën in geblokte arduinen omlijsting met versierde sleutel; doorgang naar Scheldeloodsen. Hierboven de brede gekasseide opgang naar het zuiderterras, afgezet met balustrade van arduin en witsteen; aan de voet twee leeuwen van blauwe hardsteen met langwerpig schild met Antwerps wapen, op hoge sokkel en getekend Alph. Peeters, 1887.

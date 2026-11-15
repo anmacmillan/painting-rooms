@@ -1,0 +1,6 @@
+SOURCE: https://nl.wikipedia.org/wiki/Kloosterstraat_%28Antwerpen%29
+TITLE: Kloosterstraat (Antwerpen)
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+De Kloosterstraat is een straat in het centrum van Antwerpen in de wijk Sint-Andries. De straat loopt van noord naar zuid en sluit in het noorden aan op de Oever en in het zuiden op de Vlaamse Kaai. 
+De straat staat van oudsher bekend om zijn brokantiekzaken en vintagewinkels, maar deze worden steeds meer verdrongen door designkledingwinkels. Naast de statige 19e-eeuwse huizen zijn er ook enkele gebouwen uit de gouden eeuw te vinden, zoals het Mercator-Orteliushuis en het Heilig Huisken. Ook een opvallende bezienswaardigheid is de Guirlande, een houten gevelsculptuur.

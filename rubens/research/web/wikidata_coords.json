@@ -1,0 +1,72 @@
+{
+ "Q775644": {
+  "term": "Rubenshuis",
+  "label": "Rubenshuis",
+  "desc": "museum in Antwerp, Belgium, formerly the home and studio of Peter Paul Rubens",
+  "lat": 51.217222222222,
+  "lon": 4.4094444444444
+ },
+ "Q1014126": {
+  "term": "Het Steen",
+  "label": "Het Steen",
+  "desc": "fortress in Antwerp, Belgium",
+  "lat": 51.222778,
+  "lon": 4.3975
+ },
+ "Q24037661": {
+  "term": "Het Steen",
+  "label": "Het Steen",
+  "desc": "former fortress in Bruges, Belgium",
+  "lat": 51.208484,
+  "lon": 3.22627
+ },
+ "Q2005868": {
+  "term": "Antwerp City Hall",
+  "label": "Antwerp City Hall",
+  "desc": "city hall of Antwerp, Belgium",
+  "lat": 51.22138889,
+  "lon": 4.39944444
+ },
+ "Q2801959": {
+  "term": "Vleeshuis",
+  "label": "Vleeshuis",
+  "desc": "Building in in Antwerp, Belgium",
+  "lat": 51.22271,
+  "lon": 4.39917
+ },
+ "Q2596186": {
+  "term": "Vleeshuis",
+  "label": "Groot Vleeshuis",
+  "desc": "covered medieval market in Gothic style in the centre of Ghent, Belgium",
+  "lat": 51.05587,
+  "lon": 3.72159
+ },
+ "Q3049398": {
+  "term": "Vleeshuis",
+  "label": "Vleeshuis",
+  "desc": "guild hall in Ypres, Belgium",
+  "lat": 50.85055,
+  "lon": 2.88468
+ },
+ "Q117010459": {
+  "term": "Steenplein",
+  "label": "Steenplein",
+  "desc": "street in Antwerp, Belgium",
+  "lat": 51.222055,
+  "lon": 4.39695597
+ },
+ "Q63346233": {
+  "term": "Kolveniershof",
+  "label": "Culveriners' Court",
+  "desc": "building in Leuven, Belgium",
+  "lat": 50.883307,
+  "lon": 4.70155299
+ },
+ "Q19306412": {
+  "term": "Kolveniershof",
+  "label": "Kolveniershof",
+  "desc": "street in Goes, the Netherlands",
+  "lat": 51.5037,
+  "lon": 3.888
+ }
+}

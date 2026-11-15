@@ -1,0 +1,8 @@
+SOURCE: https://nl.wikipedia.org/wiki/Handschoenmarkt
+TITLE: Handschoenmarkt
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+De Handschoenmarkt is een plein in de Belgische stad Antwerpen.
+Het kleine plein vormt de toegang tot de Onze-Lieve-Vrouwekathedraal en is omringd door verschillende oude huizen. Het plein verkreeg zijn naam doordat er in de zestiende eeuw vooral handschoenen en pelzen verhandeld werden.
+
+Op het plein zijn ook enkele kunstwerken te vinden zoals de oude waterput van Quinten Matsijs en sinds 2016 ook een standbeeld van Nello en Patrasche, de hoofdpersonages uit het boek Een hond van Vlaanderen.

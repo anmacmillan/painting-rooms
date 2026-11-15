@@ -1,0 +1,10 @@
+SOURCE: https://inventaris.onroerenderfgoed.be/themas/1015
+TITLE: Zakstraat (Zakstraat (Antwerpen))
+PUBLISHER: Inventaris Onroerend Erfgoed (agentschap Onroerend Erfgoed, Vlaamse overheid)
+FETCHED: 2026-11-15 (JSON API; HTML stripped)
+
+KORTE BESCHRIJVING: Ligt in het verlengde van de Zirkstraat en loopt door tot aan de Jordaenskaai. Vormde eertijds een gang of "zak" uitkomende aan de muur van de burcht. Men sprak toen van "in den sak". In 1477 werd de muur van de Zakgang afgebroken en een brug, de zogenaamde "Zakbrug" over de burchtgracht gelegd.
+
+[Basistekst] Zakstraat
+Ligt in het verlengde van de Zirkstraat en loopt door tot aan de Jordaenskaai. Vormde eertijds een gang of "zak" uitkomende aan de muur van de burcht. Men sprak toen van "in den sak". In 1477 werd de muur van de Zakgang afgebroken en een brug, de zogenaamde "Zakbrug" over de burchtgracht gelegd. In 1866 vernielde een brand een groot deel van de toenmalige bebouwing. Omstreeks 1885 met de rechttrekking van de Scheldekaaien werd de straat merkelijk ingekort. Wat er nog van de Zakstraat overbleef lag 1,40 m hoger dan het peil van de nieuwe kaai, het verschil werd opgevangen door een zachte helling. De straat werd van zes op tien m breedte gebracht en negen huizen op het nieuwe niveau heropgebouwd.
+ Straatbeeld: verschil in breedte tussen het straatgedeelte van kaai naar Burchtgracht, en het achterliggende stuk tot aan de Zirkstraat. Bebouwing van gecementeerde lijstgevels met oude kernen (zie muurankers, uitkraging en ordonnantie) richting Zirkstraat, bebouwing uit het vierde kwart van de 19de eeuw richting kaai. Zie ook Kuipersstraat.

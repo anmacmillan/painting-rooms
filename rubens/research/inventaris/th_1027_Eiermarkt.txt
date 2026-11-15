@@ -1,0 +1,10 @@
+SOURCE: https://inventaris.onroerenderfgoed.be/themas/1027
+TITLE: Eiermarkt (Eiermarkt (Antwerpen))
+PUBLISHER: Inventaris Onroerend Erfgoed (agentschap Onroerend Erfgoed, Vlaamse overheid)
+FETCHED: 2026-11-15 (JSON API; HTML stripped)
+
+KORTE BESCHRIJVING: Verbindt Groenplaats met Meirbrug. Tot einde 14de eeuw grepen hier de wekelijkse veemarkten plaats; vandaar de naam "Veemarkt". Circa 1400 werd deze markt overgebracht naar het plein voor Sint-Paulus.
+
+[Basistekst] Eiermarkt
+Verbindt Groenplaats met Meirbrug. Tot einde 14de eeuw grepen hier de wekelijkse veemarkten plaats; vandaar de naam "Veemarkt". Circa 1400 werd deze markt overgebracht naar het plein voor Sint-Paulus. Andere benamingen waren "Corte Mere", "Oude Veemerct", "Hoenderenmerct", "Kiekenmerct" en uiteindelijk werd het "Eiermarkt". Tot het tweede kwart van de 20ste eeuw langs de zuidzijde afgesloten door het thans verdwenen "Hespenstraatje".
+ Het opvallend brede, gebogen straattracé verwijst naar de voormalige marktfunctie. Vrij gave gevelwand tussen Melkmarkt en Sudermanstraat, met mooi gezicht op de kathedraal. De voornaamste bijzonderheid van de Eiermarkt is Teun de Eierboer.

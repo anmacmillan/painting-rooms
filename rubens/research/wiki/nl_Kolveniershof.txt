@@ -1,0 +1,9 @@
+SOURCE: https://nl.wikipedia.org/wiki/Kolveniershof
+TITLE: Kolveniershof
+FETCHED: 2026-11-15 via MediaWiki API prop=extracts explaintext
+
+Kolveniershof kan verwijzen naar:
+
+Kolveniershof (Leuven)
+Kolveniershof (Antwerpen)
+Kolveniershof (Goes)

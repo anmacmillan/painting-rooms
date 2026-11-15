@@ -1,0 +1,9 @@
+SOURCE: https://inventaris.onroerenderfgoed.be/themas/940
+TITLE: Jordaenskaai (Jordaenskaai (Antwerpen))
+PUBLISHER: Inventaris Onroerend Erfgoed (agentschap Onroerend Erfgoed, Vlaamse overheid)
+FETCHED: 2026-11-15 (JSON API; HTML stripped)
+
+KORTE BESCHRIJVING: Zie Scheldekaaien.
+
+[Basistekst] Jordaenskaai
+Voor straatbeeld: zie Scheldekaaien.

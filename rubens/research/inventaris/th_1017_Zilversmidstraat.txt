@@ -1,0 +1,9 @@
+SOURCE: https://inventaris.onroerenderfgoed.be/themas/1017
+TITLE: Zilversmidstraat (Zilversmidstraat (Antwerpen))
+PUBLISHER: Inventaris Onroerend Erfgoed (agentschap Onroerend Erfgoed, Vlaamse overheid)
+FETCHED: 2026-11-15 (JSON API; HTML stripped)
+
+KORTE BESCHRIJVING: Van Grote Markt naar Kaasstraat. Vermeld als "argentea platea" in 1264, "Silversmitstrate" sedert 1307. Verblijfplaats van de zilversmeden en drijvers.
+
+[Basistekst] Zilversmidstraat
+Van Grote Markt naar Kaasstraat. Vermeld als "argentea platea" in 1264, "Silversmitstrate" sedert 1307. Verblijfplaats van de zilversmeden en drijvers. Zuidzijde: zijgevel van het Stadhuis. Noordzijde: een bewaarde trapgevel. De overige huizen werden alle gesloopt in het kader van de sanering van de Vleeshuiswijk (zie Kuipersstraat).

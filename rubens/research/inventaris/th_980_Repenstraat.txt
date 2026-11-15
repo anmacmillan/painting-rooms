@@ -1,0 +1,9 @@
+SOURCE: https://inventaris.onroerenderfgoed.be/themas/980
+TITLE: Repenstraat (Repenstraat (Antwerpen))
+PUBLISHER: Inventaris Onroerend Erfgoed (agentschap Onroerend Erfgoed, Vlaamse overheid)
+FETCHED: 2026-11-15 (JSON API; HTML stripped)
+
+KORTE BESCHRIJVING: Klein hellend straatje langs de zuidzijde van het Vleeshuis. Genoemd naar een huis "het Reepke" (begin 17de eeuw).
+
+[Basistekst] Repenstraat
+Klein hellend straatje langs de zuidzijde van het Vleeshuis. Genoemd naar een huis "het Reepke" (begin 17de eeuw). De noordzijde wordt ingenomen door het Vleeshuis, de zuidzijde door half afgebroken muren, een armzalig decor vormend voor het poppentheater "De Poesje". Op de straathelling zijn treden aangelegd (zie ook Kuipersstraat).

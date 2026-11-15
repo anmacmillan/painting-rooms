@@ -13,3 +13,6 @@ monet/research/other/overpass_*.json
 phidias/research/ref/
 phidias/research/athens_osm.xml
 phidias/research/commons_search.json
+rubens/research/ref/
+rubens/research/antwerp_osm.xml
+rubens/research/commons_search*.json

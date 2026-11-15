@@ -5,6 +5,7 @@ export const LEVELS = [
   { key: 'phidias', at: [23.73, 37.97], href: 'phidias/street.html', name: 'Athens, 438 BC', place: 'Athens', year: '438 BC', title: 'The Procession', by: 'Phidias', img: 'phidias/images/frieze.jpg', paintings: 4, coin: 'owls' },
   { key: 'florence', at: [11.25, 43.77], href: 'florence/street.html', name: 'Florence, about 1283', place: 'Florence', year: '1283', title: 'The New Life', by: 'Rossetti and Holiday', img: 'florence/images/holiday.jpg', paintings: 3, coin: 'florins' },
   { key: 'caravaggio', at: [12.47, 41.90], href: 'caravaggio/street.html', name: 'Rome, about 1600', place: 'Rome', year: '1600', title: "The Painter's Light", by: 'Caravaggio', img: 'caravaggio/images/calling.jpg', paintings: 3, coin: 'scudi' },
+  { key: 'rubens', at: [4.4015, 51.2203], href: 'rubens/street.html', name: 'Antwerp, about 1612', place: 'Antwerp', year: '1612', title: "The Painter's Errand", by: 'Rubens', img: 'rubens/images/descent.jpg', paintings: 3, coin: 'patagons' },
   { key: 'vermeer', at: [4.36, 52.01], href: 'vermeer/street.html', name: 'Delft, about 1665', place: 'Delft', year: '1665', title: 'The Girl in Delft', by: 'Vermeer', img: 'vermeer/images/pearl.jpg', paintings: 3, coin: 'ducats' },
   { key: 'turner', at: [-0.70, 51.52], href: 'turner/street.html', name: 'Maidenhead, 1844', place: 'Maidenhead', year: '1844', title: 'Rain, Steam and Speed', by: 'Turner', img: 'turner/images/rain_steam_speed.jpg', paintings: 2, coin: 'shillings' },
   { key: 'alice', at: [-1.26, 51.75], href: 'alice/street.html', name: 'Oxford, 1865', place: 'Oxford', year: '1865', title: 'Down the Rabbit-Hole', by: 'Tenniel', img: 'alice/images/rabbit.jpg', paintings: 4, coin: 'sovereigns' },
@@ -50,7 +51,7 @@ export function makeScore(o) {
   // --- what lies on the road
   const lam = c => new THREE.MeshLambertMaterial(c), glow = c => new THREE.MeshBasicMaterial({ color: c });
   // the coin of the place and time: Florence's gold florin, Rome's silver scudo, the Dutch gold ducat, the Norwegian silver krone
-  const COINS = { florin: ['#f0c13a', '#b8861c'], scudo: ['#d4d8de', '#8a9098'], ducat: ['#f3cf4a', '#a8781a'], krone: ['#dfe3e8', '#7f8894'], shilling: ['#e6e9ee', '#8a929c'], franc: ['#f0d264', '#a8842a'], owl: ['#e3e6ea', '#868e98'], sovereign: ['#f3cf4a', '#a8781a'] };
+  const COINS = { florin: ['#f0c13a', '#b8861c'], scudo: ['#d4d8de', '#8a9098'], ducat: ['#f3cf4a', '#a8781a'], krone: ['#dfe3e8', '#7f8894'], shilling: ['#e6e9ee', '#8a929c'], franc: ['#f0d264', '#a8842a'], owl: ['#e3e6ea', '#868e98'], patagon: ['#dde1e6', '#80888f'], sovereign: ['#f3cf4a', '#a8781a'] };
   function thing() {
     const g = new THREE.Group(), [face, rim] = COINS[o.thing] || COINS.florin, mats = [new THREE.MeshBasicMaterial({ color: face, transparent: true }), new THREE.MeshBasicMaterial({ color: rim, transparent: true })];
     const c = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.04, 22), mats[0]); c.rotation.x = Math.PI / 2; g.add(c); const r = new THREE.Mesh(new THREE.TorusGeometry(0.21, 0.024, 6, 24), mats[1]); g.add(r);
