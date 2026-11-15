@@ -21,11 +21,20 @@ export function makeGuide(o) {
   for (const [name, list] of byName) { list.sort((p, q) => p.d - q.d); let n = 0; const mine = [];
     for (const g of list) { if (n >= 3) break; if (mine.some(q => Math.hypot(q[0] - g.mx, q[1] - g.mz) < 42)) continue;
       const L = Math.hypot(g.b[0] - g.a[0], g.b[1] - g.a[1]) || 1, px = -(g.b[1] - g.a[1]) / L, pz = (g.b[0] - g.a[0]) / L; let spot = null;
-      for (const off of [3.4, -3.4, 4.6, -4.6, 2.6, -2.6]) { const x = g.mx + px * off, z = g.mz + pz * off; if (!blocked(x, z) && nearest(x, z).d > 2.6 && !placed.some(q => Math.hypot(q[0] - x, q[1] - z) < 7)) { spot = [x, z]; break; } }
+      // Where a house stands beside the street, the name is a plaque flat on its wall, as street names are in a town: nothing stands in the way.
+      const isWall = (x, z) => blocked(x, z) && !(o.wet && o.wet(x, z)); let wall = null;
+      for (const sg of [1, -1]) { if (wall) break; if (isWall(g.mx + px * sg * 1.0, g.mz + pz * sg * 1.0)) continue;
+        for (let d = 1.4; d <= 9; d += 0.2) { const x = g.mx + px * sg * d, z = g.mz + pz * sg * d; if (isWall(x, z)) { const e = d - 0.3, wx = g.mx + px * sg * e, wz = g.mz + pz * sg * e;
+            if (!blocked(wx, wz) && !placed.some(q => Math.hypot(q[0] - wx, q[1] - wz) < 7)) wall = [wx, wz, -px * sg, -pz * sg]; break; } } }
+      if (wall) { const [x, z, nx, nz] = wall, grp = new THREE.Group(), m = new THREE.MeshLambertMaterial({ map: tex(name) });
+        const board = new THREE.Mesh(new THREE.PlaneGeometry(2.5, 0.55), m); board.position.z = 0.05; grp.add(board); const back = new THREE.Mesh(new THREE.BoxGeometry(2.62, 0.67, 0.08), postM); grp.add(back);
+        grp.position.set(x, groundY(x, z) + 2.75, z); grp.rotation.y = Math.atan2(nx, nz); scene.add(grp); placed.push([x, z]); mine.push([g.mx, g.mz]); n++; continue; }
+      // In open country, a post well back from the way, its board short enough never to reach across it
+      for (const off of [4.4, -4.4, 5.6, -5.6]) { const x = g.mx + px * off, z = g.mz + pz * off; if (!blocked(x, z) && nearest(x, z).d > 3.6 && !placed.some(q => Math.hypot(q[0] - x, q[1] - z) < 7)) { spot = [x, z]; break; } }
       if (!spot) continue; const [x, z] = spot, y = groundY(x, z), p = at(g.s), ry = Math.atan2(p.dx, p.dz), grp = new THREE.Group();
       const post = new THREE.Mesh(new THREE.BoxGeometry(0.14, 3.3, 0.14), postM); post.position.y = 1.65; post.castShadow = true; grp.add(post);
-      const m = new THREE.MeshLambertMaterial({ map: tex(name) }); for (const r of [0, Math.PI]) { const b = new THREE.Mesh(new THREE.PlaneGeometry(3.3, 0.72), m); b.position.set(0, 2.95, r ? -0.08 : 0.08); b.rotation.y = r; grp.add(b); }
-      const back = new THREE.Mesh(new THREE.BoxGeometry(3.4, 0.8, 0.14), postM); back.position.y = 2.95; grp.add(back);
+      const m = new THREE.MeshLambertMaterial({ map: tex(name) }); for (const r of [0, Math.PI]) { const b = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 0.53), m); b.position.set(0, 2.95, r ? -0.08 : 0.08); b.rotation.y = r; grp.add(b); }
+      const back = new THREE.Mesh(new THREE.BoxGeometry(2.5, 0.61, 0.14), postM); back.position.y = 2.95; grp.add(back);
       grp.position.set(x, y, z); grp.rotation.y = ry; scene.add(grp); placed.push(spot); mine.push([g.mx, g.mz]); n++; } }
 
   // the round map and the name of the street, in the page

@@ -32,7 +32,7 @@ button.go { margin-top:1.2em; font:inherit; font-size:clamp(17px,2.4vw,22px); co
 #places button.on { border-color:rgba(217,181,96,.75); }
 #places button small { display:block; font-size:9px; letter-spacing:.14em; text-transform:uppercase; opacity:.6; }
 #places button em { font-style:normal; font-size:12px; opacity:.8; white-space:nowrap; }
-#minimap { position:fixed; left:max(12px, env(safe-area-inset-left)); bottom:max(12px, env(safe-area-inset-bottom)); width:156px; height:156px; border-radius:50%;
+#minimap { position:fixed; left:max(12px, env(safe-area-inset-left)); top:max(12px, env(safe-area-inset-top)); width:156px; height:156px; border-radius:50%;
   border:3px solid var(--gold); box-shadow:0 4px 16px rgba(0,0,0,.5); background:#223; }
 #bBook, #bMute { position:fixed; top:max(12px, env(safe-area-inset-top)); height:40px; border-radius:999px; border:0; background:rgba(241,233,216,.6); color:var(--ink);
   display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0 14px; font:inherit; font-size:14px; gap:6px; }
@@ -70,3 +70,6 @@ button.go { margin-top:1.2em; font:inherit; font-size:clamp(17px,2.4vw,22px); co
   color:var(--ink); display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0; box-shadow:0 4px 16px rgba(0,0,0,.35); z-index:11; transition:transform .12s, background .12s; }
 #bFly.down { transform:scale(.92); background:rgba(255,236,190,.97); } #bFly svg { width:40px; height:40px; }
 #card { bottom:calc(max(14px, env(safe-area-inset-bottom)) + 100px); }
+
+/* the map sits top left, as in Starry Nightrider; on a phone it is smaller and the street name drops below it */
+@media (max-width:620px) { #minimap { width:104px; height:104px; } #pointer { top:calc(max(12px, env(safe-area-inset-top)) + 112px); } }
