@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Down the Rabbit-Hole: Alice after Tenniel</title>
+<link rel="stylesheet" href="../common/world.css">
+<style>
+  html, body { background:#f4eedf; }
+  #title { background:#f4eedf; color:#1c1a18; } #title > img { mix-blend-mode:multiply; padding:2vh 0 31vh; box-sizing:border-box; }
+  #title .words { background:linear-gradient(rgba(244,238,223,0), rgba(244,238,223,.96) 38%); }
+  #end > img { max-height:46vh; background:#fff; }
+  #bubble { font-size:17px; max-width:290px; border:1.5px solid #1c1a18; }
+  #tip { color:#1c1a18; text-shadow:0 0 5px #f4eedf, 0 0 9px #f4eedf, 0 0 14px #f4eedf; padding:0 12vw; font-size:clamp(15px,2.1vw,20px); bottom:max(30px, env(safe-area-inset-bottom)); }
+  #plate { position:fixed; left:50%; bottom:max(26px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2s; pointer-events:none; z-index:9; color:#1c1a18;
+    background:rgba(244,238,223,.9); padding:.45em 1.3em .55em; border-top:1.5px solid #1c1a18; border-bottom:1.5px solid #1c1a18; white-space:nowrap; }
+  #plate.show { opacity:1; } #plate i { display:block; font-size:clamp(21px,3.2vw,32px); } #plate span { font-size:clamp(12px,1.7vw,15px); opacity:.85; }
+  /* the view dissolves into the engraving itself, printed on the same paper */
+  #melt { position:fixed; inset:0; background:#f4eedf; opacity:0; transition:opacity 2.6s ease; pointer-events:none; z-index:8; }
+  #melt.show { opacity:1; } #melt.slow { transition-duration:4.5s; }
+  #melt img { position:absolute; inset:0; margin:auto; height:100%; max-width:100%; object-fit:contain; mix-blend-mode:multiply; }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
+<div id="melt"><img id="meltImg" src="images/rabbit.jpg" alt=""></div>
+<div id="plate"></div>
+<button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+<div id="title" class="screen">
+  <img src="images/rabbit.jpg" alt="The White Rabbit looking at his watch, by John Tenniel">
+  <div class="words"><h1>Down the Rabbit-Hole</h1><p>after John Tenniel’s drawings for Lewis Carroll’s <span style="font-style:normal">Alice’s Adventures in Wonderland</span>, 1865</p><button class="go" id="start">Step in</button></div>
+</div>
+<div id="end" class="screen hidden">
+  <img src="images/teaparty.jpg" alt="A Mad Tea-Party, by John Tenniel">
+  <h2>A Mad Tea-Party</h2>
+  <p>John Tenniel drew forty-two pictures for Lewis Carroll’s <i>Alice’s Adventures in Wonderland</i> (1865), and the Brothers Dalziel cut them in wood. You have just run through four of them, in a world drawn the same way.</p>
+  <p><b>From the book:</b> the White Rabbit with his watch, the fall past cupboards, book-shelves, maps and pictures, the jar of ORANGE MARMALADE put safely in a cupboard, the hall of locked doors, the glass table and the little golden key, DRINK ME, EAT ME, the Rabbit’s gloves and fan, the Cheshire Cat and the tea-party. Everything anybody says is Carroll’s own words.</p>
+  <p><b>The game’s own:</b> the gold sovereigns, the shelves to dodge, the bouncing mushrooms, and the short cut: in the book Alice loses the key again, swims in her own tears, and reaches the garden only much later; the Cat and the tea-party are not in that garden.</p>
+  <p><b>Why a yellow dress?</b> Tenniel’s 1865 pictures are black and white, so they do not say. When he coloured them himself for <i>The Nursery “Alice”</i> (1890) he gave her a yellow dress, a white pinafore and blue stockings. The famous blue dress came later.</p>
+  <p class="small">Pictures: John Tenniel (died 1914), public domain, from scans of the 1869 German edition on Wikimedia Commons. Words: Lewis Carroll (died 1898), public domain, from Project Gutenberg.</p>
+  <button class="go" id="again">Run it again</button>
+</div>
+<div id="err">This world needs WebGL, which this browser could not start.</div>
+
+<script src="../common/sound.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { makeFigures } from '../common/figure.js';
+import { canvasTex, rnd, clamp, sstep, mix } from '../common/world.js';
+import { makeScore } from '../common/score.js';
+import { makeEngraving } from './engrave.js';
+import { makeCast } from './cast.js';
+const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, INK = '#1c1a18', PAPER = '#f4eedf';
+
+/* ================= renderer, and the engraved line over everything (engrave.js) ================= */
+let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
+const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.setClearColor(0xffffff, 1);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0xffffff); scene.fog = new THREE.Fog(0xffffff, 50, 240);
+const camera = new THREE.PerspectiveCamera(58, 1, 0.12, 420);
+const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType }); target.depthTexture = new THREE.DepthTexture(4, 4, THREE.FloatType);
+const ENG = makeEngraving(THREE, { scene: target.texture, depth: target.depthTexture, paper: PAPER });
+const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), ENG.material));
+const hemi = new THREE.HemisphereLight(0xffffff, 0xbbbbbb, 1.1), sun = new THREE.DirectionalLight(0xffffff, 2.5); scene.add(hemi, sun, sun.target);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -24, right: 24, top: 24, bottom: -24, near: 1, far: 150 }); sun.shadow.bias = -0.0008; sun.shadow.normalBias = 0.04;
+const lamp = new THREE.PointLight(0xffffff, 0, 30, 1.2); scene.add(lamp);
+
+/* ================= small helpers: every material is white or grey; what is dark in a texture prints as ink ================= */
+const lam = o => new THREE.MeshLambertMaterial(o), basic = c => new THREE.MeshBasicMaterial({ color: c });
+const tex = (w, h, bg, draw, repeat) => canvasTex(w, h, (g) => { g.fillStyle = bg; g.fillRect(0, 0, w, h); g.strokeStyle = g.fillStyle = INK; draw(g, w, h); }, repeat);
+const rep = (t, x, y) => { const c = t.clone(); c.needsUpdate = true; c.repeat.set(x, y); return c; };
+const put = (G, m, x, y, z, o = {}) => { m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = o.recv !== false; if (o.ry) m.rotation.y = o.ry; if (o.rx) m.rotation.x = o.rx; if (o.rz) m.rotation.z = o.rz; G.add(m); return m; };
+const box = (G, w, h, d, m, x, y, z, o) => put(G, new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m), x, y, z, o);
+const cyl = (G, r0, r1, h, m, x, y, z, o = {}) => put(G, new THREE.Mesh(new THREE.CylinderGeometry(r0, r1, h, o.seg || 16), m), x, y, z, o);
+const pln = (G, w, h, m, x, y, z, o = {}) => put(G, new THREE.Mesh(new THREE.PlaneGeometry(w, h), m), x, y, z, Object.assign({ cast: false }, o));
+const scribble = (g, w, h, n, len, lw) => { g.lineWidth = lw; for (let i = 0; i < n; i++) { const x = rnd(0, w), y = rnd(0, h), a = rnd(0, 6.3); g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a) * len, y + Math.sin(a) * len, x + Math.cos(a + 1.2) * len * 1.3, y + Math.sin(a + 1.2) * len * 1.3); g.stroke(); } };
+const white = lam({ color: '#f8f6f0' }), pale = lam({ color: '#dcd9d0' }), midM = lam({ color: '#9a978f' }), darkM = lam({ color: '#3a3834' }), inkM = basic('#1c1a18');
+const grassT = tex(512, 512, '#fbfaf5', (g, w, h) => { g.lineWidth = 2.2; for (let i = 0; i < 300; i++) { const x = rnd(0, w), y = rnd(0, h); for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(x + k * 4, y); g.lineTo(x + k * 4 + rnd(-5, 5), y - rnd(8, 20)); g.stroke(); } } }, true);
+const barkT = tex(256, 256, '#d2cec4', (g, w, h) => { for (let i = 0; i < 120; i++) { g.lineWidth = rnd(1.5, 4); const x = rnd(0, w), y = rnd(0, h); g.beginPath(); g.moveTo(x, y); g.bezierCurveTo(x + rnd(-8, 8), y + 20, x + rnd(-8, 8), y + 40, x + rnd(-6, 6), y + rnd(50, 90)); g.stroke(); } }, true);
+const leafT = tex(256, 256, '#d8d5cc', (g, w, h) => scribble(g, w, h, 150, 9, 2.6), true);
+const earthT = tex(256, 256, '#c9c5ba', (g, w, h) => scribble(g, w, h, 70, 14, 2), true);
+const stoneT = tex(256, 256, '#e2dfd6', (g, w, h) => { g.lineWidth = 3; for (let y = 0; y < h; y += 42) { g.beginPath(); g.moveTo(0, y); g.lineTo(w, y); g.stroke(); for (let x = (y / 42 % 2) * 40; x < w; x += 84) { g.beginPath(); g.moveTo(x, y); g.lineTo(x, y + 42); g.stroke(); } } scribble(g, w, h, 30, 6, 1.5); }, true);
+const blobG = (() => { const g = new THREE.IcosahedronGeometry(1, 3), p = g.attributes.position; for (let i = 0; i < p.count; i++) { const v = new V3().fromBufferAttribute(p, i), k = 1 + 0.16 * Math.sin(v.x * 4.1 + v.y * 2.3) * Math.cos(v.z * 3.7) + 0.08 * Math.sin(v.y * 9.0); p.setXYZ(i, v.x * k, v.y * k * 0.92, v.z * k); } g.computeVertexNormals(); return g; })();
+const leafM = lam({ map: rep(leafT, 3, 2) }), leafD = lam({ map: rep(leafT, 3, 2), color: '#cfcfcf' }), barkM = lam({ map: rep(barkT, 2, 3) });
+function tree(G, x, y, z, k, list) { const t = new THREE.Group(); cyl(t, 0.26 * k, 0.42 * k, 4.6 * k, barkM, 0, 2.3 * k, 0, { seg: 9 });
+  for (const [dx, dy, dz, s, m] of [[0, 6.3, 0, 3.6, 0], [1.5, 7.5, 0.9, 2.5, 1], [-1.4, 5.5, -0.8, 2.6, 1], [0.2, 8.4, -0.6, 1.9, 0]]) { const b = put(t, new THREE.Mesh(blobG, m ? leafD : leafM), dx * k, dy * k, dz * k); b.scale.setScalar(s * k); b.rotation.y = rnd(0, 6); }
+  t.position.set(x, y, z); G.add(t); if (list) list.push([x, z, 0.55 * k]); return t; }
+// grass drawn blade by blade in ink, as the plate has it
+function blades(G, n, spot, h0 = 0.1, h1 = 0.3) { const pos = []; for (let i = 0; i < n; i++) { const s = spot(); if (!s) continue; const [x, y, z] = s; for (let k = 0; k < 3; k++) { const a = rnd(0, 6.3), bx = x + rnd(-0.07, 0.07), bz = z + rnd(-0.07, 0.07), h = rnd(h0, h1), w = 0.006, lx = rnd(-0.12, 0.12), lz = rnd(-0.12, 0.12);
+    pos.push(bx - Math.cos(a) * w, y, bz - Math.sin(a) * w, bx + Math.cos(a) * w, y, bz + Math.sin(a) * w, bx + lx, y + h, bz + lz); } }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); const m = new THREE.Mesh(g, new THREE.MeshBasicMaterial({ color: INK, side: THREE.DoubleSide })); m.frustumCulled = false; G.add(m); return m; }
+const fieldG = new THREE.Group(), wellG = new THREE.Group(), hallG = new THREE.Group(), gardenG = new THREE.Group(); scene.add(fieldG, wellG, hallG, gardenG);
+
+/* ================= act 1: the field, the hedge and the rabbit-hole (Chapter I) ================= */
+const HOLE_Z = -95, RS = [1.5, -24];                       // where the hole is, and where the Rabbit stops to look at his watch
+const ground = (x, z) => Math.max(0, (z + 86) * 0.038) + 0.22 * Math.sin(x * 0.13 + 1) * Math.cos(z * 0.11) * sstep(-88, -70, z);
+{
+  const n = 2, X0 = -60, X1 = 60, Z0 = -130, Z1 = 50, nx = (X1 - X0) / n, nz = (Z1 - Z0) / n, pos = [], uv = [], idx = [];
+  for (let j = 0; j <= nz; j++) for (let i = 0; i <= nx; i++) { const x = X0 + i * n, z = Z0 + j * n; pos.push(x, ground(x, z), z); uv.push(x / 5, z / 5); }
+  for (let j = 0; j < nz; j++) for (let i = 0; i < nx; i++) { const a = j * (nx + 1) + i, b = a + 1, d = a + nx + 1, e = d + 1; idx.push(a, d, b, b, d, e); }
+  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
+  const m = new THREE.Mesh(g, lam({ map: grassT })); m.receiveShadow = true; fieldG.add(m);
+  blades(fieldG, 2600, () => { const x = rnd(-13, 13), z = rnd(HOLE_Z + 1.5, 16); return Math.hypot(x - RS[0], z - RS[1] - 1.5) < 4 ? null : [x, ground(x, z), z]; });
+  blades(fieldG, 80, () => { const x = RS[0] + rnd(-1.3, 1.3), z = RS[1] + rnd(-1.2, -0.3); return [x, ground(x, z), z]; }, 0.15, 0.4); blades(fieldG, 40, () => { const x = RS[0] + rnd(-1.3, 1.3), z = RS[1] + rnd(0.3, 1.2); return [x, ground(x, z), z]; }, 0.06, 0.16);      // long grass round the place where he stops
+  // the hedge and its bank, with the large rabbit-hole under it
+  const bankM = lam({ map: rep(earthT, 16, 1) });
+  for (const sx of [-1, 1]) box(fieldG, 30, 1.7, 3.4, bankM, sx * 16.7, 0.85, HOLE_Z - 2.2);
+  box(fieldG, 3.6, 0.5, 3.4, bankM, 0, 1.75 + 0.25, HOLE_Z - 2.2); box(fieldG, 3.4, 2.2, 0.3, inkM, 0, 0.9, HOLE_Z - 3.6, { cast: false });
+  const arch = new THREE.Mesh(new THREE.TorusGeometry(1.72, 0.22, 7, 14, Math.PI), lam({ map: rep(earthT, 4, 1) })); put(fieldG, arch, 0, 0.1, HOLE_Z - 0.5);
+  for (let x = -30; x <= 30; x += 2.1) { const b = put(fieldG, new THREE.Mesh(blobG, x % 2 ? leafM : leafD), x + rnd(-0.3, 0.3), 2.6 + rnd(0, 0.6), HOLE_Z - 2.4 + rnd(-0.3, 0.3)); b.scale.set(1.7, 1.25, 1.5); b.rotation.y = rnd(0, 6); }
+  for (const sx of [-1, 1]) for (let z = HOLE_Z; z < 20; z += 2.3) { const y = ground(sx * 20, z), b = put(fieldG, new THREE.Mesh(blobG, leafD), sx * (20 + rnd(-0.3, 0.3)), y + 0.9, z); b.scale.set(1.4, 1.3, 1.6); b.rotation.y = rnd(0, 6); }
+  for (const [x, z, k] of [[-12, -70, 1.2], [13, -52, 1.0], [-14, -30, 1.3], [12, -8, 1.1], [-25, -100, 1.4], [26, -101, 1.2], [8, -102, 1.0], [-9, -103, 1.1], [-27, -50, 1.3], [28, -20, 1.4], [-26, 5, 1.2], [9, 22, 1.3], [-8, 24, 1.2]]) tree(fieldG, x, ground(x, z), z, k);
+  // a dandelion clock beside him, and daisies: she had been thinking of a daisy-chain
+  const stem = (x, z, h, r) => { const y = ground(x, z); cyl(fieldG, 0.008, 0.008, h, inkM, x, y + h / 2, z, { seg: 4, cast: false }); const b = put(fieldG, new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), white), x, y + h, z); return b; };
+  stem(RS[0] + 0.22, RS[1] - 0.62, 0.46, 0.075); for (let i = 0; i < 46; i++) stem(rnd(-9, 9), rnd(-6, 13), rnd(0.1, 0.2), 0.035);
+}
+const fieldTrees = [[-12, -70, 0.7], [13, -52, 0.6], [-14, -30, 0.7], [12, -8, 0.6]];
+const blockField = (x, z) => Math.abs(x) > 18.6 || z > 17 || (z < HOLE_Z + 0.9 && Math.abs(x) > 1.25) || fieldTrees.some(t => Math.hypot(x - t[0], z - t[1]) < t[2]);
+
+/* ================= act 2: the well, "filled with cupboards and book-shelves; here and there she saw maps and pictures hung upon pegs" ================= */
+const WZ = -100, WR = 3.5, Y_H = -140, W_TOP = 2;
+const wellT = tex(512, 2048, '#d6d2c8', (g, w, h) => {
+  const B = h / 6, books = y0 => { for (let r = 0; r < 3; r++) { const by = y0 + 18 + (r + 1) * (B - 30) / 3; g.lineWidth = 6; g.beginPath(); g.moveTo(10, by); g.lineTo(w - 10, by); g.stroke(); g.lineWidth = 2.5;
+      for (let x = 18; x < w - 30;) { const bw = rnd(12, 30), bh = rnd(58, 92), lean = Math.random() < 0.08 ? 10 : 0; g.fillStyle = ['#fbfaf5', '#fbfaf5', '#8e8b84', '#5a5853', '#c4c1b8'][Math.floor(rnd(0, 5))]; g.beginPath(); g.moveTo(x, by - 3); g.lineTo(x + lean, by - bh); g.lineTo(x + bw + lean, by - bh); g.lineTo(x + bw, by - 3); g.closePath(); g.fill(); g.stroke();
+        if (bw > 18) { g.beginPath(); g.moveTo(x + 3 + lean * 0.7, by - bh * 0.72); g.lineTo(x + bw - 3 + lean * 0.7, by - bh * 0.72); g.moveTo(x + 3 + lean * 0.3, by - bh * 0.3); g.lineTo(x + bw - 3 + lean * 0.3, by - bh * 0.3); g.stroke(); } x += bw + (Math.random() < 0.1 ? rnd(8, 30) : 1); } }
+    g.lineWidth = 6; g.strokeRect(10, y0 + 14, w - 20, B - 26); };
+  const cupboard = y0 => { g.lineWidth = 6; g.fillStyle = '#eeebe2'; g.fillRect(60, y0 + 30, w - 120, B - 60); g.strokeRect(60, y0 + 30, w - 120, B - 60); g.beginPath(); g.moveTo(w / 2, y0 + 30); g.lineTo(w / 2, y0 + B - 30); g.stroke(); g.lineWidth = 3;
+    for (const x of [84, w / 2 + 24]) { g.strokeRect(x, y0 + 54, w / 2 - 108, B / 2 - 60); g.strokeRect(x, y0 + B / 2 + 8, w / 2 - 108, B / 2 - 62); } g.fillStyle = INK; for (const x of [w / 2 - 16, w / 2 + 16]) { g.beginPath(); g.arc(x, y0 + B / 2, 7, 0, 7); g.fill(); } };
+  const hung = y0 => { g.lineWidth = 3; const peg = (px, x, y, ww, hh) => { g.fillStyle = INK; g.beginPath(); g.arc(px, y0 + 34, 6, 0, 7); g.fill(); g.beginPath(); g.moveTo(x + 8, y); g.lineTo(px, y0 + 34); g.lineTo(x + ww - 8, y); g.stroke(); g.fillStyle = '#fbfaf5'; g.fillRect(x, y, ww, hh); g.lineWidth = 5; g.strokeRect(x, y, ww, hh); g.lineWidth = 2; };
+    peg(140, 36, y0 + 92, 212, 190); for (let k = 1; k < 5; k++) { g.beginPath(); g.moveTo(36 + k * 42, y0 + 92); g.lineTo(36 + k * 42, y0 + 282); g.moveTo(36, y0 + 92 + k * 38); g.lineTo(248, y0 + 92 + k * 38); g.stroke(); }
+    g.lineWidth = 3.5; g.beginPath(); g.moveTo(60, y0 + 250); g.bezierCurveTo(90, y0 + 150, 130, y0 + 230, 150, y0 + 170); g.bezierCurveTo(170, y0 + 120, 215, y0 + 140, 225, y0 + 230); g.bezierCurveTo(200, y0 + 262, 120, y0 + 240, 60, y0 + 250); g.stroke();      // a map: a coast and its lines
+    peg(380, 300, y0 + 110, 168, 150); g.lineWidth = 2.5; g.strokeRect(312, y0 + 122, 144, 126); g.beginPath(); g.moveTo(312, y0 + 214); g.bezierCurveTo(350, y0 + 180, 380, y0 + 226, 456, y0 + 196); g.stroke(); g.beginPath(); g.arc(420, y0 + 158, 13, 0, 7); g.stroke(); };      // a picture: a hill and a sun
+  const earth = y0 => { g.lineWidth = 2.5; for (let i = 0; i < 26; i++) { const x = rnd(20, w - 20), y = y0 + rnd(20, B - 20); g.beginPath(); g.moveTo(x, y); g.bezierCurveTo(x + 20, y + rnd(-14, 14), x + 40, y + rnd(-14, 14), x + rnd(50, 90), y + rnd(-10, 10)); g.stroke(); } };
+  [books, hung, cupboard, books, earth, hung].forEach((f, i) => f(i * B)); }, true);
+const jar = new THREE.Group(), cupb = new THREE.Group(), ledges = [], wellCoins = [];
+{
+  const H = W_TOP - Y_H, wallM = k => lam({ map: (() => { const t = rep(wellT, 1, H / 28); t.offset.set(0, k * 0.37); return t; })(), side: THREE.DoubleSide });
+  const yc = (W_TOP + Y_H) / 2 + 1.6;
+  pln(wellG, 2 * WR, H - 3.2, wallM(0), 0, yc, WZ - WR);                                           // far wall, with the way out left open at the foot
+  for (const sx of [-1, 1]) { pln(wellG, 2, 3.2, lam({ map: rep(earthT, 1, 1.5) }), sx * 2.5, Y_H + 1.6, WZ - WR); pln(wellG, 2 * WR, H, wallM(sx + 2), sx * WR, (W_TOP + Y_H) / 2, WZ, { ry: -sx * Math.PI / 2 }); }
+  pln(wellG, 2 * WR, H, wallM(1.5), 0, (W_TOP + Y_H) / 2, WZ + WR, { ry: Math.PI });
+  const shelfM = lam({ color: '#e8e5dc' });
+  // the shelves that stand out from the walls: 'F' far, 'L' left, 'R' right, 'N' near. y is the top of the board.
+  [[-15, 'L'], [-24, 'R'], [-33, 'F'], [-41, 'L'], [-41, 'R'], [-50, 'N'], [-66, 'R'], [-74, 'F'], [-74, 'N'], [-83, 'L'], [-92, 'F'], [-100, 'L'], [-112, 'R'], [-112, 'L'], [-121, 'F']].forEach(([y, s], i) => {
+    const d = 1.9, l = 3.4, x0 = s === 'L' ? -WR : s === 'R' ? WR - d : -l / 2, x1 = s === 'L' ? -WR + d : s === 'R' ? WR : l / 2, z0 = s === 'F' ? WZ - WR : s === 'N' ? WZ + WR - d : WZ - l / 2, z1 = s === 'F' ? WZ - WR + d : s === 'N' ? WZ + WR : WZ + l / 2;
+    box(wellG, x1 - x0, 0.2, z1 - z0, shelfM, (x0 + x1) / 2, y - 0.1, (z0 + z1) / 2);
+    for (let k = 0; k < 7; k++) { const along = s === 'L' || s === 'R', t = (k + 0.5) / 7, bh = rnd(0.32, 0.55), back = s === 'L' ? x0 + 0.25 : s === 'R' ? x1 - 0.25 : s === 'F' ? z0 + 0.25 : z1 - 0.25; box(wellG, along ? 0.34 : 0.4, bh, along ? 0.4 : 0.34, [pale, midM, darkM, white][k % 4], along ? back : mix(x0 + 0.3, x1 - 0.3, t), y + bh / 2, along ? mix(z0 + 0.3, z1 - 0.3, t) : back); }
+    ledges.push({ y, x0, x1, z0, z1, hit: false }); });
+  // the jar of orange marmalade on a little shelf of its own, and lower down an open cupboard to put it in
+  const label = canvasTex(256, 128, (g, w, h) => { g.fillStyle = '#fbfaf5'; g.fillRect(0, 0, w, h); g.strokeStyle = g.fillStyle = INK; g.lineWidth = 6; g.strokeRect(4, 4, w - 8, h - 8); g.textAlign = 'center'; g.font = 'bold 40px Georgia'; g.fillText('ORANGE', w / 2, 54); g.font = 'bold 27px Georgia'; g.fillText('MARMALADE', w / 2, 98); });
+  const jb = new THREE.Mesh(new THREE.CylinderGeometry(0.2, 0.19, 0.42, 18), [lam({ map: (() => { const t = label.clone(); t.needsUpdate = true; t.repeat.set(2, 1); t.wrapS = THREE.RepeatWrapping; return t; })() }), white, white]); jb.castShadow = true; jar.add(jb);
+  const lid = new THREE.Mesh(new THREE.CylinderGeometry(0.215, 0.215, 0.07, 18), pale); lid.position.y = 0.24; jar.add(lid); wellG.add(jar);
+  box(wellG, 1.3, 0.1, 0.9, shelfM, -1.7, -58.05, WZ - WR + 0.45); jar.userData.home = [-1.7, -57.79, WZ - WR + 0.55];
+  cupb.position.set(WR - 0.02, -104, WZ - 0.4); wellG.add(cupb);
+  box(cupb, 0.7, 2.0, 0.08, shelfM, -0.35, 1.0, -0.95); box(cupb, 0.7, 2.0, 0.08, shelfM, -0.35, 1.0, 0.95); box(cupb, 0.7, 0.08, 1.98, shelfM, -0.35, 2.0, 0); box(cupb, 0.7, 0.08, 1.98, shelfM, -0.35, 0.0, 0); box(cupb, 0.7, 0.06, 1.9, shelfM, -0.35, 0.95, 0);
+  pln(cupb, 1.9, 2.0, darkM, -0.03, 1.0, 0, { ry: -Math.PI / 2 }); for (const s of [-1, 1]) box(cupb, 0.9, 1.96, 0.06, shelfM, -1.12, 1.0, s * 1.02, { ry: s * 0.25 });      // its doors stand open
+  // the foot of the well: a heap of sticks and dry leaves, and the long passage beyond
+  const heap = put(wellG, new THREE.Mesh(blobG, lam({ map: rep(leafT, 4, 3), color: '#e8e8e8' })), 0, Y_H - 0.25, WZ); heap.scale.set(2.2, 0.75, 2.2);
+  for (let i = 0; i < 40; i++) { const s = cyl(wellG, 0.02, 0.03, rnd(0.7, 1.6), inkM, rnd(-1.9, 1.9), Y_H + rnd(0.12, 0.5), WZ + rnd(-1.9, 1.9), { seg: 5, cast: false }); s.rotation.set(rnd(1.2, 1.9), rnd(0, 6), rnd(-0.4, 0.4)); }
+}
+/* ================= act 3: "a long, low hall, which was lit up by a row of lamps hanging from the roof. There were doors all round the hall" ================= */
+const HZ0 = -108, HZ1 = -136, HX = 5, HC = 3.4, TAB = [0, -120], DOOR = [-2, HZ1 + 0.35], FANP = [2.2, -127];
+const doorT = tex(256, 512, '#e4e1d8', (g, w, h) => { g.lineWidth = 9; g.strokeRect(6, 6, w - 12, h - 6); g.lineWidth = 4; for (const [x, y, ww, hh] of [[34, 34, 80, 190], [142, 34, 80, 190], [34, 262, 80, 200], [142, 262, 80, 200]]) { g.strokeRect(x, y, ww, hh); g.strokeRect(x + 10, y + 10, ww - 20, hh - 20); } g.beginPath(); g.arc(216, 250, 9, 0, 7); g.fill(); g.fillRect(212, 266, 8, 14); });
+const glassM = lam({ color: '#ffffff', transparent: true, opacity: 0.16, depthWrite: false });
+const key = new THREE.Group(), bottle = new THREE.Group(), cake = new THREE.Group(), fan = new THREE.Group(), gloves = new THREE.Group(), curtain = new THREE.Group(), littleDoor = new THREE.Group(), pool = new THREE.Group();
+{
+  const floorT = tex(256, 256, '#f6f4ee', (g, w, h) => { g.lineWidth = 3; for (let x = 0; x <= w; x += 64) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); } g.lineWidth = 1.5; for (let i = 0; i < 26; i++) { const x = rnd(0, w), y = rnd(0, h); g.beginPath(); g.moveTo(x, y); g.lineTo(x + rnd(-3, 3), y + rnd(20, 60)); g.stroke(); } }, true);
+  const panelT = tex(256, 512, '#efece4', (g, w, h) => { g.lineWidth = 4; g.strokeRect(14, 300, w - 28, 196); g.strokeRect(14, 16, w - 28, 262); g.lineWidth = 2; g.strokeRect(28, 314, w - 56, 168); g.strokeRect(28, 30, w - 56, 234); }, true);
+  const wallM = (L) => lam({ map: rep(panelT, L / 1.6, 1) }), doorM = lam({ map: doorT }), fl = lam({ map: rep(floorT, 5, 16) });
+  const yF = Y_H, zc = (HZ0 + HZ1) / 2, L = HZ0 - HZ1;
+  pln(hallG, 2 * HX, L, fl, 0, yF, zc, { rx: -Math.PI / 2 }); pln(hallG, 2 * HX, L, lam({ color: '#e9e6de' }), 0, yF + HC, zc, { rx: Math.PI / 2, recv: false });
+  for (const sx of [-1, 1]) { pln(hallG, L, HC, wallM(L), sx * HX, yF + HC / 2, zc, { ry: -sx * Math.PI / 2 }); for (let z = HZ0 - 3; z > HZ1 + 2; z -= 5.2) { pln(hallG, 1.25, 2.35, doorM, sx * (HX - 0.03), yF + 1.175, z, { ry: -sx * Math.PI / 2 }); box(hallG, 0.12, 0.12, 1.5, pale, sx * (HX - 0.06), yF + 2.42, z, { cast: false }); } }
+  pln(hallG, 2 * HX, HC, wallM(2 * HX), 0, yF + HC / 2, HZ1); for (const x of [1.2, 3.6]) pln(hallG, 1.25, 2.35, doorM, x, yF + 1.175, HZ1 + 0.03);
+  // the way in from the foot of the well: a short passage
+  for (const sx of [-1, 1]) { pln(hallG, HX - 1.5, HC, wallM(HX - 1.5), sx * (HX + 1.5) / 2, yF + HC / 2, HZ0, { ry: Math.PI }); pln(hallG, 4.5, 3.2, lam({ map: rep(earthT, 3, 2) }), sx * 1.5, yF + 1.6, (HZ0 + WZ - WR) / 2, { ry: -sx * Math.PI / 2 }); }
+  pln(hallG, 3, 4.5, lam({ map: rep(earthT, 2, 3) }), 0, yF, (HZ0 + WZ - WR) / 2, { rx: -Math.PI / 2 }); pln(hallG, 3, 4.5, darkM, 0, yF + 3.2, (HZ0 + WZ - WR) / 2, { rx: Math.PI / 2 }); pln(hallG, 2 * WR, 2 * WR, lam({ map: rep(earthT, 4, 4) }), 0, yF + 0.01, WZ, { rx: -Math.PI / 2 });
+  for (let z = HZ0 - 3; z > HZ1 + 2; z -= 5.5) { cyl(hallG, 0.012, 0.012, 0.7, inkM, 2.9, yF + HC - 0.35, z, { seg: 4, cast: false }); cyl(hallG, 0.07, 0.2, 0.2, pale, 2.9, yF + HC - 0.78, z, { seg: 10 }); put(hallG, new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), white), 2.9, yF + HC - 0.95, z); }
+  // the little three-legged table, all made of solid glass (its size is taken from the DRINK ME plate: the top is at her waist)
+  const tb = new THREE.Group(); tb.position.set(TAB[0], yF, TAB[1]); hallG.add(tb);
+  cyl(tb, 0.36, 0.36, 0.035, glassM, 0, 0.8, 0, { seg: 28, cast: false }); for (const [y, r, t] of [[0.82, 0.36, 0.014], [0.775, 0.345, 0.02], [0.74, 0.3, 0.012]]) put(tb, new THREE.Mesh(new THREE.TorusGeometry(r, t, 6, 36), white), 0, y, 0, { rx: Math.PI / 2 });
+  for (let i = 0; i < 3; i++) { const a = i * 2.094 + 0.5, x = Math.cos(a) * 0.25, z = Math.sin(a) * 0.25; cyl(tb, 0.022, 0.03, 0.74, white, x, 0.37, z, { seg: 10 }); for (const y of [0.05, 0.62, 0.68]) put(tb, new THREE.Mesh(new THREE.TorusGeometry(0.034, 0.012, 5, 12), white), x, y, z, { rx: Math.PI / 2 }); cyl(tb, 0.05, 0.06, 0.03, white, x, 0.015, z, { seg: 10 }); }
+  // the tiny golden key (drawn large enough to see), the bottle with its paper label, the very small cake in its little glass box
+  put(key, new THREE.Mesh(new THREE.TorusGeometry(0.03, 0.009, 6, 14), darkM), 0, 0, 0, { rx: Math.PI / 2 }); const shaft = cyl(key, 0.007, 0.007, 0.1, darkM, 0.075, 0, 0, { seg: 6, rz: Math.PI / 2 }); box(key, 0.012, 0.012, 0.035, darkM, 0.115, 0, 0.018); box(key, 0.012, 0.012, 0.028, darkM, 0.095, 0, 0.014); hallG.add(key);
+  const lab = (t1, w = 256) => canvasTex(w, 96, (g, ww, h) => { g.fillStyle = '#fbfaf5'; g.fillRect(0, 0, ww, h); g.strokeStyle = g.fillStyle = INK; g.lineWidth = 5; g.strokeRect(3, 3, ww - 6, h - 6); g.textAlign = 'center'; g.font = 'bold 52px Georgia'; g.fillText(t1, ww / 2, 66); });
+  cyl(bottle, 0.032, 0.032, 0.11, midM, 0, 0.055, 0, { seg: 12 }); cyl(bottle, 0.013, 0.026, 0.05, midM, 0, 0.135, 0, { seg: 10 }); cyl(bottle, 0.016, 0.016, 0.02, darkM, 0, 0.165, 0, { seg: 8 });
+  const tag = pln(bottle, 0.2, 0.075, new THREE.MeshLambertMaterial({ map: lab('DRINK ME', 300), side: THREE.DoubleSide }), -0.1, 0.17, 0.0, { rz: 0.45 }); hallG.add(bottle);
+  box(cake, 0.19, 0.012, 0.19, pale, 0, 0.006, 0); cyl(cake, 0.07, 0.075, 0.05, [white, new THREE.MeshLambertMaterial({ map: canvasTex(128, 128, (g, w, h) => { g.fillStyle = '#fbfaf5'; g.fillRect(0, 0, w, h); g.fillStyle = INK; g.textAlign = 'center'; g.font = 'bold 44px Georgia'; g.fillText('EAT', w / 2, 56); g.fillText('ME', w / 2, 104); }) }), white], 0, 0.04, 0, { seg: 18 });
+  box(cake, 0.19, 0.13, 0.19, glassM, 0, 0.075, 0, { cast: false }); for (const [x, z] of [[-1, -1], [1, -1], [-1, 1], [1, 1]]) cyl(cake, 0.005, 0.005, 0.13, darkM, x * 0.095, 0.075, z * 0.095, { seg: 4, cast: false });
+  for (const s of [-1, 1]) { box(cake, 0.2, 0.006, 0.006, darkM, 0, 0.14, s * 0.095, { cast: false }); box(cake, 0.006, 0.006, 0.2, darkM, s * 0.095, 0.14, 0, { cast: false }); }
+  cake.position.set(TAB[0] - 0.02, yF, TAB[1] - 0.06); hallG.add(cake);
+  // the low curtain, and behind it the little door about fifteen inches high
+  const cg = new THREE.PlaneGeometry(1.1, 0.95, 22, 1), cp = cg.attributes.position; for (let i = 0; i < cp.count; i++) cp.setZ(i, Math.sin(cp.getX(i) * 26) * 0.035); cg.computeVertexNormals();
+  const cm = new THREE.Mesh(cg, lam({ side: THREE.DoubleSide, map: tex(256, 128, '#f1eee6', (g, w, h) => { g.lineWidth = 2.5; for (let x = 6; x < w; x += 11) { g.beginPath(); g.moveTo(x, 4); g.lineTo(x + rnd(-2, 2), h - rnd(2, 30)); g.stroke(); } }) })); cm.position.set(0.55, 0.5, 0); cm.castShadow = true; curtain.add(cm);
+  curtain.position.set(DOOR[0] - 0.55, yF, HZ1 + 0.16); hallG.add(curtain); cyl(hallG, 0.014, 0.014, 1.3, darkM, DOOR[0], yF + 0.985, HZ1 + 0.16, { seg: 6, rz: Math.PI / 2, cast: false });
+  pln(littleDoor, 0.27, 0.38, lam({ map: doorT, side: THREE.DoubleSide }), 0.135, 0.19, 0); littleDoor.position.set(DOOR[0] - 0.135, yF, HZ1 + 0.035); hallG.add(littleDoor);
+  pln(hallG, 0.27, 0.38, basic('#ffffff'), DOOR[0], yF + 0.19, HZ1 + 0.012); box(hallG, 0.33, 0.03, 0.04, pale, DOOR[0], yF + 0.395, HZ1 + 0.03, { cast: false });
+  // the Rabbit's large fan and his white kid gloves
+  const fm = new THREE.Mesh(new THREE.CircleGeometry(0.42, 18, 0.35, 2.45), new THREE.MeshLambertMaterial({ side: THREE.DoubleSide, map: tex(256, 256, '#fbfaf5', (g, w, h) => { g.lineWidth = 3; for (let a = 0; a < 6.3; a += 0.16) { g.beginPath(); g.moveTo(w / 2, h / 2); g.lineTo(w / 2 + Math.cos(a) * w, h / 2 + Math.sin(a) * w); g.stroke(); } g.lineWidth = 6; for (const r of [60, 118]) { g.beginPath(); g.arc(w / 2, h / 2, r, 0, 7); g.stroke(); } }) })); fm.castShadow = true; fan.add(fm); hallG.add(fan);
+  for (const s of [-1, 1]) { const gl = put(gloves, new THREE.Mesh(new THREE.SphereGeometry(1, 10, 8), white), s * 0.13, 0.025, 0); gl.scale.set(0.07, 0.022, 0.13); gl.rotation.y = s * 0.5; for (let f = 0; f < 4; f++) { const fi = put(gloves, new THREE.Mesh(new THREE.SphereGeometry(1, 6, 5), white), s * 0.13 + (f - 1.5) * 0.032 + s * 0.05, 0.022, 0.13 + (f % 2) * 0.02); fi.scale.set(0.014, 0.014, 0.05); } } hallG.add(gloves);
+  // the pool of tears, about four inches deep and reaching half down the hall
+  const wt = tex(256, 256, '#e6e3da', (g, w, h) => { g.lineWidth = 2.5; for (let y = 8; y < h; y += 15) { g.beginPath(); for (let x = -10; x <= w + 10; x += 12) g.lineTo(x, y + Math.sin(x * 0.11 + y) * 3.2); g.stroke(); } }, true);
+  pln(pool, 2 * HX, 15, lam({ map: rep(wt, 5, 8), transparent: true, opacity: 0.92 }), 0, 0, 0, { rx: -Math.PI / 2 }); pool.position.set(0, yF - 0.02, HZ1 + 7.5); hallG.add(pool);
+}
+const inHall = (x, z, r) => (Math.abs(x) < WR - r && z < WZ + WR - r && z > WZ - WR - 0.3) || (Math.abs(x) < 1.5 - r && z <= WZ - WR + 0.4 && z > HZ0 - 0.4) || (Math.abs(x) < HX - r && z <= HZ0 && z > HZ1 + r);
+const blockHall = (x, z) => !inHall(x, z, 0.32 * Math.min(1.6, me.S)) || (me.S > 0.5 && Math.hypot(x - TAB[0], z - TAB[1]) < 0.36 + 0.3 * me.S);
+
+/* ================= act 4: through the little door: the garden, the wood, the Cat's tree, the tea-table in front of the March Hare's house ================= */
+const GZ0 = -140, CAT = [-1.3, -193], TEA = [0, -240], gTrees = [], shrooms = [[-2.2, -161, 0.75, 0.85], [1.4, -166.5, 1.25, 0.95], [-0.9, -172.5, 1.8, 1.05]];
+const pathX = z => 2.2 * Math.sin((z - GZ0) * 0.055) * sstep(GZ0 - 6, GZ0 - 26, z) * sstep(TEA[1] + 8, TEA[1] + 30, z);
+const cast = makeCast(THREE, canvasTex), cat = cast.cat(), hare = cast.rabbit({ hare: true, bow: true }), dormouse = cast.dormouse(), hat = cast.topHat();
+{
+  const yF = Y_H, lawn = lam({ map: rep(grassT, 12, 28) });
+  pln(gardenG, 70, 150, lawn, 0, yF, -205, { rx: -Math.PI / 2 });
+  { const pos = [], idx = []; let n = 0; for (let z = GZ0; z >= TEA[1] + 5; z -= 2, n++) { const x = pathX(z), w = 1.5 + 0.2 * Math.sin(z * 0.3); pos.push(x - w, yF + 0.02, z, x + w, yF + 0.02, z); if (n) { const a = (n - 1) * 2; idx.push(a, a + 1, a + 2, a + 1, a + 3, a + 2); } }
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); const p = new THREE.Mesh(g, white); p.receiveShadow = true; gardenG.add(p); }
+  blades(gardenG, 2600, () => { const z = rnd(TEA[1] - 6, GZ0 - 0.5), x = rnd(-13, 13); return Math.abs(x - pathX(z)) < 1.9 || Math.hypot(x - TEA[0], z - TEA[1]) < 5.5 ? null : [x, yF, z]; });
+  // the garden wall, with the little door she came through (it is her own height now)
+  const wm = lam({ map: rep(stoneT, 14, 2) }); for (const sx of [-1, 1]) box(gardenG, 20, 3.2, 0.5, wm, DOOR[0] + sx * 10.65, yF + 1.6, GZ0 + 0.3); box(gardenG, 1.3, 1.3, 0.5, wm, DOOR[0], yF + 2.55, GZ0 + 0.3);
+  pln(gardenG, 1.3, 1.9, inkM, DOOR[0], yF + 0.95, GZ0 + 0.4, { ry: Math.PI }); pln(gardenG, 1.25, 1.9, lam({ map: doorT, side: THREE.DoubleSide }), DOOR[0] - 1.1, yF + 0.95, GZ0 - 0.45, { ry: 1.1 });
+  // "those beds of bright flowers and those cool fountains"
+  for (const [bx, bz] of [[-6.5, -147], [5.5, -146], [-7, -154], [7.5, -154.5]]) { box(gardenG, 4.2, 0.16, 2.6, lam({ map: rep(earthT, 3, 2), color: '#bdbdbd' }), bx, yF + 0.08, bz, { cast: false });
+    for (let i = 0; i < 16; i++) { const x = bx + rnd(-1.8, 1.8), z = bz + rnd(-1.0, 1.0), h = rnd(0.5, 1.15); cyl(gardenG, 0.012, 0.012, h, inkM, x, yF + h / 2, z, { seg: 4, cast: false }); const f = put(gardenG, new THREE.Mesh(new THREE.IcosahedronGeometry(rnd(0.09, 0.15), 1), i % 3 ? white : pale), x, yF + h, z); for (let k = 0; k < 2; k++) { const lf = put(gardenG, new THREE.Mesh(new THREE.SphereGeometry(1, 6, 4), midM), x + rnd(-0.1, 0.1), yF + h * rnd(0.3, 0.7), z + rnd(-0.1, 0.1), { cast: false }); lf.scale.set(0.09, 0.02, 0.05); lf.rotation.y = rnd(0, 6); } } }
+  cyl(gardenG, 1.5, 1.6, 0.5, lam({ map: rep(stoneT, 6, 0.4) }), 4.2, yF + 0.25, -150.5, { seg: 24 }); cyl(gardenG, 1.36, 1.36, 0.04, lam({ color: '#cfcfcf' }), 4.2, yF + 0.47, -150.5, { seg: 24, cast: false }); cyl(gardenG, 0.16, 0.24, 1.3, pale, 4.2, yF + 0.9, -150.5); cyl(gardenG, 0.5, 0.2, 0.16, pale, 4.2, yF + 1.6, -150.5);
+  const jets = [0, 1, 2, 3, 4, 5].map(i => { const j = cyl(gardenG, 0.02, 0.005, 0.7, white, 4.2 + Math.cos(i) * 0.3, yF + 1.95, -150.5 + Math.sin(i) * 0.3, { seg: 5, cast: false }); j.rotation.set(Math.sin(i) * 0.5, 0, -Math.cos(i) * 0.5); return j; }); gardenG.userData.jets = jets;
+  // the wood
+  for (let i = 0; i < 46; i++) { const z = rnd(TEA[1] - 22, GZ0 - 17), sd = i % 2 ? 1 : -1, x = pathX(z) + sd * rnd(4.2, 14); if (Math.hypot(x - CAT[0], z - CAT[1]) < 6 || Math.hypot(x - TEA[0], z - TEA[1]) < 8 || gTrees.some(t => Math.hypot(t[0] - x, t[1] - z) < 3)) continue; tree(gardenG, x, yF, z, rnd(0.8, 1.3), gTrees); }
+  // great mushrooms to spring from (the game's own; the book's mushroom belongs to the Caterpillar)
+  const gillT = tex(256, 64, '#f4f2ec', (g, w, h) => { g.lineWidth = 3; for (let x = 4; x < w; x += 9) { g.beginPath(); g.moveTo(x, 0); g.lineTo(x, h); g.stroke(); } }, true), spotT = tex(256, 256, '#f6f4ee', (g, w, h) => { g.lineWidth = 3; for (let i = 0; i < 16; i++) { g.beginPath(); g.ellipse(rnd(10, w - 10), rnd(40, h - 20), rnd(8, 16), rnd(5, 9), 0, 0, 7); g.stroke(); } }, true);
+  for (const [x, z, h, r] of shrooms) { cyl(gardenG, r * 0.2, r * 0.3, h - 0.1, white, x, yF + (h - 0.1) / 2, z); const capm = put(gardenG, new THREE.Mesh(new THREE.SphereGeometry(r, 22, 10, 0, 6.3, 0, Math.PI / 2), lam({ map: spotT })), x, yF + h - 0.28, z); capm.scale.y = 0.55; cyl(gardenG, r * 0.985, r * 0.3, 0.1, lam({ map: rep(gillT, 4, 1) }), x, yF + h - 0.32, z, { seg: 22, cast: false }); }
+  // the Cat's tree: a trunk on the left, one long bough reaching out to the right, as the plate has it
+  const ct = new THREE.Group(); ct.position.set(CAT[0], yF, CAT[1]); gardenG.add(ct); cyl(ct, 0.36, 0.56, 7.5, lam({ map: rep(barkT, 3, 6) }), 0, 3.75, 0, { seg: 12 });
+  cyl(ct, 0.1, 0.22, 3.9, lam({ map: rep(barkT, 1, 4) }), 1.9, 3.28, 0.15, { seg: 9, rz: -Math.PI / 2 + 0.07 }); cyl(ct, 0.05, 0.11, 1.9, barkM, 1.2, 4.2, -0.3, { seg: 7, rz: -0.9 }); cyl(ct, 0.04, 0.09, 1.6, barkM, -0.8, 4.4, 0.1, { seg: 7, rz: 0.8 });
+  for (const [x, y, z, s] of [[0.2, 6.9, -0.6, 2.0], [2.4, 6.0, -1.2, 1.5], [-1.9, 6.2, -0.2, 1.6], [3.9, 5.3, -0.9, 1.0], [0.8, 8.0, 0.2, 1.7], [-0.9, 7.6, -1.4, 1.4]]) { const b = put(ct, new THREE.Mesh(blobG, leafM), x, y, z); b.scale.set(s * 1.25, s * 0.8, s); }
+  cat.position.set(2.15, 3.43, 0.16); cat.scale.setScalar(1.7); ct.add(cat); gTrees.push([CAT[0], CAT[1], 0.75]);
+  // "a table set out under a tree in front of the house"; "the chimneys were shaped like ears and the roof was thatched with fur"
+  const tp = new THREE.Group(); tp.position.set(TEA[0], yF, TEA[1]); gardenG.add(tp);
+  const clothT = tex(512, 128, '#fbfaf5', (g, w, h) => { g.lineWidth = 2.5; for (let x = 5; x < w; x += rnd(8, 20)) { g.beginPath(); g.moveTo(x, 6); g.lineTo(x + rnd(-3, 3), h - rnd(4, 26)); g.stroke(); } }, true);
+  const cl = new THREE.Mesh(new THREE.BoxGeometry(5.4, 0.62, 1.7), [lam({ map: rep(clothT, 1, 1) }), lam({ map: rep(clothT, 1, 1) }), white, white, lam({ map: rep(clothT, 3, 1) }), lam({ map: rep(clothT, 3, 1) })]); put(tp, cl, 0, 0.5, 0); box(tp, 5.0, 0.3, 1.3, darkM, 0, 0.15, 0, { cast: false });
+  const cup = (x, z) => { cyl(tp, 0.085, 0.07, 0.012, white, x, 0.818, z, { seg: 14 }); cyl(tp, 0.048, 0.034, 0.06, white, x, 0.85, z, { seg: 12 }); put(tp, new THREE.Mesh(new THREE.TorusGeometry(0.022, 0.006, 4, 8), white), x + 0.055, 0.85, z); };
+  for (const [x, z] of [[-2.1, 0.35], [-1.5, -0.1], [-0.9, 0.4], [-0.2, 0.45], [0.5, 0.3], [1.3, 0.45], [2.0, 0.3], [0.9, -0.35], [-0.6, -0.4], [2.2, -0.3], [-2.2, -0.35]]) cup(x, z);
+  const pot = put(tp, new THREE.Mesh(new THREE.SphereGeometry(0.17, 16, 12), lam({ map: tex(128, 64, '#f4f2ec', (g, w, h) => scribble(g, w, h, 12, 8, 2)) })), -0.35, 0.95, 0.05); pot.scale.y = 0.82; cyl(tp, 0.025, 0.04, 0.2, white, -0.56, 0.98, 0.05, { seg: 8, rz: 0.9 }); put(tp, new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.014, 5, 10), white), -0.16, 0.96, 0.05); cyl(tp, 0.03, 0.03, 0.03, white, -0.35, 1.1, 0.05, { seg: 8 });
+  cyl(tp, 0.15, 0.13, 0.014, white, 1.75, 0.82, 0.05, { seg: 16 }); cyl(tp, 0.06, 0.05, 0.11, white, 0.25, 0.87, -0.2, { seg: 10 });
+  // the large arm-chair at one end
+  const ch = new THREE.Group(); ch.position.set(-3.2, 0, -0.25); ch.rotation.y = Math.PI / 2 - 0.3; tp.add(ch); const chM = lam({ map: tex(128, 128, '#f6f4ee', (g, w, h) => scribble(g, w, h, 16, 10, 1.6)) });
+  box(ch, 1.0, 0.62, 0.95, chM, 0, 0.31, 0); box(ch, 1.0, 0.95, 0.22, chM, 0, 0.95, -0.42); cyl(ch, 0.5, 0.5, 0.22, chM, 0, 1.42, -0.42, { seg: 18, rx: Math.PI / 2 }); for (const s of [-1, 1]) { box(ch, 0.2, 0.34, 0.9, chM, s * 0.52, 0.66, 0.02); cyl(ch, 0.13, 0.13, 0.9, chM, s * 0.52, 0.84, 0.02, { seg: 10, rx: Math.PI / 2 }); box(ch, 0.16, 0.55, 0.3, chM, s * 0.52, 1.25, -0.33); }
+  tp.userData.chair = ch;
+  hare.position.set(-1.95, -0.05, -1.05); hare.scale.setScalar(1.3); hare.rotation.y = -0.2; tp.add(hare); dormouse.position.set(-1.3, 0.82, -0.68); dormouse.scale.setScalar(1.5); dormouse.rotation.y = 0.2; tp.add(dormouse);      // 'the three were all crowded together at one corner of it'
+  tree(gardenG, TEA[0] - 1.3, yF, TEA[1] - 3.2, 1.5, gTrees); tree(gardenG, TEA[0] - 6.5, yF, TEA[1] - 5, 1.3, gTrees); tree(gardenG, TEA[0] + 7.5, yF, TEA[1] - 2, 1.2, gTrees);
+  const hs = new THREE.Group(); hs.position.set(TEA[0] + 3.5, yF, TEA[1] - 9); gardenG.add(hs); const furT = tex(256, 256, '#bdbab2', (g, w, h) => { g.lineWidth = 2.5; for (let i = 0; i < 420; i++) { const x = rnd(0, w), y = rnd(0, h); g.beginPath(); g.moveTo(x, y); g.lineTo(x + rnd(-4, 4), y + rnd(12, 26)); g.stroke(); } }, true);
+  box(hs, 9, 3.4, 6, lam({ map: rep(stoneT, 5, 2) }), 0, 1.7, 0); const rf = new THREE.Mesh(new THREE.CylinderGeometry(0.01, 5.4, 3.2, 4, 1), lam({ map: rep(furT, 5, 2) })); put(hs, rf, 0, 4.9, 0, { ry: Math.PI / 4 }); rf.scale.set(1.25, 1, 0.85);
+  for (const s of [-1, 1]) { const e = put(hs, new THREE.Mesh(new THREE.SphereGeometry(1, 12, 10), lam({ map: rep(furT, 1, 2), color: '#f4f4f4' })), s * 1.0, 7.0, 0, { rz: -s * 0.2 }); e.scale.set(0.42, 1.6, 0.3); }
+  for (const x of [-2.6, 0.2, 2.8]) { pln(hs, 1.1, 1.3, lam({ map: tex(128, 128, '#8a8882', (g, w, h) => { g.lineWidth = 8; g.strokeRect(4, 4, w - 8, h - 8); g.beginPath(); g.moveTo(w / 2, 0); g.lineTo(w / 2, h); g.moveTo(0, h / 2); g.lineTo(w, h / 2); g.stroke(); }) }), x, 1.9, 3.02); }
+}
+const blockGarden = (x, z) => z > GZ0 - 0.5 || z < TEA[1] - 5 || Math.abs(x) > 13 || gTrees.some(t => Math.hypot(x - t[0], z - t[1]) < t[2]) || shrooms.some(s => Math.hypot(x - s[0], z - s[1]) < s[3] * 0.3) ||
+  (Math.abs(x - TEA[0]) < 3.0 && Math.abs(z - TEA[1]) < 1.15) || Math.hypot(x - TEA[0] + 3.2, z - TEA[1] + 0.25) < 0.8 || Math.hypot(x - 4.2, z + 150.5) < 1.8;
+
+/* ================= the people: Alice and the Hatter from Blender (tools/blender/figure.py); the Rabbit, the Hare, the Dormouse and the Cat built in cast.js ================= */
+const FIG = makeFigures({ THREE, scene, shadowM: new THREE.MeshBasicMaterial({ visible: false }), castShadow: true }); await FIG.load('models/', ['alice', 'hatter']);
+const BASE = 0.85, meG = FIG.spawn('alice', { size: BASE }); for (const k in meG.userData.mats) ENG.keepColour(meG.userData.mats[k]);            // the one thing in colour
+const hatter = FIG.spawn('hatter', { size: 1.08, adult: true }); scene.remove(hatter); gardenG.children.find(c => c.userData.chair).add(hatter); hatter.position.set(-0.75, -0.2, -1.0); hatter.rotation.y = -1.15;
+for (const k in hatter.userData.mats) if (k !== 'dress') { const m = hatter.userData.mats[k]; if (k === 'skin') m.color.set('#f0f0f0'); }
+scene.updateMatrixWorld(true); hat.scale.setScalar(1.2); FIG.onHead(hatter, hat, 0, 1.655, 0.0);
+for (const s of [-1, 1]) { const b = cast.ell(cast.lam({ map: tex(64, 64, '#f6f4ee', (g) => { for (const [x, y] of [[16, 18], [44, 14], [30, 40], [52, 46], [12, 52]]) { g.beginPath(); g.arc(x, y, 6, 0, 7); g.fill(); } }) }), 0.06, 0.036, 0.018); FIG.onHead(hatter, b, s * 0.055, 1.3, 0.075); b.rotation.z = s * 0.35; }
+{ const c = new THREE.Group(); cyl(c, 0.05, 0.035, 0.06, white, 0, 0, 0, { seg: 12 }); hatter.userData.aR.add(c); }
+const rabbit = cast.rabbit(); rabbit.scale.setScalar(1.0); scene.add(rabbit);
+const held = new THREE.Group(), heldL = new THREE.Group(); meG.userData.aR.add(held); meG.userData.aL.add(heldL);                    // what she carries in her right hand
+
+/* ================= points (common/score.js). Nothing here can be failed. ================= */
+const SC = makeScore({ THREE, scene, key: 'alice', at: s => ({ x: 0, z: -s, dx: 0, dz: -1 }), nearest: (x, z) => ({ s: -z, d: Math.abs(x) }), LEN: 250, par: 210, groundY: () => 0, blocked: () => true, paintings: 4,
+  thing: 'sovereign', things: 'gold sovereigns', washing: false, ditches: [], hurdles: [], powerups: false });
+// the coins are the level's own, laid by hand and given to the score to look after; they and Alice are the only colour in the drawing
+function coin(G, x, y, z) { const g = new THREE.Group(), mats = [ENG.keepColour(new THREE.MeshBasicMaterial({ color: '#f2c230' })), ENG.keepColour(new THREE.MeshBasicMaterial({ color: '#b07f14' }))];
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.04, 22), mats[0]); c.rotation.x = Math.PI / 2; g.add(c); g.add(new THREE.Mesh(new THREE.TorusGeometry(0.21, 0.026, 6, 24), mats[1]));
+  for (const zz of [0.022, -0.022]) { const d = new THREE.Mesh(new THREE.CircleGeometry(0.11, 5), mats[1]); d.position.z = zz; if (zz < 0) d.rotation.y = Math.PI; g.add(d); }
+  g.userData = { x, z, y, ph: SC.picks.length * 1.7, mats, pop: 0 }; g.position.set(x, y, z); G.add(g); SC.picks.push(g); return g; }
+const fieldCoins = new THREE.Group(), gardenCoins = new THREE.Group(); fieldG.add(fieldCoins); gardenG.add(gardenCoins);
+for (let i = 0; i < 11; i++) { const z = -36 - i * 5, x = 2.4 * Math.sin(i * 0.8); coin(fieldCoins, x, ground(x, z) + (i % 4 === 3 ? 2.0 : 0.85), z); }
+for (let y = -8, k = 0; y > Y_H + 8; y -= 4.2, k++) { const x = 2.3 * Math.sin(k * 0.83), z = WZ + 2.1 * Math.cos(k * 1.31); if (ledges.some(l => Math.abs(l.y - y) < 2.6 && x > l.x0 - 0.7 && x < l.x1 + 0.7 && z > l.z0 - 0.7 && z < l.z1 + 0.7)) continue; coin(wellG, x, y, z); }
+shrooms.forEach(([x, z, h, r], i) => { coin(gardenCoins, x, Y_H + h + 2.3 + i * 0.5, z); coin(gardenCoins, x + 0.2, Y_H + h + 3.6 + i * 0.9, z - 0.8); });
+for (const z of [-146, -152, -178, -183, -200, -206, -212, -218, -224]) coin(gardenCoins, pathX(z) + Math.sin(z) * 0.7, Y_H + (z % 4 === 0 ? 2.0 : 0.85), z);
+
+/* ================= state ================= */
+let state = 'title', act = 1, time = 0, muted = false, tab = -1, tabT = 0, hStage = 0, bubbleG = null, bubbleT = 0, tipT = 0, shade = 0, shadeWant = 0, fadeWant = 0, actT = 0;
+const seen = new Set(), once = new Set(), keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, touch = { jump: false };
+const me = { x: 0, z: 8, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0, S: 1, Sw: 1, carry: null, hasKey: false, stall: 0, wet: 0 };
+const rb = { x: 0, z: 0, y: 0, mode: 'wait', ph: 0, v: 0, watch: 0, yaw: Math.PI, t: 0, tx: 0, tz: 0 };
+const catS = { k: 0, want: 0, said: 0 };
+const bubble = $('bubble'); function say(g, text, secs = 3.6) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + secs; }
+function tell(text, secs = 6) { const t = $('tip'); t.textContent = text; t.classList.remove('hidden'); tipT = time + secs; }                         // the narrator: Carroll's sentences in quotation marks, the game's own words without
+const turnTo = (a, k) => { let d = a - me.yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); me.yaw += d * k; };
+const first = k => { if (once.has(k)) return false; once.add(k); return true; };
+const plate = (title, line, asp) => { SC.award(title, null, title); const el = $('plate'), m = (innerWidth - Math.min(innerWidth, innerHeight * asp)) / 2, side = m > 215; el.innerHTML = `<i>${title}</i><span>${side ? line.replace(' · ', '<br>') : line}</span>`;
+  el.style.left = side ? m / 2 + 'px' : '50%'; el.style.bottom = side ? '14%' : ''; el.style.whiteSpace = side ? 'normal' : ''; el.style.maxWidth = side ? m - 50 + 'px' : ''; el.classList.add('show'); };
+const floorAt = (x, z) => act === 1 ? ground(x, z) : Y_H;
+const blocked = (x, z) => act === 1 ? blockField(x, z) : act === 3 ? blockHall(x, z) : act === 4 ? blockGarden(x, z) : false;
+const grow = (to, up) => { me.Sw = to; if (SND.bell) for (let i = 0; i < 7; i++) SND.bell(up ? 2 + i : 9 - i, 0.06, i * 0.09); SND.whoosh(0.09); };
+function place(o, G, x, y, z) { G.add(o); o.position.set(x, y, z); o.rotation.set(0, 0, 0); o.visible = true; }
+function setAct(n) {
+  act = n; actT = 0; fieldG.visible = n === 1; wellG.visible = n === 2 || n === 3; hallG.visible = n === 3 || n === 2; gardenG.visible = n === 4; rabbit.visible = n === 1 || n === 3;
+  if (n === 2) { Object.assign(me, { x: 0, z: WZ, y: W_TOP - 4, vy: -1, air: true, speed: 0, yaw: 0, stall: 0 }); tell('“Either the well was very deep, or she fell very slowly…”  Steer with the arrows: catch what you can, and keep clear of the shelves.', 8);
+    setTimeout(() => { if (act === 2 && state === 'play') say(meG, '“Well! after such a fall as this, I shall think nothing of tumbling down stairs!”', 5); }, 5200); setTimeout(() => { if (act === 2 && state === 'play') say(meG, '“Do cats eat bats? Do cats eat bats?”', 4); }, 15500); }
+  if (n === 3) { Object.assign(me, { x: 0, z: WZ, y: Y_H, vy: 0, air: false, speed: 0, yaw: 0 }); Object.assign(rb, { x: 0, z: WZ - WR - 2.5, y: Y_H, mode: 'toDoor', v: 8, tx: DOOR[0] + 0.3, tz: HZ1 + 1.0 }); SND.puff(0.2); setTimeout(() => SND.puff(0.16), 220);
+    tell('“…thump! thump! down she came upon a heap of sticks and dry leaves, and the fall was over.”', 6); setTimeout(() => { if (act === 3) say(rabbit, '“Oh my ears and whiskers, how late it’s getting!”', 4); }, 900); }
+  if (n === 4) { Object.assign(me, { x: DOOR[0], z: GZ0 - 1.2, y: Y_H, vy: 0, air: false, speed: 0, yaw: 0, S: 1, Sw: 1, hasKey: false, carry: null, wet: 0 }); held.clear(); heldL.clear(); tell('“…she found herself at last in the beautiful garden, among the bright flower-beds and the cool fountains.”', 7); }
+}
+function reset() {
+  Object.assign(me, { x: 0, z: 8, y: ground(0, 8), vy: 0, yaw: 0, air: false, speed: 0, S: 1, Sw: 1, carry: null, hasKey: false, stall: 0, wet: 0 }); held.clear(); heldL.clear(); hStage = 0; tab = -1; seen.clear(); once.clear(); shade = shadeWant = 0; fadeWant = 0;
+  Object.assign(rb, { x: 2.6, z: 17, y: ground(2.6, 17), mode: 'wait', v: 0, watch: 0, yaw: Math.PI }); rabbit.scale.setScalar(1); rabbit.userData.watching(0);
+  for (const l of ledges) l.hit = false; place(jar, wellG, ...jar.userData.home); jar.scale.setScalar(1);
+  place(key, hallG, TAB[0] + 0.05, Y_H + 0.835, TAB[1] + 0.02); key.scale.setScalar(1.4); place(bottle, hallG, TAB[0] - 0.1, Y_H + 0.82, TAB[1] + 0.08); bottle.visible = false; cake.visible = false; fan.visible = gloves.visible = false; pool.visible = false; pool.userData.k = 0;
+  curtain.rotation.y = 0; littleDoor.rotation.y = 0; Object.assign(catS, { k: 0, want: 0, said: 0 }); cat.userData.vanish(0);
+  $('melt').classList.remove('show', 'slow'); $('plate').classList.remove('show'); setAct(1); $('tip').classList.add('hidden'); camera.position.set(0, ground(0, 14) + 3, 14);
+}
+function begin() {
+  SND.start({ chords: [[48, 60, 64, 67, 72], [45, 57, 60, 64, 69], [41, 53, 57, 60, 65], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
+  $('title').classList.add('hidden'); $('end').classList.add('hidden');
+  tell(matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap', 7);
+  rb.mode = 'pass'; rb.tx = RS[0]; rb.tz = RS[1]; rb.v = 9; setTimeout(() => { if (state === 'play' && act === 1) say(rabbit, '“Oh dear! Oh dear! I shall be late!”', 4); }, 700);
+}
+
+/* ================= the four plates, each staged where the artist stood ================= */
+const LINE = 'John Tenniel, 1865 · cut in wood by the Brothers Dalziel';
+const TABS = [
+  { id: 'rabbit', img: 'images/rabbit.jpg', asp: 976 / 1400, title: 'The White Rabbit', cam: () => { const y = ground(RS[0], RS[1]); return { pos: [RS[0] - 0.05, y + 0.6, RS[1] + 4.2], look: [RS[0] - 0.05, y + 0.6, RS[1]], fov: 21.5 }; } },
+  { id: 'drinkme', img: 'images/drinkme.jpg', asp: 1110 / 1400, title: 'Drink Me', cam: () => ({ pos: [TAB[0] + 0.36, Y_H + 0.68, TAB[1] + 6], look: [TAB[0] + 0.36, Y_H + 0.68, TAB[1]], fov: 14.6 }) },
+  { id: 'cheshire', img: 'images/cheshire.jpg', asp: 1039 / 1400, title: 'The Cheshire Cat', cam: () => ({ pos: [CAT[0] + 0.9, Y_H + 1.75, CAT[1] + 9.6], look: [CAT[0] + 0.9, Y_H + 1.9, CAT[1]], fov: 36 }) },
+  { id: 'teaparty', img: 'images/teaparty.jpg', asp: 1400 / 1083, title: 'A Mad Tea-Party', cam: () => ({ pos: [TEA[0] - 2.3, Y_H + 1.12, TEA[1] + 3.9], look: [TEA[0] - 2.05, Y_H + 1.06, TEA[1] - 0.9], fov: 29 }) },
+];
+function startTab(i) { tab = i; tabT = 0; state = 'tab'; seen.add(i); me.speed = 0; $('meltImg').src = TABS[i].img; $('melt').classList.toggle('slow', i === 3); bubble.classList.remove('show'); bubbleG = null; $('tip').classList.add('hidden'); SND.whoosh(0.1); }
+const tabFov = T => { const c = T.cam(), ph = Math.min(innerHeight, innerWidth / T.asp); return 2 * Math.atan(Math.tan(c.fov * Math.PI / 360) * innerHeight / ph) * 180 / Math.PI; };
+function tableau(dt) {
+  const T = TABS[tab], last = tab === 3; tabT += dt; if (window.__road.dbg.hold) tabT = Math.min(tabT, 3.4); const k = Math.min(1, dt * 2.4);
+  if (tab === 0) { rabbit.userData.watching(1); }
+  if (tab === 1) { const tx = TAB[0] + 0.62, tz = TAB[1] + 0.1; me.x += (tx - me.x) * k; me.z += (tz - me.z) * k; turnTo(-2.25, k); }                 // beside the table, turned a little towards us
+  if (tab === 2) { const tx = CAT[0] + 0.06, tz = CAT[1] + 3.2; me.x += (tx - me.x) * k; me.z += (tz - me.z) * k; turnTo(0.22, k); }
+  if (tab === 3) { const tx = TEA[0] - 2.95, tz = TEA[1] - 0.3; me.x += (tx - me.x) * k; me.z += (tz - me.z) * k; turnTo(1.95, k); }
+  if (tabT > 2.6 && !$('plate').classList.contains('show') && tabT < 3.5) { plate(T.title, LINE, T.asp); [2, 4, 5, 7, 9].forEach((n, i) => SND.bell(n, 0.06, i * 0.22)); }
+  if (tabT > 4.0 && (last || tabT < 8.2)) $('melt').classList.add('show');
+  if (!last && tabT > 8.2) { $('melt').classList.remove('show'); $('plate').classList.remove('show'); }
+  if (!last && tabT > 10.4) { state = 'play'; tab = -1; meG.userData.hd.rotation.x = 0; meG.userData.hd.rotation.y = 0; afterTab(T.id); }
+  if (last && tabT > 15) { state = 'done'; SC.finish(); card(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); }
+}
+function afterTab(id) {
+  if (id === 'rabbit') { rb.mode = 'toHole'; rabbit.userData.watching(0); tell('“…burning with curiosity, she ran across the field after it.”', 5); }
+  if (id === 'drinkme') { bottle.visible = false; cake.visible = true; hStage = 3; grow(0.2, false); say(meG, '“What a curious feeling! I must be shutting up like a telescope.”', 5); SC.gain(20, 'Drink me'); }
+  if (id === 'cheshire') { say(meG, '“Would you tell me, please, which way I ought to go from here?”', 4.2); catS.said = time; }
+}
+// the end card is written for a level on the road; this one is not on it yet (common/score.js is not ours to change), so say where she is and send her back to the gallery
+function card() { const c = $('scCard'), i = c && c.querySelector('i'); if (i) i.textContent = 'Oxford, 1865 · after Tenniel'; const a = $('scNext'); if (a) { a.href = '../index.html'; a.textContent = 'Back to the gallery'; } }
+
+/* ================= play ================= */
+function update(dt) {
+  time += dt; actT += dt; if (tipT && time > tipT) { $('tip').classList.add('hidden'); tipT = 0; }
+  let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 1 : 0) - stick.dy;
+  turn = clamp(turn, -1, 1); go = clamp(go, -1, 1); const playing = state === 'play'; if (!playing) { turn = 0; go = 0; }
+  const jump = (keys.has('Space') || touch.jump) && playing;
+  me.S += (me.Sw - me.S) * Math.min(1, dt * 2.2); if (Math.abs(me.Sw - me.S) < 0.004) me.S = me.Sw; const S = me.S;
+  if (state === 'title') { meG.visible = false; }
+  else if (act === 2 && state !== 'tab') fall(dt, turn, go, jump);
+  else {
+    meG.visible = true; go = Math.max(go, -0.5);
+    me.yaw += turn * (S > 1.5 ? 1.7 : 2.3) * dt * (me.air ? 0.6 : 1);
+    const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw), slope = act === 1 ? (ground(me.x, me.z) - ground(me.x + fx * 2, me.z + fz * 2)) / 2 : 0;
+    const top = (9.5 + clamp(slope * 60, 0, 6)) * (S < 0.5 ? 0.34 : S > 1.5 ? 0.92 : 1) * (me.wet > 0.5 ? 0.55 : 1);
+    me.speed += (go * top - me.speed) * Math.min(1, dt * (me.air ? 0.8 : S > 1.5 ? 1.8 : 3.2));
+    let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
+    if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;
+      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
+      if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
+    const f = floorAt(nx, nz); me.x = nx; me.z = nz;
+    if (jump && !me.air) { if (S > 1.5) { if (first('roof' + Math.floor(time / 4))) { SND.puff(0.2); tell('“Just then her head struck against the roof of the hall: in fact she was now more than nine feet high…”', 5); } }
+      else { me.vy = (6.2 + Math.abs(me.speed) * 0.22) * (S < 0.5 ? 0.42 : 1); me.air = true; SND.whoosh(0.04); } }
+    if (me.air) { const py = me.y; me.vy -= (jump && me.vy < 0 ? 5 : 15) * (S < 0.5 ? 0.6 : 1) * dt; me.y += me.vy * dt;
+      if (act === 4 && me.vy < 0) for (const [sx, sz, h, r] of shrooms) { const topY = Y_H + h; if (Math.hypot(me.x - sx, me.z - sz) < r && py >= topY - 0.05 && me.y <= topY) { me.y = topY; me.vy = jump ? 13.5 : 11; SND.bell(3 + Math.round(h * 3), 0.09); SND.puff(0.1); if (first('shroom' + sx)) SC.gain(5, 'Boing!', 1); } }
+      if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.06); } } else me.y += (f - me.y) * Math.min(1, dt * 20);
+    me.wet += ((act === 3 && pool.visible && S < 0.5 && me.z < HZ1 + 15 * pool.userData.k ? 1 : 0) - me.wet) * Math.min(1, dt * 5);
+    const pace = Math.abs(me.speed) / (6.5 * (S < 0.5 ? 0.34 : 1)), before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.95 / Math.pow(S, 0.75)); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) { SND.puff(S > 1.5 ? 0.12 : me.wet > 0.5 ? 0.05 : 0.02); if (S > 1.5) shake = 0.05; }
+    me.lean += (turn * 0.22 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
+    meG.scale.setScalar(BASE * S); meG.position.set(me.x, me.y - me.wet * 0.1, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; FIG.pose(meG, me.ph, state === 'tab' ? 0 : me.air ? 0.4 : pace, me.air && state !== 'tab');
+    if (me.wet > 0.5 && state === 'play') { FIG.turn(meG.userData, 'upperarmL', -60 + 50 * Math.sin(me.ph), 0, 0); FIG.turn(meG.userData, 'upperarmR', -60 - 50 * Math.sin(me.ph), 0, 0); }
+    SC.update(dt, me, playing, time);
+    if (playing && act === 1) field(dt); if (act === 3) hall(dt, playing); if (act === 4) garden(dt, playing);
+    if (state === 'tab') { tableau(dt); posed(); }
+  }
+  if (act === 2 && state !== 'title') SC.update(dt, me, playing, time);
+  theRabbit(dt); cameraAndLight(dt);
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = new V3(); bubbleG.getWorldPosition(v); v.y += bubbleG === meG ? 1.75 * me.S * BASE + 0.1 : bubbleG === cat ? 0.9 : bubbleG === hatter ? 2.1 : 1.55 * bubbleG.scale.y; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 150, innerWidth - 150) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1); } }
+  fieldCoins.visible = gardenCoins.visible = state !== 'tab' && state !== 'done';
+  ENG.uniforms.uFog.value.set(scene.fog.color.r > 0.6 ? scene.fog.near : 1e6, scene.fog.color.r > 0.6 ? scene.fog.far : 2e6);
+  shade += (shadeWant - shade) * Math.min(1, dt * 5); ENG.uniforms.uShade.value = shade; ENG.uniforms.uFade.value += (fadeWant - ENG.uniforms.uFade.value) * Math.min(1, dt * 3);
+  SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp((act === 2 ? 0.55 : 0) + Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
+}
+let shake = 0;
+// Alice as each plate has her
+function posed() { const u = meG.userData, t = FIG.turn;
+  if (tab === 1) { t(u, 'upperarmR', -34, -4, 0); t(u, 'forearmR', -96, 0, 0); t(u, 'upperarmL', -12, 4, 0); t(u, 'forearmL', -98, 0, 0); u.hd.rotation.x = 0.2; u.hd.rotation.y = 0.5;
+    meG.updateMatrixWorld(true); held.getWorldPosition(tmp); place(bottle, hallG, tmp.x, tmp.y - 0.03, tmp.z); bottle.rotation.set(0, 0.5, -0.25);      /* the bottle upright in her raised hand, its label hanging out to the side */
+    if (me.hasKey) { me.hasKey = false; place(key, hallG, TAB[0] - 0.02, Y_H + 0.835, TAB[1] + 0.06); key.scale.setScalar(1.4); } }
+  if (tab === 2) { t(u, 'upperarmL', 26, 6, 0); t(u, 'forearmL', 8, 0, 0); t(u, 'upperarmR', 26, -6, 0); t(u, 'forearmR', 8, 0, 0); u.hd.rotation.x = -0.42; u.hd.rotation.y = 0; }        // hands behind her back, looking up
+  if (tab === 3) { const k = sstep(0.4, 2.0, tabT); meG.position.y = me.y - 0.04 * k; t(u, 'thighL', -78 * k, 0, 0); t(u, 'thighR', -78 * k, 0, 0); t(u, 'shinL', 78 * k, 0, 0); t(u, 'shinR', 78 * k, 0, 0); t(u, 'upperarmR', -40 * k, 12, 0); t(u, 'forearmR', -50 * k, 0, 0); u.hd.rotation.x = 0.12; u.hd.rotation.y = 0.3; }
+}
+function field(dt) {
+  if (rb.mode === 'watch' && !seen.has(0) && me.z < RS[1] + 11 && me.z > RS[1] + 5.2) startTab(0);
+  if (me.z < HOLE_Z - 1.4) { state = 'drop'; shadeWant = 1; SND.whoosh(0.14); tell('“In another moment down went Alice after it, never once considering how in the world she was to get out again.”', 6);
+    setTimeout(() => { setAct(2); state = 'play'; shadeWant = 0; }, 900); }
+}
+// the long slow fall: she drifts as she is steered; a shelf in the way costs a bump; the jar may be caught and, lower down, put safely into a cupboard
+function fall(dt, turn, go, jump) {
+  meG.visible = true; const lim = WR - 0.55;
+  if (me.stall > 0) { me.stall -= dt; const l = me.ledge, cx = (l.x0 + l.x1) / 2, cz = (l.z0 + l.z1) / 2, ox = -Math.sign(cx) * (Math.abs(cx) > 0.5 ? 1 : 0), oz = -Math.sign(cz - WZ) * (Math.abs(cz - WZ) > 0.5 ? 1 : 0); me.x += ox * 5 * dt; me.z += oz * 5 * dt;
+    if (!(me.x > l.x0 - 0.35 && me.x < l.x1 + 0.35 && me.z > l.z0 - 0.35 && me.z < l.z1 + 0.35)) me.stall = 0; me.vy = 0; }
+  else { me.vy += ((jump ? -3.6 : -6.6) - me.vy) * Math.min(1, dt * 1.5); const py = me.y; me.y += me.vy * dt; me.x = clamp(me.x + turn * 4.6 * dt, -lim, lim); me.z = clamp(me.z - go * 4.6 * dt, WZ - lim, WZ + lim);
+    for (const l of ledges) if (py >= l.y && me.y < l.y && me.x > l.x0 - 0.3 && me.x < l.x1 + 0.3 && me.z > l.z0 - 0.3 && me.z < l.z1 + 0.3) { me.y = l.y; me.stall = 1.2; me.ledge = l; shake = 0.12; SND.puff(0.2); SC.lose(5, 'Bump! Mind the shelves.'); } }
+  me.ph += dt * 3; me.lean += (turn * 0.3 - me.lean) * Math.min(1, dt * 4); meG.scale.setScalar(BASE); meG.position.set(me.x, me.y, me.z); meG.rotation.set(0.12 * go, Math.PI + Math.sin(time * 0.5) * 0.5, -me.lean); FIG.pose(meG, me.ph, 0.25, true);
+  const u = meG.userData; FIG.turn(u, 'upperarmL', -20 + 8 * Math.sin(time * 2), -70, 0); FIG.turn(u, 'upperarmR', me.carry ? -50 : -20 - 8 * Math.sin(time * 2), 70, 0); FIG.turn(u, 'thighL', -14 + 10 * Math.sin(time * 1.7), 0, 0); FIG.turn(u, 'thighR', 8 - 10 * Math.sin(time * 1.7), 0, 0); FIG.turn(u, 'hair', 115, 0, 0);
+  if (state !== 'play') return;
+  const jh = jar.userData.home;
+  if (!me.carry && jar.parent === wellG && Math.abs(me.x - jh[0]) < 1.25 && Math.abs(me.z - jh[2]) < 1.5 && Math.abs(me.y + 0.7 - jh[1]) < 1.7 && first('jar')) { me.carry = 'jar'; held.add(jar); jar.position.set(0, -0.1, 0.1); jar.scale.setScalar(0.62 / BASE); SC.gain(30, 'A jar from the shelf', 2); tell('“…it was labelled ‘ORANGE MARMALADE’, but to her great disappointment it was empty: she did not like to drop the jar for fear of killing somebody underneath…”', 8); }
+  if (me.carry === 'jar' && Math.abs(me.y + 0.3 - cupb.position.y - 1) < 1.9 && me.x > WR - 2.3 && Math.abs(me.z - cupb.position.z) < 1.5) { me.carry = null; place(jar, cupb, -0.35, 1.2, 0); jar.scale.setScalar(1); SC.gain(40, 'Safe in a cupboard!', 2); tell('“…so managed to put it into one of the cupboards as she fell past it.”', 6); }
+  if (me.y < -62 && first('jarhint') && me.carry === 'jar') tell('There is an open cupboard lower down, on the right…', 5);
+  if (me.y <= Y_H + 0.5) { if (me.carry === 'jar') { me.carry = null; held.clear(); } SC.gain(20, 'Thump! Thump!', 1); setAct(3); }
+}
+function hall(dt, playing) {
+  const S = me.S, dTab = Math.hypot(me.x - TAB[0], me.z - TAB[1]), dDoor = Math.hypot(me.x - DOOR[0], me.z - DOOR[1]), normal = me.Sw === 1 && S > 0.9 && S < 1.1, small = me.Sw < 0.5 && S < 0.3, large = me.Sw > 1.5 && S > 2;
+  key.rotation.y += dt * 1.2; if (me.hasKey) { key.rotation.y = 0; }
+  if (pool.visible) { pool.userData.k = Math.min(1, pool.userData.k + dt * 0.12); pool.position.y = Y_H - 0.02 + 0.12 * pool.userData.k; pool.children[0].material.map.offset.x = time * 0.02; }
+  if (S > 0.5 && dTab < 0.4 + 0.3 * S) { const d = Math.max(dTab, 0.01), ux = dTab < 0.05 ? 0 : (me.x - TAB[0]) / d, uz = dTab < 0.05 ? 1 : (me.z - TAB[1]) / d; me.x = TAB[0] + ux * (0.41 + 0.3 * S); me.z = TAB[1] + uz * (0.41 + 0.3 * S); }
+  if (!playing) return;
+  if (me.z < HZ0 - 0.5 && hStage === 0 && first('hall')) tell('“There were doors all round the hall, but they were all locked…”', 6);
+  if (hStage === 0 && normal && dTab < 1.25) { hStage = 1; takeKey(); SC.gain(30, 'The little golden key', 2); tell('“…a little three-legged table, all made of solid glass; there was nothing on it except a tiny golden key.”', 7); }
+  if (dDoor < (small ? 0.55 : large ? 2.6 : 1.2)) {
+    if (hStage === 0 && first('door0')) tell('“…a low curtain she had not noticed before, and behind it was a little door about fifteen inches high.”  It is locked.', 7);
+    if (hStage === 1) { hStage = 2; curtain.rotation.y = -1.9; littleDoor.rotation.y = -1.7; SND.bell(8, 0.08); SC.gain(20, 'It fitted!', 1); tell('“…she knelt down and looked along the passage into the loveliest garden you ever saw.”', 7); say(meG, '“Oh, how I wish I could shut up like a telescope!”', 5); bottle.visible = true; setTimeout(() => { littleDoor.rotation.y = 0; SND.bell(1, 0.05); }, 5200); }
+    if (hStage === 3 && small && first('door3')) tell('“…alas for poor Alice! when she got to the door, she found she had forgotten the little golden key…”', 7);
+    if ((hStage === 4 || hStage === 5 || hStage === 6) && large && first('door5')) { tell('“…to get through was more hopeless than ever: she sat down and began to cry again.”', 7); }
+    if (hStage === 7 && small) { hStage = 8; littleDoor.rotation.y = -1.7; curtain.rotation.y = -1.9; SND.bell(9, 0.08); SC.gain(60, 'Through the little door!', 3); state = 'drop'; setTimeout(() => { shadeWant = 1; }, 500); setTimeout(() => { setAct(4); state = 'play'; shadeWant = 0; }, 1500); }
+  }
+  if (hStage === 2 && normal && dTab < 1.3 && !me.air) { if (first('bottleSeen')) tell('“…this time she found a little bottle on it, (‘which certainly was not here before,’ said Alice)…”', 6); startTab(1); }
+  if (hStage === 3 && small) {
+    if (dTab < 1.3 && first('reach')) tell('“…she could see it quite plainly through the glass… Soon her eye fell on a little glass box that was lying under the table.”', 8);
+    if (Math.hypot(me.x - cake.position.x, me.z - cake.position.z) < 0.24) { hStage = 4; cake.visible = false; grow(2.2, true); SC.gain(30, 'Eat me', 2); say(meG, '“Curiouser and curiouser! … now I’m opening out like the largest telescope that ever was! Good-bye, feet!”', 6); pool.visible = true; pool.userData.k = 0; }
+  }
+  if (hStage === 4 && large && dTab < 2.0) { hStage = 5; takeKey(); SC.gain(30, 'The key again', 2); tell('“…she at once took up the little golden key and hurried off to the garden door.”', 6);
+    Object.assign(rb, { x: -HX + 0.6, z: HZ1 + 5, y: Y_H, mode: 'return', v: 3.2, tx: FANP[0] - 0.4, tz: FANP[1] + 0.5 }); rabbit.visible = true; rabbit.scale.setScalar(1); setTimeout(() => { if (act === 3) say(rabbit, '“Oh! the Duchess, the Duchess! Oh! won’t she be savage if I’ve kept her waiting!”', 5); }, 700); }
+  if (hStage === 6 && Math.hypot(me.x - FANP[0], me.z - FANP[1]) < 1.5) { hStage = 7; fan.visible = false; held.add(fan); fan.position.set(0, -0.05, 0.1); fan.rotation.set(0, 0, 0); fan.scale.setScalar(1 / (BASE * S)); fan.visible = true; grow(0.2, false); SC.gain(30, 'The Rabbit’s fan', 2); tell('“…she soon found out that the cause of this was the fan she was holding…”', 7); setTimeout(() => { fan.scale.setScalar(0.5 / (BASE * 0.2)); }, 1500); }
+  if (hStage === 7 && small && me.wet > 0.5 && first('swim')) say(meG, '“I wish I hadn’t cried so much!”', 4);
+}
+function takeKey() { me.hasKey = true; heldL.add(key); key.position.set(0, -0.03, 0.06); key.rotation.set(0, 0, 1.2); key.scale.setScalar(1.3 / (BASE * Math.max(1, me.S))); SND.bell(7, 0.08); SND.bell(10, 0.07, 0.12); }
+function garden(dt, playing) {
+  (gardenG.userData.jets || []).forEach((j, i) => { j.scale.y = 1 + 0.25 * Math.sin(time * 5 + i); });
+  catS.k += (catS.want - catS.k) * Math.min(1, dt * 0.35); if (Math.abs(catS.want - catS.k) < 0.01) catS.k = catS.want; cat.userData.vanish(catS.k);
+  hare.userData.pose(0, 0); hare.userData.arms[1].rotation.x = -1.2 + Math.sin(time * 1.3) * 0.15; hare.userData.head.rotation.y = 0.5 * Math.sin(time * 0.6); dormouse.userData.head.rotation.x = 0.35 + 0.05 * Math.sin(time * 1.5);
+  FIG.pose(hatter, 0, 0); const hu = hatter.userData; FIG.turn(hu, 'thighL', -80, 0, 0); FIG.turn(hu, 'thighR', -80, 0, 0); FIG.turn(hu, 'shinL', 80, 0, 0); FIG.turn(hu, 'shinR', 80, 0, 0); FIG.turn(hu, 'upperarmR', -42, 6, 0); FIG.turn(hu, 'forearmR', -78 + 6 * Math.sin(time * 1.1), 0, 0); FIG.turn(hu, 'upperarmL', -30, -4, 0); FIG.turn(hu, 'forearmL', -60, 0, 0);
+  if (!playing) return;
+  if (!seen.has(2) && me.z < CAT[1] + 7.5 && me.z > CAT[1] + 2 && !me.air) startTab(2);
+  if (seen.has(2) && catS.said) { const t = time - catS.said;
+    if (t > 4.4 && first('cat1')) say(cat, '“That depends a good deal on where you want to get to.”', 4.2);
+    if (t > 9 && first('cat2')) say(cat, '“In that direction lives a Hatter: and in that direction lives a March Hare. Visit either you like: they’re both mad.”', 6);
+    if (t > 15.5 && first('cat3')) { say(cat, '“…we’re all mad here. I’m mad. You’re mad.”', 4.5); catS.want = 1; tell('“…it vanished quite slowly, beginning with the end of the tail, and ending with the grin, which remained some time after the rest of it had gone.”', 9); }
+    if (t > 30 && catS.want === 1) catS.want = 1.3; }
+  const dTea = Math.hypot(me.x - TEA[0] + 3.2, me.z - TEA[1] - 1.4);
+  if (me.z < TEA[1] + 15 && first('noroom')) { say(hare, '“No room! No room!”', 3.4); setTimeout(() => { if (state === 'play') say(meG, '“There’s plenty of room!”', 3); }, 3600); }
+  if (!seen.has(3) && dTea < 2.6 && !me.air) { startTab(3); setTimeout(() => say(hatter, '“Why is a raven like a writing-desk?”', 3.4), 900); }
+}
+// the White Rabbit: always ahead of her, never caught
+function theRabbit(dt) {
+  if (!rabbit.visible) return; const u = rabbit.userData, goTo = (tx, tz, v) => { const dx = tx - rb.x, dz = tz - rb.z, d = Math.hypot(dx, dz); if (d < 0.25) return true; rb.v += (v - rb.v) * Math.min(1, dt * 3); rb.x += dx / d * rb.v * dt; rb.z += dz / d * rb.v * dt; rb.yaw = Math.atan2(dx, dz); rb.ph += dt * (3 + rb.v * 1.5); return false; };
+  if (act === 1) { rb.y = ground(rb.x, rb.z);
+    if (rb.mode === 'pass' && goTo(RS[0], RS[1], 8.5)) { rb.mode = 'watch'; rb.v = 0; }
+    if (rb.mode === 'watch') { rb.yaw += (-Math.PI / 2 + 0.38 - rb.yaw) * Math.min(1, dt * 4); rb.watch = Math.min(1, rb.watch + dt * 1.5); u.pose(0, 0); u.watching(rb.watch); if (state === 'play' && seen.has(0) && actT > 1) rb.mode = 'toHole';
+      if (state === 'play' && !seen.has(0) && me.z < RS[1] + 5 && Math.hypot(me.x - RS[0], me.z - RS[1]) < 5) { seen.add(0); rb.mode = 'toHole'; } }                 // she came round him some other way: he hurries on, and that picture is missed
+    if (rb.mode === 'toHole') { u.watching(0); const gap = me.z - rb.z, v = gap < 9 ? 12 : gap < 20 ? 8.5 : gap < 34 ? 4 : 0; if (v === 0) { rb.v = 0; rb.yaw += (Math.atan2(me.x - rb.x, me.z - rb.z) - rb.yaw) * Math.min(1, dt * 4); u.pose(time * 9, 0.12); if (first('wait' + Math.floor(time / 9))) say(rabbit, '“Oh dear! Oh dear! I shall be late!”', 3); }
+      else if (goTo(0, HOLE_Z - 2.2, v)) { rb.mode = 'gone'; SND.whoosh(0.1); } }
+    if (rb.mode === 'gone') { rabbit.scale.multiplyScalar(Math.max(0, 1 - dt * 6)); rb.y -= dt * 3; }
+    if (rb.mode === 'pass' || (rb.mode === 'toHole' && rb.v > 0.5)) u.pose(rb.ph, rb.v / 7);
+  } else if (act === 3) {
+    if (rb.mode === 'toDoor') { u.pose(rb.ph, rb.v / 7); if (goTo(rb.tx, rb.tz, 9)) { rb.mode = 'gone3'; curtain.rotation.y = -1.2; setTimeout(() => { curtain.rotation.y = 0; }, 900); SND.whoosh(0.07); tell('“…she turned the corner, but the Rabbit was no longer to be seen.”', 5); } }
+    if (rb.mode === 'gone3') { rabbit.scale.multiplyScalar(Math.max(0, 1 - dt * 7)); if (rabbit.scale.x < 0.02) { rabbit.visible = false; rb.mode = 'out'; } }
+    if (rb.mode === 'return') { u.pose(rb.ph, 0.4); if (goTo(rb.tx, rb.tz, 3.2)) { rb.mode = 'start'; rb.t = 0; say(meG, '“If you please, sir—”', 2.6); } }
+    if (rb.mode === 'start') { rb.t += dt; u.pose(0, 0); rabbit.position.y = Y_H + Math.max(0, 0.5 * Math.sin(rb.t * 9) * (rb.t < 0.35 ? 1 : 0)); if (rb.t > 0.2 && hStage === 5) { hStage = 6; place(fan, hallG, FANP[0], Y_H + 0.02, FANP[1]); fan.rotation.set(-Math.PI / 2, 0, 0.6); fan.scale.setScalar(1); place(gloves, hallG, FANP[0] + 0.6, Y_H, FANP[1] + 0.3); SND.puff(0.1);
+        tell('“The Rabbit started violently, dropped the white kid gloves and the fan, and skurried away into the darkness as hard as he could go.”', 8); }
+      if (rb.t > 1.0) { rb.mode = 'flee'; rb.tx = HX - 0.5; rb.tz = HZ1 + 4.8; } }
+    if (rb.mode === 'flee') { u.pose(rb.ph, 1.4); if (goTo(rb.tx, rb.tz, 12)) { rabbit.visible = false; rb.mode = 'out'; } }
+    rb.y = Y_H;
+  }
+  rabbit.position.set(rb.x, Math.max(rb.y, rabbit.position.y * (rb.mode === 'start' ? 1 : 0) + rb.y * (rb.mode === 'start' ? 0 : 1)), rb.z); if (rb.mode !== 'start') rabbit.position.y = rb.y; rabbit.rotation.y = rb.yaw;
+}
+const camLook = new V3(), tmp = new V3();
+function cameraAndLight(dt) {
+  const S = me.S, fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw); let fogN = 50, fogF = 240, fogC = 1, hemiI = 1.1, sunI = 2.5, lampI = 0;
+  const lerpTo = (p, l, fov, k) => { camera.position.x += (p[0] - camera.position.x) * k; camera.position.y += (p[1] - camera.position.y) * k; camera.position.z += (p[2] - camera.position.z) * k; camLook.lerp(tmp.set(l[0], l[1], l[2]), k); camera.lookAt(camLook); camera.fov += (fov - camera.fov) * k; };
+  if (state === 'title') { camera.position.set(4, ground(4, 14) + 2.2, 14); camLook.set(0, 1, -30); camera.lookAt(camLook); }
+  else if (state === 'tab' || state === 'done') { const T = TABS[Math.max(0, tab)], c = T.cam(); lerpTo(c.pos, c.look, tabFov(T), Math.min(1, dt * 1.8)); if (tab === 1) { fogN = 7.5; fogF = 13; } if (tab === 0) { fogN = 9; fogF = 40; } if (tab === 3) { fogN = 9; fogF = 30; } if (tab === 2) { fogN = 12; fogF = 45; } }
+  else if (act === 2) { lerpTo([me.x * 0.4, me.y + 5.4, WZ + 2.9], [me.x * 0.6, me.y - 6, WZ - 1.0], 62, Math.min(1, dt * 4)); }
+  else { const alt = Math.max(0, me.y - floorAt(me.x, me.z)), big = S > 1.5; let dist = (3.2 + Math.abs(me.speed) * 0.1) * Math.pow(S, 0.8) + alt * 0.5 + (big ? 1.6 : 0), cx = me.x - fx * dist, cz = me.z - fz * dist, cy = me.y + 2.0 * Math.pow(S, 0.9) + alt * 0.25;
+    if (act === 4) cz = Math.min(cz, GZ0 - 0.75);
+    if (act === 3) { cx = clamp(cx, -HX + 0.4, HX - 0.4); cz = clamp(cz, HZ1 + 0.4, WZ + WR - 0.4); if (cz > HZ0 - 0.2) cx = clamp(cx, -1.2, 1.2); if (cz > WZ - WR) cx = clamp(cx, -WR + 0.4, WR - 0.4); cy = Math.min(cy, Y_H + (cz > HZ0 ? 2.9 : HC - 0.25)); }
+    const k = Math.min(1, dt * 5.5); lerpTo([cx, cy, cz], [me.x + fx * 6 * Math.pow(S, 0.7), me.y + 1.35 * S * (big ? 0.6 : 1), me.z + fz * 6 * Math.pow(S, 0.7)], 58 + Math.abs(me.speed) * 0.9, k); camera.rotation.z += -me.lean * 0.25; }
+  if (shake > 0) { camera.position.y += (Math.random() - 0.5) * shake; shake = Math.max(0, shake - dt * 0.3); }
+  const dc = window.__road.dbg.cam; if (dc) { camera.position.set(...dc.pos); camera.lookAt(...dc.look); camera.fov = dc.fov || 50; }
+  camera.updateProjectionMatrix();
+  if (act === 2 && state !== 'title') { fogN = 9; fogF = 46; fogC = 0; hemiI = 0.75; sunI = 0; lampI = 46; lamp.position.set(me.x * 0.5, me.y + 3.5, WZ + 1.5); }
+  if (act === 3) { hemiI = 2.3; sunI = 1.3; fogN = Math.min(fogN, 30); fogF = Math.min(fogF, 70); if (me.z > HZ0 + 1) { hemiI = 1.0; sunI = 0.6; } }
+  const k = Math.min(1, dt * 2.5); scene.fog.near += (fogN - scene.fog.near) * k; scene.fog.far += (fogF - scene.fog.far) * k; const c = scene.fog.color.r + (fogC - scene.fog.color.r) * Math.min(1, dt * 4); scene.fog.color.setScalar(c); scene.background.setScalar(c);
+  hemi.intensity += (hemiI - hemi.intensity) * k; sun.intensity += (sunI - sun.intensity) * k; lamp.intensity += (lampI - lamp.intensity) * k;
+  const fcs = state === 'tab' || state === 'done' ? camLook : tmp.set(me.x, me.y, me.z); sun.target.position.copy(fcs); const d = act === 3 ? [8, 40, 14] : [-20, 42, 32]; sun.position.set(fcs.x + d[0], fcs.y + d[1], fcs.z + d[2]);
+}
+function draw() {
+  const w = innerWidth, h = innerHeight;
+  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); target.setSize(Math.round(w * PR), Math.round(h * PR)); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  if (window.__road.dbg.raw) { renderer.setRenderTarget(null); renderer.render(scene, camera); return; }      // test only: the scene as rendered, before the engraving
+  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); ENG.update(camera, time, target.width, target.height); renderer.render(postScene, postCam);
+}
+
+/* ================= input, and the hooks the tests use ================= */
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
+addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; touch.jump = false; });
+const cv = $('cv'), sk = $('stick');
+cv.addEventListener('pointerdown', e => { if (state !== 'play') return; if (stick.id !== null) { touch.jump = true; touch.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
+const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === touch.id) touch.jump = false; };
+cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
+$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
+$('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
+window.__road = { dbg: { camera, THREE, scene, ENG, sun, hemi, rabbit, cat, hold: false, cam: null, TABS }, get state() { return state; }, get act() { return act; }, get hall() { return hStage; }, get tab() { return tab; }, get tabT() { return tabT; }, me, rb, begin,
+  go(x, z) { me.x = x; me.z = z; me.speed = 0; }, face(a) { me.yaw = a; }, size(k) { me.S = me.Sw = k; },
+  places: { start: [0, 8], rabbit: [RS[0], RS[1] + 12], hole: [0, HOLE_Z + 6], table: [TAB[0], TAB[1] + 4], door: [DOOR[0], DOOR[1] + 2], fan: FANP, gardenGate: [DOOR[0], GZ0 - 2], mushrooms: [shrooms[0][0], shrooms[0][1] + 3], cat: [CAT[0], CAT[1] + 9], tea: [TEA[0] - 2, TEA[1] + 9] },
+  ledges, shrooms, jarHome: jar.userData.home, cupboard: [WR, -103, WZ - 0.4], cake: [cake.position.x, cake.position.z], pathX, WZ, Y_H, HOLE_Z, TAB, DOOR, CAT, TEA, RS,
+  // jump.act(n) starts an act as play reaches it; jump.hallStage(h) sets the puzzle to a stage (0 nothing yet, 2 bottle on the table, 3 small, 4 large, 6 fan dropped, 7 small with the key); jump.tab(i) stages plate i
+  jump: { act(n) { if (state === 'title' || state === 'done') begin(); state = 'play'; shadeWant = 0; $('melt').classList.remove('show'); $('plate').classList.remove('show'); if (n === 1) { reset(); state = 'play'; rb.mode = 'pass'; } else setAct(n); },
+    hallStage(h) { this.act(3); rabbit.visible = false; rb.mode = 'out'; hStage = h; me.z = TAB[1] + 4; if (h >= 1 && h !== 3 && h !== 4) takeKey(); bottle.visible = h === 2; if (h === 3 || h === 7) me.S = me.Sw = 0.2; cake.visible = h === 3; if (h >= 4 && h <= 6) { me.S = me.Sw = 2.2; cake.visible = false; pool.visible = true; pool.userData.k = 1; } if (h === 7) { pool.visible = true; pool.userData.k = 1; cake.visible = false; } if (h === 6) { place(fan, hallG, FANP[0], Y_H + 0.02, FANP[1]); fan.rotation.set(-Math.PI / 2, 0, 0.6); place(gloves, hallG, FANP[0] + 0.6, Y_H, FANP[1] + 0.3); } },
+    tab(i) { if (i === 0) { this.act(1); Object.assign(rb, { x: RS[0], z: RS[1], mode: 'watch', watch: 1, yaw: -Math.PI / 2 + 0.38 }); me.z = RS[1] + 9; me.x = 0; } if (i === 1) { this.hallStage(2); me.x = TAB[0] + 0.9; me.z = TAB[1] + 0.9; } if (i === 2) { this.act(4); me.x = CAT[0]; me.z = CAT[1] + 7; } if (i === 3) { this.act(4); seen.add(2); me.x = TEA[0] - 3.2; me.z = TEA[1] + 3; } } } };
+let last = 0; function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(frame); }
+reset(); requestAnimationFrame(frame);
+</script>
+</body>
+</html>
