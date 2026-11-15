@@ -44,7 +44,7 @@ export function makeScore(o) {
   // --- what lies on the road
   const lam = c => new THREE.MeshLambertMaterial(c), glow = c => new THREE.MeshBasicMaterial({ color: c });
   // the coin of the place and time: Florence's gold florin, Rome's silver scudo, the Dutch gold ducat, the Norwegian silver krone
-  const COINS = { florin: ['#f0c13a', '#b8861c'], scudo: ['#d4d8de', '#8a9098'], ducat: ['#f3cf4a', '#a8781a'], krone: ['#dfe3e8', '#7f8894'], shilling: ['#e6e9ee', '#8a929c'] };
+  const COINS = { florin: ['#f0c13a', '#b8861c'], scudo: ['#d4d8de', '#8a9098'], ducat: ['#f3cf4a', '#a8781a'], krone: ['#dfe3e8', '#7f8894'], shilling: ['#e6e9ee', '#8a929c'], franc: ['#f0d264', '#a8842a'] };
   function thing() {
     const g = new THREE.Group(), [face, rim] = COINS[o.thing] || COINS.florin, mats = [new THREE.MeshBasicMaterial({ color: face, transparent: true }), new THREE.MeshBasicMaterial({ color: rim, transparent: true })];
     const c = new THREE.Mesh(new THREE.CylinderGeometry(0.21, 0.21, 0.04, 22), mats[0]); c.rotation.x = Math.PI / 2; g.add(c); const r = new THREE.Mesh(new THREE.TorusGeometry(0.21, 0.024, 6, 24), mats[1]); g.add(r);
