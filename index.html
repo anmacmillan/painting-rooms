@@ -67,7 +67,7 @@
   LEVELS.forEach((l, k) => { const r = all[l.key], d = done(l), n = d ? Math.min(l.paintings, r.paintings || 0) : 0; of += l.paintings; if (d) { total += r.best; found += n; }
     const a = document.createElement('a'); a.href = l.href; a.className = 'stop ' + (d ? 'done' : k === nextIdx ? 'next' : 'todo');
     a.innerHTML = `<span class="n">${d ? '✓' : k + 1}</span><span class="th" style="background-image:url(${l.img})"></span><span><b></b><i></i><span class="st"></span></span><span class="playb">${d ? 'Play again' : 'Play'} ▶</span>`;
-    a.querySelector('b').textContent = `${l.place}, ${l.year}`; a.querySelector('i').textContent = `${l.title} · after ${l.by}`;
+    a.querySelector('b').textContent = `${l.place}, ${l.year}` + (l.two ? '  · for two' : ''); a.querySelector('i').textContent = `${l.title} · after ${l.by}`;
     a.querySelector('.st').innerHTML = d ? `<span class="dots">${'●'.repeat(n)}${'○'.repeat(l.paintings - n)}</span> best <span>${r.best}</span> points` : k === nextIdx ? 'next on the road' : `${l.paintings} paintings to find`;
     stops.append(a); rows.push(a); });
   const any = document.createElement('p'); any.className = 'any'; any.textContent = 'You can visit the stops in any order. The road only shows which came first.'; stops.append(any);
@@ -81,7 +81,8 @@
   map.append(defs, el('path', { class: 'shore2', d: E.land }), el('path', { class: 'shore', d: E.land }), el('path', { class: 'land', d: E.land }));
   { const g = el('g', { class: 'rose', transform: `translate(${E.w * 0.1},${E.h * 0.86})` }); for (let k = 0; k < 8; k++) { const L = k % 2 ? 34 : 62; g.append(el('path', { class: k % 2 ? 'd' : '', d: `M0,0 L7,-9 L0,${-L} L-7,-9 Z`, transform: `rotate(${k * 45})` })); } g.append(el('text', { x: 0, y: -70, 'text-anchor': 'middle' }, 'N')); map.append(g); }
   map.append(el('text', { class: 'sea', x: 150, y: 330, 'text-anchor': 'middle' }, 'ATLANTIC'), el('text', { class: 'sea', x: 470, y: 420, 'text-anchor': 'middle' }, 'NORTH SEA'));
-  const pts = LEVELS.map(l => P(l.at)), curve = (a, b, k) => { const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, o = Math.min(70, L * 0.22) * (k % 2 ? 1 : -1); return `M${a[0]},${a[1]} Q${mx - dy / L * o},${my + dx / L * o} ${b[0]},${b[1]}`; };
+  const pts = LEVELS.map(l => P(l.at)); for (let n = 0; n < 12; n++) for (let i = 0; i < pts.length; i++) for (let j = i + 1; j < pts.length; j++) { const dx = pts[j][0] - pts[i][0], dy = pts[j][1] - pts[i][1], d = Math.hypot(dx, dy) || 1, need = 86; if (d < need) { const k = (need - d) / 2 / d; pts[i][0] -= dx * k; pts[i][1] -= dy * k; pts[j][0] += dx * k; pts[j][1] += dy * k; } }      // pins that would overlap are eased apart
+  const curve = (a, b, k) => { const mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, dx = b[0] - a[0], dy = b[1] - a[1], L = Math.hypot(dx, dy) || 1, o = Math.min(70, L * 0.22) * (k % 2 ? 1 : -1); return `M${a[0]},${a[1]} Q${mx - dy / L * o},${my + dx / L * o} ${b[0]},${b[1]}`; };
   const legs = []; for (let k = 0; k < pts.length - 1; k++) { const r = el('path', { class: 'route' + (done(LEVELS[k]) && done(LEVELS[k + 1]) ? ' done' : ''), d: curve(pts[k], pts[k + 1], k) }); map.append(r); legs.push(r); }
   LEVELS.forEach((l, k) => { const [x, y] = pts[k], R = 38, d = done(l), a = el('a', { href: l.href, class: d ? 'done' : k === nextIdx ? 'next' : 'todo' });
     const cp = el('clipPath', { id: 'c' + k }); cp.append(el('circle', { cx: x, cy: y, r: R })); defs.append(cp);
