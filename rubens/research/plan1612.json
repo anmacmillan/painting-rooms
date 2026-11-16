@@ -220,12 +220,28 @@
    -333
   ],
   [
-   -334.2,
-   -265
+   -318,
+   -305
   ],
   [
-   -341.4,
-   -193
+   -356,
+   -292
+  ],
+  [
+   -382,
+   -258
+  ],
+  [
+   -383,
+   -212
+  ],
+  [
+   -360,
+   -186
+  ],
+  [
+   -345,
+   -180
   ],
   [
    -366,
@@ -401,6 +417,195 @@
      182.5
     ]
    ]
+  },
+  {
+   "why": "Het Steen was 'geheel ingebouwd' until the 1880s (INV er_4602); the photograph of 1880 shows its gate at the end of a narrow street. These footprints are the level's: which houses stood where is not known",
+   "p": [
+    [
+     -259.5,
+     -284
+    ],
+    [
+     -252.5,
+     -284
+    ],
+    [
+     -252.5,
+     -270
+    ],
+    [
+     -259.5,
+     -270
+    ]
+   ]
+  },
+  {
+   "why": "Het Steen was 'geheel ingebouwd' until the 1880s (INV er_4602); the photograph of 1880 shows its gate at the end of a narrow street. These footprints are the level's: which houses stood where is not known",
+   "p": [
+    [
+     -259.5,
+     -270
+    ],
+    [
+     -252.5,
+     -270
+    ],
+    [
+     -252.5,
+     -257
+    ],
+    [
+     -259.5,
+     -257
+    ]
+   ]
+  },
+  {
+   "why": "Het Steen was 'geheel ingebouwd' until the 1880s (INV er_4602); the photograph of 1880 shows its gate at the end of a narrow street. These footprints are the level's: which houses stood where is not known",
+   "p": [
+    [
+     -320,
+     -247
+    ],
+    [
+     -308,
+     -247
+    ],
+    [
+     -308,
+     -236
+    ],
+    [
+     -320,
+     -236
+    ]
+   ]
+  },
+  {
+   "why": "Het Steen was 'geheel ingebouwd' until the 1880s (INV er_4602); the photograph of 1880 shows its gate at the end of a narrow street. These footprints are the level's: which houses stood where is not known",
+   "p": [
+    [
+     -308,
+     -247
+    ],
+    [
+     -296,
+     -247
+    ],
+    [
+     -296,
+     -236
+    ],
+    [
+     -308,
+     -236
+    ]
+   ]
+  },
+  {
+   "why": "houses crowding St Walburga's, as both old plans and the print 'Die burch kercke' show the church ringed by houses. Footprints are the level's",
+   "p": [
+    [
+     -252,
+     -305.5
+    ],
+    [
+     -238,
+     -305.5
+    ],
+    [
+     -238,
+     -298
+    ],
+    [
+     -252,
+     -298
+    ]
+   ]
+  },
+  {
+   "why": "houses crowding St Walburga's, as both old plans and the print 'Die burch kercke' show the church ringed by houses. Footprints are the level's",
+   "p": [
+    [
+     -238,
+     -305.5
+    ],
+    [
+     -224,
+     -305.5
+    ],
+    [
+     -224,
+     -298
+    ],
+    [
+     -238,
+     -298
+    ]
+   ]
+  },
+  {
+   "why": "houses crowding St Walburga's, as both old plans and the print 'Die burch kercke' show the church ringed by houses. Footprints are the level's",
+   "p": [
+    [
+     -262,
+     -346
+    ],
+    [
+     -246,
+     -346
+    ],
+    [
+     -246,
+     -336.5
+    ],
+    [
+     -262,
+     -336.5
+    ]
+   ]
+  },
+  {
+   "why": "houses crowding St Walburga's, as both old plans and the print 'Die burch kercke' show the church ringed by houses. Footprints are the level's",
+   "p": [
+    [
+     -246,
+     -346
+    ],
+    [
+     -230,
+     -346
+    ],
+    [
+     -230,
+     -336.5
+    ],
+    [
+     -246,
+     -336.5
+    ]
+   ]
+  },
+  {
+   "why": "houses crowding St Walburga's, as both old plans and the print 'Die burch kercke' show the church ringed by houses. Footprints are the level's",
+   "p": [
+    [
+     -230,
+     -346
+    ],
+    [
+     -214,
+     -346
+    ],
+    [
+     -214,
+     -336.5
+    ],
+    [
+     -230,
+     -336.5
+    ]
+   ]
   }
  ],
  "canals": [
@@ -458,7 +663,7 @@
   },
   {
    "n": "Suikerrui",
-   "why": "an open rui with water down the middle until most of it was vaulted in 1661, the Boterrui end in 1832 (nl.wikipedia Suikerrui)",
+   "why": "an open rui with water down the middle until most of it was vaulted in 1661, the Boterrui end in 1832 (nl.wikipedia Suikerrui). Three bridges crossed it ('Loockbrugge', 'Potter- of Kordewagenkruiersbrug', 'IJzeren Brug', INV th_998): three plank bridges are shown, evenly spaced, their true places not found",
    "w": 2.0,
    "l": [
     [
@@ -473,6 +678,20 @@
      -325,
      -117.5
     ]
+   ],
+   "bridges": [
+    [
+     -210,
+     -61.6
+    ],
+    [
+     -242.7,
+     -77.6
+    ],
+    [
+     -275.5,
+     -93.6
+    ]
    ]
   }
  ],
@@ -481,5 +700,6 @@
   "Groen Kerkhof": "INV th_922: 'Groot Kerkhof', later 'Groen Kerkhof'; Blaeu 1649 'Kerck hoff'",
   "Vaartstraat": "en.wikipedia Rubenshuis 'the then-Vaartstraat'; Blaeu legend '75. Vaert-straet' (not located on the plan): partly verified",
   "Kerckhofstrate": "INV th_983: older names 'Tien Gebodenstrate', 'Kerckhofstrate', Schoenmarkt only after the French period; Blaeu 1649 '62. Kerchof-straet': partly verified"
- }
+ },
+ "bank_why": "Today's quay (OSM water edge) except by Het Steen, where the Werf is put back: 'de uitsprong aan de Werf (ter hoogte van het Steen)' was cut away in 1877-85 (INV th_14749); Blaeu 1649 'u. De Werff'. How far it ran out is not known: about 40 m here, the level's guess"
 }

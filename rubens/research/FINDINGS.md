@@ -68,8 +68,8 @@ The level still starts on the Wapper, as a building site: the old house stands, 
 | Handschoenmarkt | the same | Name "uit de eerste helft van de 17de eeuw"; earlier "Klein of Stenen Kerkhof"; the well on OSM's footprint | P |
 | Maalderijstraat | the same | "Maelderij-" or "Maelerijstraat", undated | P |
 | Grote Markt | the same | Blaeu "De Groote Merckt"; then more built up; no Brabo (1887) | V |
-| Suikerrui | the same | Name 1530–43; vaulted 1661 and 1832; three bridges (not shown) | V; canal's line I |
-| Quay past Het Steen | none | Today's quay; in 1612 the Werf, the Vismarkt, the Burcht's ring of houses | modern, said on the card |
+| Suikerrui | the same | Name 1530–43; vaulted 1661 and 1832; three bridges ("Loockbrugge", "Potter- of Kordewagenkruiersbrug", "IJzeren Brug", INV th_998), shown as three plank bridges evenly spaced | V; canal's line and the bridges' places I |
+| Quay past Het Steen | none | Today's quay line with the Werf put back, a fish market and houses against the castle (see Buildings); the Burcht's own streets are not rebuilt | part 1612, part modern; said on the card |
 
 ## St Walburga's: where it stood
 
@@ -79,6 +79,8 @@ The level still starts on the Wapper, as a building site: the old house stands, 
 - Print of c.1630: "De Borch Kerck" north of "Het Vleeshuys".
 - Choir foundations excavated from 1957 (INV th_14749).
 
+Outside (16 Nov), after the print "Die burch kercke" and the view of c.1630: a clock and sound-holes on the tower under the tall spire, cross gables before the choir, houses crowding it on both sides; under the raised choir two round arches for "een overdekte gang die naar het Steen leidt" (W nl), as the etching of the ruins shows arches at street level (`ref/walburga_ruins.jpg`). The print puts the spire nearer the middle of the church than a west tower would be: the level keeps a west tower (P).
+
 Set with its west door at about 51.2232 N, 4.3977 E, nave running east to the foot of the Zakstraat: an inference, ±40 m (P/U). Inside after Gheringh (dated 1661, 1664 or 1641–60): round pillars, pointed vault, panelling, black and white floor, the choir "about three metres" up "no less than 19 steps" (TOPA). Gheringh shows a double flight; the level has one.
 
 ## Buildings
@@ -86,11 +88,11 @@ Set with its west door at about 51.2232 N, 4.3977 E, nave running east to the fo
 | Building | Rests on | Status |
 |---|---|---|
 | Cathedral outside | OSM footprint and axis; 123 m, 65.30 m, vault 27.5 m (W nl); bulb of 1535 (INV); photographs, PLAN1565; tower stages by eye; transept about 72 m against the 67 m given | P |
-| Cathedral inside | Neefs for the manner; one height for all aisles, no chapels; nave vaults were in fact being rebuilt 1610–14 | P, simplified |
-| Arquebusiers' altar | "in the vast transept", "a few yards" from today's place (TOPA); exact place and form the level's | P / I |
-| Town hall | OSM front (62 m); photograph | P |
-| Guild houses | Today's look; north side "vrij gereconstrueerd" c.1875–1925 (INV th_925) | for 1612 U |
-| Het Steen | Photograph; shown free-standing, without the 1887–90 wing | P |
+| Cathedral inside | "een zevenbeukige kruisbasiliek"; "de 28 meter hoge middenbeuk"; "de dubbele binnenbeuken"; the outermost aisles ("De brede zuidelijke zijbeuk") whose vaults "verhogen naar de buitenkant toe", ending east in "een Onze-Lieve-Vrouwe-kapel en een kapel van het Heilig Sacrament of Venerabelkapel, die door middel van een borstwering gescheiden zijn"; "kapiteelloze bundelpijlers"; the triforium "herleid tot een smalle binnenloopgang met opengewerkte borstwering" (all INV er_4092). Built so since 16 Nov: nave 28 m, double inner aisles (14 m, by eye), wide outer aisles rising to 18 m at the wall (by eye), the passage and parapet, the two chapels behind parapets, altars with framed panels against the nave piers after Neefs (`ref/neefs_cathedral_interior.jpg`). Glass is clear leaded lattice: "Glasramen ... werden ... vernietigd door calvinisten" (W nl). Piers are plain round shafts, not bundles; no radiating chapels, screen or choir stalls; star vaults not drawn; nave vaults were in fact being rebuilt 1610–14 | section V; heights, altars' places P; simplified |
+| Arquebusiers' altar | "in the vast transept", "a few yards" from today's place (TOPA). Since 16 Nov framed as a guild altar: black columns, entablature, a figure of Saint Christopher above ("of the archebusiers was Saint Christopher", TOPA 38163), crossed guns on the frontal. The altar's real form in 1612 was not found | place P; form I |
+| Town hall | OSM front (62 m); photograph; and the print of the proclamation of the Truce before it, 1609 (`ref/stadhuis_truce_1609_print.jpg`), which shows the rusticated base, cross windows, gallery, the niches with their figures and the arms as built here | V for the front's main lines |
+| Guild houses | Today's look; north side "vrij gereconstrueerd" c.1875–1925 (INV th_925). The 1565 plan and the 1609 print were looked at again (16 Nov): neither shows the north side legibly, so nothing was changed; no dated view before 1700 was found | for 1612 U; said on the end card |
+| Het Steen | Photograph for the castle. Since 16 Nov no longer free-standing: five houses are set against its east side and before its south-west corner ("geheel ingebouwd" until the 1880s, INV er_4602; the photograph of 1880). The Werf is put back as a 40 m bulge in the bank ("de uitsprong aan de Werf (ter hoogte van het Steen)", INV th_14749; Blaeu "u. De Werff"), with a treadwheel crane and four moored craft (the print "Die burch kercke", `ref/burchtkerk_stadsgezicht_print.jpg`, shows a crane and ships there) and a fish market on the quay (Steenplein "aangelegd op de plaats van de vroegere 'Vismarkt'"; Blaeu "2. Visch-Merct") | that they were there V; every position, the Werf's reach, the craft's rig I. The Burcht's streets are still not rebuilt |
 | House on the Wapper | INV for the old house's manner; Harrewijn 1684, 1692 for the arrangement; state in 1612, garden and bower the level's | P / I |
 | Ordinary houses | Today's footprints; brick, plaster and timber fronts under stepped gables; none a portrait | I |
 
@@ -98,13 +100,13 @@ Set with its west door at about 51.2232 N, 4.3977 E, nave running east to the fo
 
 | Picture | How | Status |
 |---|---|---|
-| Honeysuckle Bower | In the new house's garden; dress from the image; the picture predates the purchase | place I |
+| Honeysuckle Bower | In the new house's garden; dress from the image; the picture predates the purchase. Since 16 Nov set out from the painting: he higher on a turf seat, a leg forward, his left hand at his sword hilt, she lower at his left, right hands joined at the centre, honeysuckle trained on a trellis behind. The two faces and the joined hands are cut from the painting itself (`tex/pface_*.png`, `tex/phands.png`) | place I |
 | Descent | The painting itself, middle panel only, as on 12 Sept 1612 | V (secondary); place P |
 | Raising | The painting itself over St Walburga's high altar | V; site P |
 
 ## The game's own
 
-The girl and her errand; the box of colours; every spoken line; one day; "Pas op! Water!" (no cry attested); cart loads (carts and barrowmen attested: PLAN1565, INV th_998).
+The girl and her errand; the box of colours; every spoken line; one day; "Pas op! Water!" (no cry attested); cart loads (carts and barrowmen attested: PLAN1565, INV th_998); the stalls' places on the Grote Markt (fairs and markets attested, INV th_925); boats on the Suikerrui and the Vaart; when the cathedral's bells ring.
 
 Coin: the **patagon**, silver, "in 1612 ... geïntroduceerd", 48 stuivers (W nl_Patagon): V (secondary). Albertin (gold, 1600–05): P. Ducaton: 1618.
 
