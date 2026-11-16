@@ -186,7 +186,7 @@ const inChurch = (x, z) => CATH.inside(x, z) || (BUILT.inside && BUILT.inside(x,
 
 /* ================= people: figures modelled in Blender (tools/blender/figure.py, world 'rubens') ================= */
 const FIG = makeFigures({ THREE, scene, shadowM });
-await FIG.load('models/', ['girl', 'rubens', 'isabella', 'assistant', 'burgher', 'burgher_wife', 'market_woman', 'woman_red', 'porter', 'man_brown', 'priest']);
+await FIG.load('models/', ['girl', 'rubens_bare', 'isabella_bare', 'assistant', 'burgher', 'burgher_wife', 'market_woman', 'woman_red', 'porter', 'man_brown', 'priest']);
 const T = (g, bone, x, y, z) => FIG.turn(g.userData, bone, x || 0, y || 0, z || 0);
 const faceTo = (g, x, z, k) => { let d = Math.atan2(x - g.position.x, z - g.position.z) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * k; };
 function staged(F, name, r, d, fr, fd, o = {}) { const size = o.size || 1.12, g = FIG.spawn(name, { size, adult: true, tint: o.tint }), [x, z] = F.P(r, d); FIG.pose(g, 0, 0); g.rotation.y = F.ang(fr, fd); let y = o.y || 0;
@@ -194,7 +194,7 @@ function staged(F, name, r, d, fr, fd, o = {}) { const size = o.size || 1.12, g 
   if (o.kneel) { y -= 0.42 * size; for (const S of 'LR') { T(g, 'thigh' + S, -8); T(g, 'shin' + S, 96); } T(g, 'spine', 8); T(g, 'head', 14); for (const S of 'LR') { T(g, 'upperarm' + S, -62, 0, S === 'L' ? -18 : 18); T(g, 'forearm' + S, -96); } }
   g.position.set(x, LAND + y, z); g.userData.sh.visible = false; g.userData.home = y; return g; }
 const arms = (g, S, ux, uz, fx) => { T(g, 'upperarm' + S, ux, 0, uz || 0); T(g, 'forearm' + S, fx == null ? -20 : fx); };
-const meG = FIG.spawn('girl', { size: 0.96 }), painter = FIG.spawn('rubens', { size: 1.18, adult: true });
+const meG = FIG.spawn('girl', { size: 0.96 }), painter = FIG.spawn('rubens_bare', { size: 1.18, adult: true });
 // the box of colours in her hand
 { const box = new THREE.Group(), b = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.13, 0.17), lam({ color: '#7a5230' })), lid = new THREE.Mesh(new THREE.BoxGeometry(0.27, 0.02, 0.18), lam({ color: '#5a3a20' })), cl = new THREE.Mesh(new THREE.BoxGeometry(0.04, 0.05, 0.01), basic({ color: '#e8c04a' })); lid.position.y = 0.075; cl.position.set(0, 0.03, 0.09); box.add(b, lid, cl); meG.userData.aR.add(box); }
 const STG = PLAN.stage({ THREE, scene, FR, FIG, T, staged, arms, F_BOW, F_DES, F_END, cW, CATH, BUILT, lam, basic, solids, rounds, TX, M });      // the three pictures, set out as painted
