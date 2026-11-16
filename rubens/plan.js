@@ -28,13 +28,13 @@ export const PLAN = {
     ['earth', [[-9.5, 64], [-2.5, 64], [0.5, 178], [-6.5, 178]], 0.04],            // the path across it to the south door
   ],
   // ---- the three pictures. eye: where the painter stands; dir: which way he looks; r to his right, d away from him
-  bower: { eye: [578, 365], dir: [0, -1], stop: [0, 0], he: [-0.3, 6.12], heY: 0.02, she: [0.34, 5.95], kid: [3.0, 1.2], man: [0, 0], look: [0, 6], cam: [[0.05, 2.7, 1.0], [0.05, 6.2, 0.84], 33],
+  bower: { eye: [578, 365], dir: [0, -1], stop: [0, 0], he: [-0.26, 6.12], heY: 0.02, she: [0.26, 5.85], kid: [3.0, 1.2], man: [0, 0], look: [0, 6], cam: [[0.14, 2.6, 0.9], [0.14, 6.0, 0.7], 33],
     title: 'The Honeysuckle Bower', line: 'Peter Paul Rubens, about 1609 · the painter and Isabella Brant · Alte Pinakothek, Munich', img: 'images/honeysuckle.jpg', after: 'Come, child. Bring the colours: they wait for us in the cathedral.' },
   descent: { eye: [66, 26], dir: CA => [CA.ax, CA.az], stop: [1, 5], kid: [2.6, 6.2], man: [-2.4, 7.0], look: [0, 11.5], cam: [[0, 1.2, 1.6], [0, 11.4, 4.3], 36],
     title: 'The Descent from the Cross', line: 'Peter Paul Rubens, 1612 · painted for the Arquebusiers · Cathedral of Our Lady, Antwerp', img: 'images/descent.jpg', after: 'It hangs true. Now to the Burcht church, by the river.', after2: 'I want to see my other great picture by this light.' },
   raising: { eye: [WALB.door[0] + 14, WALB.door[1]], dir: [1, 0], reach: 4, kid: [2.4, 15.5], man: [-2.2, 17], look: [0, 30], cam: [[0, 12, 1.7], [0, 37, 7.2], 34],
     title: 'The Raising of the Cross', line: "Peter Paul Rubens, 1610–11 · for the high altar of St Walburga's · now in the Cathedral of Our Lady", img: 'images/raising.jpg',
-    say1: 'There it stands. I painted it here, behind a sail.', say2: 'Up all those steps, so that the whole church must look.' },
+    say1: 'There it stands, up all those steps. I painted it here, behind a sail.', say2: 'Up all those steps, so that the whole church must look.' },
   // where the way is wider than 15 m to either side: [from, to, half-width]
   wide: [[[1, 186], [-6, 66], 30], [[-84, -62], [-159, -71], 38], [[-290, -128], [-262, -300], 24]],
   titleCam: [[-112, 3, -30], [-64, 60, -26]],
@@ -46,6 +46,14 @@ export const PLAN = {
   places: cW => [{ n: 'The new house on the Vaart', x: 560, z: 356 }, { n: 'Meirbrug', x: 203.6, z: 200.1 }, { n: 'Groen Kerkhof', x: 0, z: 120 }, { n: 'The cathedral', x: cW(71, 26)[0], z: cW(71, 26)[1] }, { n: 'Grote Markt', x: -125, z: -103 }, { n: 'Het Steen', x: -280, z: -255 }, { n: "St Walburga's", x: WALB.door[0] + 20, z: WALB.door[1] }],
   words: { start: 'The master is in the garden of the new house, with Mistress Isabella. Take him his box of colours!', cry: '“Pas op! Water!”',
     town: ['Dag, kind!', 'Good day, Master Rubens!', 'Mind the cart, girl.', 'Is that the painter who bought the house on the Vaart?', 'Herring! Fresh herring!', 'Run, or you will lose him.'], drunk: ['Hik!', 'The street will not stand still.', 'One more pot of beer!'] },
+  /* ---- street life (life.js): where the standing figures and the mishaps are. All places are the level's ---- */
+  life: cW => ({
+    clergy: [[...cW(68.5, 45), 1.2, 'priest', { line: 'God zegene u, kind.' }], [...cW(73.5, 45.5), -1.9, 'priest'], [...cW(-7, 6), -1.6, 'priest', { line: 'Softly in the church, child.' }], [...cW(-12, -14), 2.4, 'burgher'], [...cW(-13, -15.2), -0.7, 'burgher_wife'], [-118, -128, 0.4, 'market_woman', { line: 'Apples! Sweet apples!' }]],
+    porters: [[-300, -215, 1.0], [-312, -232, 2.0], [-296, -246, 0.4], [-345, -222, -1.2]],
+    slops: [[530, 300], [150, 208], [60, 205], [-88, -78], [-232, -78.5], [-246, -268]],
+    muck: [[385, 232.5], [-121, -103]], pig: [[105, 208.5]], geese: [[-1, 125]], fish: [[-272, -172]], tavern: [[-262, -93.5]],
+    dogs: [[[282, 216], [203.6, 200.1]], [[-200, -63], [-270, -97]]],
+    words: { slops: ['“Pas op! Water!”', '“Van onder!”', '“Opgepast daar beneden!”'], missed: ['Mis! Next time, kind.', 'Oh! Pardon, little one.'], muck: 'Mind the muck, juffrouw!', pigman: 'Stop that pig!', fish: 'Mijn vis! Mind your feet!', drunk: ['Hik!', 'The street will not stand still. Hik!'] } }),
   /* ---- the named buildings ---- */
   build({ THREE, scene, FR }) {
     const out = {}, M = FR.M;
@@ -84,14 +92,24 @@ export const PLAN = {
     // 1. the bower, set out from the painting: he on the turf seat, higher, leaning to her, a leg thrown forward in its orange stocking, his left hand up on the hilt
     //    of his sword; she lower on the ground at his left, in the tall straw hat; their right hands joined in the middle of the picture. The two faces and the joined
     //    hands are his own painting of them, cut from the picture and laid on the figures (tex/pface_*.png, tex/phands.png)
-    const decal = (f, w, h) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshLambertMaterial({ map: load(f), transparent: true, alphaTest: 0.35, emissive: '#ffffff', emissiveMap: load(f), emissiveIntensity: 0.25 })); return m; };
-    const isabella = staged(F_BOW, 'isabella', ...PLAN.bower.she, -0.3, -1, { size: 1.1, y: -0.47 }); FIG.onHead(isabella, decal('tex/pface_isabella.png', 0.235, 0.26), 0, 1.465, 0.135);
-    for (const S of 'LR') { T(isabella, 'thigh' + S, -14); T(isabella, 'shin' + S, 112); } T(isabella, 'spine', 4, 8, 0); T(isabella, 'head', -6, 0, 0); T(isabella, 'upperarmR', -38, -46, 0); T(isabella, 'forearmR', -34); T(isabella, 'upperarmL', 6, 8, 0); T(isabella, 'forearmL', -50);
-    const dress = g => FIG.onHead(g, decal('tex/pface_rubens.png', 0.235, 0.28), 0, 1.44, 0.135);
-    const poseHim = g => { g.rotation.y = F_BOW.ang(0.3, -1); T(g, 'thighR', -52, 0, -34); T(g, 'shinR', 26); T(g, 'thighL', -88, 0, 0); T(g, 'shinL', 100); T(g, 'spine', 6, 0, 0); T(g, 'head', -4, 0, 0); T(g, 'upperarmL', -60, 0, 0); T(g, 'forearmL', -120); T(g, 'upperarmR', -34, 0, 0); T(g, 'forearmR', -40); g.position.y -= 0.37 * g.scale.y - 0.1; };
-    const props = new THREE.Group(); { const [hx, hz] = F_BOW.P(-0.1, 6.02), hands = decal('tex/phands.png', 0.27, 0.216); hands.position.set(hx, 0.9, hz); hands.rotation.y = F_BOW.ang(0, -1); props.add(hands);
+    const decal = (f, w, h) => { const m = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshLambertMaterial({ map: load(f), transparent: true, alphaTest: 0.35 })); return m; };
+    // a painted face is laid on a shell that curves round the front of the head and takes the scene's light, so that it turns with the head and is not a flat card
+    const faceOn = (g, f, yc, R = 0.142) => { const t = load(f), m = new THREE.Mesh(new THREE.SphereGeometry(R, 18, 14, Math.PI / 2 - 0.9, 1.8, 0.55, 1.65), new THREE.MeshLambertMaterial({ map: t, transparent: true, alphaTest: 0.2, emissive: '#ffffff', emissiveMap: t, emissiveIntensity: 0.22 })); m.scale.set(1, 1.2, 1); return FIG.onHead(g, m, 0, yc, 0.004); };
+    const white = new THREE.MeshLambertMaterial({ color: '#f4f1e8' }), lace = new THREE.MeshLambertMaterial({ color: '#e9e6dc' });
+    const isabella = staged(F_BOW, 'isabella', ...PLAN.bower.she, -0.35, -1, { size: 1.1, y: -0.66 }); faceOn(isabella, 'tex/pface_isabella.png', 1.468);
+    { const ruff = new THREE.Group(), disc = new THREE.Mesh(new THREE.CylinderGeometry(0.205, 0.205, 0.045, 30), white), rim = new THREE.Mesh(new THREE.TorusGeometry(0.205, 0.026, 6, 30), lace); rim.rotation.x = Math.PI / 2; ruff.add(disc, rim); for (let i = 0; i < 30; i++) { const a = i / 30 * 6.283, pl = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.07, 0.11), lace); pl.position.set(Math.sin(a) * 0.16, 0, Math.cos(a) * 0.16); pl.rotation.y = a; ruff.add(pl); } ruff.rotation.x = 0.3; FIG.onHead(isabella, ruff, 0, 1.35, 0.02); }
+    for (const S of 'LR') { T(isabella, 'thigh' + S, -82, 0, S === 'L' ? 14 : -14); T(isabella, 'shin' + S, 70); } T(isabella, 'spine', 4, 9, 0); T(isabella, 'head', -4, 9, 8); T(isabella, 'upperarmR', -44, 0, 26); T(isabella, 'forearmR', -36); T(isabella, 'upperarmL', 8, 0, -8); T(isabella, 'forearmL', -46);
+    // her skirt spread wide on the ground about her: wine-red silk with a gold braid, the blue underskirt showing at the hem
+    { const [x, z] = F_BOW.P(PLAN.bower.she[0] + 0.2, PLAN.bower.she[1] - 0.22), sk = new THREE.Group(), silk = new THREE.MeshLambertMaterial({ color: '#5c1626' }), dome = new THREE.Mesh(new THREE.SphereGeometry(1, 22, 10, 0, 6.283, 0, Math.PI / 2), silk); dome.scale.set(0.8, 0.4, 0.66); sk.add(dome);
+      for (const [a, r] of [[0.5, 0.66], [1.3, 0.6], [2.2, 0.66]]) { const fold = new THREE.Mesh(new THREE.SphereGeometry(0.3, 8, 6), new THREE.MeshLambertMaterial({ color: '#451020' })); fold.scale.set(1.1, 0.5, 0.7); fold.position.set(Math.cos(a) * r, 0.1, Math.sin(a) * r * 0.8); sk.add(fold); }
+      const braid = new THREE.Mesh(new THREE.TorusGeometry(0.74, 0.02, 5, 30, 2.6), FR.M.gold); braid.rotation.x = Math.PI / 2; braid.rotation.z = -0.2; braid.scale.set(1, 0.82, 1); braid.position.y = 0.06; sk.add(braid);
+      const blue = new THREE.Mesh(new THREE.SphereGeometry(0.34, 10, 6), new THREE.MeshLambertMaterial({ color: '#2c4c8c' })); blue.scale.set(1.2, 0.3, 0.8); blue.position.set(0.42, 0.04, 0.58); sk.add(blue);
+      sk.position.set(x, 0, z); sk.rotation.y = F_BOW.ang(0, -1); scene.add(sk); }
+    const dress = g => { faceOn(g, 'tex/pface_rubens.png', 1.45, 0.165); const col = new THREE.Mesh(new THREE.CylinderGeometry(0.12, 0.2, 0.05, 24), lace); col.rotation.x = 0.5; FIG.onHead(g, col, 0, 1.32, 0.035); };
+    const poseHim = g => { g.rotation.y = F_BOW.ang(0.32, -1); T(g, 'thighR', -56, 0, -36); T(g, 'shinR', 30); T(g, 'thighL', -92, 0, 22); T(g, 'shinL', 108); T(g, 'spine', 8, -9, 0); T(g, 'head', -18, -8, 0); T(g, 'upperarmL', -60, 0, 0); T(g, 'forearmL', -120); T(g, 'upperarmR', -34, 0, 0); T(g, 'forearmR', -44); g.position.y -= 0.37 * g.scale.y + 0.06; };
+    const props = new THREE.Group(); { const [hx, hz] = F_BOW.P(-0.03, 5.95), hands = decal('tex/phands.png', 0.25, 0.2); hands.position.set(hx, 0.74, hz); hands.rotation.y = F_BOW.ang(0, -1); props.add(hands);
       const sw = new THREE.Group(), steel = new THREE.MeshLambertMaterial({ color: '#3a3a40' }), gold = FR.M.gold; const blade = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.95, 0.02), steel); blade.position.y = -0.5; const grip = new THREE.Mesh(new THREE.CylinderGeometry(0.02, 0.02, 0.16, 6), gold); grip.position.y = 0.06; const guard = new THREE.Mesh(new THREE.TorusGeometry(0.07, 0.014, 5, 12), gold); guard.position.y = -0.02; const pom = new THREE.Mesh(new THREE.SphereGeometry(0.035, 8, 6), gold); pom.position.y = 0.16; sw.add(blade, grip, guard, pom);
-      const [sx, sz] = F_BOW.P(0.06, 6.15); sw.position.set(sx, 1.18, sz); sw.scale.setScalar(0.8); sw.rotation.z = 0.45; sw.rotation.y = F_BOW.ang(0, -1); props.add(sw); scene.add(props); }
+      const [sx, sz] = F_BOW.P(0.1, 6.05); sw.position.set(sx, 1.0, sz); sw.scale.setScalar(0.8); sw.rotation.z = 0.45; sw.rotation.y = F_BOW.ang(0, -1); props.add(sw); scene.add(props); }
     const helper = staged({ P: (r, d) => [601 + r, 362 + d], ang: (r, d) => Math.atan2(r, d) }, 'assistant', 0, 0, 1, 1, { size: 1.12 }); arms(helper, 'R', -70, 0, -30);
     // 2. the Descent, new in its place: the middle panel alone (the wings came later), on the Arquebusiers' altar against the east wall of the south transept
     const AF = FR.frame(...cW(77.7, 26), -PLAN.cathedral.ax, -PLAN.cathedral.az), des = FR.altarpiece(AF, load('images/descent.jpg'), 3.1, 4.2, { steps: 3, lift: 1.9, guild: true });

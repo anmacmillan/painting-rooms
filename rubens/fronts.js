@@ -296,7 +296,7 @@ export function makeFronts({ THREE, scene, tex }) {
     for (let k = 0; k < 9; k++) { const x0 = -2.3 + k * 0.58; for (let i = 0; i < 9; i++) b.add(M.oak, new THREE.CylinderGeometry(0.018, 0.022, 0.42, 4), x0 + Math.sin(i * 1.1 + k) * 0.16, 0.2 + i * 0.37, -0.86, 0, 0, Math.cos(i * 1.1 + k) * 0.4); }
     for (let i = 0; i < 420; i++) { const top = i % 5 === 0, x = (rn() - 0.5) * 5.1, y = top ? 3.0 + rn() * 0.4 : 0.15 + Math.pow(rn(), 0.8) * 3.2, z = top ? -0.85 + rn() * 1.35 : -0.84 + rn() * 0.12, sz = 0.3 + rn() * 0.22; b.add(leafM, new THREE.PlaneGeometry(sz, sz), x, y, z, (rn() - 0.5) * 0.9, top ? -1.0 + rn() * 0.6 : (rn() - 0.5) * 0.5, rn() * 6.3); }
     for (let i = 0; i < 90; i++) { const top = i % 4 === 0, x = (rn() - 0.5) * 5.0, y = top ? 2.9 + rn() * 0.4 : 0.5 + rn() * 2.8, z = top ? -0.7 + rn() * 1.2 : -0.76 + rn() * 0.1, sz = 0.2 + rn() * 0.1; b.add(flowM, new THREE.PlaneGeometry(sz, sz), x, y, z, (rn() - 0.5) * 0.6, top ? -0.7 : 0, (rn() - 0.5) * 2.4); }
-    b.box(M.earth, 1.5, 0.6, 0.7, -0.75, 0, -0.5); b.box(M.leaf, 1.56, 0.07, 0.76, -0.75, 0.6, -0.5);      // the turf seat
+    b.box(M.earth, 1.3, 0.4, 0.7, -0.55, 0, -0.5); b.box(M.leaf, 1.36, 0.06, 0.76, -0.55, 0.4, -0.5);      // the turf seat
     blockers.push((X, Z) => { const [u, w] = F.local(X, Z); return Math.abs(u) < 2.8 && w > -1.5 && w < 0.7; }); return b.done(F.ox, F.oz, F.th); }
 
   /* a market stall: a trestle board under a cloth awning on four poles, with baskets. kind: 'fish' (wet grey and silver on the board) or 'green' */

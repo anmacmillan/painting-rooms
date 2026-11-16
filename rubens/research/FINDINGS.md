@@ -100,7 +100,7 @@ Set with its west door at about 51.2232 N, 4.3977 E, nave running east to the fo
 
 | Picture | How | Status |
 |---|---|---|
-| Honeysuckle Bower | In the new house's garden; dress from the image; the picture predates the purchase. Since 16 Nov set out from the painting: he higher on a turf seat, a leg forward, his left hand at his sword hilt, she lower at his left, right hands joined at the centre, honeysuckle trained on a trellis behind. The two faces and the joined hands are cut from the painting itself (`tex/pface_*.png`, `tex/phands.png`) | place I |
+| Honeysuckle Bower | In the new house's garden; dress from the image; the picture predates the purchase. Since 16 Nov set out from the painting: he higher on a turf seat, a leg forward, his left hand at his sword hilt, she lower at his left, right hands joined at the centre, honeysuckle trained on a trellis behind. The two faces and the joined hands are cut from the painting itself (`tex/pface_*.png`, `tex/phands.png`). Third pass (16 Nov): he sits on a low turf seat, she on the ground with a wine-red skirt spread about her and the blue underskirt at the hem; the painted faces are laid on curved shells lit by the scene; a millstone ruff for her and a falling collar for him are added as props. His hat brim still sits lower than in the picture (the model's hat) | place I |
 | Descent | The painting itself, middle panel only, as on 12 Sept 1612 | V (secondary); place P |
 | Raising | The painting itself over St Walburga's high altar | V; site P |
 
@@ -109,6 +109,24 @@ Set with its west door at about 51.2232 N, 4.3977 E, nave running east to the fo
 The girl and her errand; the box of colours; every spoken line; one day; "Pas op! Water!" (no cry attested); cart loads (carts and barrowmen attested: PLAN1565, INV th_998); the stalls' places on the Grote Markt (fairs and markets attested, INV th_925); boats on the Suikerrui and the Vaart; when the cathedral's bells ring.
 
 Coin: the **patagon**, silver, "in 1612 ... geïntroduceerd", 48 stuivers (W nl_Patagon): V (secondary). Albertin (gold, 1600–05): P. Ducaton: 1618.
+
+## Street life and mishaps (added 16 Nov, `life.js`)
+
+| Thing | Attested? | Source |
+|---|---|---|
+| Carts, horses, a covered waggon | yes | drawn on PLAN1565; "paarden en karren" (W nl_Natie_bedrijf, undated) |
+| Barrowmen | yes | "Potter- of Kordewagenkruiersbrug" (INV th_998) |
+| Markets on the Grote Markt; a fish market on the quay | yes | INV th_925; "Vismarkt", Blaeu "2. Visch-Merct" |
+| Slops emptied from an upper door, and the cries "Pas op! Water!", "Van onder!", "Opgepast daar beneden!" | no: nothing found; the words are plain Dutch | I |
+| Boys sweeping horse muck; the horse adding to it | no | I |
+| A pig loose in the street and the man after it; geese in the churchyard | no | I |
+| A fishwife's upset basket on the quay | no (the fish market is attested, the accident is not) | I |
+| A tavern with a sign, and a drunk coming out of it | no | I |
+| Dogs; pairs of townspeople in talk, children, clergy at the cathedral doors, porters on the Werf | no particular source; dress as under Stagings | I |
+
+Each mishap gives a tell (a call, a growing shadow, a squeal) before it can touch her, costs 5 to 8 points, and leaves a splash or smear on her frock for nine seconds. None stops her.
+
+The final picture: on arrival in St Walburga's the view now dissolves into the painting after 4 s (it was 11.5 s, behind a 4 s fade); the end card follows at 13.5 s (it was 21.5 s).
 
 ## Coordinates
 
