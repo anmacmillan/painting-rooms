@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My sketchbook: Painting Rooms</title>
+<style>
+  :root { --ink:#2a241c; --gold:#b8861c; font-size:clamp(15px, 1.1vw, 28px); }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; padding:1.6rem 2.4vw 4rem; color:var(--ink); font-family:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif; background:#3a2f26 radial-gradient(90vw 50vw at 50% 0, #5b4a3a, #2a221c); }
+  a { color:inherit; }
+  header { color:#f4efe2; text-align:center; margin-bottom:1.4rem; } h1 { margin:0; font-weight:400; font-size:3rem; } header p { margin:.3em 0 0; font-style:italic; opacity:.9; font-size:1.15rem; } header a { color:#f2c865; }
+  .book { width:min(100%, 120rem); margin:0 auto; display:grid; grid-template-columns:repeat(auto-fill, minmax(24rem, 1fr)); gap:1.4rem; }
+  /* each age is a leaf of the book: cream paper, the place and year at its head, what she brought back pasted in below */
+  section { background:#f6eedb linear-gradient(90deg, rgba(0,0,0,.07), transparent 6%); border-radius:.4rem .9rem .9rem .4rem; padding:1.1rem 1.2rem 1.2rem 1.5rem; box-shadow:0 .8rem 1.8rem rgba(0,0,0,.45); transform:rotate(var(--r, 0deg)); }
+  section.blank { background-color:#d9d2c2; color:#6d665a; }
+  h2 { margin:0; font-weight:400; font-size:1.7rem; line-height:1.1; } h2 small { color:var(--gold); font-size:.7em; margin-left:.4em; } section > i { display:block; opacity:.8; font-size:1.02rem; margin:.15em 0 .8em; }
+  .pics { display:grid; grid-template-columns:repeat(auto-fill, minmax(7rem, 1fr)); gap:.8rem; } figure { margin:0; text-align:center; } figure div { aspect-ratio:1; background:#111 center/cover; border:.3rem solid #c7a24c; box-shadow:.2rem .3rem .6rem rgba(0,0,0,.35); display:grid; place-items:center; font-size:2.2rem; } figure.empty div { background:#cfc6b2; border-style:dashed; border-color:#a39a86; box-shadow:none; color:#8d8571; }
+  figcaption { font-size:.9rem; line-height:1.2; margin-top:.35rem; font-style:italic; }
+  .things { margin-top:.9rem; display:flex; flex-wrap:wrap; gap:.5rem; } .things span { display:inline-flex; align-items:center; gap:.35em; background:rgba(184,134,28,.16); border:1px solid rgba(184,134,28,.5); border-radius:999px; padding:.15em .7em; font-size:.98rem; } .things span b { font-size:1.3em; font-weight:400; }
+  .go { display:inline-block; margin-top:.9rem; text-decoration:none; background:linear-gradient(#ffe89a, #f2c14a); color:#23262c; border-radius:999px; padding:.3em 1em; font-size:1.02rem; box-shadow:0 .2rem .5rem rgba(0,0,0,.3); }
+</style>
+</head>
+<body>
+<header><h1>My sketchbook</h1><p id="sum"></p><p><a href="index.html">Back to the map</a> · <a href="/arcade/">The Arcade</a></p></header>
+<div class="book" id="book"></div>
+<script type="module">
+  import { LEVELS } from './common/score.js';
+  // what she has brought back from each age, kept on this device by the levels as she plays (common/score.js writes 'paintingRooms.book')
+  let bk = {}; try { bk = JSON.parse(localStorage.getItem('paintingRooms.book')) || {}; } catch (e) { /* private window */ }
+  const book = document.getElementById('book'); let have = 0, of = 0;
+  LEVELS.forEach((l, k) => { const mine = Object.values(bk[l.key] || {}), pics = mine.filter(i => i.kind === 'painting').sort((a, b) => a.t - b.t), things = mine.filter(i => i.kind === 'thing'); of += l.paintings; have += Math.min(l.paintings, pics.length);
+    const s = document.createElement('section'); s.style.setProperty('--r', ((k * 37) % 5 - 2) * 0.35 + 'deg'); if (!mine.length) s.className = 'blank';
+    const h = document.createElement('h2'); h.textContent = l.place; const y = document.createElement('small'); y.textContent = l.year; h.append(y); const by = document.createElement('i'); by.textContent = `${l.title} · after ${l.by}`; s.append(h, by);
+    const g = document.createElement('div'); g.className = 'pics';
+    for (let n = 0; n < Math.max(l.paintings, pics.length); n++) { const it = pics[n], f = document.createElement('figure'), d = document.createElement('div'), c = document.createElement('figcaption'); if (it) { if (it.img) d.style.backgroundImage = `url("${it.img}")`; else d.textContent = '🖼'; c.textContent = it.title; } else { f.className = 'empty'; d.textContent = '?'; c.textContent = 'still to find'; } f.append(d, c); g.append(f); }
+    s.append(g);
+    if (things.length) { const t = document.createElement('div'); t.className = 'things'; for (const it of things) { const sp = document.createElement('span'), e = document.createElement('b'); e.textContent = it.emoji || '✨'; sp.append(e, it.title + (it.n > 1 ? ` × ${it.n}` : '')); t.append(sp); } s.append(t); }
+    const a = document.createElement('a'); a.className = 'go'; a.href = l.href; a.textContent = pics.length >= l.paintings ? 'Visit again ▶' : pics.length ? 'Find the rest ▶' : 'Go there ▶'; s.append(a); book.append(s); });
+  document.getElementById('sum').textContent = have ? `${have} of ${of} pictures brought back so far` : 'Nothing in it yet: every picture you step into will be pasted in here';
+</script>
+</body>
+</html>
