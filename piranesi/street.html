@@ -1,0 +1,502 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>The Imaginary Prisons: Piranesi</title>
+<link rel="stylesheet" href="../common/world.css">
+<style>
+  html, body { background:#efe6d2; }
+  #title { background:#efe6d2; color:#1b1512; } #title > img { padding:2vh 0 30vh; box-sizing:border-box; }
+  #title .words { background:linear-gradient(rgba(239,230,210,0), rgba(239,230,210,.97) 38%); }
+  #end > img { max-height:46vh; background:#fff; }
+  #bubble { font-size:17px; max-width:300px; border:1.5px solid #1b1512; }
+  #tip { color:#1b1512; text-shadow:0 0 5px #efe6d2, 0 0 9px #efe6d2, 0 0 14px #efe6d2, 0 0 20px #efe6d2; padding:0 10vw; font-size:clamp(15px,2.1vw,20px); bottom:max(118px, calc(env(safe-area-inset-bottom) + 100px)); }
+  #goal { position:fixed; left:50%; bottom:max(58px, calc(env(safe-area-inset-bottom) + 46px)); transform:translateX(-50%); z-index:6; max-width:92vw; padding:.45em 1.1em; border-radius:999px; background:rgba(246,240,226,.95); color:#1b1512; border:2px solid #1b1512;
+    font:600 clamp(15px,2vw,21px) "Iowan Old Style",Palatino,Georgia,serif; text-align:center; pointer-events:none; display:none; }
+  #plate { position:fixed; left:50%; bottom:max(26px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2s; pointer-events:none; z-index:9; color:#1b1512;
+    background:rgba(239,230,210,.92); padding:.45em 1.3em .55em; border-top:1.5px solid #1b1512; border-bottom:1.5px solid #1b1512; white-space:nowrap; }
+  #plate.show { opacity:1; } #plate i { display:block; font-size:clamp(21px,3.2vw,32px); } #plate span { font-size:clamp(12px,1.7vw,15px); opacity:.85; }
+  #melt { position:fixed; inset:0; background:#efe6d2; opacity:0; transition:opacity 2.6s ease; pointer-events:none; z-index:8; }
+  #melt.show { opacity:1; } #melt.slow { transition-duration:4.5s; }
+  #melt img { position:absolute; inset:0; margin:auto; height:100%; max-width:100%; object-fit:contain; }
+  /* the sheet she draws on: it comes up when she sketches a thing in Rome, and again when that drawing is bitten into the prison */
+  #sketch { position:fixed; right:max(16px, env(safe-area-inset-right)); top:112px; z-index:7; width:clamp(120px,17vw,190px); padding:8px 8px 4px; background:#f6f0e2; border:1.5px solid #1b1512; box-shadow:4px 6px 0 rgba(27,21,18,.25); transform:rotate(3deg) scale(.2); opacity:0; transition:transform .45s cubic-bezier(.2,1.4,.4,1), opacity .3s; pointer-events:none; text-align:center; color:#1b1512; font:italic 600 clamp(12px,1.5vw,15px) "Iowan Old Style",Palatino,Georgia,serif; }
+  #sketch.show { transform:rotate(3deg) scale(1); opacity:1; } #sketch canvas { width:100%; display:block; }
+</style>
+<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div><div id="goal"></div>
+<div id="sketch"><canvas id="skc" width="200" height="200"></canvas><span id="skt"></span></div>
+<div id="melt"><img id="meltImg" src="images/drawbridge_1750.jpg" alt=""></div>
+<div id="plate"></div>
+<button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+<div id="title" class="screen">
+  <img src="images/drawbridge_1761.jpg" alt="The Drawbridge, plate VII of the Carceri d’invenzione, by Giovanni Battista Piranesi">
+  <div class="words"><h1>The Imaginary Prisons</h1><p>after Giovanni Battista Piranesi’s <span style="font-style:normal">Carceri d’invenzione</span>, Rome, about 1750 and 1761</p><button class="go" id="start">Step in</button></div>
+</div>
+<div id="end" class="screen hidden">
+  <img src="images/drawbridge_1761.jpg" alt="The Drawbridge, plate VII of the Carceri d’invenzione, second state, by Giovanni Battista Piranesi">
+  <h2>The Drawbridge, as he reworked it</h2>
+  <p>Giovanni Battista Piranesi (Venice 1720 – Rome 1778) trained as an architect and learned stage design, then spent his life drawing and measuring the ruins of Rome and selling his etched Views of the city. About 1750 he published fourteen <i>Carceri</i>, prisons “of invention”: enormous vaults of stairs, bridges, ropes and machines that nobody ever built. About 1761, the year he moved his house, workshop and shop to the Palazzo Tomati in the Strada Felice, he took the copper plates up again, added two new ones and bit every one deeper: more bridges, more chains, stronger blacks. You have just done that to plate VII.</p>
+  <p><b>Look again at the picture:</b> the people are tiny, which is what makes the stone so vast. And try to follow one stair from the bottom to the top with your finger. In the reworked plates some of the stairs and bridges do not join up as real ones must.</p>
+  <p><b>From the sources:</b> both states of plate VII and what he added between them (the timber bridge on its trestles, the far galleries and the deeper shadow are only in the 1761 picture); the vault with the great pier, plate XVI, and the words on its column, AD TERROREM INCRESCEN[TIS] AVDACIAE, which he took from the Roman historian Livy; his saying “col sporcar si trova”, by messing about one discovers; the gold zecchino, a coin of papal Rome.</p>
+  <p><b>The game’s own:</b> you and your three drawings; the copper plates on the floor; the ruins in the first scene, which are the kinds of thing he etched in his Views of Rome arranged as no real place; which pieces you add (in the real plate the stone arch and the winding stair were there already in 1750); the route, the capstan, the rolling stones, the swinging hooks, the missing planks and the lantern that lights.</p>
+  <p class="small">Pictures: Giovanni Battista Piranesi (died 1778), public domain, from Wikimedia Commons: Carceri plate VII in its first state (scan: Leiden University) and second state (Princeton University Art Museum), and plate XVI in its second state (Princeton University Art Museum). The etched look of the game is made by the game.</p>
+  <button class="go" id="again">Run it again</button>
+</div>
+<div id="err">This world needs WebGL, which this browser could not start.</div>
+
+<script src="../common/sound.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import { makeFigures } from '../common/figure.js';
+import { canvasTex, rnd, clamp, sstep, mix } from '../common/world.js';
+import { makeScore } from '../common/score.js';
+import { makeEtching } from './etch.js';
+const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, INK = '#1b1512', PAPER = '#efe6d2', PI = Math.PI, D2R = PI / 180;
+
+/* ================= renderer, and the etched line over everything (etch.js) ================= */
+let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
+const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap; renderer.setClearColor(0xffffff, 1);
+const scene = new THREE.Scene(); scene.background = new THREE.Color(0xffffff); scene.fog = new THREE.Fog(0xffffff, 60, 260);
+const camera = new THREE.PerspectiveCamera(60, 1, 0.15, 520);
+const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType }); target.depthTexture = new THREE.DepthTexture(4, 4, THREE.FloatType);
+const ENG = makeEtching(THREE, { scene: target.texture, depth: target.depthTexture, paper: PAPER, ink: INK });
+const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), ENG.material));
+const hemi = new THREE.HemisphereLight(0xffffff, 0xcfcfcf, 1.1), sun = new THREE.DirectionalLight(0xffffff, 2.6); scene.add(hemi, sun, sun.target);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); Object.assign(sun.shadow.camera, { left: -52, right: 52, top: 52, bottom: -52, near: 1, far: 260 }); sun.shadow.bias = -0.0012; sun.shadow.normalBias = 0.12;
+
+/* ================= helpers: every material is white or grey; what is dark in a texture prints as ink ================= */
+const lam = o => new THREE.MeshLambertMaterial(o), basic = c => new THREE.MeshBasicMaterial({ color: c });
+const tex = (w, h, bg, draw, repeat) => canvasTex(w, h, (g) => { g.fillStyle = bg; g.fillRect(0, 0, w, h); g.strokeStyle = g.fillStyle = INK; draw(g, w, h); }, repeat);
+const rep = (t, x, y) => { const c = t.clone(); c.needsUpdate = true; c.repeat.set(x, y); return c; };
+const put = (G, m, x, y, z, o = {}) => { m.position.set(x, y, z); m.castShadow = o.cast !== false; m.receiveShadow = o.recv !== false; if (o.ry) m.rotation.y = o.ry; if (o.rx) m.rotation.x = o.rx; if (o.rz) m.rotation.z = o.rz; G.add(m); return m; };
+const box = (G, w, h, d, m, x, y, z, o) => put(G, new THREE.Mesh(new THREE.BoxGeometry(w, h, d), m), x, y, z, o);
+const cyl = (G, r0, r1, h, m, x, y, z, o = {}) => put(G, new THREE.Mesh(new THREE.CylinderGeometry(r0, r1, h, o.seg || 20, 1, !!o.open), m), x, y, z, o);
+const pln = (G, w, h, m, x, y, z, o = {}) => put(G, new THREE.Mesh(new THREE.PlaneGeometry(w, h), m), x, y, z, Object.assign({ cast: false }, o));
+const scribble = (g, w, h, n, len, lw) => { g.lineWidth = lw; for (let i = 0; i < n; i++) { const x = rnd(0, w), y = rnd(0, h), a = rnd(0, 6.3); g.beginPath(); g.moveTo(x, y); g.quadraticCurveTo(x + Math.cos(a) * len, y + Math.sin(a) * len, x + Math.cos(a + 1.2) * len * 1.3, y + Math.sin(a + 1.2) * len * 1.3); g.stroke(); } };
+/* great blocks of stone: the joints are drawn, broken and uneven, as he scratched them; each tile is 4 m wide and 3 m high */
+const stoneT = tex(512, 384, '#e9e6de', (g, w, h) => { for (let r = 0; r < 4; r++) { const y = r * 96; g.lineWidth = rnd(2.5, 4.5); g.beginPath(); for (let x = 0; x <= w; x += 32) g.lineTo(x, y + 3 + rnd(-2, 2)); g.stroke(); for (let x = (r % 2) * 80 + 40; x < w; x += 160) { g.lineWidth = rnd(2, 4); g.beginPath(); g.moveTo(x + rnd(-3, 3), y + 4); g.lineTo(x + rnd(-3, 3), y + 96); g.stroke(); } } scribble(g, w, h, 60, 9, 1.4); }, true);
+const plankT = tex(256, 256, '#dedad0', (g, w, h) => { for (let x = 0; x <= w; x += 32) { g.lineWidth = 4; g.beginPath(); g.moveTo(x, 0); g.lineTo(x + rnd(-2, 2), h); g.stroke(); } g.lineWidth = 1.5; for (let i = 0; i < 60; i++) { const x = rnd(0, w), y = rnd(0, h); g.beginPath(); g.moveTo(x, y); g.lineTo(x + rnd(-2, 2), y + rnd(20, 70)); g.stroke(); } }, true);
+const groundT = tex(512, 512, '#fbf9f3', (g, w, h) => { scribble(g, w, h, 150, 10, 1.6); g.lineWidth = 2; for (let i = 0; i < 160; i++) { const x = rnd(0, w), y = rnd(0, h); for (let k = 0; k < 3; k++) { g.beginPath(); g.moveTo(x + k * 4, y); g.lineTo(x + k * 4 + rnd(-5, 5), y - rnd(6, 16)); g.stroke(); } } }, true);
+const stone = (rx, ry, c = '#ffffff') => lam({ map: rep(stoneT, rx, ry), color: c }), stoneX = c => lam({ map: rep(stoneT, 0.25, 0.333), color: c || '#ffffff' });
+const white = lam({ color: '#f6f3ea' }), pale = lam({ color: '#d6d2c8' }), midM = lam({ color: '#8f8b82' }), darkM = lam({ color: '#3b3732' }), inkM = basic(INK), woodM = lam({ map: rep(plankT, 1, 3), color: '#b9b4a8' }), woodD = lam({ map: rep(plankT, 1, 4), color: '#6f6a60' });
+const blobG = (() => { const g = new THREE.IcosahedronGeometry(1, 3), p = g.attributes.position; for (let i = 0; i < p.count; i++) { const v = new V3().fromBufferAttribute(p, i), k = 1 + 0.16 * Math.sin(v.x * 4.1 + v.y * 2.3) * Math.cos(v.z * 3.7) + 0.08 * Math.sin(v.y * 9.0); p.setXYZ(i, v.x * k, v.y * k * 0.92, v.z * k); } g.computeVertexNormals(); return g; })();
+/* a beam from a to b */
+function beam(G, a, b, w, h, m, o = {}) { const A = new V3(...a), B = new V3(...b), ms = new THREE.Mesh(new THREE.BoxGeometry(w, h, A.distanceTo(B)), m); ms.position.copy(A).add(B).multiplyScalar(0.5); ms.lookAt(B); ms.castShadow = o.cast !== false; ms.receiveShadow = true; G.add(ms); return ms; }
+/* a rope or chain through the points given */
+function rope(G, pts, r = 0.07, m = darkM) { const c = new THREE.CatmullRomCurve3(pts.map(p => new V3(...p))), ms = new THREE.Mesh(new THREE.TubeGeometry(c, Math.max(8, pts.length * 8), r, 5), m); ms.castShadow = true; G.add(ms); return ms; }
+const sag = (a, b, d, n = 6) => { const out = []; for (let i = 0; i <= n; i++) { const t = i / n; out.push([mix(a[0], b[0], t), mix(a[1], b[1], t) - d * Math.sin(PI * t), mix(a[2], b[2], t)]); } return out; };
+/* a wall W wide and H high with round-headed openings [centre x, width, height, sill]; the texture is laid at 4 m by 3 m */
+function archWall(G, W, H, D, holes, m, x, y, z, ry = 0) { const s = new THREE.Shape(); s.moveTo(-W / 2, 0); s.lineTo(W / 2, 0); s.lineTo(W / 2, H); s.lineTo(-W / 2, H); s.closePath();
+  for (const [cx, w, h, y0 = 0] of holes) { const p = new THREE.Path(); p.moveTo(cx - w / 2, y0 + 0.01); p.lineTo(cx - w / 2, y0 + h - w / 2); p.absarc(cx, y0 + h - w / 2, w / 2, PI, 0, true); p.lineTo(cx + w / 2, y0 + 0.01); p.closePath(); s.holes.push(p); }
+  const g = new THREE.ExtrudeGeometry(s, { depth: D, bevelEnabled: false, curveSegments: 10 }); g.translate(0, 0, -D / 2); return put(G, new THREE.Mesh(g, m), x, y, z, { ry }); }
+/* railings and steps are gathered and drawn as two instanced meshes for each group */
+const POSTS = new Map(), STEPS = new Map(), M4 = new THREE.Matrix4(), Q4 = new THREE.Quaternion(), E3 = new THREE.Euler();
+function rail(G, a, b, o = {}) { const L = Math.hypot(b[0] - a[0], b[1] - a[1], b[2] - a[2]), n = Math.max(1, Math.round(L / (o.gap || 0.6))), h = o.h || 1.15, list = POSTS.get(G) || POSTS.set(G, []).get(G);
+  for (let i = 0; i <= n; i++) { const t = i / n; list.push([mix(a[0], b[0], t), mix(a[1], b[1], t) + h / 2, mix(a[2], b[2], t), h]); } beam(G, [a[0], a[1] + h, a[2]], [b[0], b[1] + h, b[2]], 0.1, 0.1, darkM, { cast: false }); }
+function step(G, x, y, z, w, h, d, ry = 0) { (STEPS.get(G) || STEPS.set(G, []).get(G)).push([x, y, z, w, h, d, ry]); }
+function flush(G) { const p = POSTS.get(G) || [], s = STEPS.get(G) || [];
+  if (p.length) { const im = new THREE.InstancedMesh(new THREE.BoxGeometry(0.08, 1, 0.08), darkM, p.length); p.forEach(([x, y, z, h], i) => { M4.compose(new V3(x, y, z), Q4.identity(), new V3(1, h, 1)); im.setMatrixAt(i, M4); }); im.castShadow = true; im.frustumCulled = false; im.userData.total = p.length; G.add(im); }
+  if (s.length) { const im = new THREE.InstancedMesh(new THREE.BoxGeometry(1, 1, 1), stone(0.5, 0.2), s.length); s.forEach(([x, y, z, w, h, d, ry], i) => { M4.compose(new V3(x, y, z), Q4.setFromEuler(E3.set(0, ry, 0)), new V3(w, h, d)); im.setMatrixAt(i, M4); }); im.castShadow = im.receiveShadow = true; im.frustumCulled = false; im.userData.total = s.length; G.add(im); }
+  POSTS.delete(G); STEPS.delete(G); }
+/* a straight flight from a to b (the tops of the first and last steps), w wide */
+function flight(G, a, b, w, m) { const run = Math.hypot(b[0] - a[0], b[2] - a[2]), rise = b[1] - a[1], n = Math.max(2, Math.round(Math.abs(rise) / 0.3)), ry = Math.atan2(b[0] - a[0], b[2] - a[2]);
+  for (let i = 0; i < n; i++) { const t = (i + 0.5) / n; step(G, mix(a[0], b[0], t), mix(a[1], b[1], t) - 0.7, mix(a[2], b[2], t), w, 1.7, run / n + 0.02, ry); } }
+const romeG = new THREE.Group(), vaultG = new THREE.Group(), hallG = new THREE.Group(); scene.add(romeG, vaultG, hallG);
+
+/* ================= where she can walk: strips with a width, some of them not there until she draws them in ================= */
+const SEG = []; let act = 1;
+const seg = (a, n, p, q, w, key) => { const s = { act: n, a: p, b: q, w, key, on: !key }; SEG.push(s); return s; };
+function floorAt(x, z, yRef, air) { let best = null, bd = 1e9;
+  for (const s of SEG) { if (s.act !== act || !s.on) continue; const dx = s.b[0] - s.a[0], dz = s.b[2] - s.a[2], L2 = dx * dx + dz * dz; let t = 0, lat;
+    if (L2 < 0.01) lat = Math.hypot(x - s.a[0], z - s.a[2]); else { const L = Math.sqrt(L2); t = ((x - s.a[0]) * dx + (z - s.a[2]) * dz) / L2; if (t < -0.4 / L || t > 1 + 0.4 / L) continue; t = clamp(t, 0, 1); lat = Math.abs((x - s.a[0]) * dz - (z - s.a[2]) * dx) / L; }
+    if (lat > s.w / 2) continue; const y = s.a[1] + (s.b[1] - s.a[1]) * t; if (y - yRef > (air ? 0.45 : 1.25) || yRef - y > (air ? 30 : 2.4)) continue; const d = Math.abs(y - yRef); if (d < bd) { bd = d; best = y; } }
+  return best; }
+
+/* ================= act 1: Rome, among the ruins (the game's own arrangement of the kinds of thing he etched in the Vedute di Roma) ================= */
+const RZ = 300, SPOTS = [{ id: 'arch', x: 0, z: RZ - 8.2, title: 'A Roman arch', emoji: '🏛️', say: 'An arch of great stones, half buried in the field' }, { id: 'stair', x: 12.6, z: RZ + 3.4, title: 'A Roman stair', emoji: '🪜', say: 'The steps of a ruined temple' }, { id: 'timber', x: -11.2, z: RZ + 1.2, title: 'Beams, ropes and a pulley', emoji: '🪵', say: 'The masons’ timbers, with a rope and a pulley' }];
+const romeBlock = [[-2.4, RZ + 3.2, 0.7], [-13.5, RZ - 1.5, 2.6], [8.8, RZ - 14.2, 1.3], [-8.8, RZ - 14.2, 1.3], [19, RZ + 12, 1.2], [-18, RZ + 10, 1.2]];
+{
+  pln(romeG, 240, 240, lam({ map: rep(groundT, 30, 30) }), 0, 0, RZ - 20, { rx: -PI / 2 });
+  /* the arch: three openings, the side ones buried to their heads */
+  const A = new THREE.Group(); A.position.set(0, 0, RZ - 15); romeG.add(A);
+  archWall(A, 17, 9.5, 5, [[0, 5, 7.2], [-5.6, 2.6, 2.3], [5.6, 2.6, 2.3]], stoneX(), 0, 0, 0); box(A, 18, 0.7, 5.8, stone(4.5, 0.25), 0, 9.85, 0); box(A, 16, 2.6, 5, stone(4, 0.9), 0, 11.5, 0); box(A, 17, 0.5, 5.6, white, 0, 13.05, 0);
+  for (const x of [-7.9, -3.4, 3.4, 7.9]) { cyl(A, 0.5, 0.56, 8.4, white, x, 4.2, 3.0, { seg: 14 }); box(A, 1.4, 0.6, 1.4, white, x, 8.7, 3.0); }
+  pln(A, 5, 7.4, inkM, 0, 3.7, -1.4); for (const x of [-5.6, 5.6]) pln(A, 2.6, 2.4, inkM, x, 1.2, -1.4);
+  pln(A, 10, 1.5, lam({ map: tex(512, 96, '#f1eee6', (g, w, h) => { g.font = 'bold 30px Georgia'; g.textAlign = 'center'; g.fillText('S · P · Q · R', w / 2, 40); g.lineWidth = 3; for (let x = 60; x < w - 60; x += 14) { g.beginPath(); g.moveTo(x, 62); g.lineTo(x + 7, 62 + rnd(-6, 6)); g.stroke(); } }) }), 0, 11.5, 2.52);
+  for (let i = 0; i < 9; i++) { const b = put(A, new THREE.Mesh(blobG, lam({ color: '#cfcfcf' })), rnd(-8, 8), 13.4, rnd(-2, 2)); b.scale.set(rnd(0.5, 1.2), rnd(0.3, 0.6), rnd(0.5, 1)); }      /* weeds on the attic */
+  /* the ruined temple: its steps, its platform, three columns still standing */
+  const T = new THREE.Group(); T.position.set(13, 0, RZ - 2); romeG.add(T);
+  for (let i = 0; i < 8; i++) box(T, 7.5, 0.31, 0.62, stone(1.9, 0.12), 0, 0.15 + i * 0.3, 4.3 - i * 0.6); box(T, 9, 2.4, 9, stone(2.2, 0.8), 0, 1.2, -4.6);
+  for (const [x, z, h] of [[-3.2, -1.2, 8.5], [0, -1.2, 8.5], [3.2, -1.2, 8.5], [3.2, -4.6, 3.1]]) { cyl(T, 0.5, 0.58, h, white, x, 2.4 + h / 2, z, { seg: 14 }); if (h > 5) box(T, 1.5, 0.55, 1.5, white, x, 2.4 + h + 0.27, z); }
+  box(T, 8.4, 1.1, 1.6, stone(2.1, 0.4), 0, 11.95, -1.2); box(T, 5.2, 0.5, 1.9, white, -1.4, 12.75, -1.2); box(T, 1.9, 0.9, 1.4, stone(0.5, 0.3), 2.2, 2.85, -6.6, { ry: 0.5 });
+  /* the masons' hoist: three poles lashed at the top, a pulley, a rope and a stone on it, a windlass */
+  const H = new THREE.Group(); H.position.set(-13.5, 0, RZ - 1.5); romeG.add(H);
+  for (const a of [0.4, 2.5, 4.6]) beam(H, [Math.cos(a) * 3, 0, Math.sin(a) * 3], [0, 8.6, 0], 0.26, 0.26, woodM); cyl(H, 0.3, 0.3, 0.22, darkM, 0, 7.5, 0, { rx: PI / 2, seg: 10 }); rope(H, [[0, 8.4, 0], [0, 7.5, 0], [0, 2.6, 0]], 0.05);
+  box(H, 1.5, 1.1, 1.1, stone(0.4, 0.37), 0, 2.0, 0, { ry: 0.3 }); rope(H, [[0.05, 7.6, 0], [1.8, 4, 1.6], [3.2, 1.0, 2.4]], 0.04); cyl(H, 0.28, 0.28, 2.2, woodM, 3.2, 1.0, 2.4, { rz: PI / 2, seg: 10 }); for (const s of [-1, 1]) for (const k of [-0.5, 0.5]) beam(H, [3.2 + s * 1.0, 0, 2.4 + k], [3.2 + s * 1.0, 1.2, 2.4], 0.14, 0.14, woodM);
+  for (const [x, z, s] of [[-5.5, 2, 1], [4.6, -2.5, 0.7], [-4, -3, 0.8]]) box(H, 1.6 * s, 0.9 * s, 1.1 * s, stone(0.4, 0.3), x, 0.45 * s, z, { ry: x });
+  /* the country beyond: a broken aqueduct, umbrella pines, drums of fallen columns */
+  for (let i = -3; i <= 3; i++) if (i !== 1) archWall(romeG, 12, i === -3 ? 7 : 14, 2.4, [[0, 8.4, i === -3 ? 5.5 : 11.5]], stoneX('#f2f2f2'), i * 12 + 30, 0, RZ - 62, 0.12);
+  for (const [x, z, k] of [[-28, RZ - 34, 1.3], [-36, RZ - 22, 1.1], [30, RZ - 30, 1.2], [38, RZ - 8, 1.4], [-34, RZ + 6, 1.2], [26, RZ + 16, 1.0], [-22, RZ - 48, 1.5], [14, RZ - 46, 1.2]]) { cyl(romeG, 0.3 * k, 0.45 * k, 9 * k, lam({ color: '#bdb9b0' }), x, 4.5 * k, z, { seg: 8 }); const b = put(romeG, new THREE.Mesh(blobG, lam({ color: '#a9a9a9' })), x, 10 * k, z); b.scale.set(4.6 * k, 1.5 * k, 4.6 * k); }
+  for (const [x, z, r] of [[8.8, RZ - 14.2, 1.1], [-8.8, RZ - 14.2, 1.1], [19, RZ + 12, 1.0], [-18, RZ + 10, 1.0], [6, RZ + 15, 0.7], [-25, RZ - 12, 0.9]]) cyl(romeG, r, r, r * 1.1, stone(1.5, 0.3), x, r * 0.5, z, { seg: 16, rx: r < 0.8 ? PI / 2 : 0 });
+  const tuft = []; for (let i = 0; i < 2200; i++) { const x = rnd(-40, 40), z = RZ + rnd(-40, 26), h = rnd(0.12, 0.4), a = rnd(0, 6.3), w = 0.012; tuft.push(x - Math.cos(a) * w, 0, z - Math.sin(a) * w, x + Math.cos(a) * w, 0, z + Math.sin(a) * w, x + rnd(-0.12, 0.12), h, z + rnd(-0.12, 0.12)); }
+  const tg = new THREE.BufferGeometry(); tg.setAttribute('position', new THREE.Float32BufferAttribute(tuft, 3)); const tm = new THREE.Mesh(tg, new THREE.MeshBasicMaterial({ color: INK, side: THREE.DoubleSide })); tm.frustumCulled = false; romeG.add(tm);
+  flush(romeG);
+  seg(1, 1, [0, 0, RZ - 11.5], [0, 0, RZ + 20], 46); seg(1, 1, [0, 0, RZ - 10], [0, 0, RZ - 15.5], 4.4, 'door');
+}
+const blockRome = (x, z) => romeBlock.some(b => Math.hypot(x - b[0], z - b[1]) < b[2]) || (x > 8.6 && x < 17.4 && z < RZ + 2.9 && z > RZ - 11.2) || (Math.abs(x) > 2.3 && z < RZ - 11.2);
+
+/* ================= act 2: the vault with the great pier (plate XVI, in its state of 1761) ================= */
+const VZ = 150;
+{
+  const G = vaultG; box(G, 60, 1, 60, stone(8, 8, '#f4f4f4'), 0, -0.5, VZ + 4);
+  /* the pier of great drums on the left, hung with chains */
+  [[3.1, 2.4], [2.5, 1.5], [3.2, 2.2], [2.5, 1.4], [3.0, 2.3], [2.4, 1.6], [2.9, 2.4]].reduce((y, [r, h], i) => { cyl(G, r, r * (i % 2 ? 1 : 1.04), h, stone(3, 0.6, '#d9d9d9'), -7.5, y + h / 2, VZ + 11, { seg: 22 }); return y + h; }, 0);
+  for (const a of [0.2, 1.3, 2.3]) { rope(G, sag([-7.5 + Math.cos(a) * 3.2, 7.4, VZ + 11 + Math.sin(a) * 3.2], [-7.5 + Math.cos(a + 0.9) * 3.2, 7.4, VZ + 11 + Math.sin(a + 0.9) * 3.2], 1.6), 0.09); put(G, new THREE.Mesh(new THREE.TorusGeometry(0.45, 0.09, 6, 14), darkM), -7.5 + Math.cos(a) * 3.25, 7.2, VZ + 11 + Math.sin(a) * 3.25, { ry: -a + PI / 2 }); }
+  /* the heavy timbers overhead: everything under them is in shadow */
+  box(G, 44, 1.6, 24, woodD, 0, 14.6, VZ + 15); for (let z = VZ + 5; z < VZ + 27; z += 4.2) box(G, 44, 1.3, 1.1, woodD, 0, 13.3, z); beam(G, [-16, 0, VZ + 16], [-5, 13.4, VZ + 9], 1.3, 1.3, woodD); beam(G, [10, 0, VZ + 9], [15.5, 13.5, VZ + 6], 1.1, 1.1, woodD); beam(G, [16, 0, VZ + 8], [8.5, 13.5, VZ + 7], 1.0, 1.0, woodD);
+  box(G, 3, 30, 30, darkM, -20.5, 15, VZ + 14); box(G, 3, 30, 30, darkM, 20.5, 15, VZ + 14);
+  /* the lantern on its rope and pulley */
+  rope(G, [[-3.2, 13.2, VZ + 9.5], [-3.2, 9, VZ + 9.5], [-3.2, 6.6, VZ + 9.5]], 0.06); cyl(G, 0.34, 0.34, 0.3, darkM, -3.2, 12.4, VZ + 9.5, { rx: PI / 2, seg: 10 }); const lt = new THREE.Group(); lt.position.set(-3.2, 5.6, VZ + 9.5); G.add(lt); cyl(lt, 0.5, 0.3, 1.2, midM, 0, 0, 0, { seg: 6 }); cyl(lt, 0.05, 0.6, 0.5, darkM, 0, 0.85, 0, { seg: 6 }); cyl(lt, 0.3, 0.05, 0.4, darkM, 0, -0.8, 0, { seg: 6 });
+  /* the round-headed pier in the middle with its two heads and its inscription, and the column behind it with the tablet (the words are read from the plate) */
+  const stele = tex(256, 512, '#d8d5cc', (g, w, h) => { g.lineWidth = 3; for (let i = 0; i < 46; i++) { const y = rnd(0, h); g.beginPath(); g.moveTo(0, y); g.lineTo(w, y + rnd(-70, -30)); g.stroke(); } for (const x of [78, 178]) { g.fillStyle = INK; g.beginPath(); g.moveTo(x - 34, 190); g.lineTo(x - 34, 120); g.arc(x, 120, 34, PI, 0); g.lineTo(x + 34, 190); g.fill(); g.fillStyle = '#e9e6de'; g.beginPath(); g.ellipse(x, 150, 22, 28, 0, 0, 7); g.fill(); g.fillStyle = INK; g.fillRect(x - 12, 142, 7, 4); g.fillRect(x + 5, 142, 7, 4); g.fillRect(x - 7, 162, 14, 3); }
+    g.fillStyle = INK; g.font = 'bold 36px Georgia'; g.textAlign = 'center'; ['IMPIE', 'TATI', 'ET', 'MALIS', 'ARTIBVS'].forEach((t, i) => g.fillText(t, w / 2, 262 + i * 48)); });
+  box(G, 3.8, 6.4, 2.6, [stone(0.6, 2), stone(0.6, 2), white, white, lam({ map: stele }), stone(1, 2)], 2.2, 3.2, VZ + 1); cyl(G, 1.9, 1.9, 2.6, stone(1.5, 0.6), 2.2, 6.4, VZ + 1, { rx: PI / 2, seg: 20 });
+  cyl(G, 1.5, 1.6, 15, stone(2.4, 4, '#e2e2e2'), 3.4, 7.5, VZ - 6, { seg: 20 }); cyl(G, 2.3, 1.5, 1.7, white, 3.4, 15.85, VZ - 6, { seg: 20 }); box(G, 5, 0.6, 5, white, 3.4, 17, VZ - 6);
+  pln(G, 2.5, 3.6, lam({ map: tex(256, 368, '#f1eee6', (g, w, h) => { g.lineWidth = 8; g.strokeRect(6, 6, w - 12, h - 12); g.font = 'bold 34px Georgia'; g.textAlign = 'center'; ['AD', 'TERROREM', 'INCRESCEN', 'AVDACIAE'].forEach((t, i) => g.fillText(t, w / 2, 96 + i * 62)); }) }), 3.4, 10.6, VZ - 4.42);
+  /* on the right the drum with a relief of figures, on its post; the masks are strokes only */
+  box(G, 1.3, 5.2, 1.3, white, 9.4, 2.6, VZ + 2.5); cyl(G, 1.9, 1.9, 3.8, lam({ map: tex(512, 256, '#e4e1d8', (g, w, h) => { g.lineWidth = 4; g.strokeRect(0, 8, w, 44); g.font = 'bold 22px Georgia'; g.fillText('INFAME SCELVS', 20, 40); g.fillText('INFAME SCELVS', 276, 40); for (let x = 20; x < w; x += 46) { g.lineWidth = 5; g.beginPath(); g.arc(x, 96, 12, 0, 7); g.moveTo(x, 108); g.lineTo(x + rnd(-6, 6), 190); g.lineTo(x - 14, 246); g.moveTo(x, 190); g.lineTo(x + 14, 246); g.moveTo(x - 20, 140); g.lineTo(x + 22, 128); g.stroke(); } }, true) }), 9.4, 7.1, VZ + 2.5, { seg: 20 });
+  rope(G, sag([3.4, 12.6, VZ - 4.6], [9.4, 9.2, VZ + 2.5], 1.4), 0.09); rope(G, sag([9.4, 9.2, VZ + 2.5], [15, 13, VZ + 6], 1.2), 0.09);
+  /* the lit stair going up at the back, and the gallery it reaches */
+  flight(G, [-3, 0, VZ + 3], [-3, 8, VZ - 11], 4.6); rail(G, [-5.3, 0, VZ + 3], [-5.3, 8, VZ - 11]); rail(G, [-0.7, 0, VZ + 3], [-0.7, 8, VZ - 11]);
+  box(G, 22, 0.9, 4, stone(5, 0.3), 5, 7.55, VZ - 12.6); rail(G, [-0.6, 8, VZ - 10.7], [16, 8, VZ - 10.7]); box(G, 4.6, 8, 4, stone(1.2, 2.7), -3, 3.55, VZ - 12.6);
+  for (const x of [1.5, 8.5, 15.5]) box(G, 1.6, 7.2, 3.6, stone(0.4, 2.4, '#dcdcdc'), x, 3.6, VZ - 12.6);
+  /* the walls behind, arch beyond arch, paler as they go back */
+  archWall(G, 60, 34, 2.5, [[-13, 9, 15], [3, 12, 19, 8], [17.5, 8, 14, 8], [-13, 5, 8, 19], [17.5, 4, 6, 24]], stoneX(), 0, 0, VZ - 16).castShadow = false;      /* the light comes in from behind these walls, as through their arches */ pln(G, 3.4, 4.6, inkM, 12.5, 10.3, VZ - 14.7); archWall(G, 2.2, 5.2, 1.2, [], stoneX(), 10.3, 8, VZ - 14.4); archWall(G, 2.2, 5.2, 1.2, [], stoneX(), 14.7, 8, VZ - 14.4); box(G, 6.8, 1.2, 1.4, white, 12.5, 13.6, VZ - 14.4);
+  archWall(G, 80, 46, 2, [[-20, 11, 22], [0, 13, 26], [20, 11, 22], [-10, 5, 9, 28], [10, 5, 9, 28]], stoneX('#f6f6f6'), 4, -4, VZ - 34).castShadow = false; box(G, 60, 0.8, 3, white, 0, 17, VZ - 31); rail(G, [-26, 17.4, VZ - 29.6], [30, 17.4, VZ - 29.6]);
+  archWall(G, 100, 60, 2, [[-26, 14, 30], [0, 16, 36], [26, 14, 30]], stoneX('#fbfbfb'), -6, -6, VZ - 58).castShadow = false;
+  /* steps and blocks in the dark foreground */
+  box(G, 9, 1.4, 5, stone(2.2, 0.5, '#bdbdbd'), 9.5, 0.7, VZ + 17); box(G, 5, 2.6, 4, stone(1.2, 0.9, '#bdbdbd'), -12.5, 1.3, VZ + 19); cyl(G, 0.8, 0.8, 0.8, midM, -9.5, 0.8, VZ + 17.5, { seg: 12 });
+  flush(G);
+  seg(2, 2, [0, 0, VZ + 21], [0, 0, VZ + 4.5], 8); seg(2, 2, [-3, 0, VZ + 6], [-3, 0, VZ + 2.6], 4.2); seg(2, 2, [-3, 0, VZ + 3], [-3, 8, VZ - 11], 4.2); seg(2, 2, [-3, 8, VZ - 10.6], [-3, 8, VZ - 13], 4.2); seg(2, 2, [-4, 8, VZ - 12.4], [12.5, 8, VZ - 12.4], 3.2);
+}
+
+/* ================= act 3: the great hall (plate VII, The Drawbridge). What is here at first is the plate of about 1750; she draws in the rest ================= */
+const PC = [-8, 10], PR_ = 6, YT = 30, HINGE = [9, 28, 8], BL = 12.2, A_UP = 24 * D2R, A_DOWN = 9.4 * D2R;
+const spiral = u => { const th = (320 - 310 * u) * D2R; return [PC[0] + 7.6 * Math.cos(th), 20 + 10 * clamp((u - 0.387) / 0.613, 0, 1), PC[1] + 7.6 * Math.sin(th), th]; };      /* a level ledge round the back of the pier, then the climb across its front, as the plate has it */
+const hump = t => 11.5 + 1.5 * Math.sin(PI * t);
+const PIECE = { arch: new THREE.Group(), timber: new THREE.Group(), stair: new THREE.Group() }, bridge = new THREE.Group(), capstan = new THREE.Group(), lantern = new THREE.Group(), marks = {}, pend = [], balls = [], gaps = [{ x0: 12.8, x1: 14.2 }, { x0: 2.6, x1: 4.0 }];      /* far enough apart that a leap over the first does not come down in the second */
+const lampM = ENG.keepColour(new THREE.MeshBasicMaterial({ color: '#d8d2c2' }));
+let segBridge;
+{
+  const G = hallG, PIT = -8;
+  box(G, 120, 1, 140, lam({ color: '#b4b0a6' }), 0, PIT - 0.5, -10);
+  /* the near gallery she comes in on, with its piers going down into the dark */
+  box(G, 39, 0.9, 4.4, stone(9, 0.3), -1.5, 7.55, 32); for (const x of [-15, -5, 7, 17]) box(G, 3, 15.6, 3.6, stone(0.8, 5, '#c9c9c9'), x, -0.7, 32); archWall(G, 39, 15, 1, [[-10, 7, 11], [1, 7, 11], [12, 7, 11]], stoneX('#bdbdbd'), -1.5, PIT, 34.3);
+  rail(G, [-17, 8, 29.9], [0.3, 8, 29.9]); rail(G, [3.7, 8, 29.9], [18, 8, 29.9]); rail(G, [18, 8, 29.9], [18, 8, 34]);
+  /* the dark mass at the left edge of the plate: the wall she comes through */
+  box(G, 7, 150, 16, lam({ color: '#5a5650' }), -22.6, 66, 33, { cast: false }); pln(G, 2.6, 4.2, inkM, -19.05, 10.1, 32, { ry: PI / 2 });
+  /* the ramp up from the gallery, and the pier head where the way stops */
+  flight(G, [2, 8, 29.8], [2, 11.5, 23.4], 3.2); rail(G, [0.35, 8, 29.8], [0.35, 11.5, 23.4]); rail(G, [3.65, 8, 29.8], [3.65, 11.5, 23.4]);
+  box(G, 5, 19.5, 4.2, stone(1.2, 6.5), 2, 11.5 - 9.75, 21.4); rail(G, [-0.5, 11.5, 23.4], [-0.5, 11.5, 19.4]); rail(G, [-0.5, 11.5, 19.4], [4.5, 11.5, 19.4]);
+  /* PIECE: the Roman arch, drawn in as a bridge of one great span */
+  { const P = PIECE.arch, L = 15.5, s = new THREE.Shape(); s.moveTo(0, 0); for (let i = 1; i <= 16; i++) s.lineTo(L * i / 16, 1.5 * Math.sin(PI * i / 16)); s.lineTo(L, -9); s.lineTo(L - 1.2, -9); s.absellipse(L / 2, -9, L / 2 - 1.2, 7.4, 0, PI, false); s.lineTo(0, -9); s.closePath();
+    const g = new THREE.ExtrudeGeometry(s, { depth: 3.4, bevelEnabled: false, curveSegments: 18 }); g.translate(0, 0, -1.7); put(P, new THREE.Mesh(g, stoneX()), 4.5, 11.5, 21.5);
+    for (let i = 0; i < 9; i++) { const a = PI * (i + 0.5) / 9, b = put(P, new THREE.Mesh(new THREE.BoxGeometry(1.5, 1.1, 3.6), stone(0.4, 0.37)), 4.5 + L / 2 - Math.cos(a) * (L / 2 - 0.9), 2.5 + Math.sin(a) * 7.6, 21.5); b.rotation.z = a - PI / 2; }      /* the stones of the arch ring */
+    for (let i = 0; i < 4; i++) for (const dz of [-1.6, 1.6]) rail(P, [4.5 + L * i / 4, hump(i / 4), 21.5 + dz], [4.5 + L * (i + 1) / 4, hump((i + 1) / 4), 21.5 + dz]);
+    flush(P); G.add(P); for (let i = 0; i < 4; i++) seg(3, 3, [4.3 + L * i / 4, hump(i / 4), 21.5], [4.7 + L * (i + 1) / 4, hump((i + 1) / 4), 21.5], 3.0, 'arch'); }
+  /* the terrace on the right, the long stair up the right-hand wall, its landing */
+  box(G, 6, 19.5, 7, stone(1.5, 6.5), 22.5, 1.75, 20.5); rail(G, [19.6, 11.5, 23.9], [25.4, 11.5, 23.9]); rail(G, [19.6, 11.5, 19.8], [19.6, 11.5, 17.1]); rail(G, [19.6, 11.5, 23.9], [19.6, 11.5, 23.2]);
+  flight(G, [23.2, 11.5, 17.2], [23.2, 20, 6.4], 3.6); rail(G, [21.3, 11.5, 17.2], [21.3, 20, 6.4]); box(G, 3.8, 22, 11, stone(2.7, 7, '#cfcfcf'), 23.2, 0, 11.8);
+  box(G, 5.4, 1.2, 5.2, stone(1.3, 0.4), 22.8, 19.4, 4); box(G, 5.4, 27, 3, stone(1.3, 9, '#cfcfcf'), 22.8, 5.3, 3.4); rail(G, [20.1, 20, 6.5], [21.3, 20, 6.5]); rail(G, [20.1, 20, 1.5], [25.4, 20, 1.5]); rail(G, [20.1, 20, 6.5], [20.1, 20, 5.7]); rail(G, [20.1, 20, 2.3], [20.1, 20, 1.5]);
+  box(G, 3, 190, 170, stone(40, 60, '#e9e9e9'), 27, 85, 20, { cast: false });
+  /* PIECE: the masons' timbers, drawn in as a bridge on trestles */
+  { const P = PIECE.timber, deck = lam({ map: rep(plankT, 5, 1), color: '#cfcac0' });
+    for (const [a, b] of [[20.2, 14.2], [12.8, 4.0], [2.6, -0.6]]) box(P, a - b, 0.36, 3.2, deck, (a + b) / 2, 19.82, 4); for (const dz of [-1.45, 1.45]) beam(P, [20.2, 19.4, 4 + dz], [-0.6, 19.4, 4 + dz], 0.42, 0.5, woodM);
+    for (const x of [17, 10, 3]) { for (const dz of [-1.5, 1.5]) { beam(P, [x - 2.6, 19.2, 4 + dz], [x, PIT, 4 + dz * 1.6], 0.5, 0.5, woodM); beam(P, [x + 2.6, 19.2, 4 + dz], [x, PIT, 4 + dz * 1.6], 0.5, 0.5, woodM); } beam(P, [x - 1.4, 10, 1.7], [x + 1.4, 10, 6.3], 0.3, 0.3, woodM); beam(P, [x, 4, 1.2], [x, 4, 6.8], 0.36, 0.36, woodM); beam(P, [x - 2.2, 16, 4], [x + 2.2, 16, 4], 0.36, 0.36, woodM); }
+    for (const dz of [-1.55, 1.55]) for (const [a, b] of [[20.2, 14.2], [12.8, 4.0], [2.6, -0.6]]) rail(P, [a, 20, 4 + dz], [b, 20, 4 + dz], { gap: 0.75 });
+    flush(P); G.add(P); seg(3, 3, [20.6, 20, 4], [-1.2, 20, 4], 3.0, 'timber'); }
+  /* the great round pier */
+  cyl(G, PR_, PR_, YT - PIT - 0.8, stone(9.4, 12.6), PC[0], (YT - 0.8 + PIT) / 2, PC[1], { seg: 40 }); cyl(G, PR_ + 0.5, PR_, 0.8, white, PC[0], YT - 0.4, PC[1], { seg: 40 }); cyl(G, PR_ + 0.25, PR_ + 0.25, 0.5, white, PC[0], 19.4, PC[1], { seg: 40 });
+  for (let a = 0; a < 360; a += 12) if (!(a > 328 || a < 52)) { const th = a * D2R; (POSTS.get(G) || POSTS.set(G, []).get(G)).push([PC[0] + 6.25 * Math.cos(th), YT + 0.55, PC[1] + 6.25 * Math.sin(th), 1.1]); }
+  put(G, new THREE.Mesh(new THREE.TorusGeometry(6.25, 0.06, 5, 40, 276 * D2R), darkM), PC[0], YT + 1.12, PC[1], { rx: PI / 2, rz: 52 * D2R, cast: false });
+  /* PIECE: the Roman stair, drawn in winding round the pier */
+  { const P = PIECE.stair, N = 62; for (let i = 0; i < N; i++) { const [x, y, z, th] = spiral((i + 0.5) / N); step(P, x, y - 1.35, z, 3.0, 2.9, 7.6 * 310 * D2R / N + 0.06, -th); if (i % 2 === 0) { const r = 9.05; (POSTS.get(P) || POSTS.set(P, []).get(P)).push([PC[0] + r * Math.cos(th), y + 0.6, PC[1] + r * Math.sin(th), 1.2]); } }
+    for (let i = 0; i < 31; i++) { const a = spiral(i / 31), b = spiral((i + 1) / 31), r = 9.05; beam(P, [PC[0] + r * Math.cos(a[3]), a[1] + 1.2, PC[1] + r * Math.sin(a[3])], [PC[0] + r * Math.cos(b[3]), b[1] + 1.2, PC[1] + r * Math.sin(b[3])], 0.1, 0.1, darkM, { cast: false }); seg(3, 3, [a[0], a[1], a[2]], [b[0], b[1], b[2]], 2.9, 'stair'); }
+    flush(P); G.add(P); }
+  seg(3, 3, [PC[0], YT, PC[1]], [PC[0], YT, PC[1]], 2 * PR_ + 0.3);
+  /* the capstan on the pier head, its rope going up over the pulley and down to the free end of the bridge */
+  capstan.position.set(PC[0], YT, PC[1]); G.add(capstan); cyl(capstan, 0.8, 0.95, 1.5, woodM, 0, 0.75, 0, { seg: 12 }); cyl(capstan, 1.0, 1.0, 0.16, darkM, 0, 1.5, 0, { seg: 12 }); for (let i = 0; i < 4; i++) beam(capstan, [0, 1.05, 0], [Math.cos(i * PI / 2) * 3.4, 1.05, Math.sin(i * PI / 2) * 3.4], 0.16, 0.16, woodM);
+  /* the block, the tower on it with its door, and the lantern */
+  box(G, 5.5, 28 - PIT, 5, lam({ map: rep(stoneT, 1.4, 12), color: '#5f5b54' }), 11.75, (28 + PIT) / 2, 8.5); for (const dz of [-2.4, 2.4]) rail(G, [9.3, 28, 8.5 + dz], [12, 28, 8.5 + dz]);
+  cyl(G, 3.9, 1.6, 5.6, stone(3, 1.5, '#d9d9d9'), 16.6, 28.1, 8.5, { seg: 24 }); cyl(G, 3.9, 3.9, 11, stone(6, 3.6), 16.6, 36.4, 8.5, { seg: 24 }); cyl(G, 4.3, 4.3, 0.7, white, 16.6, 42.2, 8.5, { seg: 24 }); cyl(G, 0.3, 4.5, 3.4, lam({ map: rep(plankT, 8, 1), color: '#bdb8ae' }), 16.6, 44.2, 8.5, { seg: 24 });
+  for (const [a, y] of [[2.6, 38], [3.7, 38], [3.1, 34]]) pln(G, 1.0, 1.7, inkM, 16.6 + Math.cos(a) * 3.93, y, 8.5 - Math.sin(a) * 3.93, { ry: a - PI / 2 }); for (let a = 2.0; a < 4.4; a += 0.4) box(G, 0.5, 2.6, 0.9, stone(0.2, 0.7), 16.6 + Math.cos(a) * 3.1, 29.4, 8.5 - Math.sin(a) * 3.1, { ry: a });
+  archWall(G, 3.6, 4.2, 2.2, [[0, 1.9, 3.1]], stoneX(), 13.6, 28, 8.5, PI / 2); pln(G, 1.9, 3.1, inkM, 13.9, 29.55, 8.5, { ry: -PI / 2 });
+  beam(G, [13.4, 39.5, 9.6], [10.6, 40.4, 10.4], 0.2, 0.2, darkM); rope(G, [[10.7, 40.3, 10.4], [10.7, 38, 10.4], [10.7, 36.4, 10.4]], 0.05); lantern.position.set(10.7, 35.4, 10.4); G.add(lantern); cyl(lantern, 0.75, 0.45, 1.7, lampM, 0, 0, 0, { seg: 6 }); cyl(lantern, 0.08, 0.9, 0.7, darkM, 0, 1.2, 0, { seg: 6 }); cyl(lantern, 0.45, 0.08, 0.5, darkM, 0, -1.1, 0, { seg: 6 }); put(lantern, new THREE.Mesh(new THREE.TorusGeometry(0.3, 0.07, 5, 12), darkM), 0, -1.6, 0);
+  /* the drawbridge: hinged on the block, its free end held up by the rope; rings hang under its near end, as the plate has them */
+  bridge.position.set(...HINGE); G.add(bridge); box(bridge, BL, 0.6, 5.2, lam({ map: rep(plankT, 6, 1), color: '#8a857c' }), -BL / 2, -0.3, 0); box(bridge, 1.6, 1.6, 4.4, lam({ color: '#4a4640' }), -0.9, -1.3, 0);
+  for (const dz of [-2.5, 2.5]) rail(bridge, [-BL + 0.1, 0, dz], [-0.3, 0, dz], { gap: 0.7 }); for (let i = 0; i < 4; i++) put(bridge, new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.16, 6, 14), darkM), -2.2 - i * 1.5, -1.25, 2.75); flush(bridge);
+  segBridge = seg(3, 3, [HINGE[0] - BL, 30.2, 8], [HINGE[0] + 0.3, 28, 8], 3.2, 'bridge'); seg(3, 3, [9, 28, 8.5], [12.6, 28, 8.5], 4.4);
+  /* the vault: the huge timbers and the stone soffit overhead, the beam with its pulley, the ropes that cross the whole hall */
+  const sof = box(G, 46, 2.5, 60, lam({ map: rep(stoneT, 6, 10), color: '#77736b' }), 22, 58, 16); sof.rotation.set(0.12, 0.5, -0.38);
+  beam(G, [-24, 60, 30], [26, 47, -6], 2.4, 2.4, woodD); beam(G, [-26, 50, -8], [20, 62, 26], 2.2, 2.2, woodD); beam(G, [-6, 51, 30], [0, 49, -20], 1.8, 1.8, woodD);
+  const pul = put(G, new THREE.Mesh(new THREE.SphereGeometry(1, 12, 10), darkM), -2.6, 45.6, 8); pul.scale.set(0.8, 2.3, 0.8); rope(G, [[-2.6, 50, 8], [-2.6, 47.6, 8]], 0.12);
+  rope(G, [[-20, 56, 18], [-8, 44, 19], [6, 28, 20.5], [19, 15, 22.5], [26, 9, 23.5]], 0.14); rope(G, [[12, 60, 16], [7, 48, 17], [1, 34, 18.5], [-3, 22, 19.5], [-5, 12, 21]], 0.14); rope(G, sag([-19, 52, 24], [14, 40, 12], 4), 0.09); rope(G, sag([-19, 38, 26], [10.7, 40.6, 10.4], 3), 0.06);
+  /* the upper gallery on the left, and the round arcaded turret above it */
+  box(G, 26, 1.0, 3.4, stone(6.5, 0.33, '#c4c4c4'), -13, 39.5, -3); rail(G, [-26, 40, -1.4], [0, 40, -1.4]); for (const x of [-20, -11, -2]) beam(G, [x, 39, -3], [x, 30, -10], 0.7, 0.7, woodD);
+  cyl(G, 4.8, 2.4, 4.6, stone(4, 1.4, '#e4e4e4'), -11, 53.7, -3, { seg: 24 }); cyl(G, 4.8, 4.8, 6.5, stone(8, 2, '#f0f0f0'), -11, 59.2, -3, { seg: 24 }); cyl(G, 5.3, 5.3, 0.8, white, -11, 62.8, -3, { seg: 24 }); for (let a = 0.3; a < 3.0; a += 0.52) pln(G, 1.5, 3.6, inkM, -11 + Math.cos(a) * 4.83, 59.1, -3 + Math.sin(a) * 4.83, { ry: PI / 2 - a }); cyl(G, 2.4, 2.4, 64, stone(4, 20, '#e4e4e4'), -11, 19.5, -3, { seg: 18 });
+  /* the spiked wheel on its bastion, bottom left */
+  cyl(G, 3.6, 3.9, 21 - PIT - 8, stone(5, 6, '#d2d2d2'), -13.5, (13 + PIT) / 2, 25.4, { seg: 24 }); cyl(G, 4.0, 3.6, 0.6, white, -13.5, 13.3, 25.4, { seg: 24 }); const wheel = new THREE.Group(); wheel.position.set(-13.2, 16.4, 25.4); wheel.rotation.set(0.5, 0.4, 0.3); G.add(wheel); cyl(wheel, 0.8, 0.8, 2.6, darkM, 0, 0, 0, { seg: 10 }); for (let i = 0; i < 8; i++) { const pv = new THREE.Group(); pv.rotation.y = i * PI / 4; wheel.add(pv); cyl(pv, 0.03, 0.22, 3.6, darkM, 2.2, 0, 0, { seg: 5, rz: -PI / 2 }); } hallG.userData.wheel = wheel;
+  for (const s of [-1, 1]) beam(G, [-13.2 + s * 1.3, 13.6, 25.4], [-13.2, 16.4, 25.4], 0.3, 0.3, woodD);
+  /* far off: wall behind wall of arches and galleries, paler with distance (the 1761 plate crowds these in; here they stand from the start, and the shading grows on them) */
+  archWall(G, 74, 150, 3, [[-22, 12, 30], [-2, 14, 44], [18, 12, 30], [-22, 8, 16, 40], [18, 8, 16, 40]], stoneX('#f2f2f2'), -6, PIT, -24); box(G, 52, 0.9, 3.2, white, -4, 26, -21); rail(G, [-28, 26.45, -19.6], [22, 26.45, -19.6], { gap: 0.9 }); box(G, 52, 0.9, 3.2, white, -4, 46, -21); rail(G, [-28, 46.45, -19.6], [22, 46.45, -19.6], { gap: 0.9 });
+  archWall(G, 110, 190, 3, [[-30, 16, 50], [0, 20, 62], [30, 16, 50]], stoneX('#f9f9f9'), -8, PIT, -58); box(G, 80, 1, 3.4, white, -6, 38, -55); rail(G, [-44, 38.5, -53.5], [34, 38.5, -53.5], { gap: 1.2 });
+  box(G, 3, 190, 120, stone(30, 60, '#ededed'), -27.5, 85, -30, { cast: false });
+  flush(G);
+  /* where she stands to draw a piece in: a sheet of copper let into the floor */
+  for (const [k, x, y, z] of [['arch', 3.4, 11.5, 21.5], ['timber', 21.3, 20, 4], ['stair', -0.4, 20, 4]]) { const m = new THREE.Group(); box(m, 1.5, 0.06, 1.1, lam({ color: '#f6f3ea' }), 0, 0.04, 0, { cast: false }); const fr = new THREE.Mesh(new THREE.RingGeometry(0.9, 1.0, 4), inkM); fr.rotation.set(-PI / 2, 0, PI / 4); fr.scale.set(1.25, 0.9, 1); fr.position.y = 0.09; m.add(fr); m.position.set(x, y, z); G.add(m); marks[k] = { g: m, x, y, z }; }
+  seg(3, 3, [-17.5, 8, 32], [18, 8, 32], 3.8); seg(3, 3, [2, 8, 30.4], [2, 11.5, 23.4], 3.0); seg(3, 3, [2, 11.5, 23.8], [2, 11.5, 19.8], 4.6);
+  seg(3, 3, [19.8, 11.5, 21.5], [25, 11.5, 21.5], 4.4); seg(3, 3, [23.2, 11.5, 22], [23.2, 11.5, 17], 3.4); seg(3, 3, [23.2, 11.5, 17.2], [23.2, 20, 6.4], 3.4); seg(3, 3, [23.2, 20, 6.6], [23.2, 20, 2], 4.2); seg(3, 3, [25, 20, 4], [20.4, 20, 4], 4.4);
+  /* the game's own hazards: two hooks swinging on chains, and stone balls that roll down the long stair */
+  beam(G, [10.5, 27, 6.4], [10.5, 27, 2.2], 0.5, 0.5, woodD); beam(G, [10.5, 23.5, 6.2], [10.5, 26.8, 3.4], 0.3, 0.3, woodD);
+  for (const [x, y, z, L, ax, ph, amp] of [[12.3, 27.4, 21.5, 13.4, 'z', 0, 0.62], [10.5, 26.9, 4, 5.5, 'z', 1.7, 0.5]]) { const g = new THREE.Group(); g.position.set(x, y, z); rope(g, [[0, 0, 0], [0, -L / 2, 0], [0, -L + 0.5, 0]], 0.06); put(g, new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.11, 6, 14, 4.6), darkM), 0, -L, 0, { rz: 2.4 }); cyl(g, 0.2, 0.2, 0.5, darkM, 0, -L + 0.6, 0, { seg: 8 }); G.add(g); pend.push({ g, x, y, z, L, ax, ph, amp, cool: 0 }); }
+  for (let i = 0; i < 2; i++) { const b = put(G, new THREE.Mesh(new THREE.SphereGeometry(0.55, 14, 10), stone(1, 0.6, '#cfcfcf')), 23.2, 0, 0); b.visible = false; balls.push({ m: b, s: -1 - i * 0.5, over: false, cool: 0 }); }
+}
+
+/* ================= the people: the girl, Piranesi and the small wrapped figures of the plates, from Blender (tools/blender/figure.py) ================= */
+const FIG = makeFigures({ THREE, scene, shadowM: new THREE.MeshBasicMaterial({ visible: false }), castShadow: true }); await FIG.load('models/', ['girl', 'piranesi', 'figure']);
+const BASE = 0.92, meG = FIG.spawn('girl', { size: BASE }); for (const k in meG.userData.mats) ENG.keepColour(meG.userData.mats[k]);            /* the one figure in colour, so that her smallness can be seen from across the hall */
+const master = FIG.spawn('piranesi', { size: 1.12, adult: true }); scene.remove(master); romeG.add(master); master.position.set(-2.4, 0, RZ + 3.2); master.rotation.y = PI - 0.5;
+{ const bd = new THREE.Group(); box(bd, 0.5, 0.03, 0.38, white, 0, 0, 0); box(bd, 0.52, 0.02, 0.4, darkM, 0, -0.025, 0); bd.rotation.set(0.9, 0, 0); master.userData.aL.add(bd); bd.position.set(-0.1, -0.02, 0.16); }
+const staff = [];
+const stand = (G, x, y, z, ry, k = 1.05, pose) => { const f = FIG.spawn('figure', { size: k, adult: true }); scene.remove(f); G.add(f); f.position.set(x, y, z); f.rotation.y = ry; FIG.pose(f, 0, 0); if (pose) pose(f.userData); staff.push(f); return f; };
+const point = u => { FIG.turn(u, 'upperarmR', -80, -20, 0); FIG.turn(u, 'forearmR', -10, 0, 0); }, lean = u => { FIG.turn(u, 'spine', 24, 0, 0); FIG.turn(u, 'upperarmL', -40, 10, 0); FIG.turn(u, 'upperarmR', -40, -10, 0); };
+stand(romeG, 7, 0, RZ - 9.5, 0.6, 1.1, point); stand(romeG, 8.3, 0, RZ - 9, -2.2, 1.05); stand(romeG, -16.5, 0, RZ + 3, 1.2, 1.1, lean);
+stand(vaultG, 4.8, 0, VZ + 4.6, 2.6, 1.1, point); stand(vaultG, 6, 0, VZ + 5.4, -2.0, 1.05); stand(vaultG, 8, 8, VZ - 12, 0.3, 1.05, lean); stand(vaultG, -8, 17.4, VZ - 30.6, 0.4, 1.1); stand(vaultG, 10, 17.4, VZ - 30.6, -0.4, 1.1, lean);
+stand(hallG, 21, 11.5, 23, -1.2, 1.05, point); stand(hallG, 12.4, 28, 10.2, 1.9, 1.05); stand(hallG, -18, 40, -2.6, 0.2, 1.1, lean); stand(hallG, -14.5, 40, -2.6, -0.3, 1.1); stand(hallG, 24.4, 11.5, 22.8, -2.4, 1.05, lean);
+stand(hallG, -12, 26.45, -20.6, 0.2, 1.3, lean); stand(hallG, 6, 26.45, -20.6, -0.2, 1.3); stand(hallG, 0, 46.45, -20.6, 0.1, 1.3, point); stand(hallG, -10, 8, 32.6, 2.2, 1.05, point); stand(hallG, -8.8, 8, 33, -1.9, 1.05);
+
+/* ================= points (common/score.js). Nothing here can be failed. The gold zecchini, like the hazards, are the game's own ================= */
+const SC = makeScore({ THREE, scene, key: 'piranesi', at: s => ({ x: 0, z: -s, dx: 0, dz: -1 }), nearest: (x, z) => ({ s: -z, d: Math.abs(x) }), LEN: 400, par: 215, groundY: () => 0, blocked: () => true, paintings: 3,
+  thing: 'zecchino', things: 'gold zecchini', washing: false, ditches: [], hurdles: [], powerups: false });
+const coinG = { 1: new THREE.Group(), 2: new THREE.Group(), 3: new THREE.Group() }; romeG.add(coinG[1]); vaultG.add(coinG[2]); hallG.add(coinG[3]); const pieceCoins = { arch: [], timber: [], stair: [], bridge: [] };
+function coin(n, x, y, z, key) { const g = new THREE.Group(), mats = [ENG.keepColour(new THREE.MeshBasicMaterial({ color: '#f2c230' })), ENG.keepColour(new THREE.MeshBasicMaterial({ color: '#b07f14' }))];
+  const c = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.24, 0.05, 20), mats[0]); c.rotation.x = PI / 2; g.add(c); g.add(new THREE.Mesh(new THREE.TorusGeometry(0.24, 0.03, 6, 22), mats[1]));
+  g.userData = { x, z, y, ph: SC.picks.length * 1.7, mats, pop: 0, key }; g.position.set(x, y, z); coinG[n].add(g); SC.picks.push(g); if (key) pieceCoins[key].push(g); return g; }
+const along = (n, a, b, k, key, lift = i => (i % 3 === 2 ? 2.1 : 0.9)) => { for (let i = 0; i < k; i++) { const t = (i + 0.5) / k; coin(n, mix(a[0], b[0], t), mix(a[1], b[1], t) + lift(i), mix(a[2], b[2], t), key); } };
+along(1, [-6, 0, RZ + 12], [6, 0, RZ + 10], 4); along(1, [9, 0, RZ + 7], [12, 0, RZ + 4.5], 2); along(1, [-6, 0, RZ + 5], [-10, 0, RZ + 2], 2); along(1, [-3, 0, RZ - 3], [3, 0, RZ - 5], 3);
+along(2, [0, 0, VZ + 17], [0, 0, VZ + 7], 3); along(2, [-3, 1, VZ + 1], [-3, 7.4, VZ - 10], 4, null, () => 0.9); along(2, [1, 8, VZ - 12.4], [9, 8, VZ - 12.4], 3);
+along(3, [-8, 8, 32], [-1, 8, 32], 3); along(3, [6, 8, 32], [15, 8, 32], 3); for (let i = 0; i < 5; i++) { const t = (i + 0.5) / 5; coin(3, 4.5 + 15.5 * t, hump(t) + (i === 2 ? 2.2 : 0.9), 21.5, 'arch'); }
+along(3, [23.2, 13, 15.5], [23.2, 19.4, 7.4], 4, null, () => 0.9); for (const x of [17.5, 13.5, 8.5, 6, 3.3]) coin(3, x, 20 + (x === 13.5 || x === 3.3 ? 2.2 : 0.9), 4, 'timber');
+for (let i = 1; i < 12; i++) { const [x, y, z] = spiral(i / 12); coin(3, x, y + (i % 4 === 3 ? 2.1 : 0.9), z, 'stair'); } along(3, [-1, 29.6, 8], [6, 28.4, 8], 3, 'bridge', () => 0.9);
+
+/* ================= state ================= */
+let state = 'title', time = 0, muted = false, tab = -1, tabT = 0, bubbleG = null, bubbleT = 0, tipT = 0, shade = 0, shadeWant = 0, stateWant = 1, actT = 0, shake = 0, etch = null, etchT = 0, sk = null, skT = 0, wheelA = 0, bridgeA = A_UP, idleT = 0, stepN = 0;
+const seen = new Set(), once = new Set(), keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, touch = { jump: false }, drawn = new Set(), built = new Set();
+const me = { x: 0, z: RZ + 18, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, ok = { x: 0, z: RZ + 18 };
+const bubble = $('bubble'); function say(g, text, secs = 3.6) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + secs; }
+function tell(text, secs = 6) { const t = $('tip'); t.textContent = text; t.classList.remove('hidden'); tipT = time + secs; }
+const turnTo = (a, k) => { let d = a - me.yaw; d = Math.atan2(Math.sin(d), Math.cos(d)); me.yaw += d * k; };
+const first = k => { if (once.has(k)) return false; once.add(k); return true; };
+const plate = (id, title, line, asp) => { SC.award(id, null, title); const el = $('plate'), m = (innerWidth - Math.min(innerWidth, innerHeight * asp)) / 2, side = m > 215; el.innerHTML = `<i>${title}</i><span>${side ? line.replace(' · ', '<br>') : line}</span>`;
+  el.style.left = side ? m / 2 + 'px' : '50%'; el.style.bottom = side ? '14%' : ''; el.style.whiteSpace = side ? 'normal' : ''; el.style.maxWidth = side ? m - 50 + 'px' : ''; el.classList.add('show'); };
+const echo = v => { SND.puff(v); setTimeout(() => SND.puff(v * 0.45), 260); setTimeout(() => SND.puff(v * 0.2), 540); };      /* a footfall, and the hall giving it back */
+const scratch = () => { if (SND.hiss && Math.random() < 0.5) SND.hiss(); else SND.puff(0.05); };
+/* the sheet: each thing as a few pen lines, drawn stroke by stroke */
+const SHEET = { arch: [[[8, 92], [8, 22], [92, 22], [92, 92]], [[8, 36], [92, 36]], [[36, 92], [36, 62], [38, 54], [43, 48], [50, 46], [57, 48], [62, 54], [64, 62], [64, 92]], [[15, 92], [15, 80], [19, 75], [24, 80], [24, 92]], [[76, 92], [76, 80], [81, 75], [85, 80], [85, 92]], [[2, 92], [98, 92]]],
+  stair: [[[6, 92], [6, 84], [16, 84], [16, 76], [26, 76], [26, 68], [36, 68], [36, 60], [46, 60], [46, 52], [94, 52]], [[6, 92], [94, 92]], [[56, 52], [56, 12]], [[62, 52], [62, 12]], [[78, 52], [78, 12]], [[84, 52], [84, 12]], [[52, 12], [90, 12], [90, 6], [52, 6], [52, 12]]],
+  timber: [[[14, 94], [50, 10]], [[86, 94], [50, 10]], [[50, 94], [50, 10]], [[28, 62], [72, 62]], [[50, 18], [50, 56]], [[40, 56], [60, 56], [60, 72], [40, 72], [40, 56]], [[44, 18], [56, 18], [56, 26], [44, 26], [44, 18]], [[56, 22], [80, 80]]] };
+function sheet(id, k, label) { const g = $('skc').getContext('2d'), L = SHEET[id]; g.clearRect(0, 0, 200, 200); g.strokeStyle = INK; g.lineWidth = 3; g.lineCap = g.lineJoin = 'round'; let tot = 0; const len = L.map(p => { let l = 0; for (let i = 1; i < p.length; i++) l += Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]); tot += l; return l; }); let left = tot * k;
+  L.forEach((p, n) => { if (left <= 0) return; g.beginPath(); g.moveTo(p[0][0] * 2, p[0][1] * 2); for (let i = 1; i < p.length && left > 0; i++) { const d = Math.hypot(p[i][0] - p[i - 1][0], p[i][1] - p[i - 1][1]), f = Math.min(1, left / d); g.lineTo(mix(p[i - 1][0], p[i][0], f) * 2 + Math.sin(i * 7 + n) * 0.8, mix(p[i - 1][1], p[i][1], f) * 2 + Math.cos(i * 5 + n) * 0.8); left -= d; } g.stroke(); });
+  $('skt').textContent = label; $('sketch').classList.add('show'); }
+const reveal = (P, k) => { const n = P.children.length; P.children.forEach((c, i) => { if (c.isInstancedMesh) { c.visible = k > 0.02; c.count = Math.ceil(c.userData.total * clamp(k * 1.15, 0, 1)); } else c.visible = (i + 0.5) / n < k * 1.05; }); };
+function setPiece(k, on) { reveal(PIECE[k], on ? 1 : 0); for (const s of SEG) if (s.key === k) s.on = on; for (const c of pieceCoins[k]) { c.userData.hide = !on; if (on && !c.userData.pop) c.visible = true; } if (marks[k]) marks[k].g.visible = !on; if (on) built.add(k); else built.delete(k); }
+const STATES = { 0: 0.0, 1: 0.34, 2: 0.62, 3: 0.86 };
+function setAct(n) {
+  act = n; actT = 0; setTimeout(() => { ok.x = me.x; ok.z = me.z; }, 0); romeG.visible = n === 1; vaultG.visible = n === 2; hallG.visible = n === 3; me.vy = 0; me.air = false; me.speed = 0;
+  if (n === 1) { Object.assign(me, { x: 0, z: RZ + 18, y: 0, yaw: 0 }); stateWant = 1; }
+  if (n === 2) { Object.assign(me, { x: 0, z: VZ + 20, y: 0, yaw: 0 }); stateWant = 1; echo(0.1); tell('Back at the shop he lays your drawings on the bench, and begins to scratch a place that never was…', 7); }
+  if (n === 3) { Object.assign(me, { x: -16.4, z: 32, y: 8, yaw: PI / 2 }); stateWant = STATES[built.size] ?? 0; ENG.uniforms.uState.value = stateWant; echo(0.1); }
+  const f = n === 1 ? [0, 0, RZ - 4] : n === 2 ? [0, 6, VZ - 4] : [0, 22, 6], d = n === 2 ? [-18, 46, -36] : n === 3 ? [-34, 64, 34] : [-24, 44, 30]; sun.target.position.set(...f); sun.position.set(f[0] + d[0], f[1] + d[1], f[2] + d[2]);
+}
+function reset() {
+  seen.clear(); once.clear(); drawn.clear(); built.clear(); tab = -1; shade = shadeWant = 0; etch = null; sk = null; wheelA = 0; bridgeA = A_UP; idleT = 0;
+  for (const k of ['arch', 'timber', 'stair']) setPiece(k, false); for (const s of SEG) if (s.key === 'door' || s.key === 'bridge') s.on = false; for (const c of pieceCoins.bridge) c.userData.hide = true;
+  lampM.color.set('#d8d2c2'); for (const b of balls) { b.m.visible = false; b.s = -1; } $('sketch').classList.remove('show');
+  $('melt').classList.remove('show', 'slow'); $('plate').classList.remove('show'); setAct(1); ENG.uniforms.uState.value = 1; $('tip').classList.add('hidden'); camera.position.set(0, 3, RZ + 24);
+}
+function begin() { if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  SND.start({ chords: [[38, 50, 53, 57, 62], [36, 48, 51, 55, 60], [41, 53, 56, 60, 65], [43, 50, 55, 58, 62]], scale: [50, 53, 55, 57, 60, 62, 65, 67, 69, 72, 74] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
+  $('title').classList.add('hidden'); $('end').classList.add('hidden');
+  tell('Rome, 1761. Signor Piranesi has drawn these ruins all his life.   ' + (matchMedia('(pointer: coarse)').matches ? 'Drag to run and turn · second finger to leap' : 'Arrow keys to run and turn · space to leap'), 8);
+  setTimeout(() => { if (state === 'play' && act === 1) say(master, '“Col sporcar si trova.” By messing about, one discovers!', 5.5); }, 1600);
+}
+
+/* ================= the three pictures, each staged where the etcher stood ================= */
+const HCAM = { pos: [0.3, 12, 75], look: [1.6, 29.7, 5], fov: 51 };      /* far back with a long lens: in the plate the figures on the bridge are nearly as large as those in front */
+const TABS = [
+  { id: 'The Pier with Chains', img: 'images/pier_1761.jpg', asp: 1400 / 1039, title: 'The Pier with Chains', line: 'G. B. Piranesi, Carceri d’invenzione, plate XVI · as reworked about 1761', cam: () => ({ pos: [1.2, 2.3, VZ + 23.5], look: [0.8, 6.2, VZ], fov: 54 }), stand: [1.5, VZ + 12.5, 0.1] },
+  { id: 'The Drawbridge, about 1750', img: 'images/drawbridge_1750.jpg', asp: 1053 / 1400, title: 'The Drawbridge', line: 'G. B. Piranesi, Carceri, plate VII · as he first etched it, about 1750', cam: () => HCAM, stand: [-7, 32.6, 2.0] },
+  { id: 'The Drawbridge, 1761', img: 'images/drawbridge_1761.jpg', asp: 1048 / 1400, title: 'The Drawbridge, reworked', line: 'G. B. Piranesi, Carceri d’invenzione, plate VII · bitten again about 1761', cam: () => HCAM, stand: [7.3, 8, -1.9], last: true },
+];
+function startTab(i) { tab = i; tabT = 0; state = 'tab'; seen.add(i); me.speed = 0; $('meltImg').src = TABS[i].img; $('melt').classList.toggle('slow', !!TABS[i].last); bubble.classList.remove('show'); bubbleG = null; $('tip').classList.add('hidden'); $('sketch').classList.remove('show'); SND.whoosh(0.1); if (i === 2) { stateWant = 1; lampM.color.set('#ffd23a'); } }
+const tabFov = T => { const c = T.cam(), ph = Math.min(innerHeight, innerWidth / T.asp); return 2 * Math.atan(Math.tan(c.fov * PI / 360) * innerHeight / ph) / D2R; };
+function tableau(dt) {
+  const T = TABS[tab], last = !!T.last; tabT += dt; if (window.__road.dbg.hold) tabT = Math.min(tabT, 3.4); const k = Math.min(1, dt * 2.4);
+  me.x += (T.stand[0] - me.x) * k; me.z += (T.stand[1] - me.z) * k; turnTo(T.stand[2], k); if (tab === 2) bridgeA += (A_UP - bridgeA) * Math.min(1, dt * 0.8);
+  if (tabT > 2.6 && !$('plate').classList.contains('show') && tabT < 3.5) { plate(T.id, T.title, T.line, T.asp); [1, 3, 4, 6, 8].forEach((n, i) => SND.bell(n, 0.06, i * 0.22)); }
+  if (tabT > 4.0 && (last || tabT < 8.2)) $('melt').classList.add('show');
+  if (!last && tabT > 8.2) { $('melt').classList.remove('show'); $('plate').classList.remove('show'); }
+  if (!last && tabT > 10.4) { state = 'play'; const id = tab; tab = -1; meG.userData.hd.rotation.x = 0; if (id === 0) tell('Too vast and too tangled to be a real place. He built it out of the Rome he knew.', 6); if (id === 1) { tell('That is how he etched it about 1750: pale and quick. Ten years on he took the plate up again. So shall you.', 8); } }
+  if (last && tabT > 15) { state = 'done'; SC.finish(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); $('goal').style.display = 'none'; }
+}
+
+/* ================= what to do next, in plain words at the foot of the screen (the game's own) ================= */
+function goal() {
+  if (state !== 'play') return etch ? 'Watch: your drawing is bitten into the plate' : null;
+  if (act === 1) return drawn.size < 3 ? `Run up to each sparkle and draw what you find (${drawn.size} of 3 drawn)` : 'You have all three. Now go in under the great arch, into the dark';
+  if (act === 2) return me.y < 7.5 ? 'Climb the bright stair at the back of the vault' : 'Along the gallery to the dark doorway on the right';
+  const near = k => !built.has(k) && Math.hypot(me.x - marks[k].x, me.z - marks[k].z) < 7 && Math.abs(me.y - marks[k].y) < 1.5;
+  if (near('arch')) return 'The way stops here. Stand on the copper plate and LEAP to draw in your Roman arch';
+  if (near('timber')) return 'Nothing but air. Stand on the copper plate and LEAP to draw in your timbers';
+  if (near('stair')) return 'No way up. Stand on the copper plate and LEAP to draw in your Roman stair';
+  if (!built.has('arch')) return me.y < 9 ? 'Find a way up to the door in the round tower: start with the ramp in the middle of the gallery' : 'Go to the end of the pier head';
+  if (!built.has('timber')) return me.x < 19.5 ? 'Cross your arch. Mind the swinging hook' : 'Climb the long stair. Leap the stone balls that roll down it';
+  if (!built.has('stair')) return 'Cross the timbers to the great pier. Leap the missing planks';
+  if (me.y < YT - 0.6) return 'Wind up the stair, round and round the pier';
+  if (!segBridge.on) return 'Run round the capstan to let the drawbridge down';
+  return 'Over the drawbridge to the door in the tower';
+}
+
+/* ================= play ================= */
+const blocked = (x, z, y, air) => floorAt(x, z, y, air) === null || (act === 1 && blockRome(x, z)) || (act === 3 && Math.abs(y - YT) < 1 && Math.hypot(x - PC[0], z - PC[1]) < 1.3);
+function update(dt) {
+  time += dt; actT += dt; if (tipT && time > tipT) { $('tip').classList.add('hidden'); tipT = 0; }
+  let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 1 : 0) - stick.dy;
+  turn = clamp(turn, -1, 1); go = clamp(go, -1, 1); const playing = state === 'play'; if (!playing) { turn = 0; go = 0; }
+  const jump = (keys.has('Space') || touch.jump) && playing;
+  if (state === 'title') { meG.visible = false; }
+  else {
+    meG.visible = true; go = Math.max(go, -0.5); me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1);
+    const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw), ahead = floorAt(me.x + fx * 1.2, me.z + fz * 1.2, me.y, me.air), slope = ahead === null ? 0 : (ahead - me.y) / 1.2, top = 8.2 * (slope > 0.15 ? 0.78 : slope < -0.15 ? 1.12 : 1);
+    me.speed += (go * top - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2));
+    let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
+    if (blocked(nx, nz, me.y, me.air)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;
+      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz, me.y, me.air)) { nx = tx; nz = tz; ok = true; break; } }
+      if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
+    me.x = nx; me.z = nz; let f = floorAt(nx, nz, me.y, me.air); if (f === null && state === 'play') { me.x = ok.x; me.z = ok.z; f = floorAt(me.x, me.z, me.y, me.air) ?? me.y; } else if (f === null) f = me.y; else { ok.x = me.x; ok.z = me.z; }      /* never left standing where there is no floor */
+    if (jump && !me.air && !nearMark()) { me.vy = 6.6 + Math.abs(me.speed) * 0.2; me.air = true; SND.whoosh(0.04); }
+    if (me.air) { me.vy -= (jump && me.vy < 0 ? 6 : 15) * dt; me.y += me.vy * dt; if (me.y <= f && me.vy < 0) { me.y = f; me.air = false; echo(act === 1 ? 0.03 : 0.07); } } else me.y += (f - me.y) * Math.min(1, dt * 18);
+    const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.95); if (!me.air && pace > 0.2 && Math.floor(me.ph / PI) !== before) { if (act === 1) SND.puff(0.02); else if (stepN++ % 2 === 0) echo(0.028); else SND.puff(0.025); }
+    me.lean += (turn * 0.22 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
+    meG.scale.setScalar(BASE); meG.position.set(me.x, me.y, me.z); meG.rotation.y = PI - me.yaw; meG.rotation.z = -me.lean; FIG.pose(meG, me.ph, state === 'tab' || state === 'etch' || state === 'sketch' ? 0 : me.air ? 0.4 : pace, me.air && playing);
+    idleT = playing && Math.abs(me.speed) < 0.4 ? idleT + dt : 0;
+    SC.update(dt, me, playing, time);
+    if (act === 1) rome(dt, playing, jump); if (act === 2) vault(dt, playing); if (act === 3) hall(dt, playing, jump);
+    if (state === 'tab') tableau(dt); if (state === 'etch') etching(dt); if (state === 'sketch') sketching(dt);
+  }
+  for (const g of SC.picks) if (g.userData.hide) g.visible = false;
+  for (const n of [1, 2, 3]) coinG[n].visible = state !== 'tab' && state !== 'done';
+  cameraAndLight(dt);
+  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = new V3(); bubbleG.getWorldPosition(v); v.y += 1.95 * bubbleG.scale.y; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 160, innerWidth - 160) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1); } }
+  { const g = goal(), el = $('goal'); el.style.display = g ? 'block' : 'none'; if (g && el.textContent !== '➜ ' + g) el.textContent = '➜ ' + g; }
+  ENG.uniforms.uFog.value.set(scene.fog.near, scene.fog.far); shade += (shadeWant - shade) * Math.min(1, dt * 5); ENG.uniforms.uShade.value = shade; ENG.uniforms.uState.value += (stateWant - ENG.uniforms.uState.value) * Math.min(1, dt * 0.9); ENG.uniforms.uGain.value = act === 1 ? 1 : mix(0.92, 1.1, ENG.uniforms.uState.value);
+  SND.update(0.25 + 0.3 * Math.min(1, Math.abs(me.speed) / 10), clamp((act === 3 ? 0.25 + me.y / 90 : act === 2 ? 0.2 : 0.05) + (me.air ? 0.15 : 0), 0, 1));
+}
+const nearMark = () => act === 3 && ['arch', 'timber', 'stair'].some(k => !built.has(k) && Math.hypot(me.x - marks[k].x, me.z - marks[k].z) < 2.0 && Math.abs(me.y - marks[k].y) < 1);
+const glint = new THREE.Group(); for (let i = 0; i < 4; i++) { const r = new THREE.Mesh(new THREE.PlaneGeometry(0.9, 0.035), new THREE.MeshBasicMaterial({ color: INK, side: THREE.DoubleSide })); r.rotation.z = i * PI / 4; glint.add(r); } scene.add(glint);
+const glints = [0, 1, 2].map(() => { const g = glint.clone(); scene.add(g); return g; }); glint.visible = false;
+function rome(dt, playing, jump) {
+  master.userData.hd.rotation.y = clamp(Math.atan2(me.x - master.position.x, me.z - master.position.z) - master.rotation.y, -1, 1); FIG.turn(master.userData, 'upperarmL', -38, 8, 0); FIG.turn(master.userData, 'forearmL', -70, 0, 0); FIG.turn(master.userData, 'upperarmR', -30 + 5 * Math.sin(time * 6), -14, 0); FIG.turn(master.userData, 'forearmR', -80, 0, 0);
+  SPOTS.forEach((s, i) => { const on = !drawn.has(s.id) && state !== 'done'; glints[i].visible = on; if (on) { glints[i].position.set(s.x, 1.5 + 0.2 * Math.sin(time * 2 + i), s.z); glints[i].quaternion.copy(camera.quaternion); glints[i].rotateZ(time * 0.9); glints[i].scale.setScalar(0.8 + 0.5 * Math.abs(Math.sin(time * 2.6 + i))); } });
+  if (!playing) return;
+  for (const s of SPOTS) if (!drawn.has(s.id) && Math.hypot(me.x - s.x, me.z - s.z) < 2.3) { state = 'sketch'; sk = s; skT = 0; me.speed = 0; tell(s.say + '. You draw it.', 4); }
+  if (drawn.size === 3 && first('door')) { for (const s of SEG) if (s.key === 'door') s.on = true; say(master, 'Bene! Now come and see what I make of them.', 5); }
+  if (me.z < RZ - 13.4 && state === 'play') { state = 'drop'; shadeWant = 1; SND.whoosh(0.14); setTimeout(() => { setAct(2); state = 'play'; shadeWant = 0; }, 1100); }
+}
+function sketching(dt) { skT += dt; const k = clamp(skT / 2.2, 0, 1); sheet(sk.id, k, sk.title); if (Math.floor(skT * 7) !== Math.floor((skT - dt) * 7) && k < 1) scratch(); turnTo(Math.atan2(sk.x - me.x, -(sk.z - me.z - (sk.id === 'arch' ? 6 : 0))), Math.min(1, dt * 4)); FIG.turn(meG.userData, 'upperarmR', -50 + 8 * Math.sin(time * 9), -10, 0); FIG.turn(meG.userData, 'forearmR', -80, 0, 0); FIG.turn(meG.userData, 'upperarmL', -40, 10, 0); FIG.turn(meG.userData, 'forearmL', -75, 0, 0);
+  if (skT > 3.0) { drawn.add(sk.id); SC.keep && SC.keep(sk.id, { title: sk.title, emoji: sk.emoji }); SC.gain(30, sk.title, 2); state = 'play'; $('sketch').classList.remove('show'); sk = null; } }
+function vault(dt, playing) {
+  glints.forEach(g => { g.visible = false; });
+  if (!playing) return;
+  if (!seen.has(0) && me.z < VZ + 14.5) startTab(0);
+  if (me.x > 11.4 && me.y > 7) { state = 'drop'; shadeWant = 1; SND.whoosh(0.14); setTimeout(() => { setAct(3); state = 'play'; shadeWant = 0; tell('“…enormous subterranean vaults with stairs and mighty machines.” And you, one of the tiny figures in it.', 7); }, 1100); }
+}
+const ETCH = { arch: { cam: [9, 19, 43], look: [11.5, 7.5, 21.5], t: 'Your Roman arch, bitten into the copper: but many times the size. See how small that makes you.', lab: 'the arch, far bigger' }, timber: { cam: [25, 29, 24], look: [8, 14, 4], t: 'Your masons’ timbers, piled into a bridge as high as a church tower. He added this one in 1761.', lab: 'the timbers, far bigger' }, stair: { cam: [-2, 23, 41], look: [-8, 23.5, 10], t: 'Your temple steps, wound round a pier that no builder could raise. Darker now, and more tangled.', lab: 'the stair, far bigger' } };
+function etching(dt) { etchT += dt; const k = clamp((etchT - 0.9) / 3.2, 0, 1); reveal(PIECE[etch], k); sheet(etch, 1, ETCH[etch].lab); if (k > 0 && k < 1 && Math.floor(etchT * 8) !== Math.floor((etchT - dt) * 8)) scratch();
+  if (etchT > 5.6) { setPiece(etch, true); SC.gain(40, 'Drawn in!', 3); echo(0.12); state = 'play'; etch = null; $('sketch').classList.remove('show'); } }
+function hall(dt, playing, jump) {
+  glints.forEach((g, i) => { const k = ['arch', 'timber', 'stair'][i], on = !built.has(k) && state !== 'tab' && state !== 'done'; g.visible = on; if (on) { g.position.set(marks[k].x, marks[k].y + 1.6 + 0.2 * Math.sin(time * 2 + i), marks[k].z); g.quaternion.copy(camera.quaternion); g.rotateZ(time * 0.9); g.scale.setScalar(1.6 + 0.8 * Math.abs(Math.sin(time * 2.6 + i))); } });
+  bridge.rotation.z = -bridgeA; segBridge.a[1] = HINGE[1] + BL * Math.sin(bridgeA) + 0.05; capstan.rotation.y = -wheelA; if (hallG.userData.wheel) hallG.userData.wheel.rotation.y += dt * 0.15; lantern.rotation.z = 0.08 * Math.sin(time * 1.1);
+  for (const p of pend) { const a = p.amp * Math.sin(time * 1.25 + p.ph); p.g.rotation[p.ax === 'z' ? 'x' : 'z'] = p.ax === 'z' ? a : -a; p.cool -= dt; const bx = p.x - (p.ax === 'x' ? Math.sin(a) * p.L : 0), bz = p.z - (p.ax === 'z' ? Math.sin(a) * p.L : 0), by = p.y - Math.cos(a) * p.L;
+    if (playing && p.cool < 0 && Math.hypot(me.x - bx, me.z - bz) < 0.95 && Math.abs(me.y + 0.9 - by) < 1.3) { p.cool = 2.5; me.speed = -3.5; shake = 0.12; SC.lose(10, 'Clang! Mind the swinging hook.'); } }
+  /* the stone balls: they start at the head of the long stair when she is on it, and drop away at its foot */
+  const onStair = me.x > 21 && me.z < 18.5 && me.z > 5 && me.y > 11 && me.y < 20.5;
+  for (const b of balls) { b.cool -= dt; if (b.s < 0) { b.s += dt * 0.4; if (b.s >= 0 && !(onStair && playing)) b.s = -0.3; if (b.s >= 0) { b.s = 0; b.over = false; b.m.visible = true; echo(0.06); } continue; }
+    b.s += dt * (0.34 + b.s * 0.3); const z = mix(6.4, 17.2, b.s), y = mix(20, 11.5, clamp(b.s, 0, 1)) + 0.55, x = 23.2 + 0.9 * Math.sin(b.s * 9 + b.m.id); b.m.position.set(x, y, z); b.m.rotation.x += dt * 9; if (b.s > 1.12) { b.s = -rnd(1.2, 2.2); b.m.visible = false; continue; }
+    if (playing && Math.hypot(me.x - x, me.z - z) < 1.0) { if (me.y > y + 0.25) b.over = true; else if (b.cool < 0 && !b.over) { b.cool = 2; me.speed = -4; shake = 0.12; SC.lose(10, 'Thump! Leap the stone balls.'); } } else if (b.over && z > me.z + 1) { b.over = false; SC.gain(20, 'Leapt a stone ball!', 2); } }
+  if (!playing) return;
+  if (!seen.has(1) && me.x > -9) startTab(1);
+  if (me.y > 11 && me.y < 14 && me.x > 6 && first('archOn')) tell('From the gallery it looked a step away. It is a long walk, for someone your size.', 6);
+  for (const k of ['arch', 'timber', 'stair']) if (!built.has(k) && Math.hypot(me.x - marks[k].x, me.z - marks[k].z) < 2.0 && Math.abs(me.y - marks[k].y) < 1 && jump && !me.air) { state = 'etch'; etch = k; etchT = 0; me.speed = 0; tell(ETCH[k].t, 7.5); stateWant = STATES[built.size + 1]; SND.whoosh(0.1); }
+  /* missing planks on the timber bridge: leap them */
+  if (built.has('timber') && Math.abs(me.y - 20) < 2.6 && Math.abs(me.z - 4) < 1.8) for (const g of gaps) { const inside = me.x > g.x0 + 0.15 && me.x < g.x1 - 0.15; if (inside && !me.air && Math.abs(me.y - 20) < 0.3) { me.x = g.x1 + 2.4; me.speed = 0; shake = 0.1; g.over = false; SC.lose(10, 'Mind the gap! Take a run and leap the missing planks.'); }      /* set back far enough for a run-up */ else if (inside && me.air) g.over = true; else if (g.over && me.x < g.x0 && !me.air) { g.over = false; if (first('gap' + g.x0)) SC.gain(25, 'Leapt the gap!', 2); } }
+  if (built.has('stair') && me.y > 23 && first('dq')) tell('“Creeping along the sides of the walls, you perceived a staircase; and upon it, groping his way upwards, was Piranesi himself.”  Thomas De Quincey, 1821', 9);
+  /* the capstan: running round it winds the rope and lets the free end of the bridge down */
+  if (me.y > YT - 0.5 && !segBridge.on) { const r = Math.hypot(me.x - PC[0], me.z - PC[1]); if (r < 5.6 && Math.abs(me.speed) > 1.5) { const d = Math.abs(me.speed) * dt / Math.max(2, r); wheelA += d; if (Math.floor(wheelA * 3) !== Math.floor((wheelA - d) * 3)) { SND.puff(0.07); SND.bell(0, 0.03); } }
+    bridgeA = mix(A_UP, A_DOWN, clamp(wheelA / 14, 0, 1)); if (first('cap')) tell('The bridge hangs in the air on its rope. Somebody has to work the capstan.', 6);
+    if (wheelA >= 14) { segBridge.on = true; for (const c of pieceCoins.bridge) { c.userData.hide = false; if (!c.userData.pop) c.visible = true; } SC.gain(40, 'The drawbridge is down!', 3); echo(0.14); shake = 0.1; } }
+  if (segBridge.on && me.x > 6.4 && me.y > 27.5 && Math.abs(me.z - 8) < 2 && !seen.has(2) && !me.air) startTab(2);
+}
+const camLook = new V3(), tmp = new V3();
+function cameraAndLight(dt) {
+  const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw); let fogN = 60, fogF = 260, hemiI = 1.1, sunI = 2.6;
+  const lerpTo = (p, l, fov, k) => { camera.position.x += (p[0] - camera.position.x) * k; camera.position.y += (p[1] - camera.position.y) * k; camera.position.z += (p[2] - camera.position.z) * k; camLook.lerp(tmp.set(l[0], l[1], l[2]), k); camera.lookAt(camLook); camera.fov += (fov - camera.fov) * k; };
+  if (act === 2) { fogN = 26; fogF = 120; hemiI = 0.8; sunI = 4.4; } if (act === 3) { fogN = 42; fogF = 175; hemiI = 0.62; sunI = 4.4; }
+  if (state === 'title') { camera.position.set(4, 2.6, RZ + 24); camLook.set(0, 4, RZ - 12); camera.lookAt(camLook); }
+  else if (state === 'tab' || state === 'done') { const T = TABS[Math.max(0, tab)], c = T.cam(); lerpTo(c.pos, c.look, tabFov(T), Math.min(1, dt * 1.8)); }
+  else if (state === 'etch') { const c = ETCH[etch]; lerpTo(c.cam, c.look, 58, Math.min(1, dt * 2.2)); }
+  else { const alt = Math.max(0, me.y - (floorAt(me.x, me.z, me.y, true) ?? me.y)); let dist = 5.4 + Math.abs(me.speed) * 0.14 + alt * 0.4, cx = me.x - fx * dist, cz = me.z - fz * dist, cy = me.y + 3.0 + alt * 0.2;
+    if (act === 3) { cx = clamp(cx, -18.4, 25); if (Math.abs(me.y - YT) > 1.2 || me.x > -1) { const r = Math.hypot(cx - PC[0], cz - PC[1]); if (r < 7 && me.y < YT + 0.5 && me.y > 19) { cx = PC[0] + (cx - PC[0]) * 7.2 / r; cz = PC[1] + (cz - PC[1]) * 7.2 / r; } } }
+    if (act === 2) { cx = clamp(cx, -18, 18); cy = Math.min(cy, me.z > VZ + 4 ? 12 : 99); cz = Math.min(cz, VZ + 25); }
+    lerpTo([cx, cy, cz], [me.x + fx * 6, me.y + 1.5, me.z + fz * 6], 60 + Math.abs(me.speed) * 0.8, Math.min(1, dt * 5.5)); camera.rotation.z += -me.lean * 0.25; }
+  if (shake > 0) { camera.position.y += (Math.random() - 0.5) * shake; shake = Math.max(0, shake - dt * 0.3); }
+  const dc = window.__road.dbg.cam; if (dc) { camera.position.set(...dc.pos); camera.lookAt(...dc.look); camera.fov = dc.fov || 50; }
+  camera.updateProjectionMatrix();
+  const k = Math.min(1, dt * 2.5); scene.fog.near += (fogN - scene.fog.near) * k; scene.fog.far += (fogF - scene.fog.far) * k; hemi.intensity += (hemiI - hemi.intensity) * k; sun.intensity += (sunI - sun.intensity) * k;
+}
+function draw() {
+  const w = innerWidth, h = innerHeight;
+  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); target.setSize(Math.round(w * PR), Math.round(h * PR)); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  if (window.__road.dbg.raw) { renderer.setRenderTarget(null); renderer.render(scene, camera); return; }      /* test only: the scene as rendered, before the etching */
+  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); ENG.update(camera, time, target.width, target.height); renderer.render(postScene, postCam);
+}
+
+/* ================= input, and the hooks the tests use ================= */
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter') { e.preventDefault(); if (state === 'title' || state === 'done') begin(); else keys.add('Space'); } });      /* in play Enter is the same as Space; it must never reach the Start button, which still holds the focus after the first click */
+addEventListener('keyup', e => { if (e.code === 'Enter') keys.delete('Space'); keys.delete(e.code); }); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; touch.jump = false; });
+const cv = $('cv'), stk = $('stick');
+cv.addEventListener('pointerdown', e => { if (state !== 'play') return; if (stick.id !== null) { touch.jump = true; touch.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} stk.style.display = 'block'; stk.style.left = e.clientX + 'px'; stk.style.top = e.clientY + 'px'; stk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; stk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
+const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; stk.style.display = 'none'; } if (e.pointerId === touch.id) touch.jump = false; };
+cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
+$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
+$('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
+window.__road = { dbg: { camera, THREE, scene, ENG, sun, hemi, hold: false, cam: null, raw: false, TABS, HCAM }, get state() { return state; }, get act() { return act; }, get tab() { return tab; }, get tabT() { return tabT; }, get drawn() { return [...drawn]; }, get built() { return [...built]; }, get wheel() { return wheelA; }, get bridgeDown() { return segBridge.on; }, get goal() { return $('goal').textContent; },
+  me, begin, floorAt, spiral, seen, hump, marks, SPOTS, gaps, balls, pend, RZ, VZ, PC, YT, HINGE,
+  go(x, z, y) { me.x = x; me.z = z; if (y !== undefined) me.y = y; me.speed = 0; me.air = false; me.vy = 0; }, face(a) { me.yaw = a; },
+  /* jump.act(n) starts an act as play reaches it; jump.build(...keys) draws pieces in at once; jump.tab(i) stages picture i; jump.state(k) sets the look (0 the first state, 1 the second) */
+  jump: { act(n) { if (state === 'title' || state === 'done') begin(); state = 'play'; shadeWant = 0; $('melt').classList.remove('show'); $('plate').classList.remove('show'); if (n >= 2) for (const s of SPOTS) drawn.add(s.id); setAct(n); },
+    build(...ks) { for (const k of ks) setPiece(k, true); stateWant = STATES[built.size]; ENG.uniforms.uState.value = stateWant; }, bridgeDown() { wheelA = 14; bridgeA = A_DOWN; segBridge.on = true; for (const c of pieceCoins.bridge) { c.userData.hide = false; if (!c.userData.pop) c.visible = true; } },
+    state(k) { stateWant = k; ENG.uniforms.uState.value = k; },
+    tab(i) { if (i === 0) { this.act(2); me.z = VZ + 14; startTab(0); } if (i === 1) { this.act(3); me.x = -8.5; startTab(1); } if (i === 2) { this.act(3); seen.add(1); this.build('arch', 'timber', 'stair'); this.bridgeDown(); me.x = 6.6; me.z = 8; me.y = 28.5; me.yaw = PI / 2; startTab(2); } } } };
+let last = 0; function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(frame); }
+reset(); requestAnimationFrame(frame);
+</script>
+</body>
+</html>
