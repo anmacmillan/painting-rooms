@@ -1,0 +1,482 @@
+SOURCE: https://de.wikipedia.org/wiki/Straßenbahn_Wien  (plain-text extract via the MediaWiki API, fetched 17 Nov 2026)
+
+Die Wiener Straßenbahn, in der Wiener Umgangssprache auch als „Bim“ oder „Tramway“ bezeichnet, hat ihren Ursprung in einer von 1865 an betriebenen Pferdetramwaylinie. Wenig später wurde die Wiener Tramwaygesellschaft (WT) gegründet. Ab 1872 existierte die Neue Wiener Tramwaygesellschaft (NWT) als Konkurrent. 1883 fuhr die erste Dampftramway. 1897 wurde die Elektrifizierung begonnen und die Kommunalisierung eingeleitet. Der Ausbau des Straßenbahnnetzes erreichte seinen Höhepunkt in der Zwischenkriegszeit.
+Heute wird die Wiener Straßenbahn von den städtischen Wiener Linien betrieben. Die Stromversorgung erfolgt einheitlich über eine Oberleitung, die mit einer Gleichspannung von 600 Volt betrieben wird. 2023 wurden 273,4 Millionen Passagiere befördert. Im Jahr 2023 betrug die Linienlänge 232,9 Kilometer und die Gleislänge 422,1 Kilometer.
+Mit derzeit 29 Linien bildet die Straßenbahn auch heute, gemeinsam mit der U-Bahn, das Rückgrat des öffentlichen Verkehrs in Wien. In Wien existiert eines der größeren Netze weltweit (das größte befindet sich in Melbourne mit 245 Streckenkilometern).
+
+
+== Geschichte ==
+
+
+=== Die Pferdestraßenbahn ===
+
+Der erste Vorläufer der Straßenbahn in Wien war die Brigittenauer Eisenbahn, eine Pferdebahn, die vom 2. Juli 1840 bis zum 29. Juni 1842 vom Donaukanal (beim Rotenturmtor) über Obere Donaustraße, Gaußplatz und Jägerstraße zum Vergnügungsetablissement Kolosseum in der Zrinyigasse 15 in der Brigittenau führte und jeweils ab 14 Uhr alle Viertelstunden verkehrte.
+Um den Bau einer „Pferdetramway“ in Wien bewarben sich mehrere Firmen, von denen sich Schaeck-Jaquet & Comp. durchsetzen konnte und eine Konzession erhielt. Nach der Eröffnungsfahrt am 4. Oktober 1865 wurde am 5. Oktober 1865 der Regelbetrieb vom Schottentor an der neuen Wiener Ringstraße durch Alser Straße und Hernalser Hauptstraße nach Dornbach (das erst von 1892 an zu Wien gehörte; heute Linie 43) aufgenommen. Wien besaß damit die erste Straßenbahn des Kaisertums Österreich (ab 1867 österreichisch-ungarische Monarchie), gefolgt von Pest (1866), Buda (1868), Brünn und Temesvár (1869).
+In der Folge versuchte die Stadtverwaltung, auch andere Unternehmen zum Bau von Straßenbahnstrecken zu bewegen. Wegen der harten Bedingungen schlossen sich jedoch alle Bewerber zusammen, sodass die nun gebildete Wiener Tramwaygesellschaft als alleinige Unternehmung übrig blieb und am 7. März 1868 die Konzession erhielt. Sie baute in der Folge den größten Teil des Wiener Straßenbahnnetzes.
+Wegen der sozialen Verhältnisse und der schlechten Arbeitsbedingungen kam es in dieser Zeit immer wieder zu Arbeitskämpfen der Straßenbahnangestellten. Die Tramwaykutscher hatten tägliche Dienstzeiten von bis zu 19 Stunden, unterbrochen nur von einer 30-minütigen Mittagspause. Sie wurden für alle Schäden an den teilweise altersschwachen Fahrzeugen haftbar gemacht. Bei Verspätungen von mehr als einer Minute mussten sie an freien Tagen Strafdienste durchführen. Im April 1889 traten die Bediensteten in einen Streik, bei dem sie vom sozialdemokratischen Journalisten und späteren Spitzenpolitiker Victor Adler publizistisch unterstützt wurden. Obwohl Adler wegen seiner Kritik zu Arrest verurteilt wurde, siegten die Tramwaykutscher. Die ärgsten Schikanen wurden abgestellt und der Arbeitstag auf zwölf Stunden begrenzt.
+Ein Konsortium unter der Leitung des Ingenieurs Gustav von Dreyhausen, Schwiegersohn des bekannten Bankiers Moritz von Todesco, suchte um die Konzession für eine weitere Straßenbahngesellschaft an und erhielt sie am 21. Mai 1872. Die NWT führte den Verkehr am Gürtel (damals außerhalb der Stadtgrenze und bis 1898 noch ohne die Wiener Dampfstadtbahn) und in den noch nicht eingemeindeten Vororten der Stadt durch, ergänzte dabei das Netz der WT, trat aber auch als Konkurrent auf. Die NWT nahm am 25. Juni 1873 den Betrieb auf; 1877 betrug die Länge ihres Netzes bereits 42,4 Kilometer.
+
+
+=== Die Dampftramway ===
+Am 27. Oktober 1883 eröffnete die Dampftramway-Gesellschaft vormals Krauss & Comp. (DTKC) ihre erste Strecke zwischen dem 1892 eingemeindeten Wiener Vorort Hietzing und dem südlich von Wien gelegenen Perchtoldsdorf. 1887 wurde diese Richtung Süden nach Mödling verlängert. 1912 wurde sie bis Mauer elektrifiziert, 1921 von dort aus bis Mödling; heute führt sie als Linie 60 vom Westbahnhof nach Rodaun (23. Bezirk). Eine Zweigstrecke führte 1887–1908 von Hietzing nach Ober-St.-Veit (seit 1892 wie Hietzing im 13. Bezirk). Diese wurde nach der Elektrifizierung nicht durchgängig betrieben. Den östlichen Teil übernahm bis 1. September 2017 die Linie 58 bis Unter-St.-Veit, zwischen Unter.-St.-Veit (jenseits der Eisenbahnstrecke) und Ober-St.-Veit pendelte die Linie 158 mit einzeln fahrenden Triebwagen. Die Kreuzung mit der Eisenbahn durfte durch diese nur zu Betriebszwecken und ohne Fahrgäste befahren werden. Die Linie 158 wurde 1958 auf Busbetrieb umgestellt, die Linie 58 erhielt 1965 in der Nähe der aufgelassenen Eisenbahnkreuzung eine Wendeschleife, die seit dem 2. September 2017 von der Linie 10 befahren wird.
+Eine weitere Strecke der Dampftramway-Gesellschaft vormals Krauss & Comp. von überörtlicher Bedeutung führte 1886–1911 vom Donaukanal bei der Stefaniebrücke über Floridsdorf (seit 1905 21. Bezirk) in den nördlichen Vorort Stammersdorf (heute Linie 31), wo die Wagen von 1903 an auf die Züge der Stammersdorfer Lokalbahn nach Auersthal im Weinviertel übergehen konnten. Von Floridsdorf führte ebenfalls ab 1886 eine Zweigstrecke südostwärts über Kagran (1905 ebenfalls 21. Bezirk) nach Groß Enzersdorf am Rand der Lobau; sie wurde bis 1922 elektrifiziert. Heute existiert davon nur noch der Streckenteil in der Donaufelder Straße, welcher von der Linie 26 beziehungsweise zum Teil von der Linie 25 befahren wird. 1901 wurde die zentrale Abfahrtsstelle an die nächste Donaukanalbrücke flussaufwärts, die Augartenbrücke, verlegt.
+Eine Strecke der NWT führte 1886–1893 vom 1892 eingemeindeten Vorort Gaudenzdorf zum Bahnhof Wien Meidling (1893 auf Pferdebetrieb, 1903 auf elektrischen Betrieb umgestellt; heute Linie 62). Ihre ebenfalls 1886 eröffnete Verlängerung von Meidling nach Wiener Neudorf südlich von Wien wurde Teil der seit 1907 durchgehend elektrisch betriebenen und bis heute verkehrenden Lokalbahn Wien–Baden, der „Badner Bahn“.
+
+Weitere NWT-Dampftramwaystrecken führten 1884–1903 vom Westbahnhof in die Gymnasiumstraße (18./19. Bezirk; heute Linie U6 und Buslinien), 1885–1904 vom Neubaugürtel über Breitensee und Baumgarten nach Hütteldorf (heute Linie 49) und 1885–1903 von der Nußdorfer Straße (9. Bezirk) nach Nußdorf Zahnradbahnhof (heute etwa Linie D). Anschließend wurden alle diese Strecken auf elektrischen Betrieb umgestellt.
+
+
+=== Die elektrische Straßenbahn ===
+
+1892 wurden viele Vororte der Stadt eingemeindet. Die Christlichsozialen, bei denen sich bald Karl Lueger durchsetzte, wollten den bisher maßgeblichen liberalen Großkapitalismus zu Gunsten ihrer Anhänger, der kleinen Gewerbetreibenden, bremsen und setzten vor allem bei Straßenbahn, Strom- und Gasversorgung auf Kommunalisierung. Die Steuerkraft der Millionenstadt machte Lueger auch keine Probleme, für seine Akquisitionen auf dem Finanzmarkt die nötigen Kredite aufzunehmen.
+Nach seiner Wahl zum Bürgermeister, 1897, begann Lueger mit der konsequenten Kommunalisierung städtischer Dienstleistungen, die bis dahin von Privatunternehmen erbracht worden waren. 1899 erhielt die Stadt Wien vom k.k. Eisenbahnministerium per Kundmachung, von Minister Heinrich von Wittek gezeichnet, auf 90 Jahre die Konzession „eines Netzes von mit elektrischer Kraft zu betreibenden normalspurigen Kleinbahnlinien in Wien“. Die 99 in der Kundmachung explizit genannten Strecken(teile) umfassten Neubaustrecken und den Kauf des Netzes der Wiener Tramwaygesellschaft (WT), deren Mitarbeiter so weit wie möglich von der Stadt zu übernehmen waren. Zu diesem Zweck wurde die WT liquidiert und stattdessen von deren Hauptaktionär Siemens & Halske 1899 die „Bau- und Betriebsgesellschaft für städtische Straßenbahnen in Wien“ (BBG) gegründet. Die Linien wurden in Folge in den am 4. April 1902 ins Handelsregister eingetragenen Betrieb Gemeinde Wien – Städtische Straßenbahnen integriert. 1903 wurde auch das Netz der Neuen Wiener Tramwaygesellschaft gekauft. Im selben Jahr wurde Ludwig Spängler der Direktor des Unternehmens, er sollte die Wiener Straßenbahn als Leiter bis 1930 nachhaltig prägen.
+Am 28. Jänner 1897 fuhr erstmals eine elektrische Straßenbahn in Wien auf den Gleisen der heutigen Linie 5. Auch begünstigt durch die geringere Lärm- und Geruchsbelästigung im Vergleich zu Pferdetramway und Dampftramway, setzte sich die elektrische Straßenbahn rasch durch. Am 26. Juni 1903 fuhr die feierlich verabschiedete letzte Pferdetramway. 1907 wurden bis heute gültige Linienbezeichnungen mit Nummern beziehungsweise Buchstaben eingeführt. Die Dampftramway verkehrte noch bis 1922 auf einigen Streckenästen in den Außenbezirken. Die elektrifizierte Straßenbahn wurde in den beiden ersten Dritteln des 20. Jahrhunderts von den Wienern vielfach „die Elektrische“ genannt.
+Bis 1910 wurden – noch in der Tradition der Pferdestraßenbahn, bei der der direkte Kontakt des Fahrers mit den vorgespannten Pferden erforderlich war – ausschließlich Straßenbahnwagen mit offenen Plattformen ausgeliefert. Bis 1930 wurden diese nachträglich geschlossen.
+1911 wurden die ersten Doppelhaltestellen eingeführt.
+Am 5. März 1913 wurde der erste von der Hauptwerkstätte gefertigte Doppelstockwagen Probe gefahren.
+Während des Ersten Weltkrieges wurde der Betrieb immer schwieriger. Bis zum 20. Dezember 1915 wurden auf dem Ring und den Anschlussstrecken, wie der inneren Mariahilfer Straße, die Unterleitungen auf normale Oberleitung umgestellt. Die Unterleitungen waren ab 1901 auf Wunsch des kaiserlichen Hofes aus optischen Gründen installiert worden. Sie erforderten auf der Fahrt stadtauswärts ein kompliziertes Wechseln des Stromabnehmers. Ab 1916 mussten teilweise Frauen die Arbeit der zum Militär eingerückten Männer übernehmen, und der Betrieb musste teilweise auch eingestellt werden. 1917 wurde ein Viertel aller Haltestellen nicht mehr bedient.
+Am 16. Oktober 1925 wurde die von der Stadt Wien 1924 übernommene und elektrifizierte Wiener Elektrische Stadtbahn in das Tarifsystem der Straßenbahn aufgenommen. Ab dem 20. Oktober 1925 nahm dann auch die gemischte Straßen- und Stadtbahnlinie 18G ihren Betrieb auf, sie stellte eine Verknüpfung zwischen Straßenbahn und Eisenbahn dar und verkehrte bis 1945. 1929 wurde der Höchststand im Wagenpark erreicht, 1930 mit 318 Kilometer Streckenlänge die größte Netzdichte. In der Zwischenkriegszeit hatte Wien mehr Einwohner als heute (um 1910 erreichte die Stadt auf kleinerem Gebiet als heute 2,1 Millionen Einwohner; nach dem Ersten Weltkrieg begann die Einwohnerzahl merklich zu sinken und erreichte auf größerem Gebiet mit rund eineinhalb Millionen bei der Volkszählung von 1991 den tiefsten Stand); die Straßenbahn war damals als Stadtverkehrsmittel in Wien konkurrenzlos.
+Zwischen 1918 und dem Zweiten Weltkrieg wurde die Straßenbahn auch zum Sargtransport zum Zentralfriedhof genutzt. Als Vorbild diente hierbei die Straßenbahn Prag, wo ein solcher Verkehr bereits 1917 aufgenommen wurde.
+
+
+=== Umstellung auf Rechtsfahrbetrieb und Umspurung ===
+Nach dem „Anschluss“ an das Deutsche Reich wurde der Verkehr in der Nacht vom 18. auf den 19. September 1938 von Links- auf Rechtsverkehr umgestellt. Während des Zweiten Weltkriegs erlebte der Straßenbahnbetrieb, solange Wien noch von Kampfhandlungen verschont blieb, seine Beförderungshöchstleistung: Auf dem damals noch umfangreicheren Streckennetz wurden 1943 fast 732 Millionen Fahrgäste befördert. 18.000 Personen fanden bei der Wiener Straßenbahn Arbeit. Wegen der Luftangriffe auf Wien 1944/1945 und der Schlacht um Wien im April 1945 musste der Betrieb sukzessive eingestellt werden, die letzte Linie, der O-Wagen, am 7. April 1945.
+Die Spurweite der Wiener Straßenbahn und ihrer Vorläuferbetriebe WT, NWT und DTKC betrug ursprünglich 1440 Millimeter, nur die Elektrische Straßenbahn Wien-Kagran (WKB) fuhr auf der Normalspur von 1435 Millimetern. Erst mitten im Zweiten Weltkrieg wurde die länger geplante Umspurung umgesetzt. Als Übergangslösung erhielten die Straßenbahnwagen ab September 1942 ein Übergangsprofil von 1438 Millimetern. Ab August 1943 wurde angeordnet, dass Gleisneubauten und größere Gleistäusche mit dem Maß von 1435 Millimetern auszuführen sind.
+
+
+=== Nach dem Zweiten Weltkrieg ===
+
+Nach der Schlacht um Wien konnten die ersten fünf Linien den Betrieb am 28. April 1945 wieder aufnehmen. Die Wiener Straßenbahn hatte zu Kriegsbeginn 3665 Personenwagen. Davon wurden 587 zerstört und 1536 beschädigt. Die Wiederherstellung des Streckennetzes sollte bis 1950 dauern, einige kurze Streckenabschnitte wurden nicht mehr in Betrieb genommen. Zwischen dem Währinger Gürtel und Salmannsdorf ergänzte ab 1946 außerdem der Oberleitungsbus Wien (Linie 22) die Straßenbahn, er verkehrte bis 1958.
+1948 wurden im Rahmen des Marshallplanes gebrauchte Triebwagen aus New York angeschafft und als Typ Z (Wagennummern 4201–4242) in Betrieb genommen. Diese Wagen, die als Amerikaner bezeichnet wurden, waren etwas breiter als die sonst in Wien üblichen und konnten nur auf Strecken eingesetzt werden, die einen etwas größeren Gleisabstand – der noch von der Dampfstraßenbahn herrührte – hatten, wie beispielsweise auf der Linie 331 nach Stammersdorf. Die Wagen waren vergleichsweise modern, da sie über druckluftbetriebene Türen und automatisch einklappbare Aufstiege verfügten. Die Sitzlehnen ließen sich je nach Fahrtrichtung umklappen, sodass alle sitzenden Fahrgäste nach vorn schauen konnten. Die umfangreichen Anpassungen wurden teilweise von Gräf & Stift in Wien-Liesing vorgenommen.
+Bis in die 1950er Jahre wurde das Netz noch durchwegs mit alten, reparierten und teilweise mit neuen Aufbauten versehenen Wagen bedient, da erst ab 1951 neue angeschafft werden konnten. Diese Fahrzeugtypen wurden jedoch durchwegs in Serien mit geringer Stückzahl beschafft, da ab 1955 die vollständige Abschaffung der Straßenbahn auch in Wien als verkehrsplanerische Vision umging und Investitionen daher nur zögerlich getätigt wurden.
+Waren Anfang bis Mitte des 20. Jahrhunderts private Personenkraftwagen noch die Ausnahme, da für den größten Teil der Bevölkerung zu teuer, wurde mit der Zunahme des motorisierten Individualverkehrs in der Nachkriegszeit der Ruf nach einer autogerechten Stadt laut. Der Schienenverkehr auf der Straße wurde dabei als „Verkehrshindernis“ angesehen (der Begriff Verkehr dabei nur noch auf das Automobil bezogen), die vollständige Verlagerung des öffentlichen Verkehrs auf die Untergrundbahn und Omnibusse als Zukunftsvision verfolgt.
+Im Jahr 1956 wurden bei Gräf & Stift Gelenkwagen in Auftrag gegeben. Wegen der beengten Finanzlage wurden die neuen Wagen aus Altmaterial zusammengestellt, die Basis waren alte Fahrgestelle von zwei 1927 für die elektrische Stadtbahn beschafften Beiwagen der Type n1. Auf diese wurden moderne Wagenkästen aufgebaut und mittels eines Teleskop-Gelenkteils italienischer Bauart verbunden. Der Prototyp der Type D mit der Wagennummer 4301 wurde am 3. Juli 1957 ausgeliefert. Nach den Probe- und Einstellfahrten wurden die Gelenkwagen ab 17. Februar 1958 in Wien eingesetzt, die Jungfernfahrt war auf der Linie 71. Insgesamt wurden 16 Gelenkwagen der Type D1 gebaut und waren bis 1976 auf den Linien 9, 41, 42 und E2 eingesetzt. Die Fahrzeuge waren wegen ihres hohen Gewichts von 28 Tonnen schwerfällig und konnten auch sonst nicht überzeugen. 1958 wurde mit der Umstellung der kurzen Linie 158 zwischen Unter-St.-Veit und Ober-St.-Veit die Praxistauglichkeit des Omnibusses als Ersatz für die Straßenbahn getestet, ab 1960 erfolgte die kontinuierliche Umstellung von Linien mit Streckenführungen durch enge Straßenzüge im dicht verbauten Gebiet innerhalb des Gürtels; bekanntestes Beispiel ist die Linie 13 vom Südbahnhof zur Alser Straße. Aber auch einzelne Strecken an der Peripherie und über die Stadtgrenze hinaus in Umlandgemeinden wurden durch Buslinien ersetzt, so etwa die ehemaligen Dampftramwaystrecken nach Mödling (Linie 360) und Groß-Enzersdorf (Linie 317).
+
+
+=== Die U-Straßenbahn ===
+
+In den 1960er Jahren wurden zwei Straßenbahnabschnitte als „USTRABA“ in den Untergrund verlegt. Der 1966 tiefgelegte Abschnitt an der „Zweierlinie“ wurde 1980 zur U-Bahn-Strecke umgebaut und wird seither von der U2 befahren. Der 1969 tief gelegte Abschnitt am Südgürtel wird bis heute von den Linien 1, 6, 18 und 62 sowie der Lokalbahn Wien–Baden befahren.
+
+
+=== Neue Wagen, schaffnerloser Betrieb und der U-Bahn-Bau ===
+Die Erkenntnis, dass die erwogene Abschaffung der Straßenbahn vor allem wegen des eher langwierigen Baues des geplanten U-Bahn-Netzes kein kurzfristiges Vorhaben sein würde, führte mit den ab 1959 gebauten sechsachsigen Gelenktriebwagen der Typen E und E1, von denen bis zum Jahr 1976 insgesamt 427 Exemplare gebaut wurden, zu einem auf Langlebigkeit ausgerichteten Generationswechsel im Fuhrpark. Die letzten Gelenkwagen in der Hochflur-Bauweise waren die Fahrzeuge der Type E2, die Lizenzbauten der DUEWAG sind, mit dem passenden Beiwagen c5; sie sind seit 1978 im Einsatz. Bei dieser Type wurden ausfahrbare Trittstufen zur Komfortverbesserung beim Ein- und Ausstieg eingeführt. Weiters wurde das Design modernisiert und die technische Ausstattung wurde in den Sicherheitsaspekten erheblich verbessert. Von Simmering-Graz-Pauker (SGP) wurden 98 und von der Firma Bombardier wurden 24 Wagen erzeugt. Der erste Einsatz der Type E2 erfolgte am 28. August 1978 auf der Linie 6.
+
+Aus Gründen der Wirtschaftlichkeit wurde in den Beiwagen ab 1964 und in den Triebwagen ab 1972 damit begonnen, keine Schaffner mehr einzusetzen. Wolfgang Ambros sang dazu 1978 das Lied Schaffner sein, des war amal was, / so wird's nie wieder sein, des is des Schaffnerlos. Aus personalpolitischen Gründen dauerte es noch bis 1996, bis der letzte Schaffner (auf der Linie 46) seinen Dienst beendete. Eine Aufgabe des Schaffners war auch das Ausrufen der Stationen. Ab 1968 wurde diese Aufgabe durch die Tonbandstimme von Franz Kaida, seit Mitte 2013 durch die Stimme der Schauspielerin Angela Schneider übernommen.
+Mit dem Bau der Wiener U-Bahn kam es zu weiteren umfangreichen Streckeneinstellungen im Straßenbahnnetz. Parallelführungen mit der U-Bahn, auch auf kurzen Abschnitten, wurden vermieden. Da diese Planungspolitik auch heute noch umgesetzt wird, ist beim Ausbau des U-Bahn-Netzes auch weiterhin mit Stilllegungen im Straßenbahnbetrieb zu rechnen.
+
+
+=== Rasengleisabschnitte ===
+
+Anders als in anderen Städten begann man in Wien erst relativ spät, mit begrünten Straßenbahngleisen zu experimentieren.
+Ende der 1980er Jahre wurden zu Testzwecken in der Wolkersbergenstraße (Linie 62) und der Brünner Straße (Linie 31) die ersten Rasengleisabschnitte in Wien errichtet. Wenig später wurde am Gürtel zwischen den Haltestellen Südtiroler Platz und Wildgansplatz (Linien O und 18) der herkömmliche Beton-Oberbau ebenfalls durch eine Begrünung abgelöst.
+Kurz darauf wurden an einigen Abschnitten Lochbetonplatten verlegt, um einerseits eine notdürftige Befahrbarkeit durch Straßenfahrzeuge zu gewährleisten, andererseits aber auch dem Umweltgedanken gerecht werden zu können. Konkret war diese Oberbauform an mehreren Abschnitten zwischen Fickeysstraße und Zentralfriedhof 2. Tor (Linien 11 und 71) sowie am Schwedenplatz (Linien 1 und 2) zu finden. Anfänglich gedieh auch durch diese Lochbetonplatten das Gras.
+Nun folgten mehrere Jahre ohne weitere Testabschnitte, man hatte immer mehr das Interesse an Rasengleisen verloren. Als Folge dessen wurden in der Brünner Straße sowie am Gürtel zwischen den Haltestellen Südtiroler Platz und Südbahnhof sowie Heinrich-Drimmel-Platz und Wildgansplatz die Begrünung wieder entfernt und durch Beton ersetzt.
+Mit dem Bau der Straßenbahnstrecke durch die Tokiostraße und Prandaugasse wurde wieder ein neuer Rasengleisabschnitt errichtet, allerdings in einer neuen Oberbauform mit Vignolschienen und tiefliegender Vegetationsebene. Aufgrund von Anrainerbeschwerden wurden Gummidämmelemente zur Verminderung der Schwingungen der Schienen nachgerüstet, doch die Geräuschentwicklung ist nach wie vor extrem hoch. Auch an der Verlängerung der Linie 26 findet sich ein Rasengleisabschnitt der neueren Form, nämlich in der Oberfeldgasse.
+Außerdem fordern immer mehr Bezirke Rasengleisabschnitte, wie zum Beispiel im Bezirk Meidling zwischen den Haltestellen Dörfelstraße und Bahnhof Meidling oder im Bezirk Döbling in der Grinzinger Allee (Linie 38), doch die Wiener Linien haben sich bis jetzt vehement gegen die Errichtung zusätzlicher Rasengleisabschnitte gewehrt. Als Hauptargumente werden die nicht mehr gegebene Befahrbarkeit durch Einsatzfahrzeuge und die erhöhten Kosten durch die notwendige Pflege genannt.
+Bei der Verlängerung der Linie D durch das Sonnwendviertel wurde entlang des Helmut-Zilk-Parks aufgrund eines erfolgreichen Antrages der Grünen ein Rasengleis mit hochliegender Vegetationsebene errichtet. Nur an den Stationen, der neuen Wendeschleife im Bereich Absberggasse bzw. Geiereckstraße und bei Kreuzungspunkten mit Straßen und Wegen kommt der herkömmliche Beton-Oberbau zur Anwendung. Zusammen mit dem Abschnitt in Lainz ist die etwa 900 Meter lange Strecke im Sonnwendviertel die längste begrünte Gleisanlage in Wien.
+Auch bei der im Oktober 2020 in Betrieb genommenen Verlängerung der Linie O im Nordbahnviertel wurde die etwa 150 Meter lange Strecke im Straßenzug Am Tabor (Unterfahrung der Nordbahn) als Rasengleis ausgeführt. Nach einer Forderung einer Bürgerinitiative einigten sich die Stadt Wien, Wiener Linien und die Bezirksvorsteherin der Leopoldstadt bezüglich der Errichtung und der zusätzlichen Kosten gegenüber einem Beton-Oberbau.
+
+
+== Gegenwart ==
+Das Verkehrsmittel Straßenbahn an sich ist in Wien heute nicht mehr infrage gestellt, es sind sogar einige Neueröffnungen geplant.
+In den letzten Jahrzehnten unternahmen die Wiener Linien außerdem einiges zur Komfortverbesserung. An vielen Haltestellen wurden sogenannte Haltestellenkaps errichtet, Ausbuchtungen des Gehsteigs, von denen aus der Fahrgast den Zug direkt betreten kann, ohne zuvor auf Fahrbahnniveau hinunterzusteigen. Um auch das Hinaufsteigen in die Wagen zu vermeiden, wurde begonnen, Niedrigstflur-Garnituren zu kaufen, in die von Haltestellenkaps praktisch eben eingestiegen werden kann und bei denen sich auch in den Fahrzeugen keine weiteren Stufen mehr befinden. Damit sind diese Fahrzeuge Rollstuhl- und Kinderwagen-tauglich. Ein Großteil der Haltestellen ist, beziehungsweise wird, mit einem elektronischen Anzeigesystem ausgestattet, das die Fahrgäste darüber informiert, wann die nächsten Züge kommen und ob diese rollstuhltauglich sind. Viele Aufschriften und Durchsagen werden nun in Deutsch und Englisch geboten. Die Netzkarten der Wiener Linien haben im westeuropäischen Vergleich günstige Preise.
+
+
+=== Niederflurwagen ===
+
+Ab 1995 setzte Wien die ersten Niederflurwagen, genannt ULF (Ultra Low Floor = extrem niedriger Boden) ein. Diese von Simmering-Graz-Pauker (heute Siemens) und Elin entwickelten und hergestellten Fahrzeuge weisen mit 18 Zentimetern die niedrigste Einstiegshöhe weltweit aus. Heute sind in Wien etwa 300 ULF-Niederflurfahrzeuge in vier Varianten im Einsatz. Die Ausschreibung über die Beschaffung einer neuen Fahrzeuggeneration wurde im Herbst 2013 gestartet. Nicht genutzt wurde somit die Option, bei Siemens weitere ULF-Wagen zu beziehen. Ende 2014 beschlossen die Wiener Linien die Bestellung von 119 bis 156 Gelenkwagen des Typs Bombardier Flexity Wien bis 2026. Die ersten Flexity haben ab 2018 alte Hochflurwagen ersetzt. Die genaue Stückzahl der Bestellung hängt von Netzerweiterungen und zukünftigen Intervallverdichtungen ab. Vorangegangen war ein erfolgloser Einspruch der unterlegenen Firma Siemens gegen die Vergabeentscheidung.
+
+
+=== Cross-Border-Leasing ===
+1998 wurde ein Teil der U-Bahn- und Straßenbahngarnituren unter Beibehaltung der Eigentumsrechte im Rahmen eines Cross-Border-Leasing-Vertrages an eine US-amerikanische Finanzgesellschaft verkauft und dann mit einer Rückkaufoption geleast. 2004 wurden solche Geschäfte in Wien verboten und Verträge werden seitdem aufgelöst. 2006 wurde einer von den insgesamt 6 bestehenden Verträgen aufgelöst, 2009 dann ein weiterer. Die Leasing-Verträge für das Wiener Kanalsystem wurden 2019 beendet, die restlichen Verträge der Wiener Linien laufen noch. Das Gesamtvolumen der Verträge der Wiener Linien belief sich auf insgesamt 1,18 Mrd. Euro. Der Gewinn wird auf einen niedrigen dreistelligen Millionenbetrag geschätzt, aber nicht näher spezifiziert.
+
+
+== Netzentwicklung ==
+
+
+=== Umgesetzte Projekte seit 1995 ===
+Die folgenden Projekte wurden bis heute umgesetzt:
+Verlängerung nach Kaiserebersdorf (Linie 71)
+
+1996 wurde die Linie 71 von ihrer bisherigen Endstation Zentralfriedhof, 3. Tor, nach Kaiserebersdorf (ebenfalls im 11. Bezirk, Simmering) verlängert, um neue Wohnviertel auf dem Leberberg an die Linie 71 als Zubringer zur U3 anzuschließen.
+Neuorganisation in der Brigittenau und Floridsdorf (Linien 31 und 33)
+
+Mit 4. Mai 1996 wurden, zusammen mit der Verlängerung der U6 nach Floridsdorf, mehrere Straßenbahnlinien angepasst. Die Linie 32, welche zwischen Schottenring und Strebersdorf verkehrte, wurde aufgelassen. Dafür wurde die Route der Linie 31 von der Jägerstraße auf die Strecke des 32ers in die Klosterneuburger Straße und die Wexstraße verlegt und die Linie 26 von Floridsdorf nach Strebersdorf verlängert. Die ehemalige Linie 31/5 zwischen der U-Bahn-Station Josefstädter Straße (U6) und der Gerasdorfer Straße wurde in 33 umbenannt und übernahm bis zur Einstellung am 5. Oktober 2025 zwischen dem Wallensteinplatz und der Stromstraße den Abschnitt in der Jägerstraße.
+Zweite Anpassung in Stammersdorf (Linien 30 und 33)
+
+Am 27. Dezember 2004 wurde die Linie 33 von der Gerasdorfer Straße zum Friedrich-Engels-Platz zurückgezogen. Gleichzeitig wurde eine neue Linie 30 als Verstärker für die Linie 31 zwischen Floridsdorf und Stammersdorf eingerichtet, damit der Abschnitt weiterhin von zwei Straßenbahnlinien bedient wird.
+Stilllegung der Strecke nach Leopoldau
+
+Mit der Eröffnung der U1 zwischen Kagran und Leopoldau im Jahr 2006 wurde die Linie 25 vorübergehend eingestellt und die Strecke zwischen Kagraner Platz und Leopoldau aufgelassen. Die verbleibende Strecke nach Aspern übernahm die Linie 26.
+Stilllegung der Strecke zur Stadlauer Brücke
+
+Nach Eröffnung der U2-Verlängerung zum Stadion blieb die Linie 21 zur Abwicklung des Verkehrs während der Fußball-Europameisterschaft 2008 in Betrieb. Nach dem Turnier wurde die Linie eingestellt, die Gleise vom Praterstern stadtauswärts wurden entfernt. Die Feinerschließung entlang der Linie übernahmen Autobusse.
+Verkehr auf der Ringstraße (Linien 1 und 2)
+
+Zwei Linien befuhren ab dem 30. Juni 1986 die Ringstraße und den Franz-Josefs-Kai als Endlosschleife: Linie 1 im Uhrzeigersinn auf dem Innengleis, Linie 2 gegen den Uhrzeigersinn auf dem Außengleis. Am 26. Oktober 2008 erhielten beide Linien im Sinn der historischen Durchgangslinien eine neue Streckenführung, indem sie zwei Radialstrecken von anderen Linien übernahmen und diese über den Ring verbanden. Dadurch entfielen die Standzeiten am Stubentor und am Schottenring, ebenso die Liniensignale J, N und 65.
+Im Dezember 2009 wurde eine Gleisverbindung von der Stadiongasse (Linie 2) durch die Reichsratsstraße (hinter dem Parlament) zum Schmerlingplatz (Linie 46) fertiggestellt. Bis dahin konnten Züge der Linie 2 bei Sperren der Wiener Ringstraße (z. B. bei Veranstaltungen oder Demonstrationen) von Ottakring kommend nur bis zur Station Josefstädter Straße (U6) am Gürtel geführt werden, da in Ringnähe keine Umkehrschleife vorhanden war. Nunmehr kann die Linie 2 an der Schleife Dr.-Karl-Renner-Ring wenden oder bei Bedarf über den Universitätsring umgeleitet werden.
+Neuorganisation Linien 6 und 71
+
+Am 9. Dezember 2012 wurde die Linie 71 von ihrer stadteinwärtigen Endstation beim Schwarzenbergplatz über die Ringstraße zur Börse verlängert und erhielt dadurch Anschluss an die U-Bahn-Stationen Karlsplatz (U1, U2, U4), Volkstheater (U2, U3) und Schottentor (U2). Stadtauswärts wurde sie dagegen wieder zum Zentralfriedhof zurückgezogen, die Strecke nach Kaiserebersdorf übernahm die ab Enkplatz verlängerte Linie 6.
+
+Verlängerung zum Hauptbahnhof (Linie D)
+
+Mit der Teilinbetriebnahme des Wiener Hauptbahnhofs am 9. Dezember 2012 wurde die Linie D von ihrer Endstation Südbahnhof, die gleichzeitig ihren heutigen Namen Quartier Belvedere bekam, zum Osteingang des Hauptbahnhofs verlängert. Die Strecke unterquert den Hauptbahnhof im Zuge der Karl-Popper-Straße, wo die Haltestelle Hauptbahnhof Ost eingerichtet wurde, und endete bis zur Verlängerung ins Sonnwendviertel 2019 südlich des Bahnhofes an der Alfred-Adler-Straße in einer Schleife.
+Streckenneubau im Bereich Kagran (Linie 25)
+
+Am 22. Dezember 2012 ging die Strecke von der Kreuzung Donaufelder Straße / Josef-Baumann-Gasse durch Tokiostraße und Prandaugasse zur U1-Station Kagran (etwa ein Kilometer) in Betrieb. Für ihre Bedienung wurde die Linie 25, die 2006 wegen der Verlängerung der U1 nach Leopoldau eingestellt worden war, reaktiviert. Sie verbindet nun den Bahnhof Wien Floridsdorf (U6, ÖBB) an der S-Bahn-Stammstrecke etwa parallel zur Donau mit den U-Bahn-Stationen Kagran (U1), Hardeggasse (U2) und Donauspital (U2) sowie mit der schon bis 2006 von der Linie 25 angefahrenen Endstation Oberdorfstraße im einstigen Vorort Aspern. Im Gegenzug wurde die Linie 26 von Aspern nach Kagran zurückgezogen.
+Verlängerung zur U-Bahn-Station Hausfeldstraße (Linie 26)
+
+Seit 5. Oktober 2013 befährt die Linie 26, von der U1-Station Kagraner Platz ausgehend, eine rund 4,7 Kilometer lange Neubaustrecke zur U2-Station Hausfeldstraße. Die Strecke ging gemeinsam mit der Verlängerung der U2 zur Seestadt Aspern in Betrieb. Bestandteil der Strecke ist eine Hochtrasse über die Laaer Ostbahn und die Wiener Nordrand Schnellstraße, die im Linksverkehr befahren wird; dadurch konnte die dortige Station Gewerbepark Stadlau in Hochlage mit einem Mittelbahnsteig errichtet werden. Baubeginn der Strecke war am 13. Jänner 2012. Das Streckenstück Kagraner Platz – Kagran durch die Wagramer Straße, das zuvor von der Linie 26 genutzt wurde, wurde am 18. August 2013 aufgelassen; die Gleise wurden vom übrigen Netz getrennt und blieben zunächst ungenutzt in der Wagramer Straße liegen, bis sie im August 2025 im Zuge deren Neugestaltung entfernt wurden.
+Stilllegung der Strecke nach Oberlaa (Linie 67)
+
+Schrittweise wurde die ursprünglich bestehende Streckenführung der Linie 67 an ihrem südöstlichen Ast aufgrund des Baus der U1-Verlängerung auf demselben Streckenabschnitt verkürzt. So wurde zunächst am 1. März 2014 der Abschnitt zwischen Per-Albin-Hansson-Siedlung und Oberlaa stillgelegt, da auf diesem Teilstück die oberirdischen Bauarbeiten für die U-Bahn-Trasse direkt auf der alten Straßenbahntrasse durchgeführt wurden. Bis zur Fertigstellung der U-Bahn-Strecke verkehrte anstelle der Linie 67 auf dem Abschnitt zwischen Alaudagasse und Oberlaa die Buslinie 67E. Mit der Fertigstellung und Eröffnung der U1-Verlängerung nach Oberlaa im September 2017 wurde die gesamte Strecke in der Favoritenstraße aufgegeben, die Linie 67 verkehrte dann bis September 2019 zwischen Otto-Probst-Platz und Reumannplatz. Dann wurde dieser Abschnitt von der neuen Linie 11 übernommen.
+Umbau des Johann-Nepomuk-Berger-Platzes (Linien 2 und 44)
+
+Im Sommer 2017 wurde der Johann-Nepomuk-Berger-Platz umgebaut, um die Linienenden der Linien 2 (zuvor Ottakring) und 44 (Dornbach) zu tauschen. Durch diese Maßnahme sollten Parallelführungen zu den Linien 43 und 46 aufgehoben werden. Die Bauarbeiten umfassten das Einrichten neuer Gleisverbindungen und das Verlegen der Gleise von der Mitte an den Rand des Platzes; darüber hinaus wurde der Platz neugestaltet.
+Umbau auf der Kennedybrücke (Linien 10 und 60)
+
+Ebenfalls 2017 wurde auf der Kennedybrücke eine neue Gleisverbindung eingebaut. Dadurch können die Straßenbahnzüge das dort befindliche Aufnahmsgebäude der U-Bahn-Station Hietzing (U4) im Linksverkehr auf dem inneren Gleis umrunden. Im Anschluss daran wurde die Linie 60 von Hietzing zum Westbahnhof verlängert. Die Linie 58, die diesen Abschnitt zuvor befuhr, entfiel komplett; ihren Linienweg zwischen Hietzing und Unter St. Veit übernahm die Linie 10, die vorher ebenfalls in Hietzing endete.
+Neuorganisation Favoriten und Simmering (Linien 6, 11 und 71)
+
+Seit 2. September 2019 wird die Linie 67 als Linie 11, vom Otto-Probst-Platz kommend, ab Reumannplatz über die Strecke der Linie 6 bis Kaiserebersdorf geführt. Gleichzeitig wurde die Linie 71 nach Kaiserebersdorf verlängert. Die Linie 6 endet stattdessen, von Favoriten kommend, an einer neuen Schleife an der Geiereckstraße. In ersten Planungen sollte die Linie 6 nur zum Enkplatz gekürzt werden und die neue Linie 11 als reine Verstärkerlinie zwischen Enkplatz und Kaiserebersdorf verkehren. Die Liniennummer 11 wurde in einer Online-Abstimmung festgelegt. Das überarbeitete Linienkonzept sah ferner vor, die Linie 6 ab der Haltestelle Schrankenberggasse über eine mittlerweile verworfene Neubaustrecke ins Kreta-Viertel (Siemensgründe) zu führen.
+Erschließung des Sonnwendviertels (Linie D)
+
+Im Dezember 2019 wurde der D-Wagen durch das Sonnwendviertel zur Gudrunstraße auf Höhe der Absberggasse beim ungefähr gleichzeitig gebauten Mistplatz der MA 48 verlängert. Entlang des Helmut-Zilk-Parks fahren die Züge auf Rasengleisen, dies ist bisher die längste zusammenhängende Strecke. Die Schleife Absberggasse kann für Kurzführungen auch von den hier verkehrenden Linien 6 und 11 genutzt werden.
+Erschließung des Nordbahnviertels (Linie O)
+
+Zur Erschließung des Nordbahnviertels wurde eine ein Kilometer lange Neubaustrecke errichtet, die bei der Haltestelle Nordbahnstraße von der Linie 5 abzweigt. Bedient wird sie von der Linie O, die von ihrer bisherigen nördlichen Endstation beim Bahnhof Wien Praterstern (U1, U2, ÖBB) bis zur Bruno-Marek-Allee im Stadtentwicklungsgebiet verlängert wurde. Die Endschleife befindet sich beim Bildungscampus Christine Nöstlinger, mit dem die Strecke gemeinsam in Betrieb hätte gehen sollen. Wegen Verzögerungen beim Bau wurde die Strecke erst am 3. Oktober 2020 eröffnet, bis dahin verkehrten zum Campus Shuttlebusse vom Praterstern.
+Erschließung Nordbahnviertel (Linie 12, 1. Baustufe)
+
+Das Nordbahnviertel wurde zusätzlich zur Linie O durch eine neue Linie 12 erschlossen, die mittelfristig in einer zweiten Baustufe auch das Stadtentwicklungsgebiet am ehemaligen Nordwestbahnhof anbinden soll. In der ersten Baustufe wurde eine 2,2 Kilometer lange Neubaustrecke mit fünf neuen Haltestellen errichtet, die bei der Haltestelle Rebhanngasse (Linie 2) vom bestehenden Gleisnetz der Wiener Straßenbahn abzweigt und anschließend über die Taborstraße und Vorgartenstraße (Anschluss an die U-Bahn-Station Vorgartenstraße (U1)) bis zur Endhaltestelle Hillerstraße im Stuwerviertel verläuft. Die Linie 12 verkehrt, von der Neubaustrecke kommend, über Bestandsgleise über die Verkehrsknoten Traisengasse (ÖBB), Friedensbrücke (U4) und Franz-Josefs-Bahnhof (ÖBB) bis zur U-Bahn-Station Josefstädter Straße (U6). Bis zum Bau der Strecke durch das Areal des Nordwestbahnhofes wird dieses nördlich über das Bestandsnetz umfahren. Baubeginn war 2024, die Inbetriebnahme erfolgte am 1. September 2025. Die Linie 33, deren Verlauf fast vollständig von der Linie 12 abgedeckt wurde, wurde ab Einführung der Linie 12 dauerhaft zur Schleife Augasse geführt, zusätzlich wurden die Intervalle auf 15 bis 20  Minuten gestreckt. Die daraus resultierende geringe Nachfrage führte zur Einstellung der Linie 33 am 5. Oktober 2025.
+Erschließung Berresgasse, Heidjöchl und Seestadt Nord (Linie 27)
+
+Zur Anbindung der Stadtentwicklungsgebiete Berresgasse und Heidjöchl sowie des nördlichen Bereiches der Seestadt wurde eine bei der Prinzgasse vom Bestandsnetz abzweigende Neubaustrecke zum Bahnhof Aspern Nord (U2, ÖBB) gebaut. Die Strecke wird von der neuen Linie 27 befahren, die im Anschluss an die Neubaustrecke gemeinsam mit der bestehenden Linie 26 über den Kagraner Platz (U1) und Floridsdorf (U6, ÖBB) bis nach Strebersdorf geführt wird. Die Inbetriebnahme erfolgte am 6. Oktober 2025.
+Verlängerung zum Stadion (Linie 18)
+
+Die Linie 18 wurde am 5. September 2026 von ihrer vorherigen Endstation bei der U-Bahn-Station Schlachthausgasse (U3) durch den Prater über die U-Bahn-Station Stadion (U2) zur Kreuzung Meiereistraße/Handelskai verlängert. Das Projekt wurde im Juni 2023 offiziell angekündigt, Baubeginn war Februar 2025. Beim Ernst-Happel-Stadion wurde eine weitere Wendeschleife errichtet, um die Linie bei Großveranstaltungen trotz Straßensperren weiterhin zum Stadion führen zu können. Die Verlängerung ersetzte in diesem Bereich die Buslinie 77A, ferner wurde die Durchfahrt durch den Prater für den Kfz-Verkehr dauerhaft verboten.
+
+
+=== Zukünftige Projekte ===
+Für die Zeit nach 2025 sind folgende Projekte gemäß dem Koalitionsprogramm 2025–2030 der aktuellen Wiener Stadtregierung bzw. gemäß dem aktuellen Stadtentwicklungsplan („Wien-Plan STEP 2035“) geplant:
+Anbindung der Linie O an die U2
+
+Die Linie O soll mit der für Mitte der 2030er Jahre geplanten Eröffnung der U2-Verlängerung zum Wienerberg an diese angebunden werden. Dafür wird sie ab der Kreuzung Neilreichgasse/Troststraße über eine Neubaustrecke entlang der Troststraße bis zur geplanten U-Bahn-Station Gußriegelstraße geführt.
+Anbindung der Linie 10 an die U5
+
+Im Zuge der für Mitte der 2030er Jahre geplanten Eröffnung der neuen U-Bahnlinie U5 bis zum Bahnhof Hernals ist eine adaptierte Wendeschleifenführung der Linie 10 über eine Neubaustrecke entlang der Lobmeyrgasse und der Julius-Meinl-Gasse vorgesehen, um die Linie 10 direkt an die U5 anzubinden.
+Erschließung Nordwestbahnviertel (Linie 12, 2. Baustufe)
+
+Die Linie 12 soll in einer zweiten Baustufe über eine Neubaustrecke direkt durch das Stadtentwicklungsgebiet Nordwestbahnhof geführt werden. Die Strecke verläuft entlang der Wallensteinstraße zwischen den bestehenden Haltestellen Rauscherstraße (Linie 5) und Traisengasse (Linie 2).
+Wienerbergtangente (Linie 15)
+
+Die neu zu errichtende „Wienerbergtangente“ soll als Ersatz für die Autobuslinie 15A zwischen Bahnhof Wien Meidling (U6, ÖBB) und der U1-Station Altes Landgut am Verteilerkreis Favoriten verkehren. Sie soll, am Verteilerkreis Favoriten beginnend, durch die Grenzackerstraße, Raxstraße, Wienerbergstraße und Wurmbstraße zur Philadelphiabrücke führen, von wo sie dem Verlauf der Linie 62 bis zur Haltestelle Dörfelstraße folgen soll. Hier soll sie in der Schleife Murlingengasse wenden. Die Länge der neu zu errichtenden Strecke beträgt rund vier Kilometer. An beziehungsweise nahe der vorgesehenen Strecke liegen der Bürokomplex Euro Plaza, das Unfallkrankenhaus Meidling, die Zentrale der Wiener Gebietskrankenkasse, die Wienerberg City, die Höhere Technische Lehranstalt Wien 10, die Pädagogische Hochschule Wien sowie mehrere große Wohnhausanlagen, darunter der George-Washington-Hof.
+Entgegen ursprünglichen Planungen, die die Umsetzung dieses Projekts zwischen 2015 und 2017 vorsahen, wurde Mitte 2014 bekanntgegeben, dass man vorerst vom Individualverkehr getrennte Busspuren („Buskorridor“) auf der kompletten Länge zwischen Wienerbergbrücke und Altem Landgut errichten möchte. Die Straßenbahn soll erst in den 2030er Jahren, gemeinsam mit der Verlängerung der U2 zum Wienerberg, in Betrieb gehen.
+Weitere Erschließung der Seestadt (Linie 25)
+
+Die Linie 25 soll von ihrem östlichen Ende in Aspern durch die Seestadt zur Schleife der Linie 27 beim Bahnhof Aspern Nord (U2, ÖBB) verlängert werden. Die Planungen dafür sind mit Stand 2025 am Laufen.
+Donaufeldtangente (Linie 25)
+
+Für das zukünftige Stadtentwicklungsgebiet im Raum Donaufeld sollen Straßenbahngleise von der Fultonstraße abbiegend über die Nordmanngasse, einen noch zu realisierenden Straßenzug und die Arakawastraße Richtung Tokiostraße geführt werden, wo sie in die Gleise Richtung Kagran einmünden. Für die Bedienung dieser Strecke ist die Linie 25 vorgesehen.
+Neubaustrecke in der Donaustadtstraße (Linie 25)
+
+Zwischen den Haltestellen Siebeckstraße und Donaustadtstraße könnte die Linie 25 von der Wagramer Straße und der Erzherzog-Karl-Straße auf einen neuen, kürzeren Weg über die Donaustadtstraße verlegt werden.
+Lückenschluss Obere Augartenstraße – Neue Linie für die Bezirke Leopoldstadt und Brigittenau (Linie 29)
+
+Nach Fertigstellung der Strecke durch das Nordwestbahnviertel (Linie 12) soll eine neue Linie 29 eingerichtet werden, die mit Einstellung der Linie 33 den Wegfall der Straßenbahn in der Jägerstraße zwischen Wallensteinplatz und Gaußplatz kompensieren soll. Diese soll vom Friedrich-Engels-Platz über die U-Bahn-Stationen Jägerstraße (U6) und Taborstraße (U2) bis zur U-Bahn-Station Schwedenplatz (U1, U4) verkehren und dabei überwiegend Bestandsgleise nutzen. Lediglich in der Oberen Augartenstraße ist eine kurze Neubaustrecke notwendig, ferner ist eine zusätzliche Haltestelle in der Stromstraße geplant.
+Straßenbahn nach Schwechat (Linie 72)
+
+Die neue Straßenbahnlinie 72 soll von der U-Bahn-Station Simmering (U3) an Zentralfriedhof, Kaiserebersdorf und der Hauptwerkstätte vorbei bis zum Europaplatz in Schwechat führen. Hierbei muss von der Hauptwerkstätte in Simmering eine etwa 2,75 Kilometer lange Neubaustrecke nach Schwechat gebaut werden, die auch die Station Kaiserebersdorf der Linie S7 anbindet. Eine solche Linie 72 existierte bereits bis 1961. Am 18. März 2022 gaben die Landeshauptleute von Wien und Niederösterreich, Michael Ludwig und Johanna Mikl-Leitner, eine Einigung der beiden Bundesländer über die Errichtung der Strecke bis 2025 bekannt. Eine weitere Verlängerung nach Rannersdorf wird überlegt. Eine Kostenbeteiligung des Bundes wurde für die Errichtung zugesagt, nicht jedoch für den Betrieb. Ein Jahr nach der Ankündigung war die Finanzierung jedoch noch nicht abschließend geklärt.
+Die konkreten Planungen für das Projekt wurden im April 2024 auf Eis gelegt. Es ist als künftiges Ausbauziel seitens der Stadt Wien allerdings nach wie vor vorgesehen.
+
+
+=== Weitere Ausbauoptionen ===
+Darüber hinaus wurden in den letzten Jahren folgende Projekte diskutiert:
+Neubaustrecke Bruno-Marek-Allee bis Friedrich-Engels-Platz (Linie O)
+
+Die Linie O könnte vom Nordbahnhofgelände aus später durch die Engerthstraße zum Friedrich-Engels-Platz geführt werden.
+Neubaustrecke Neilreichgasse (Linie 11)
+
+Die Linie 11 könnte zwischen der Troststraße und dem Quellenplatz nicht mehr parallel zur Linie O, sondern über eine Neubaustrecke durch die Neilreichgasse führen. Durch eine längere Parallelführung mit der Linie 6 könnte diese entlastet werden. Das Projekt war zwischenzeitlich auf der offiziellen Info-Seite der Stadt Wien zum Straßenbahnausbau aufgelistet, ist nun mit Stand 2025 allerdings nicht mehr aktuell bzw. zurückgestellt.
+Neubaustrecke Hillerstraße bis Stadion (Linie 12, 3. Baustufe)
+
+Für die künftige Linie 12 wurde in der Planung bereits eine weitere Verlängerung ab der Endhaltestelle Hillerstraße bis zur U-Bahn-Station Stadion (U2) untersucht. Dort würde neben der U2-Anbindung auch ein direkter Umstieg zur Linie 18 und somit eine optimierte tangentiale Verbindung zwischen dem 2. und 20. Bezirk einerseits sowie dem 3. Bezirk andererseits ermöglicht werden.
+Erschließung des Wohngebiets Monte Laa (Linie D oder Linie 67 bzw. 68)
+
+Die Anbindung des Siedlungs- und Wohngebiets Monte Laa könnte entweder durch eine neue Linie mit dem Liniensignal 67 bzw. 68 vom Reumannplatz (U1) kommend entlang der Laaer-Berg-Straße oder durch eine Verlängerung der Linie D entlang der Absberggasse und Laaer-Berg-Straße erfolgen. Das Projekt war zwischenzeitlich mit der Variante zwischen Reumannplatz und Monte Laa / Siedlung Südost auf der offiziellen Info-Seite der Stadt Wien zum Straßenbahnausbau aufgelistet, ist nun mit Stand 2025 allerdings nicht mehr aktuell bzw. zurückgestellt.
+Erweiterungen nach Niederösterreich
+
+Es gibt neben der Linie 72 nach Schwechat noch weitere Überlegungen zur Ausdehnung des Straßenbahnnetzes nach Niederösterreich. Angedacht ist eine Verlängerung der Linie 25 um etwa sieben Kilometer nach Groß-Enzersdorf, das bereits bis 1970 per Straßenbahn erreicht werden konnte.
+Darüber hinaus gibt es Überlegungen für eine neue Lokalbahn vom Bahnhof Liesing (ÖBB) nach Kaltenleutgeben über Perchtoldsdorf, wobei diese auf der Trasse der ehemaligen Kaltenleutgebner Bahn verlaufen könnte. Diese soll von den Wiener Lokalbahnen als Kombination aus Vollbahn und Straßenbahn betrieben werden, nach dem Vorbild der Lokalbahn nach Baden. Letzteres steht mit den Neubauplänen im Bereich Waldmühle im Zusammenhang.
+
+
+=== Aufgegebene Optionen ===
+Folgende Ausbauoptionen waren in der Vergangenheit im Gespräch, sind aber durch andere Planungen obsolet geworden:
+„Das große X“ (Linien 13 und 14)
+
+Nach jahrelangen Forderungen zur Wiedererrichtung der Linie 13 statt der überlasteten Buslinie 13A, wurde in der Koalitionsvereinbarung 2010 eine Machbarkeitsstudie in Auftrag gegeben. Diese ergab die prinzipielle Realisierbarkeit, allerdings mit hohen Kosten verbunden und empfahl sie lediglich als langfristige Option. Kurzfristig wurde stattdessen die Buslinie 13A auf Gelenkbusse umgestellt. Mittelfristig erhofft sich die Stadt Wien eine Entlastung durch die neu errichtete U5.
+Im Zuge der Debatten um die Errichtung der Linie U5 wurden von den Wiener Linien als Alternative zwei sich kreuzende Straßenbahnlinien 13 und 14 untersucht („Das große X“). Dabei sollte die Linie 13 vom Hauptbahnhof zur Alser Straße/Skodagasse anstelle der bisherigen Buslinie 13A neu errichtet und weiter über die Spitalgasse statt der bisherigen Linie 33 bis zum Friedrich-Engels-Platz geführt werden.
+Die Linie 14 sollte an Stelle der Buslinie 14A auf einer Neubaustrecke vom Reumannplatz zur Pilgramgasse führen, zwischen Pilgramgasse und Nußdorfer Str./Alserbachstraße die Gleise mit der Linie 13 teilen und dann statt der Linie 37 zur Hohen Warte fahren. So würde der am meisten frequentierte Abschnitt des 13A von zwei Linien bedient.
+Das „große X“ wurde niemals offiziell bestätigt und seit der Bekanntgabe der Errichtung der U5 auch nicht mehr diskutiert.
+„City Tram“
+
+Durch einen Tunnel unter der Herrengasse, Reitschulgasse und Augustinerstraße sollten einige der am Schottentor endenden Linien durch die Innenstadt durchgebunden und an der Oper mit den Linien 71, 62, 65 und J verknüpft werden. Diese Option wurde von den Grünen als Alternative zum Bau der Linie U5 in den Koalitionsvertrag 2010 eingebracht, aber bald verworfen und ist durch den Bau der Linie U5 obsolet geworden.
+Neue Verbindungen in Floridsdorf (Linien 25, 26 und 32)
+
+2015 wurde eine weitere Neuorganisation des Straßenbahnnetzes in Floridsdorf angekündigt, die im Sommer 2016 hätte umgesetzt werden sollen. Hierbei hätte die Linie 32 in einer teils neuen Form zurückkehren und zwischen Schottenring und Strebersdorf fahren sollen. Für die Linie 25 war eine Verlängerung von Floridsdorf nach Stammersdorf vorgesehen und auch die Linie 26 hätte von der U-Bahn-Station Hausfeldstraße (U2) kommend nach Stammersdorf geführt werden sollen. Damit wären gleichzeitig die Linien 30 und 31 vollständig weggefallen.
+Die Neuorganisation hätte neben Ersparnissen für die Wiener Linien eine optimierte Verbindung zum Krankenhaus Nord für die Fahrgäste bringen sollen. Nach mehrmaliger Verschiebung wurde das Projekt schließlich nicht mehr weiter verfolgt, da die Wiener Linien zwar die Anzahl der benötigten Fahrzeuge reduziert hätten, nicht aber jene der gefahrenen Streckenkilometer pro Tag.
+Bessere Erschließung der Bezirke Leopoldstadt und Brigittenau (Linien 33 und 36)
+
+Für den 2. und 20. Bezirk hätten einige Straßenbahnlinien ab 2018 bis 2025 angepasst werden sollen. Neben der in zwei Etappen umzusetzenden Verlängerung der Linie O zum Friedrich-Engels-Platz war auch eine neue Route für die Linie 33 vorgesehen. Diese sollte ab dem Wallensteinplatz über die Stadtentwicklungsgebiete Nordwestbahnhof und Nordbahnhof zur Wendeschleife an der Bruno-Marek-Allee (damals Leystraße) geführt werden. Gleichzeitig sollte eine neue Linie 36 ab Börse über die Linie D zum Franz-Josefs-Bahnhof (ÖBB) und über die alte Strecke der Linie 33 zum Friedrich-Engels-Platz geführt werden.
+Die erste Etappe der Verlängerung der Linie O wurde bereits umgesetzt, über die zweite ist derzeit wenig über die Umsetzung bekannt. Die Planungen für die neue Linie 36 und die neue Route der Linie 33 sind durch die neue Linie 12 obsolet geworden und wurden daher nicht weiter verfolgt.
+
+
+== Liniennetz ==
+
+Neben diesen von den Wiener Linien betriebenen Linien nutzt auch die Lokalbahn Wien–Baden das Streckennetz der Wiener Straßenbahn. Sie folgt zwischen ihrer Endstation an der Oper und dem Bahnhof Meidling dem Verlauf der Linie 62, ehe sie knapp dahinter auf eigene Gleise wechselt. Hierbei handelt es sich um eine Verknüpfung zwischen Straßenbahn und Eisenbahn.
+Die längste Straßenbahnlinie in Wien ist die circa 13,3 Kilometer lange Linie 71, welche die Wiener Innenstadt mit dem Stadtteil Kaiserebersdorf verbindet. Die kürzeste Linie ist die Linie 42, die auf einer Strecke von 3,4 Kilometern von der U-Bahn-Station Schottentor an der Ringstraße zur Antonigasse im 18. Bezirk führt.
+
+
+=== Bezeichnung der Linien ===
+
+Um den Laufweg der Wagen kenntlich zu machen, wurden bis 1907 Liniensignale mit geometrischen Grafiken benutzt. Mit diesen später auch Hieroglyphen-Signal genannten Symbolscheiben sollte auch Analphabeten die Unterscheidung der verschiedenen Routen ermöglicht werden.
+1907 trat die heute prinzipiell noch gültige alphanumerische Ordnung in Kraft. Einige Linien sind seitdem unverändert geblieben, nämlich die Linien 5, 38, 41, 46, 49 sowie die für wenige Jahre eingestellte Linie 43. Mit der Einführung und Ausdehnung des städtischen Autobusnetzes wurde dieses System etwas verwässert, heutzutage bestehen einige Inkonsequenzen. Entsprechend der Einteilung der Stadt in Bezirke und dem Verlauf der wichtigsten Verkehrswege war nachfolgende Gliederung damals am zweckmäßigsten:
+Rundlinien (Ringlinien, Tangentiallinien) – ursprünglich Nummerngruppe 1 bis 18, heute Nummern 5 bis 18
+
+Diese verkehren in kreisförmigen Abschnitten um die Innenstadt, beispielsweise die Linie 5 vom Praterstern im nördlichen Bogen um die Innenstadt zum Westbahnhof.
+Radiallinien – Nummerngruppe 21 bis 80
+
+Diese verkehren von der Innenstadt stadtauswärts. Ausgehend von der Achse Praterstraße erfolgt die Nummerierung gegen den Uhrzeigersinn in aufsteigender Reihenfolge.
+Durchgangslinien – ursprünglich Buchstabengruppe A bis Z, heute auch Nummern 1 und 2
+
+Durchgangslinien stellen eine Kombination aus einer Rundlinie mit ein oder zwei Radiallinien dar. Die Bezeichnung beginnt, ausgehend von der Achse Praterstraße, gegen den Uhrzeigersinn in aufsteigender Reihenfolge. Durchgangslinien, die ein Teilstück der „Lastenstraße“ (Bezeichnung für einen Straßenzug parallel zur Ringstraße, heute eher Zweierlinie) befuhren, erhielten Buchstaben mit dem Zusatz „2“ zugeteilt, z. B. E2 oder H2 (in der Wiener Umgangssprache „Zweierlinien“ genannt), ebenso gab es weitere Indizes für Linien, die über andere Rundlinien fuhren (beispielsweise 4, 5, 8 und 18). Daneben waren noch weitere Unterscheidungsmerkmale, wie ein zusätzliches „K“ für Linien, die zuerst über den Kai, oder ein zusätzliches „R“ für Linien, die zuerst über den Ring fuhren, eingeführt worden. Dieser zusätzliche Buchstabe oder die zusätzliche Zahl (auch Index genannt) wird vorzugsweise in verkleinerter, nicht-tiefgestellter Form neben das Liniensignal geschrieben.
+Als einzige Buchstabenlinie über den Ring ist die Linie D erhalten geblieben. Die Linie O hat ihr Buchstabensignal behalten, obwohl sie 1980 vom Ring auf die Zweierlinie verlegt wurde. Ebenfalls 1980 wurde mit der Linie N (Friedrich-Engels-Platz – Prater Hauptallee, 2008 eingestellt) zuletzt ein Buchstabensignal neu vergeben.
+Mit der Neuordnung der Ringlinien 1 und 2 im Oktober 2008 wurden diese ebenfalls zu Durchgangslinien. Die Linie D sollte ab 2009 in dieses System integriert werden und die Bezeichnung 3 erhalten, doch wurde dieses Vorhaben, da es nicht auf Zuspruch stieß und auch keine Streckenänderung als Begründung vorlag, zurückgestellt.
+Verlängerungen und Abzweigungen – dreistellige Nummern
+
+Vor die ein- beziehungsweise zweistelligen Liniensignale wurden Ziffern von 1 bis 3 gestellt, um damit Verlängerungen (z. B. 31 – 131 – 231 – 331), Verkürzungen (z. B. 57 – 157) oder Abzweigungen (z. B. 17 – 117) der Stammlinie anzuzeigen. Die Hunderterstellen 2 und 3 wurden verwendet, da es umstellbare Signalscheiben für diese gab. Bis zum 30. November 1967 verkehrte z. B. die Linie 360, die als Fortsetzung der Linie 60 von Mauer über Rodaun, Perchtoldsdorf und Brunn nach Mödling führte. Die Linie 317 verkehrte 1922 bis 1970 auf der Strecke (Floridsdorf–)Kagran–Aspern–Eßling–Groß-Enzersdorf; der Streckenteil von Kagran bis Englisch Feld (heute: „Englisch-Feld-Gasse“ (nahe der Stadt- und Tarifgrenze)) wurde, ebenfalls bis 1970, von der Linie 217 bedient. Die Linien 331 (Schottenring–Stammersdorf) und 231 (Teilstrecke Schottenring–Großjedlersdorf) wurden in den 1980er Jahren in 31 umbenannt (als die Linie 231 schon eingestellt war), die Linie 132 (Schottenring–Strebersdorf) in Linie 32.
+E-Wagen
+
+E-Wagen (Einlagewagen) werden bei besonderen Anlässen wie größeren Veranstaltungen als Verstärkerleistungen auf allen Strecken eingesetzt.
+
+Regelmäßig wurden bis 2010 jährlich beim Donauinselfest E-Wagen auf der Strecke Schottenring–Brünner Straße/Hanreitergasse (einem Teil der Linie 31) eingesetzt. Zum Einsatz kamen Fahrzeuge der Typen E1, c3 und c4, die vom Betriebsbahnhof Floridsdorf und der Abstellanlage Brigittenau gestellt wurden.
+Im Sommer 2011 waren E-Wagen als Ersatz für die wegen der Sanierung der U-Bahn-Station Josefstädter Straße gesperrte Linie U6 im Einsatz, welche zwischen Westbahnhof und Nußdorfer Straße auf der Strecke der Linien 5 und 37 verkehrten. Am Wochenende übernahmen E-Wagen auch den Nachtbetrieb der U6.
+Während Gleisarbeiten der Linie 1 im Bereich Wienflussbrücke (Sommer 2013) fuhren E-Wagen von Prater Hauptallee zum Quartier Belvedere.
+Technik der Straßenbahn-Liniensignale
+
+Die Signalisierung der Linien erfolgte ursprünglich in Form von schwarz lackierten Blechscheiben mit einem Durchmesser von 35 Zentimetern, aus denen die Buchstaben beziehungsweise Zahlen der jeweiligen Linie ausgeschnitten waren. Diese wurden auf die mit einer Milchglasscheibe versehenen Dachsignale der Triebwagen aufgesteckt und wiesen somit bei Tag und Nacht gute Lesbarkeit auf.
+Ab 1949 kamen Zweisicht-Dachsignale zur Anwendung, die auch von der Seite lesbar waren. Sie bewährten sich gut und werden bis heute auf der Type E1 verwendet. Die Type E2 sowie einige wenige Exemplare der Type E1 verfügten über Brosebänder. Diese waren zwar gut lesbar, galten aber als wartungsintensiv und wurden aufgrund von Ersatzteilproblemen zurückgebaut (E1) oder durch LED-Matrixanzeigen ersetzt (E2). Bei den ULF-Wagen werden große Matrixanzeigen verwendet, die jedoch hinter der gewölbten Frontscheibe liegen und teilweise nur schlecht erkennbar sind. Aus diesem Grund wurden in den Jahren 2010 bis 2022 die Niederflurgarnituren sukzessive mit deutlich besser lesbaren LED-Anzeigen umgerüstet.
+
+Vienna Ring Tram (VRT)
+
+Am 4. April 2009 wurde auf der Strecke der ehemaligen Ringlinie 1 (bis 1981 Linie A und B) die Vienna Ring Tram (VRT) eingeführt. Diese Touristenstraßenbahn umrundete den Ring auf dem inneren Gleis im Halbstundentakt. Bis zum 31. März 2014 hielt sie an allen Haltestellen am Ring außer am Julius-Raab-Platz, danach hielt diese Straßenbahn nur noch am Schwedenplatz und benötigte für eine Gesamtumrundung rund 25 Minuten. Verbundfahrscheine waren in der VRT nicht gültig, es galt ein Spezialtarif von zuletzt zwölf Euro. Die Vienna Ring Tram wurde vom Betriebsbahnhof Favoriten mit zwei modifizierten und gelb lackierten E1-Triebwagen betrieben, von denen in der Regel einer im Einsatz war. Im Wageninneren wurden auf Infomonitoren und mit Kopfhörern die Sehenswürdigkeiten an der Ringstraße in acht Sprachen, außerdem im Wiener Dialekt von Karl Merkatz beschrieben und weiters gab es eine kindgerechte Beschreibung. Mit 14. März 2020 wurde dieses Angebot eingestellt und seitdem auch nicht mehr wiedereingeführt.
+
+
+=== Besonderheiten ===
+
+Einige Linien verkehren außerhalb der Hauptverkehrszeiten nicht oder nur eingeschränkt.
+
+Linie 11 (Otto-Probst-Platz – Kaiserebersdorf, Zinnergasse)
+an Sonn- und Feiertagen bis ca. 9 Uhr nur Betrieb zwischen Otto-Probst-Platz und Enkplatz U, Grillgasse
+Linie 30 (Floridsdorf – Stammersdorf)
+Betrieb montags bis freitags ab ca. 5.30 Uhr, samstags ab ca. 8 Uhr, sonntags ab ca. 11 Uhr; täglich bis ca. 20 Uhr.
+Linie 71 (Schottenring U – Kaiserebersdorf, Zinnergasse)
+an Samstagen bis ca. 8 Uhr und an Sonn- und Feiertagen bis ca. 9 Uhr nur Betrieb zwischen Schwarzenbergplatz und Kaiserebersdorf, Zinnergasse
+Montag bis Freitag vereinzelt Züge zur Hauptwerkstätte
+Eine weitere Besonderheit früherer Jahre waren die sogenannten gestrichenen Liniensignale für Kurzführungen. Hierbei verdeckte das Personal das reguläre Blech-Liniensignal kurzfristig mit einem drehbaren Abdeckbalken. Dieser wurde hierzu – von seiner gewöhnlichen senkrechten und damit unsichtbaren Position – in Schräglage gedreht. Im Fahrplanbuch von 1928 hieß es hierzu: Liniensignale mit einem Querbalken besagen, dass der Zug die Endstelle der Linie nicht erreicht.
+
+
+=== Eingestellte Linien ===
+
+Ziel der Linienplanung war es, jede Haltestelle im Wiener Stadtgebiet mit maximal zwei Umstiegen erreichen zu können. In der Zwischenkriegszeit erreichte das Netz seine größte Effizienz. Zum Beispiel zeigt ein Linienplan von 1922 am traditionell stark befahrenen heutigen Universitätsring neun Durchgangslinien, die dem Fahrgast eine große Auswahl an umsteigefrei erreichbaren Fahrtzielen anboten. Die vielen damals noch betriebenen Linien (zum Teil Stammlinien, aber auch Bedarfslinien wie etwa für den Sonntags-, Bäder-, Messe-, Stadionverkehr etc.) erforderten zwecks besserer Übersicht eine einfache und verständliche Gliederung in Durchgangs-, Rund- und Radiallinien.
+Nach Ende des Zweiten Weltkriegs erholte sich der Wiener Straßenbahnbetrieb von den Kriegsschäden und war in den ersten zehn Nachkriegsjahren unbestritten, bis die zunehmende Motorisierung ab etwa 1960 zu einer beträchtlichen Angebotsreduktion führte.
+Zur Einstellung einer Linie führte meist der Nachfragerückgang durch Veränderungen der Fahrgastströme, später auch die Umstellung auf Autobusbetrieb (beispielsweise auf wichtigen Radialstrecken in engen Straßen), die Reduktion von die Fahrbahn des Rings kreuzenden Linien im Interesse des Individualverkehrs und der U-Bahn-Bau. Die jüngsten Linieneinstellungen gingen auf Netzreformen zurück.
+Im September 2017 wurde zuletzt eine Strecke aufgelassen, nämlich jene vom Reumannplatz durch die Favoritenstraße zur Per-Albin-Hansson-Siedlung. Die Strecke, zuletzt von der Linie 67 befahren, wurde durch die U1 ersetzt. Die letzte Linieneinstellung erfolgte am 6. Oktober 2025 mit jener der Linie 33 (Friedrich-Engels-Platz – Augasse); sie erfuhr nach der Betriebsaufnahme der Linie 12 einen Monat zuvor eine Angebotsreduktion und einen starken Fahrgastrückgang, der schließlich in ihre Einstellung mündete.
+Von 2013 bis 2014 gab es eine zusätzliche Verstärkerlinie 72 von Enkplatz nach Kaiserebersdorf, Zinnergasse. Diese Strecke wird derzeit von der Linie 71 bedient. Eine spezielle Allerheiligenlinie stellte die Linie 35 dar.
+
+
+=== Straßenbahnlinien als U-Bahn-Ersatz ===
+U6-Sperre
+Im Sommer 2011 wurde erstmals in der Geschichte der Wiener U-Bahn eine Strecke über eine längere Zeit eingestellt. Von Mitte Juli bis Ende August war die U6-Strecke Westbahnhof – Alser Straße gesperrt. Grund hierfür war die Sanierung der U-Bahn-Station Josefstädter Straße, welche auch ein Durchfahren der Station unmöglich machte. Als Ersatz wurde die Straßenbahn-Sonderlinie „E“ eingerichtet, die zwischen Westbahnhof und U-Bahn-Station Nußdorfer Straße großteils zur Linie 5 parallel verkehrte. Seit dem 29. August 2011 verkehrt die Linie U6 wieder auf der gesamten Strecke, die Station Josefstädter Straße blieb noch bis zum 25. November 2011 gesperrt, die Sanierungsarbeiten dauerten noch bis 2013 an.
+
+U1-Sperre
+Von 7. Juli bis zum 26. August 2012 war die U1 wegen Sanierungsarbeiten sowie Vorarbeiten für die südliche Verlängerung zwischen Reumannplatz und Schwedenplatz gesperrt.
+Als Ersatz für die eingestellte U1 sowie für die normalerweise verkehrende Linie 67 wurden zwei Sonderlinien der Straßenbahn eingerichtet:
+
+Die Linie 66 führte von Oberlaa, Therme Wien entlang der Strecke der Linie 67 zum Quellenplatz, dann weiter entlang der Linie 6 zum Matzleinsdorfer Platz und von dort wie die Linien 1 und 62 zur Station Kärntner Ring, Oper.
+Die Linie 68 führte vom Otto-Probst-Platz entlang der Strecke der Linie 67 zum Quellenplatz, dann weiter entlang der Linie O zum ehemaligen Südbahnhof, von dort wie der D-Wagen zum Schwarzenbergplatz und anschließend über den östlichen Ring und Kai bis zum Schwedenplatz. Um das Wenden der Ersatzlinie 68 am Schwedenplatz zu ermöglichen, wurden dort neue Gleisverbindungen eingebaut und so eine Wendemöglichkeit über die Schweden- und Marienbrücke geschaffen.
+An den Wochenenden und in der Nacht vom 14. auf den 15. August 2012 verkehrte die Linie 68 zwischen Schwedenplatz und Reumannplatz durchgehend und übernahm somit die Funktion der Nacht-U-Bahn. Zusätzlich fuhren die Nachtbuslinien N66 und N67 zur Oper.
+
+U4-Sperre
+Im Zuge einzelner Streckensperren während des Modernisierungsprogramms „NEU4“ wurde die Linie E4 als Ersatzverkehr entlang der gesperrten Strecken eingesetzt.
+Dazu zählten die Sperren zwischen Schottenring und Heiligenstadt am 17. und 18. Februar 2018 sowie die Sperre zwischen Spittelau und Heiligenstadt vom 2. Juli bis zum 26. August 2018. In beiden Fällen diente die Linie E4 zur Verdichtung der Intervalle auf der Strecke der Linie D.
+
+U2-Sperre
+Für die dreijährige Sperre der U2 im Zuge des Baus des Linienkreuzes U2/U5 zwischen Schottentor und Karlsplatz wurde ab Mai 2021 die Ersatzlinie U2Z eingesetzt. Diese fuhr zwischen Karlsplatz, Bösendorferstraße und Schottenring, von 28. bis 31. Mai 2021 auch zwischen Praterstern und Karlsplatz. Dafür wurde im Herbst 2018 die Wendeschleife der Linie 31 bei der Station Schottenring umgebaut. Ab dem 31. Juli 2023 wurde die Linie U2Z tagsüber durch die zum Schottenring verlängerte Linie 71 ersetzt; die ohnehin nur schwach ausgelastete Linie war daraufhin nur noch im Nachtverkehr unterwegs. Letztmals verkehrte die Linie vor dem 1. Dezember 2024, am folgenden Wochenende war die U2 wieder auf ganzer Länge in Betrieb.
+
+
+== Fuhrpark ==
+
+Der Fuhrpark der Wiener Straßenbahn besteht aus Hochflur- und Niederflurwagen. Einige Linien werden an Wochentagen gemischt mit Hoch- und Niederflurzügen betrieben. An Wochenenden sind keine Hochflurwagen unterwegs. Die Niederflurzüge wurden ab 1995 sukzessive eingeführt, zuletzt im September 2011 auf der Linie 33. Damit werden alle Haltestellen im Wiener Straßenbahnnetz von Niederflurwagen angefahren. Laut Angabe der Wiener Linien ist es nun möglich, von jeder Haltestelle im Wiener Straßenbahnnetz aus barrierefrei unterwegs zu sein.
+
+
+=== Hochflurwagen ===
+
+Ab 1959 wurden auf der Wiener Straßenbahn Gelenktriebwagen der Type E eingesetzt. Mit diesen war es jedoch aufgrund der schwachen Motorleistung nur schwer möglich, mit Beiwagen zu verkehren, deshalb musste rasch Ersatz herbeigeschafft werden. Die Wagen der ab 1966 ausgelieferte Nachfolgertype E1 gleichen optisch zwar ihren Vorgängern, sie wurden jedoch mit leistungsfähigeren Fahrmotoren ausgestattet. Wagen des Typs E waren noch bis zum 26. Oktober 2007, zuletzt auf den Linien 10 und 62, im Einsatz. Nach dem Ende der Produktion der E1 im Jahr 1976 wurde eine weitere Nachfolgebauart, die Type E2 entwickelt, welche sich seit 1978 im Einsatz befindet und zum deutsch-österreichischen Typ Mannheim gehört.
+Passende Beiwagen für die Triebwagen Typ E2 sind die Type c5. Auf schwächer frequentierten Linien verkehrten bis zur Ablösung durch kurz-ULFe auch Triebwagen ohne Beiwagen.
+Nach mehreren schweren Unfällen wurden alle Hochflurwagen mit elektronischen Türfühlerkanten und Rückspiegeln ausgestattet.
+
+
+==== Triebwagen ====
+Type E2 – 57 Stück (urspr. 122) – Baujahre 1978–1990; Ausmusterung bis spätestens 2030 geplant; 44 Sitz- und 58 Stehplätze, nicht klimatisiert
+
+
+==== Beiwagen ====
+Type c5 – 58 Stück (urspr. 117) – Baujahre 1978–1990; 32 Sitz- und 39 Stehplätze, ebenfalls nicht klimatisiert
+
+
+=== Ausmusterungen ===
+Die Ausmusterungen der Hochflur-Straßenbahnwagen der Typen E1 und c4 sowie E2 und c5 waren ein wichtiger Einschnitt im Fuhrpark. Diese Wagen wurden über mehrere Jahrzehnte hinweg im Linienverkehr der Wiener Linien eingesetzt und galten lange Zeit als Rückgrat der Wiener Straßenbahnflotte.
+
+
+==== Triebwagen Typ E1 ====
+Seit Mitte der 2000er Jahre begann die schrittweise Reduktion des E1-Bestands zugunsten moderner Niederflurfahrzeuge. Mit der Inbetriebnahme der ULF-Triebwagen (Ultra Low Floor) wurde der Einsatzbereich der E1 stark eingeschränkt. Die letzten E1-Wagen kamen bis 2022 planmäßig zum Einsatz, unter anderem auf der Linie 30 im Nordosten Wiens. Einige ausgemusterte Wagen wurden an ausländische Verkehrsbetriebe abgegeben, z. B. nach Polen oder Rumänien, andere blieben als Museumsfahrzeuge oder für Sonderfahrten erhalten.
+
+
+==== Triebwagen Typ E2 ====
+Die Nachfolger der E1, die Type E2, wurden von 1978 bis 1990 ebenfalls von SGP gebaut. Insgesamt wurden 117 Triebwagen des Typs E2 produziert, die zusammen mit den speziell darauf abgestimmten Beiwagen der Type c5 betrieben wurden. Die E2 gelten als technisch modernere und robustere Variante und waren bis in die 2020er Jahre hinein fixer Bestandteil des Wiener Straßenbahnbetriebs.
+Seit 2018 aber ersetzt die neue Flexity Wien-Fahrzeuggeneration schrittweise die noch im Einsatz befindlichen E2-Garnituren. Die Ausmusterung erfolgt laufend je nach Auslieferung der neuen Fahrzeuge. Noch heute (Stand: 2025) sind einzelne E2-Züge im Fahrgastbetrieb zu sehen, vorwiegend auf Linien ohne vollständige Flexity-Abdeckung. Das Datum für die endgültige Ausmusterung der letzten E2-Züge ist bis jetzt noch nicht bekannt.
+
+
+=== Niederflurwagen ===
+
+
+==== SGP/Siemens ULF (Ultra Low Floor) ====
+
+Bei den Niederflurwagen vom Typ ULF (Ultra Low Floor mit besonders tiefliegendem Wagenboden) gibt es eine kurze Version mit fünf Gliedern, den Typ A, und eine längere, siebengliedrige Version, den Typ B.
+Ab 1995 verkehrte je ein Prototyp der Typen A und B im Netz der Wiener Straßenbahn. Seit 1997 werden Serienwagen beider Versionen eingesetzt.
+Triebwagen des Typs A1, eine Weiterentwicklung der Type A, sind seit dem 26. November 2007 in Betrieb. Sie verfügen als erste Fahrzeuggeneration der Wiener Straßenbahn über eine Klimaanlage und wurden im Innenraum an den neuen Standard (gelbe Haltestangen, graue Wände und rote Plastiksitze) angepasst. Die neueren Reihen besitzen zudem Warnleuchten zur Signalisierung des Türschließvorgangs. Sie werden derzeit auf den Linien O, 5, 9, 10, 30, 37, 38, 42, 44, 52 und 62 eingesetzt.
+Mit der Auslieferung der längeren ULF-Version, Type B1, wurde im April 2009 begonnen. Wagen dieses Typs sind seit dem 6. Juli 2009 im Einsatz. Diese Wagen verkehren derzeit auf den Linien D, 1, 2, 6, 11, 12, 18, 25, 26, 27, 31, 40, 41, 43, 60 und 71.
+Nach einem Brand in einem Niederflurwagen im Juli 2009 wurde beschlossen, alle Fahrzeuge dieser Type mit speziellen Schutzblechen nachzurüsten.
+Seit 2014 wurden bei den Triebwagen der Typen B und B1 jeweils sechs Sitzplätze im zweiten und letzten Modul ausgebaut und durch zwei Klappsitze ersetzt. Dadurch entstanden 16 zusätzliche Stehplätze. Damit soll die Fahrgastkapazität erhöht und der Fahrgastwechsel beschleunigt werden.
+
+
+==== Alstom Flexity Wien ====
+
+Im Jahr 2014 setzte sich Bombardier Wien Schienenfahrzeuge mit der eigens für Wien entwickelten Baureihe Flexity Wien gegen den von Siemens angebotenen ULF bei einer Ausschreibung über 119 neue Straßenbahnwagen mit einer Option auf 37 weitere samt einem Wartungsauftrag durch. 2024 wurden 27 der Optionsfahrzeuge bestellt. Die auf dem Adtranz Incentro basierenden Triebwagen werden in einer einheitlichen Länge von 34 Metern geliefert und haben mit sechs Doppeltüren eine weniger als die Langversion des ULFs. Um ebenerdiges Einsteigen zu garantieren, beträgt die Einstiegshöhe der 211 Personen fassenden Wagen 215 Millimeter.
+Die im Werk Wien gefertigten Multigelenkwagen werden seit Ende 2017 an die Wiener Linien ausgeliefert, wurden im Dezember 2018 vom Betriebsbahnhof Favoriten aus zuerst auf der Linie 67 eingesetzt und verkehren seit der Auflösung dieser Linie auf der Linie 6. Ab der 19. Garnitur war, bedingt durch die Übernahme von Bombardier, Alstom der ausliefernde Produzent.
+Im September 2020 begann der Einsatz auf der Linie 11, am 6. April 2021 folgte die Linie 71, ehe der Typ D am 14. Februar 2022 auch auf der Linie 18 erstmals eingesetzt wurde.
+Seit dem 5. September 2022 sind Flexitys auch im Betriebsbahnhof Rudolfsheim stationiert und werden von dort seit dem 9. Jänner 2023 auch auf der Linie 60 eingesetzt.
+Am 3. Juli 2023 folgte die Linie 49 und zu Schulbeginn desselben Jahres (4.9.) kam es zur Komplettumstellung der Linie 46 auf die Flexitys. Intern trägt die Baureihe Flexity Wien die Typenbezeichnung „D“.
+Am 24. Februar 2025 wurde diese Type erstmals auf der Linie 52 eingesetzt.
+Vom 12. bis zum 21. April war diese Type auf der U1-Ersatzlinie E1 im Einsatz, seit dem 22. April 2025 werden die Wagen der Type D auch auf der Straßenbahnlinie D eingesetzt. Mit Schulbeginn 2025 folgte die Linie 43 und am 3. November die Linie 1.
+
+
+=== Ehemalige Fahrzeugtypen (Auswahl) ===
+Im Laufe ihres Bestehens besaß die Wiener Straßenbahn viele Wagenbauarten. Triebwagentypen werden mit Großbuchstaben bezeichnet, Beiwagen mit Kleinbuchstaben. Abweichende Unterbauarten werden durch nachgestellte Indexziffern unterschieden. Durch Ausmusterung freigewordene Typenbezeichnungen und Betriebsnummern wurden seit Einführung dieses Bezeichnungssystems bereits zweimal, nach dem Zweiten Weltkrieg und zur Einführung der ULF, jeweils mit A beginnend, neu vergeben. Dadurch gibt es teilweise völlig unterschiedliche Bauarten mit derselben Typenbezeichnung. Mehrfach belegt wurden die Buchstaben A bis E und a bis c.
+
+Straßenbahn Wien Type A – erste elektrische Triebwagen in Wien
+Kriegsstraßenbahnwagen (Type A)
+Straßenbahn Wien Type AW – luxuriöse „Exkursionstriebwagen“
+Straßenbahn Wien Type B, b (1951) – erste Neubaureihe nach dem Zweiten Weltkrieg
+Straßenbahn Wien Type C, c – erfolglose Großraumwagen-Prototypen
+Straßenbahn Wien Type C1, c1 (1955) – DÜWAG-Lizenzbauten
+Straßenbahn Wien Type D, D1, d (1899)
+Straßenbahn Wien Type D, D1 (1957) – erste Gelenktriebwagen in Wien
+Straßenbahn Wien Type G – größte Anzahl von Triebwagen einer Baureihe
+Straßenbahn Wien Type H – erste mit geschlossenen Plattformen gelieferte Triebwagen
+Straßenbahn Wien Type K
+Straßenbahn Wien Type M – Markanter Fahrzeugtyp
+Straßenbahn Wien Type T – erste vierachsige Triebwagen in Wien
+Straßenbahn Wien Type Z – „Amerikaner“, aus den USA importiert
+
+
+=== Betriebsbahnhöfe ===
+
+Die Wiener Straßenbahn verfügte im Laufe ihrer Geschichte über eine Vielzahl von Remisen, die offiziell als Betriebsbahnhof oder nur Bahnhof bezeichnet wurden. Aufgrund der zahlreichen Linieneinstellungen wurden einige Bahnhöfe aufgelassen (z. B. 2., Betriebsbahnhof Vorgartenstraße, 3., Erdberg, 12., Assmayergasse, 14., Breitensee, 15., Linke Wienzeile, 18., Währing, 22., Kagran). Einige Remisen wurden im Anschluss noch als Betriebsgaragen für Autobusse verwendet (z. B. 19., Grinzing).
+In den letzten Jahren wurden im Zuge von Einsparungsmaßnahmen schrittweise Betriebsbahnhöfe als eigenständige Dienststellen aufgelassen und einem anderen Betriebsbahnhof unterstellt. Reparaturarbeiten werden nur mehr in den vier Betriebsbahnhöfen Favoriten, Floridsdorf, Hernals und Rudolfsheim durchgeführt, die sechs weiteren Betriebsbahnhöfe werden nur noch als Abstellanlagen verwendet. Ende Oktober 2006 wurde der Betriebsbahnhof Breitensee als bislang letzte Remise komplett aufgelassen und dessen Fuhrpark vom Bahnhof Rudolfsheim übernommen. Der ehemalige Betriebsbahnhof Erdberg dient heute als Standort für das Verkehrsmuseum der Wiener Linien.
+Jedem Betriebsbahnhof sind gewisse Linien und Fahrzeuge zugeteilt:
+
+Größere Arbeiten sowie regelmäßige Hauptuntersuchungen werden in der Hauptwerkstätte der Wiener Linien durchgeführt.
+
+
+== Unfälle ==
+
+
+=== Schwerste Unfälle (Auswahl) ===
+Die nachfolgende Liste enthält einige der schwersten Unfälle, die in der Geschichte der Wiener Straßenbahn dokumentiert wurden:
+
+In den Nachtstunden des 2. Mai 1920 fuhr auf dem abschüssigen Sechshauser Gürtel (bis 1894 sowie heute: Mariahilfer Gürtel) eine von der Mariahilfer Straße zur Sechshauser Straße bergab fahrende Garnitur der Linie 18 ungebremst in eine stehende Garnitur der Linie 118. Das anfänglich vermutete Bremsversagen stellte sich später als Sabotage durch Manipulation am Bremskabel heraus. Die Opferbilanz belief sich auf vier Tote, zehn Schwerverletzte und 39 Leichtverletzte.
+Drei Tote und 63 Verletzte forderte ein Auffahrunfall am 3. Jänner 1947. Kurz nach einem Stromausfall kam eine überfüllte Garnitur der Linie 58 auf der Mariahilfer Straße bei der Fahrt Richtung Ring, Babenbergerstraße, auf dem vereisten, bergab führenden Gleis ins Rutschen und rammte aufgrund eines Bremsdefekts eine in der Haltestelle Museumstraße (heute: Museumsplatz; Ecke Getreidemarkt) stehende Garnitur der Linie 52.
+Am 29. April 1951 ließ sich eine stadtauswärts fahrende Garnitur der Linie 62 nach der abschüssigen Strecke auf der Breitenfurter Straße im 12. Bezirk nicht mehr bremsen und entgleiste in der Rechtskurve zur Hetzendorfer Straße. Die Waggons stürzten um, es wurden über 170 Personen verletzt, die meisten davon schwer. Unfallursache war fehlerhafte Bedienung der Bremseinrichtungen durch den Motorführer. Eine Frau starb einige Tage später an den Folgen des Unfalls.
+Das Unglück in Döbling am 2. August 1960 war der bis heute schwerste Unfall in der Geschichte der Wiener Straßenbahn. Auf der Kreuzung Billrothstraße / Döblinger Hauptstraße / Glatzgasse entgleiste eine stadteinwärts mit überhöhter Geschwindigkeit bergab fahrende Garnitur der Linie 39 und stieß mit voller Wucht mit einer stadtauswärts am Gegengleis fahrenden Garnitur zusammen. Verschuldet wurde der Unfall durch den schwer alkoholisierten Fahrer der stadteinwärts fahrenden Garnitur. Die Opferbilanz belief sich auf 20 Tote und etwa 100 teils schwer Verletzte.
+Am 21. April 1998 fuhr eine Garnitur der Linie 71 mit überhöhter Geschwindigkeit über eine falsch gestellte Weiche an der Kreuzung Simmeringer Hauptstraße und Gottschalkgasse, dem Abzweig der Linie 6. Der Beiwagen entgleiste und bohrte sich in eine Bankfiliale. Ein Bankangestellter wurde getötet, 37 Personen verletzt.
+
+
+=== Vorfall „Entführung“ einer Garnitur 2017 ===
+Im Jänner 2017 fuhr ein ehemaliger Mitarbeiter der Wiener Linien zwei Stationen auf der Linie 60 von Rodaun aus mit einer für die kurze Zeit einer Toilettenpause vom Fahrer verlassenen Garnitur. Er stand im März 2017 „wegen unbefugten Gebrauchs von Fahrzeugen“ vor Gericht. Für das Delikt nach § 136 Abs. 2 StGB bekam er eine Geldstrafe von 960 Euro.
+
+
+== Wissenswertes ==
+
+
+=== Remise – Verkehrsmuseum der Wiener Linien ===
+
+Über die lange Straßenbahntradition in Wien konnte man sich 1973–1986 im Wiener Tramwaymuseum im Betriebsbahnhof Ottakring und 1986–2012 im Wiener Straßenbahnmuseum in der (seit 1990 ehemaligen) Remise Erdberg der Wiener Linien am Ludwig-Koeßler-Platz im 3. Bezirk auf einer Ausstellungsfläche von 7500 Quadratmetern informieren. Im September 2014 wurde dort das neu gestaltete Verkehrsmuseum der Wiener Linien eröffnet, das die Bestände der zwei Vorgängermuseen bewahrt.
+
+
+=== „Die Bim“ vs. „Die Tramway“ ===
+Etwa seit 1975 war in der Wiener Jugendsprache die Bezeichnung Bim wahrzunehmen. Mit dem Heranwachsen der damals Jugendlichen ist dieser Begriff mittlerweile in die Alltagssprache der Wiener migriert und wird seit Mitte der 80er Jahre auch in der Werbelinie der Wiener Linien verwendet ("Nerven sparen, Bim fahren"). Er dürfte lautmalend auf das bimmelnde Geräusch der Straßenbahn-Warnglocke zurückzuführen sein. Der seit dem 19. Jahrhundert in Wien verwendete und ursprünglich aus dem englischen stammende Ausdruck Tramway (dialektal ausgesprochen zumeist „Dramwei“) verliert dadurch zusehends an Bedeutung. Die Bediensteten der Straßenbahn wurden dementsprechend manchmal auch als „Tramwayer“ bezeichnet. In ab den 1970er Jahren entstandenen Werken der Populärkultur ist der Ausdruck jedoch noch zu vernehmen, beispielsweise in Wolfgang Ambros’ Lied Zwickt’s mi von 1975, beginnend mit der Textzeile „Gestern fahr i mit der Tramway Richtung Favoriten...“.
+Wolfgang Ambros widmete 1978 den damals bereits im „Aussterben“ begriffenen Straßenbahnschaffnern das Lied Schaffnerlos. Das dazugehörige Musikvideo mit Ambros als Schaffner entstand in einem Triebwagen der Type M. Auch die Jazz Gitti und Pirron und Knapp widmeten jeweils ironische Lieder der Tramway.
+
+
+=== „Die Blaue“ ===
+Die letzte Fahrt einer Linie vor der nächtlichen Betriebspause wird teilweise immer noch die Blaue genannt. Der letzte Zug einer Linie vor deren Einstellung heißt analog dazu „die letzte Blaue“.
+Ursprünglich war hierbei das kreisrunde Liniensignal, damals eine Glasscheibe, des jeweils letzten Zuges blau und ersetzte die jeweiligen Linienfarben. 1895 beispielsweise nutzte sowohl die Wiener Tramway-Gesellschaft – bei dieser „Schluss-Signal“ genannt – als auch die Neue Wiener Tramway diese Kennzeichnung. Letztere markierte damals zusätzlich auch den jeweils vorletzten Wagen besonders. Hierbei war die Glasscheibe jedoch in der oberen Hälfte weiß und nur in der unteren Hälfte blau.
+Nach der Einführung von Liniennummern wurde bei der letzten Fahrt alternativ eine blaue „Halbmond“-Tafel unter die Brustwandtafel gehängt, noch später schob das Personal bei den beleuchteten Zielanzeigen eine durchsichtige blaue Plastikscheibe vor das manuell zu wechselnde Zielschild. Mit der Einführung von Rollbandanzeigen entfiel die Kennzeichnung des letzten Kurses gänzlich, wurde aber bei den Fahrzeugen ohne Rollbandanzeige noch bis 1995 verwendet.
+Ein letztes Mal zum Einsatz kam die Kennzeichnung mit der Plexiglasscheibe bei der Abstellung der Type E1, mit Betriebsschluss der Linie 30 vor den Sommerferien 2022. An diesem Tag wurde vom Fahrer noch einmal die Kennzeichnung des letzten Wagens des Tages verwendet. Somit war dies nicht nur der letzte Planeinsatz mit E1-Triebwagen, sondern auch die allerletzte „Blaue“ der Wiener Straßenbahn.
+
+
+=== Umformerwagen ===
+Eine Besonderheit der Wiener Straßenbahn sind die einst vier fahrbaren Umformerwagen. Sie können je nach Bedarf im Netz positioniert werden und dienen als mobiles Unterwerk.
+
+
+=== TramSim Vienna ===
+Im Oktober 2020 wurde von Aerosoft und ViewApp eine Simulation der Straßenbahn Wien veröffentlicht, der TramSim Vienna. Spielbar ist der Simulator auf dem PC. Fahrbar im Spiel ist die Linie 1, die Baustellenlinie U2Z und ein Teil der Linie 71 bis St. Marx in Wien, spielbare Fahrzeuge sind der Flexity, E2 + Beiwagen und der ULF (Ultra Low Floor). Der E1 + Beiwagen ist seit Ende März 2022 auch spielbar.
+
+
+== Literatur ==
+Johann Lehnhart: Die 102 eingestellten Straßenbahnlinien Wiens. Der Spurkranz, Sonderheft 4, ZDB-ID 2686254-2. Spurkranz, Wien 1970.
+Überarbeitete und erweiterte Ausgabe: Phoibos-Verlag, Wien 2009, ISBN 978-3-85161-009-3.
+75 Jahre Wiener Verkehrsbetriebe. In: Arbeiter-Zeitung. Wien,​ 8. April 1978, S. 17. 
+Walter Krobot, Josef Otto Slezak, Hans Sternhart: Straßenbahn in Wien – vorgestern und übermorgen. Zweite, überarbeitete Auflage. Slezak, Wien 1983, ISBN 3-85416-076-3.
+Hans Peter Pawlik, Josef Otto Slezak: Ring-Rund. Das Jahrhundert der elektrischen Straßenbahn in Wien. Slezak, Wien 1999, ISBN 3-85416-187-5.
+Wolfgang Kaiser: Die Wiener Straßenbahnen. Vom „Hutscherl“ bis zum „Ulf“. GeraMond, München 2004, ISBN 3-7654-7189-5.
+Ernst Lassbacher, Tanja Aigner: Auf die Bim gekommen? Verkehr und Verkehrspolitik in Wien seit 1744 – kritisch betrachtet. Wiener Verkehrsblätter, Sonderband 3, ZDB-ID 2484514-0. Phoibos-Verlag, Wien 2009, ISBN 978-3-85161-020-8.
+Helmut Portele: Sammlung „Wiener Tramwaymuseum“. Eigenverlag, 3. Auflage, Wien 2009, ISBN 978-3-200-01562-3.
+Ernst Lassbacher: Entschleunigt! Warum die Wiener Linien immer langsamer statt schneller werden. Wiener Verkehrsblätter, Sonderband 4, Wien 2015, ISBN 978-3-85161-139-7.
+Walter Farthofer: Tramway Geschichte(n): die Wiener Straßenbahner im Kampf gegen den grünen und braunen Faschismus. 3. Auflage. ÖGB-Verlag, Wien 2015, ISBN 978-3-99046-135-8. 
+Béla Rásky: „Verwirrende Hieroglyphen“ vs. „Geniales Bezeichnungssystem“. Die Erschließung Wiens durch ein eigen(willig)es Straßenbahnlinienleitsystem im Jahr 1907, in: Amália Kerekes, Miklós Fenyves, Bálint Kovács (Hrsg.): Habsburg bewegt. Topographien der Österreichisch-Ungarischen Monarchie. Frankfurt am Main 2014, S. 203–237, ISBN 978-3-631-62314-5.
+Walter Farthofer: "Menschenmaterial: unbefriedigend": Zwangsarbeit bei den Wiener Verkehrsbetrieben. echomedia Buchverlag, Wien 2017, ISBN 978-3-903113-25-1. 
+Walter Farthofer: Im Rückspiegel: die Chronik der Wiener Linien. echomedia buchverlag, Wien 2019, ISBN 978-3-903113-40-4. 
+Walter Farthofer: Wiener Straßenbahner im Februar 1934. VA Verlag, Wien 2021, ISBN 978-3-200-07520-7. 
+Harald A. Jahn: Wiener Straßenbahnremisen. Die Betriebsbahnhöfe der Wiener Straßenbahn von den Anfängen bis heute. Phoibos Verlag, Wien 2023, ISBN 978-3-85161-299-8
+
+
+== Weblinks ==
+
+Fahrplan Straßenbahn auf der Website der Wiener Linien
+Gleisplan der Wiener Straßenbahn (PDF; 475 KB)
+Großer Straßenbahnlinienplan
+Tramwayforum, Forum rund um die Wiener Straßenbahn
+Die Pferdestraßenbahn
+Die „Elektrische“ – Die Entwicklung der Straßenbahn in Wien
+Straßenbahnjournal Wiki
+Wiener Straßenbahn im Stadtverkehr-Austria-Wiki
+Website des Verbandes der Eisenbahnfreunde, Arbeitsgruppe Straßenbahn
+Umfangreiche Bilderserien mit allen Typen
+Der Strike der Tramwaykutscher. In: Neue Freie Presse, Morgenblatt, Nr. 8858/1889, 23. April 1889, S. 2 ff. (online bei ANNO).Vorlage:ANNO/Wartung/nfp
+Der Tramway-Strike. Die Pfingsttage. In: Neue Freie Presse, Abendblatt, Nr. 11778/1897, 8. Juni 1897, S. 4 ff. (online bei ANNO).Vorlage:ANNO/Wartung/nfp
+Frühe Dokumente und Zeitungsartikel zur Straßenbahn Wien in den Historischen Pressearchiven der ZBW
+
+
+== Einzelnachweise ==

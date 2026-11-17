@@ -13,6 +13,7 @@ export const LEVELS = [
   { key: 'sargent', at: [-1.86, 52.04], href: 'sargent/street.html', name: 'Broadway, 1885', place: 'Broadway', year: '1885', title: 'Carnation, Lily, Lily, Rose', by: 'Sargent', img: 'sargent/images/carnation.jpg', paintings: 2, coin: 'shillings', two: true },
   { key: 'vangogh', at: [4.63, 43.68], href: 'vangogh/street.html', name: 'Arles, 1888', place: 'Arles', year: '1888', title: 'The Stars over Arles', by: 'Van Gogh', img: 'vangogh/images/rhone.jpg', paintings: 4, coin: 'francs' },
   { key: 'munch', at: [10.47, 59.35], href: 'munch/street.html', name: 'Åsgårdstrand, 1901', place: 'Åsgårdstrand', year: '1901', title: 'The Night Road', by: 'Munch', img: 'munch/paintings/girls_bridge.jpg', paintings: 2, coin: 'kroner' },
+  { key: 'klimt', at: [16.37, 48.20], href: 'klimt/street.html', name: 'Vienna, 1908', place: 'Vienna', year: '1908', title: 'Gold for Herr Klimt', by: 'Klimt', img: 'klimt/images/kiss.jpg', paintings: 2, coin: 'Kronen' },
 ];
 const STORE = 'paintingRooms.v1';
 export function loadScores() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch (e) { return {}; } }

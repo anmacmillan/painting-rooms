@@ -1,0 +1,6 @@
+{"walk": [[-266, -30], [-200, -20], [-80, -22], [20, -8], [110, 12], [285, 31], [391, 4], [509, -40], [531, -77], [590, -70]], "keep": 170,
+ "named": {"Secession": "secession", "Otto Wagner Pavillon": "pavilion", "Otto-Wagner-Pavillon": "pavilion", "Künstlerhaus Wien": "kunstlerhaus", "Musikverein": "musikverein", "Karlskirche": "karlskirche"},
+ "clear_names": ["Wiener Konzerthaus", "Akademietheater", "Wien Museum Karlsplatz", "Kunsthalle Wien Karlsplatz", "Kleines Haus der Kunst"],
+ "cleared": [{"why": "The open square made when the Wien was vaulted over (1894-1900). Today's footprints here are underground-railway entrances, kiosks and later buildings; what small structures stood on the square in 1908 was not established, so the level leaves it open apart from the Secession and Otto Wagner's two pavilions.", "p": [[-268, -48], [-150, -52], [-60, -58], [30, -52], [125, -32], [130, 24], [-60, 30], [-205, 22], [-262, 20]]},
+             {"why": "The ground of the Kunstschau of 1908: the empty building plot on which the Konzerthaus (opened 1913) and the Akademietheater were built afterwards.", "p": [[525, -115], [640, -115], [640, -5], [525, -5]]}],
+ "places": []}

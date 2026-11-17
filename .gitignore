@@ -16,3 +16,8 @@ phidias/research/commons_search.json
 rubens/research/ref/
 rubens/research/antwerp_osm.xml
 rubens/research/commons_search*.json
+klimt/research/ref/
+klimt/research/*_osm.xml
+piranesi/research/ref/
+pompeii/research/ref/
+pompeii/research/*_osm.xml

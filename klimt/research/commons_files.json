@@ -1,0 +1,114 @@
+[
+ {
+  "title": "File:The Kiss - Gustav Klimt - Google Cultural Institute.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg",
+  "size": [
+   7376,
+   7401
+  ],
+  "artist": "Gustav Klimt",
+  "credit": "Google Art Project",
+  "licence": "Public domain",
+  "out": "research/ref/kiss_full.jpg"
+ },
+ {
+  "title": "File:Gustav Klimt 046.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Gustav_Klimt_046.jpg",
+  "size": [
+   1415,
+   1416
+  ],
+  "artist": "Gustav Klimt",
+  "credit": "1. The Yorck Project (2002)       10.000 Meisterwerke der Malerei (DVD-ROM), distributed by DIRECTMEDIA Publishing GmbH.  ISBN:  3936122202. \n\n2. Neue Galerie New York",
+  "licence": "Public domain",
+  "out": "research/ref/adele_full.jpg"
+ },
+ {
+  "title": "File:Adele Bloch-Bauer I Gustav Klimt01.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Adele_Bloch-Bauer_I_Gustav_Klimt01.jpg",
+  "size": [
+   736,
+   756
+  ],
+  "artist": "Gustav Klimt",
+  "credit": "Unknown sourceUnknown source",
+  "licence": "Public domain",
+  "out": "research/ref/adele_alt.jpg"
+ },
+ {
+  "title": "File:Wien - Secessionsgebäude.JPG",
+  "page": "https://commons.wikimedia.org/wiki/File:Wien_-_Secessionsgeb%C3%A4ude.JPG",
+  "size": [
+   4134,
+   2520
+  ],
+  "artist": "C.Stadler/Bwag",
+  "credit": "Own work",
+  "licence": "CC BY-SA 4.0",
+  "out": "research/ref/secession_photo.jpg"
+ },
+ {
+  "title": "File:Karlsplatz Pavillon der ehem. Stadtbahn Otto Wagner gesamt.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Karlsplatz_Pavillon_der_ehem._Stadtbahn_Otto_Wagner_gesamt.jpg",
+  "size": [
+   6017,
+   4011
+  ],
+  "artist": "Thomas Ledl",
+  "credit": "Own work",
+  "licence": "CC BY-SA 4.0",
+  "out": "research/ref/pavilion_photo.jpg"
+ },
+ {
+  "title": "File:Moriz Nähr Gustav Klimt mit Katze 1911.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Moriz_N%C3%A4hr_Gustav_Klimt_mit_Katze_1911.jpg",
+  "size": [
+   3756,
+   5000
+  ],
+  "artist": "Moritz Nähr",
+  "desc": "Gustav Klimt mit Katze, im Garten seines Ateliers in der Josefstädter Straße 21 in Wien, Mai 1911, Vintage, Bromsilber, 23 x 17,1 cm",
+  "date": "1911-05",
+  "licence": "Public domain",
+  "out": "research/ref/klimt_cat_1911.jpg"
+ },
+ {
+  "title": "File:Egon Schiele - Gustav Klimt im blauen Malerkittel - 1913.jpeg",
+  "page": "https://commons.wikimedia.org/wiki/File:Egon_Schiele_-_Gustav_Klimt_im_blauen_Malerkittel_-_1913.jpeg",
+  "size": [
+   3354,
+   5088
+  ],
+  "artist": "Egon Schiele",
+  "desc": "",
+  "date": "1913date QS:P571,+1913-00-00T00:00:00Z/9",
+  "licence": "Public domain",
+  "out": "research/ref/klimt_smock_schiele.jpg"
+ },
+ {
+  "title": "File:Naschmarkt Wien 1900.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Naschmarkt_Wien_1900.jpg",
+  "size": [
+   3535,
+   2638
+  ],
+  "artist": "Unknown authorUnknown author",
+  "desc": "Naschmarkt in Wien um 1900",
+  "date": "between 1890 and 1905date QS:P,+1500-00-00T00:00:00Z/6,P1319",
+  "licence": "Public domain",
+  "out": "research/ref/naschmarkt_1900.jpg"
+ },
+ {
+  "title": "File:Otto-Wagner-Pavillon Wien September 2016.jpg",
+  "page": "https://commons.wikimedia.org/wiki/File:Otto-Wagner-Pavillon_Wien_September_2016.jpg",
+  "size": [
+   5000,
+   2686
+  ],
+  "artist": "Felix König",
+  "desc": "Karlsplatz Stadtbahn Station, Vienna.",
+  "date": "2016-09-07",
+  "licence": "CC BY 3.0",
+  "out": "research/ref/pavilion2.jpg"
+ }
+]
