@@ -28,6 +28,13 @@
   #beat { position:fixed; left:50%; top:max(64px, env(safe-area-inset-top)); transform:translateX(-50%); z-index:6; font:italic clamp(13px,1.7vw,16px) "Iowan Old Style",Palatino,Georgia,serif; color:#f4efe2; text-shadow:0 1px 6px rgba(0,0,0,.8); pointer-events:none; opacity:0; transition:opacity .4s; letter-spacing:.03em; }
   #beat.show { opacity:.92; } #beat b { color:#f2c865; font-style:normal; letter-spacing:.2em; }
   @media (max-width:620px) { #bRow { width:92px; height:92px; } }
+  /* the plain next step, always at the foot of the screen while she is playing */
+  #goal { position:fixed; left:50%; bottom:64px; transform:translateX(-50%); z-index:6; max-width:92vw; padding:.45em 1.1em; border-radius:999px; background:rgba(24,44,52,.84); color:#f4efe2; border:2px solid rgba(242,200,101,.7); font:600 clamp(15px,2vw,21px) "Iowan Old Style",Palatino,Georgia,serif; text-align:center; pointer-events:none; display:none; } #goal b { color:#f2c865; }
+  /* the light on the water, and the dabs she lays for it: flat, square-ended touches of separate colour */
+  #dabs { position:fixed; inset:0; pointer-events:none; z-index:5; overflow:hidden; transition:opacity 2.5s; } #dabs.fade { opacity:0; }
+  .glint { position:absolute; width:var(--s); height:var(--s); margin:calc(var(--s) / -2); border-radius:50%; pointer-events:auto; cursor:pointer; background:radial-gradient(circle, rgba(255,255,246,1) 0 14%, rgba(255,246,190,.8) 30%, rgba(255,240,170,0) 68%); animation:glint .9s ease-in-out infinite alternate; transition:opacity .35s; }
+  .glint::after { content:''; position:absolute; inset:-16px; } @keyframes glint { from { transform:scale(.78); } to { transform:scale(1.16); } }
+  .daub { position:absolute; height:var(--h); width:var(--w); margin:calc(var(--h) / -2) 0 0 calc(var(--w) / -2); border-radius:2px 3px 3px 2px; opacity:.86; box-shadow:var(--dx) var(--h) 0 0 var(--c2), calc(var(--dx) * -1.4) calc(var(--h) * -1) 0 0 var(--c3); animation:daub .18s ease-out; } @keyframes daub { from { opacity:0; } }
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 </head>
@@ -35,7 +42,7 @@
 <canvas id="cv"></canvas>
 <div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
 <img id="melt" src="images/grenouillere.jpg" alt="">
-<div id="plate"></div><div id="beat"></div>
+<div id="plate"></div><div id="beat"></div><div id="dabs"></div><div id="goal"></div>
 <button id="bRow" aria-label="Pull the oars">Row<small>pull</small></button>
 <button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
 <div id="title" class="screen">
@@ -462,7 +469,23 @@ const K = 1.5, SC = makeScore({ THREE, scene, key: 'monet', at: s => at(s / K), 
 for (const g of SC.picks) { const u = g.userData; u.river = groundY(u.x, u.z) === WY; if (u.river) { u.y = 0.95; g.position.y = 0.95; } }      // on the water every franc hangs where the boat can take it
 const proxy = { x: 0, z: 0, y: 0, air: false, speed: 0, yaw: 0 };
 const CAMM = { pos: [34.3, 3.3, ZP + 0.6], look: [-65.7, -11.1, ZP + 0.6], fov: 40 }, CAMR = { pos: [34.3, 3.3, ZP - 1.0], look: [-65.7, -8.3, ZP + 6.2], fov: 25 };          // the two standpoints, side by side
+/* ---- catching the light (what the level teaches: research/FINDINGS.md, 'What the level teaches') ----
+   At the easels the view is plain and Monet's water is not yet painted. Glints of sunlight come and go on the river; each must be caught with one dab before it moves on
+   (a click or a tap on it, or space for the oldest one shining). Every dab stays where she laid it, a flat square-ended touch of one colour beside others, and the view turns
+   from drawing to dabs with them. Ten, and the picture can be made. A glint missed costs nothing: another comes. */
+const DABN = 10, dabsEl = $('dabs'), glints = [], daubs = [], dab = { n: 0, t: 0, next: 0, missed: 0, nag: 0 }, DABC = ['#f6f4e6', '#3e6ea6', '#2e6b52', '#18242e', '#a9cbd8', '#e9dfae'];
+const dabSpeaker = new THREE.Object3D(); dabSpeaker.position.set(CAMM.pos[0] - 9, 1.6, CAMM.pos[2] - 2.6);          /* Monet is behind the view now: his words are hung in it */
+function dabReset() { dabsEl.textContent = ''; dabsEl.classList.remove('fade'); glints.length = 0; daubs.length = 0; Object.assign(dab, { n: 0, t: 0, next: 0, missed: 0, nag: 0 }); }
+function spawnGlint() { for (let k = 0; k < 40; k++) { const x = rnd(-30, 26), z = ZP + rnd(-24, 24); if (!inRiver(x, z)) continue; const v = new V3(x, 0.05, z).project(camera); if (v.z > 1 || Math.abs(v.x) > 0.84 || v.y > 0.12 || v.y < -0.7) continue; if (glints.some(g => Math.hypot(g.x - x, g.z - z) < 5) || daubs.some(g => Math.hypot(g.x - x, g.z - z) < 2.5)) continue;
+    const el = document.createElement('div'); el.className = 'glint'; const g = { x, z, el, born: time, life: 2.8 }; el.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); layDab(g); }); dabsEl.appendChild(el); glints.push(g); return; } }
+function layDab(g) { if (state !== 'dab' || !g || g.dead) return; g.dead = true; g.el.remove(); glints.splice(glints.indexOf(g), 1); const el = document.createElement('div'), c = i => DABC[(dab.n + i) % DABC.length]; el.className = 'daub'; el.style.background = c(0); el.style.setProperty('--c2', c(1)); el.style.setProperty('--c3', c(3)); el.style.transform = `rotate(${rnd(-3, 3).toFixed(1)}deg)`; dabsEl.appendChild(el); daubs.push({ x: g.x, z: g.z, el });
+  dab.n++; dab.nag = time + 9; if (dab.n === 1) SC.keep('dab', { title: 'Dabs of paint, one for each glint of light on the water', emoji: '🖌️' }); SC.gain(5, 'A dab of light!', 0); SND.bell([4, 6, 7, 9, 11][dab.n % 5], 0.07); placeDabs();
+  if (dab.n >= DABN) { for (const q of glints) q.el.remove(); glints.length = 0; state = 'monet'; tT = 0; say(dabSpeaker, 'There! The light is caught. Now look.', 3); [2, 4, 5, 7, 9, 10].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); } }
+function placeDabs() { const put = (g, glint) => { const v = new V3(g.x, 0.05, g.z), d = v.distanceTo(camera.position); v.project(camera); const s = clamp(1500 / d, 28, 84); g.el.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; g.el.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px';
+    if (glint) g.el.style.setProperty('--s', s.toFixed(0) + 'px'); else { g.el.style.setProperty('--w', (s * 1.5).toFixed(0) + 'px'); g.el.style.setProperty('--h', Math.max(7, s * 0.24).toFixed(0) + 'px'); g.el.style.setProperty('--dx', (s * 0.4).toFixed(0) + 'px'); } };
+  for (const g of glints) put(g, true); for (const g of daubs) put(g, false); }
 function reset() {
+  dabReset();
   Object.assign(boat, { x: START.x, z: START.z, yaw: 0, v: 0, lat: 0, yr: 0, camYaw: 0, t: 9, last: -9, kind: 'rest', want: false, heldT: 0, surge: 0, roll: 0, bumpT: -9 });
   Object.assign(me, { x: boat.x, z: boat.z, y: 0, yaw: 0, vy: 0, air: false, speed: 0 }); tT = 0; moorT = 0; strokes_ = 0; clean = 0; run = 0; bestRun = 0; bumps = 0; said = false; said2 = false; nag = 0;
   setMode('play'); post.uniforms.uDab.value = 0.62;
@@ -580,9 +603,14 @@ function update(dt) {
     if (state === 'walk') {
       const dP = Math.hypot(me.x - 36.6, me.z - ZP);
       if (dP < 9 && !said2 && me.z < ZP + 4) { said2 = true; say(renoir, 'Hush! Stand here, and look where we are looking.', 4.5); }
-      if (dP < 2.6 && !me.air) { state = 'monet'; tT = 0; for (const g of SC.picks) g.visible = false; me.speed = 0; bubble.classList.remove('show'); bubbleG = null; SND.bell(4, 0.08); [2, 4, 5, 7, 9, 10].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); }
+      if (dP < 2.6 && !me.air) { state = 'dab'; dabReset(); dab.nag = time + 1.2; for (const g of SC.picks) g.visible = false; me.speed = 0; bubble.classList.remove('show'); bubbleG = null; SND.bell(4, 0.08); $('tip').classList.add('hidden'); }
       if (time > nag) { nag = time + 14; const n = nearest(me.x, me.z).s; if (n < ROUTE.S_BERTH + 30) tip('Over the gangplank to the little round island', 4); else if (n > LEN - 60) tip('The two painters are along the bank', 4); }
     }
+    if (state === 'dab') { dab.t += dt; setMode('A'); post.uniforms.uDab.value += (0.08 + 0.6 * dab.n / DABN - post.uniforms.uDab.value) * Math.min(1, dt * 2);
+      if (dab.t > 2.4 && time > dab.next && glints.length < 3) { spawnGlint(); dab.next = time + rnd(0.55, 1.0); }
+      for (const g of [...glints]) if (time - g.born > g.life) { g.dead = true; glints.splice(glints.indexOf(g), 1); g.el.style.opacity = 0; setTimeout(() => g.el.remove(), 380); dab.missed++; if (dab.missed % 4 === 0 && time > bubbleT) say(dabSpeaker, 'Gone! The light will not wait. Dab it while it shines.', 3.2); }
+      if (time > dab.nag) { dab.nag = time + 9; say(dabSpeaker, 'Quick, the sun is on the water! One dab of paint for every glint, before it moves.', 4.5); } }
+    if (state === 'dab' || state === 'monet') { placeDabs(); dabsEl.classList.toggle('fade', state === 'monet' && tT > 5.2); }
     // ---- the same view twice: first as Monet has it, then, a step to the right, as Renoir has it
     if (state === 'monet' || state === 'renoir') { tT += dt; const hold = window.__road.dbg.hold;
       if (state === 'monet') { if (hold) tT = Math.min(tT, 4.5); setMode('A'); post.uniforms.uDab.value += (0.5 - post.uniforms.uDab.value) * dt;
@@ -595,25 +623,31 @@ function update(dt) {
         if (tT > 14.5) { state = 'done'; SC.finish(); card(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); } } }
     meG.visible = state === 'walk';
     const lerpToCam = (c, k) => lerpTo(c.pos, c.look, c.fov, k);
-    if (state === 'monet') lerpToCam(CAMM, Math.min(1, dt * 1.3)); else if (state === 'renoir' || state === 'done') lerpToCam(CAMR, 1);
+    if (state === 'monet' || state === 'dab') lerpToCam(CAMM, Math.min(1, dt * 1.3)); else if (state === 'renoir' || state === 'done') lerpToCam(CAMR, 1);
     else { const dist = 3.7, cxp = me.x - fx * dist, czp = me.z - fz * dist, k = Math.min(1, dt * 5.5);
       camera.position.x += (cxp - camera.position.x) * k; camera.position.z += (czp - camera.position.z) * k; camera.position.y += (me.y + 2.0 - camera.position.y) * k;
       const lk = [me.x + fx * 7, me.y + 1.0, me.z + fz * 7]; (lerpTo.q || (lerpTo.q = new V3())).set(...lk); camera.lookAt(...lk); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 - camera.fov) * k; camera.updateProjectionMatrix(); }
   }
   // the painters work: a hand lifts to the canvas and comes away
-  for (const [g, p] of [[monet, 0], [renoir, 1.9]]) { FIG.pose(g, 0, 0); g.userData.aR.rotation.x = -1.15 + Math.sin(time * 2.1 + p) * 0.16 + Math.sin(time * 0.37 + p) * 0.25; g.userData.aL.rotation.x = -0.5; g.userData.hd.rotation.y = Math.sin(time * 0.31 + p) > 0.55 ? 0 : 0; g.userData.hd.rotation.x = Math.sin(time * 0.43 + p) > 0.3 ? -0.12 : 0.1; g.visible = !(state === 'monet' && tT > 0.6 || state === 'renoir' || state === 'done'); }
+  for (const [g, p] of [[monet, 0], [renoir, 1.9]]) { FIG.pose(g, 0, 0); g.userData.aR.rotation.x = -1.15 + Math.sin(time * 2.1 + p) * 0.16 + Math.sin(time * 0.37 + p) * 0.25; g.userData.aL.rotation.x = -0.5; g.userData.hd.rotation.y = Math.sin(time * 0.31 + p) > 0.55 ? 0 : 0; g.userData.hd.rotation.x = Math.sin(time * 0.43 + p) > 0.3 ? -0.12 : 0.1; g.visible = !(state === 'monet' && tT > 0.6 || state === 'dab' && dab.t > 0.6 || state === 'renoir' || state === 'done'); }
   for (const e of easels) e.visible = monet.visible;
   if (window.__road.dbg.cam) { const c = window.__road.dbg.cam; camera.position.set(...c.pos); camera.lookAt(...c.look); camera.fov = c.fov || 50; camera.updateProjectionMatrix(); }      // a fixed camera for test shots
   if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.getWorldPosition(new V3()); v.y += 2.3; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 130, innerWidth - 130) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1); } }
   sunL.position.copy(camera.position).addScaledVector(SUN, 400); sunL.target.position.copy(camera.position);
   SND.update(0.3 + 0.5 * Math.min(1, Math.abs(boat.v) / 6), clamp(0.12 + (state === 'row' ? Math.abs(boat.v) / 6 * 0.4 : 0.1), 0, 1));
+  { const touch = matchMedia('(pointer: coarse)').matches; let g = null;
+    if (state === 'row') g = 'Row down the river to the floating café, and tie up at the shining ring';
+    else if (state === 'walk') g = 'On foot: over the gangplank, across the little round island, and along the bank to the two painters';
+    else if (state === 'dab') g = `The light will not wait: ${touch ? 'tap' : 'click'} each glint on the water to lay a dab of paint${touch ? '' : ' (or press space)'} · <b>${dab.n} of ${DABN}</b>`;
+    const e = $('goal'); e.style.display = g ? 'block' : 'none'; if (g && e.dataset.g !== g) { e.dataset.g = g; e.innerHTML = '➜ ' + g; } }
 }
 function lerpTo(p, look, fov, k) { camera.position.x += (p[0] - camera.position.x) * k; camera.position.y += (p[1] - camera.position.y) * k; camera.position.z += (p[2] - camera.position.z) * k; const q = lerpTo.q || (lerpTo.q = new V3(...look)); q.lerp(new V3(...look), lerpTo.fresh ? 1 : Math.min(1, k * 1.5)); lerpTo.fresh = false; camera.lookAt(q); camera.fov += (fov - camera.fov) * (k >= 1 ? 1 : k); camera.updateProjectionMatrix(); }
 // what is written under each picture, and on the last card: filled in from research/FINDINGS.md
 const PLATE_A = 'Claude Monet, 1869 · The Metropolitan Museum of Art, New York', PLATE_B = 'Pierre-Auguste Renoir, 1869 · Nationalmuseum, Stockholm';
 $('endText').innerHTML = `<p>In the summer of 1869 Claude Monet and Pierre-Auguste Renoir, both twenty-eight and both poor, set up their easels side by side at La Grenouillère, “the frog pond”: a floating café and bathing place moored at the island of Croissy on the Seine, about twelve kilometres west of Paris. They painted the same view from almost the same spot. Monet's picture is in the Metropolitan Museum of Art, New York; Renoir's is in the Nationalmuseum, Stockholm.</p>
   <p><b>Real:</b> the little round island with its one tree, which people called the Camembert and the Flowerpot; the gangplanks joining it to the bank and to the café; the café's wall, lettered for the hire of boats; the rowing boats moored in front; the bathers, the women in long black bathing dress; the sailing boats; the black coats, white trousers and tall hats. The Maison Fournaise at Chatou, where boats were hired from 1857, lies upstream: about a kilometre and a half by water, which this river shortens to under a third. That September Monet wrote to his friend Bazille: “I do have a dream, a painting, the baths of La Grenouillère, for which I have made some bad sketches, but it is only a dream. Renoir, who has just spent two months here, also wants to do this painting.” Those are his words, in the Metropolitan Museum's translation from the French.</p>
-  <p><b>Imagined:</b> you, your boat and your hiring it at Chatou; the look of the landing there, whose striped awning is borrowed from a picture Renoir painted at the Maison Fournaise twelve years later; the width and windings of the river and where everyone on it happens to be; the landing stage, the gold ring and the café's gangway; the painters' hats, and the one thing either of them says. Their faces and coats follow portraits of 1867. The letters of the sign that Monet hid behind a white cloth are a guess. Which arm of the Seine the café lay in, the sources do not agree, so the far bank here has no name.</p>`;
+  <p><b>What you did:</b> you caught the light on the water with one dab of paint for each glint, before it moved. That is how these pictures were made. The National Gallery says of Monet's sketches here that they were “painted quickly”, on the spot, to “capture a moment of light”, and that the water is “filled with horizontal, square-ended, overlapping strokes, in greens and blues”, which “capture the ripples of the water”; the Metropolitan Museum calls the strokes in its picture “Morse-code-like dashes of blue, green, and black”. The glints you could click, and Monet's asking for your help, are the game's.</p>
+  <p><b>Imagined:</b> you, your boat and your hiring it at Chatou; the look of the landing there, whose striped awning is borrowed from a picture Renoir painted at the Maison Fournaise twelve years later; the width and windings of the river and where everyone on it happens to be; the landing stage, the gold ring and the café's gangway; the painters' hats, and everything either of them says. Their faces and coats follow portraits of 1867. The letters of the sign that Monet hid behind a white cloth are a guess. Which arm of the Seine the café lay in, the sources do not agree, so the far bank here has no name.</p>`;
 // The level list lives in common/score.js. Until this level is entered there, the shared card would call it "Level 0" and offer Florence next: say nothing false instead.
 function card() { const c = $('scCard'), n = $('scNext'); if (c) c.innerHTML = c.innerHTML.replace(/\d+ clean leaps?/, `${clean} clean catch${clean === 1 ? '' : 'es'} · best run of ${bestRun}`);
   if (LEVELS.some(l => l.key === 'monet')) return; if (c && c.firstChild && c.firstChild.tagName === 'I') { const br = c.firstChild.nextSibling; c.firstChild.remove(); if (br && br.tagName === 'BR') br.remove(); } if (n) { n.href = '../index.html'; n.textContent = 'Back to the gallery'; } }
@@ -632,7 +666,7 @@ let last = 0; function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 
 
 /* ================= input ================= */
 const FWD = ['ArrowUp', 'KeyW', 'KeyZ'];
-addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); if (FWD.includes(e.code) && !e.repeat && !keys.has(e.code) && state === 'row') boat.want = true; keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
+addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); if (FWD.includes(e.code) && !e.repeat && !keys.has(e.code) && state === 'row') boat.want = true; keys.add(e.code); if (e.code === 'Space' && !e.repeat && state === 'dab') layDab(glints[0]); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
 addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
 const cv = $('cv'), sk = $('stick');
 cv.addEventListener('pointerdown', e => { if (state !== 'row' && state !== 'walk') return; if (stick.id !== null) { if (state === 'row') boat.want = true; else { held.jump = true; held.id = e.pointerId; } return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
@@ -643,7 +677,7 @@ $('bRow').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropa
 $('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
 $('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
 /* test hooks, as in turner/street.html. go(x, z) puts the boat there if the place is water, otherwise sets her on foot at the nearest place she may stand. */
-window.__road = { dbg: { camera, THREE, CAMM, CAMR, scene, traffic, wobst, post, waterMat, gren, cast, hold: false, cam: null }, get state() { return state; }, get mode() { return mode; }, me, boat, begin, stroke: () => { boat.want = true; },
+window.__road = { dabs: { get n() { return dab.n; }, get t() { return dab.t; }, glints, lay: layDab }, dbg: { camera, THREE, CAMM, CAMR, scene, traffic, wobst, post, waterMat, gren, cast, hold: false, cam: null }, get state() { return state; }, get mode() { return mode; }, me, boat, begin, stroke: () => { boat.want = true; },
   get ready() { return state === 'row' && (boat.kind === 'rest' || boat.t >= CYCLE * 0.78); }, get run() { return run; }, get clean() { return clean; }, get bumps() { return bumps; },
   go(x, z) { if (inRiver(x, z)) { state = 'row'; boat.x = x; boat.z = z; boat.v = 0; boat.lat = 0; $('bRow').style.display = 'flex'; } else { const s = snap(x, z); state = 'walk'; Object.assign(me, { x: s.x, z: s.z, y: s.y, speed: 0, air: false, vy: 0 }); $('bRow').style.display = 'none'; camera.position.set(s.x, s.y + 2.5, s.z + 4); } }, face(a) { if (state === 'row') { boat.yaw = boat.camYaw = a; } else me.yaw = a; },
   route: s => at(s), nearest, LEN, S_BERTH: ROUTE.S_BERTH, lineX: ROUTE.lineX, BERTH, ZP, ISL, BARGE, snap, bankL, bankR, cx,

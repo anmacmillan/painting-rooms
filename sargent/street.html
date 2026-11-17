@@ -31,12 +31,15 @@
   #lan small { display:block; font-size:.78em; opacity:.7; margin-top:.15em; }
   #seek { position:fixed; left:50%; bottom:max(64px, calc(env(safe-area-inset-bottom) + 64px)); width:34px; height:34px; margin-left:-17px; z-index:6; pointer-events:none; opacity:0; transition:opacity .6s; color:#ffd9a0; font-size:26px; line-height:34px; text-align:center; text-shadow:0 0 10px rgba(255,170,90,.9); }
   #seek.show { opacity:.85; }
+  /* the plain next step, always at the foot of the screen while she is playing */
+  #goal { position:fixed; left:50%; bottom:108px; transform:translateX(-50%); z-index:6; max-width:92vw; padding:.45em 1.1em; border-radius:999px; background:rgba(36,30,58,.84); color:#f4efe2; border:2px solid rgba(255,201,138,.7); font:600 clamp(15px,2vw,21px) "Iowan Old Style",Palatino,Georgia,serif; text-align:center; pointer-events:none; display:none; } #goal b { color:#ffc98a; }
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 </head>
 <body>
 <canvas id="cv"></canvas>
 <div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
+<div id="goal"></div>
 <div id="lan" class="hidden"><b id="lanN">0</b><span id="lanOf"></span><div id="duskBar"><i></i><em></em></div><small>the dusk</small></div>
 <div id="seek">▲</div>
 <img id="melt" src="images/carnation.jpg" alt="">
@@ -57,6 +60,7 @@
   <h2>Carnation, Lily, Lily, Rose</h2>
   <p>John Singer Sargent painted Dolly and Polly Barnard lighting Chinese lanterns in a garden at Broadway in the Cotswolds: from September to early November 1885 at Farnham House, and again in the summer of 1886 at Russell House, finishing in October. You have just been one of them.</p>
   <p><b>What is real.</b> He painted out of doors and could work for only a few minutes each evening, while the mauve light of dusk held. When autumn came and the flowers died he put artificial ones in their place. His friend Edmund Gosse saw him stand back from the canvas, run forward over the lawn “with the action of a wag-tail” to plant quick dabs of paint, and retire again. The Tate's catalogue gives Dolly as eleven, on the left, and Polly as seven, on the right. The title is a line from a song then popular, “The Wreath” by Joseph Mazzinghi. Their mother stood for her own portrait that same autumn, in the evenings: Mrs Frederick Barnard, 1885, also in the Tate.</p>
+  <p><b>What you did.</b> You got everything ready first, and the picture was painted only in the few minutes of mauve light, with both of you standing still in your places. The Tate says: “Sargent was able to work for only a few minutes each evening when the light was exactly right. He would place his easel and paints beforehand, and pose his models in anticipation of the few moments when he could paint the mauvish light of dusk.” Gosse, who watched, says it “occupied but two or three minutes, the light rapidly declining”. The real picture took two autumns of such evenings; here eight seconds of standing still stand for them, and an evening missed is followed at once by the next.</p>
   <p><b>What is imagined.</b> The plan of this garden, its house and wall, how many lanterns hung in it and where, the breeze, the fireflies, the race against the dark, the painter's clothes, and every word spoken here: none of that comes from a source. Mrs Barnard was painted indoors, not at a garden door.</p>
   <p class="small">Paintings: public domain, via Wikimedia Commons (Tate, London). Sources for each fact: sargent/research/FINDINGS.md.</p>
   <button class="go" id="again">Light them again</button>
@@ -327,6 +331,13 @@ function tableauPose(g, w, k) {      // k eases the pose in
 let state = 'title', time = 0, muted = false, duskT = 0, gust = 0, gusts = 0, nextGust = 30, endT = 0, endWhy = '', allLitAt = 0, wpT = 0, seenMother = false, bubbleG = null, bubbleT = 0, noteT = 0, hintHigh = false, pT = 4, pMode = 'back', lightCheck = 0;
 let myLit = 0, who = 'dolly', mode = 'solo', link = null, linked = false, heardAt = 0, netS = null, netAt = 0, netN = -1, seq = 0, gardenKnown = false, waitTimer = 0, doing = 'idle';
 const other = w => (w === 'dolly' ? 'polly' : 'dolly');
+/* What the level teaches (research/FINDINGS.md, 'What the level teaches'): he could paint for only a few minutes each evening, when the light was exactly right, with easel, paints and models set ready
+   beforehand. So: lighting the lanterns is the getting ready. The picture is painted only while the dusk clock is in its mauve band (M0 to M1 of DUSK), every lantern is lit, and both girls stand still
+   in their places; POSE_S seconds of that finish it. If the band passes first, the light has gone for today: the clock goes back to late afternoon (the lanterns stay lit, the canvas keeps what it has)
+   and there is another evening. Nothing here is sent over the link: each device works it out from the lanterns, the dusk clock and where the two girls are, and the host alone ends the level. */
+const M0 = 0.5, M1 = 0.72, POSE_S = 8, RINGS = {}; let paint = 0, evening = 1, poseNag = 0, wasMauve = false, wasAll = false, prevDusk = 0, paintedThisEve = false;
+const mauveNow = () => duskT >= M0 * DUSK && duskT < M1 * DUSK;
+for (const w of ['dolly', 'polly']) { const m = new THREE.Mesh(new THREE.RingGeometry(0.5, 0.72, 36).rotateX(-Math.PI / 2), new THREE.MeshBasicMaterial({ color: '#ffe2a8', transparent: true, opacity: 0, depthWrite: false, depthTest: false, fog: false })); m.position.set(SPOT[w].x, ground(SPOT[w].x, SPOT[w].z) + 0.08, SPOT[w].z); m.renderOrder = 7; scene.add(m); RINGS[w] = m; }
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
 // the other sister: drawn from what her own device sends, or played by the game
 const sis = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, doing: 'idle', goal: null, t: 0, rest: 0, said: 0, leaps: 0 };
@@ -337,7 +348,7 @@ const SC = makeScore({ THREE, scene, key: 'sargent', at, nearest, LEN, groundY: 
 // the things to pick up are fireflies: the coin is put away and only its light is kept
 for (const g of SC.picks) { for (const c of g.children) { if (c.isSprite) { c.material.color.set('#d8ff7a'); c.scale.setScalar(1.1); } else c.visible = false; } const core = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 5), new THREE.MeshBasicMaterial({ color: '#f6ffc0', transparent: true })); g.add(core); g.userData.mats.push(core.material); }
 function card() { const c = $('scCard'), n = $('scNext'); if (!LEVELS.some(l => l.key === 'sargent')) { if (c && c.firstChild && c.firstChild.tagName === 'I') { const br = c.firstChild.nextSibling; c.firstChild.remove(); if (br && br.tagName === 'BR') br.remove(); } if (n) { n.href = '../index.html'; n.textContent = 'Back to the gallery'; } }
-  const sm = c && c.querySelector('small'); if (sm) sm.innerHTML = sm.innerHTML.replace(/\d+ clean leaps?/, `you lit ${myLit} of the ${TOTAL} lanterns`); }
+  const sm = c && c.querySelector('small'); if (sm) sm.innerHTML = sm.innerHTML.replace(/\d+ clean leaps?/, `you lit ${myLit} of the ${TOTAL} lanterns · painted over ${evening} evening${evening === 1 ? '' : 's'}`); }
 const authority = () => !linked || (link && link.isHost);                 // who keeps the dusk clock and the breeze: the host, or anyone playing unlinked
 const meG = () => GIRL[who], sisG = () => GIRL[other(who)];
 
@@ -353,18 +364,18 @@ function blowOut(id, quiet) { const L = LAN[id]; if (!L || !L.lit) return; setLi
 function hud() { $('lanN').textContent = litCount(); $('lanOf').textContent = ` of ${TOTAL} lanterns`; const d = clamp(duskT / DUSK, 0, 1) * 50; $('duskBar').firstElementChild.style.width = d + '%'; $('duskBar').lastElementChild.style.width = d + '%'; }
 function place() { const a = who === 'dolly' ? me : sis, b = who === 'dolly' ? sis : me; Object.assign(a, { x: -3.4, z: -13.2 }); Object.assign(b, { x: -0.6, z: -13.6 }); for (const o of [me, sis]) Object.assign(o, { yaw: Math.PI, vy: 0, air: false, speed: 0, y: ground(o.x, o.z) }); }
 function reset() {
-  for (const L of ALL) { setLit(L, false); L.k = 0; L.was = false; L.litAt = -99; } duskT = 0; gust = 0; gusts = 0; nextGust = 20; myLit = 0; endT = 0; endWhy = ''; allLitAt = 0; me.there = sis.there = 0; seenMother = false; hintHigh = false; wpT = 0; Object.assign(sis, { goal: null, t: 0, rest: 1.5, said: 0, doing: 'idle' }); place();
+  for (const L of ALL) { setLit(L, false); L.k = 0; L.was = false; L.litAt = -99; } duskT = 0; gust = 0; gusts = 0; nextGust = 20; myLit = 0; paint = 0; evening = 1; poseNag = 0; wasMauve = false; wasAll = false; prevDusk = 0; paintedThisEve = false; endT = 0; endWhy = ''; allLitAt = 0; me.there = sis.there = 0; seenMother = false; hintHigh = false; wpT = 0; Object.assign(sis, { goal: null, t: 0, rest: 1.5, said: 0, doing: 'idle' }); place();
   $('melt').classList.remove('quick', 'show'); document.body.classList.remove('quick', 'melting'); $('melt').src = 'images/carnation.jpg'; camera.position.set(me.x, me.y + 3, me.z - 6); $('plate').classList.remove('show'); hud();
 }
 function begin() {
   SND.start({ chords: [[38, 57, 62, 66, 69], [43, 55, 59, 62, 67], [45, 57, 61, 64, 69], [47, 54, 59, 62, 66]], scale: [62, 64, 66, 69, 71, 74, 76, 78, 81, 83, 86] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
   $('title').classList.add('hidden'); $('end').classList.add('hidden'); $('lan').classList.remove('hidden'); clearTimeout(waitTimer);
   note(matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap, hold to float · stand by a lantern to light it' : 'arrow keys to run and turn · space to leap, hold to float · stand by a lantern to light it', 9);
-  setTimeout(() => { if (state === 'play') say(painter, 'The light is going. Quick, the lanterns!', 4); }, 1400);
+  setTimeout(() => { if (state === 'play') say(painter, 'Everything ready before the light comes! Quick, the lanterns!', 4.5); }, 1400);
 }
 function startEnd(why) { if (state !== 'play' && state !== 'portrait') return; if (state === 'portrait') { $('melt').classList.remove('show', 'quick'); document.body.classList.remove('melting', 'quick'); $('plate').classList.remove('show'); $('melt').src = 'images/carnation.jpg'; }
   state = 'tableau'; endT = 0; endWhy = why; $('tip').classList.add('hidden'); noteT = 0; bubble.classList.remove('show'); me.air = false; sis.air = false; $('seek').classList.remove('show');
-  if (why === 'lit') { SC.gain(100, 'Every lantern lit before dark!', 2); } else note('The light has gone. The painter calls you in.', 5);
+  if (why === 'lit') { SC.gain(100, 'Painted, in the mauve light!', 2); } else note('The light has gone. The painter calls you in.', 5);
   SND.bell(4, 0.08); [2, 4, 5, 7, 9, 10].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); setTimeout(() => say(painter, why === 'lit' ? 'Now. Just so. Do not move.' : 'Come in, come in. That will do. Stand just so.', 4.5), 600);
 }
 
@@ -385,7 +396,7 @@ function sisterPlays(dt) {
     const mine = L => Math.hypot(L.x - me.x, L.z - me.z) < 4.5; let pool = unlit.filter(L => !mine(L)); if (!pool.length) pool = unlit;
     sis.goal = pool.sort((a, b) => Math.hypot(a.x - sis.x, a.z - sis.z) - Math.hypot(b.x - sis.x, b.z - sis.z))[0] || null; }
   const G = sis.goal;
-  if (!G) { const d = steer(sis, CENTRE[0] + 3, CENTRE[1] + 4, 5, dt); if (d < 1.5) { sis.rest = 2.5; sis.waving = true; } return; }
+  if (!G) { const so = SPOT[other(who)], d = Math.hypot(so.x - sis.x, so.z - sis.z); if (d > 0.5) steer(sis, so.x, so.z, 5, dt); else { sis.speed *= 1 - Math.min(1, dt * 8); sis.doing = 'idle'; } return; }      /* all lit: she goes to her place among the lilies and waits for the light */
   const last = unlit.length <= 1, stop = last ? 2.6 : G.high ? 0.9 : 1.15, d = Math.hypot(G.x - sis.x, G.z - sis.z);
   if (d > stop) { steer(sis, G.x, G.z, 5.6, dt); return; }
   sis.speed *= 1 - Math.min(1, dt * 8); sis.yaw += wrap(Math.atan2(G.x - sis.x, -(G.z - sis.z)) - sis.yaw) * Math.min(1, dt * 6);
@@ -453,9 +464,22 @@ function update(dt) {
       duskT += dt;
       if (duskT > nextGust && gusts < 6 && DUSK - duskT > 20) { nextGust = duskT + rnd(16, 24); const pool = LAN.filter(L => L.lit && time - L.litAt > 8 && Math.hypot(L.x - me.x, L.z - me.z) > 3); if (pool.length && TOTAL - litCount() > 1) { const L = pool[Math.floor(rnd(0, pool.length))]; gusts++; blowOut(L.id); if (link && linked) link.send({ type: 'out', id: L.id }); } else gust = 1; }
       const all = litCount() === TOTAL; if (all && !allLitAt) allLitAt = time; if (!all) allLitAt = 0;
-      if ((all && time - allLitAt > 1.3) || duskT >= DUSK) { const why = all ? 'lit' : 'dark'; if (link && linked) link.send({ type: 'end', why }); startEnd(why); }
+      if (all && duskT < M0 * DUSK) duskT += dt * 6;                                                 /* all is ready beforehand: the afternoon runs on quickly to the light he is waiting for */
+      if (duskT >= M1 * DUSK) { duskT = 0.3 * DUSK; nextGust = duskT + rnd(16, 24); }                 /* the light has gone for today: another evening (a guest's clock follows the host's as before) */
+      if (paint >= 1) { if (link && linked) link.send({ type: 'end', why: 'lit' }); startEnd('lit'); }
     } else if (playing) duskT += dt;                                                              // a guest's clock runs on between the host's corrections
     if (time > lightCheck) { lightCheck = time + 0.25; hud(); }
+    // ---- the few minutes: painted only in the mauve light, with every lantern lit and both girls still in their places
+    if (playing) { const m = mauveNow(), allL = litCount() === TOTAL, sp = SPOT[who], so = SPOT[other(who)], inMe = Math.hypot(me.x - sp.x, me.z - sp.z) < 1.5 && Math.abs(me.speed) < 2.5 && !me.air, inSis = Math.hypot(sis.x - so.x, sis.z - so.z) < 2.6;
+      if (duskT < prevDusk - 0.1 * DUSK) { evening++; paintedThisEve = false; wasMauve = false; note('The light has gone for today. He could paint for only a few minutes each evening.', 6); say(painter, 'Gone! Tomorrow evening, then. Have everything ready.', 4.5); SND.whoosh(0.08); } prevDusk = duskT;
+      if (allL && !wasAll && !m) say(painter, 'All ready. Now we wait for the light.', 3.5); wasAll = allL;
+      if (m && !wasMauve) { say(painter, allL ? 'Now! The light is right. To your places, and keep still!' : 'The light is right and we are not ready! The lanterns, quick!', 4.5); SND.bell(8, 0.07); poseNag = time + 7; } wasMauve = m;
+      if (m && allL && inMe && inSis) { paint = Math.min(1, paint + dt / POSE_S); if (!paintedThisEve) { paintedThisEve = true; SC.keep('mauve', { title: 'Evenings of mauve light: a few minutes of painting in each', emoji: '🏮' }); } }
+      else if (m && allL && time > poseNag) { poseNag = time + 6; say(painter, inMe ? 'Where is your sister? To her place, quick!' : 'To your place among the lilies! It will not last.', 3.5); }
+      for (const w of ['dolly', 'polly']) RINGS[w].material.opacity = allL ? (w === who ? 0.6 + 0.35 * Math.sin(time * 4) : 0.3) * (m ? 1 : 0.5) : 0;
+      const n = litCount(), pc = Math.round(paint * 100); let g = !allL ? (m ? `The light is right, and the lanterns are not ready! Light the rest (stand by each) · <b>${n} of ${TOTAL}</b>` : `Have everything ready before the mauve light comes: light the lanterns (stand by each) · <b>${n} of ${TOTAL}</b>`) : !m ? 'All ready. Go to your place among the lilies (the bright ring) and wait for the light' : `The mauve light! Stand still in your ring among the lilies while he paints · <b>${pc}%</b>`; if (evening > 1) g += ` · evening ${evening}`;
+      const e = $('goal'); e.style.display = 'block'; if (e.dataset.g !== g) { e.dataset.g = g; e.innerHTML = '➜ ' + g; }
+    } else { RINGS.dolly.material.opacity = RINGS.polly.material.opacity = 0; $('goal').style.display = 'none'; }
 
     // ---- their mother at the garden door: the view becomes her portrait for a moment, and lets you go
     if (playing && !seenMother && Math.hypot(me.x - MOTHER.x, me.z - MOTHER.z) < 3.4 && !me.air) { state = 'portrait'; seenMother = true; wpT = 0; me.speed = 0; $('tip').classList.add('hidden'); noteT = 0; $('melt').src = 'images/mrs_barnard.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.bell(6, 0.06); }
@@ -505,7 +529,7 @@ function update(dt) {
     else if (pMode === 'run') { pMode = 'dab'; pT = posing ? 1e9 : rnd(1.3, 2.2); } else if (pMode === 'dab' && pT < 0) { pMode = 'retire'; } else if (pMode === 'retire') { pMode = 'back'; pT = rnd(4, 8); }
     p.position.y = ground(p.position.x, p.position.z); p.userData.ph = (p.userData.ph || 0) + dt * (2 + pace * 9); faceTo(p, EASEL.x, EASEL.z - 3, dt * 6); pose(p, p.userData.ph, pace);
     if (pMode === 'dab') { T(p, 'upperarmR', -70 + 14 * Math.sin(time * 13), 0, 0); T(p, 'forearmR', -30 + 16 * Math.sin(time * 17 + 1), 0, 0); p.userData.hd.rotation.y = 0.5 * Math.sin(time * 1.7) - 0.3; } else p.userData.hd.rotation.y = -0.35;
-    canvasPic.material.opacity = state === 'title' ? 0.6 : Math.min(0.96, litCount() / TOTAL * 0.9 + (posing ? 0.1 : 0)); }
+    canvasPic.material.opacity = state === 'title' ? 0.6 : Math.min(0.96, litCount() / TOTAL * 0.12 + paint * 0.8 + (posing ? 0.1 : 0)); }      /* the canvas fills only as he paints */
   { pose(mother, 0, 0); T(mother, 'upperarmL', -16, -10, 0); T(mother, 'forearmL', -62, 0, 0); T(mother, 'upperarmR', -6, 0, 0); T(mother, 'forearmR', -34, 0, 0); mother.userData.hd.rotation.y = 0.25; }
   if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.0 * bubbleG.scale.y + 0.2; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; bubble.classList.toggle('show', v.z < 1 && Math.abs(v.x) < 1.1); } }
 
@@ -586,7 +610,7 @@ $('again').addEventListener('click', () => { if (link && linked && !link.isHost)
 document.addEventListener('gesturestart', e => e.preventDefault());
 window.__road = { dbg: { camera, THREE, painter, mother, GIRL, LAN, TA, TB, scene }, get state() { return state; }, get doing() { return doing; }, get endT() { return endT; }, me, sis, begin: () => { mode = 'solo'; begin(); }, go(x, z) { me.x = x; me.z = z; me.speed = 0; }, face(a) { me.yaw = a; },
   get lanterns() { return LAN.map(L => ({ id: L.id, x: L.x, z: L.z, y: L.y, high: L.high, lit: L.lit, by: L.by })); }, get lit() { return litCount(); }, total: TOTAL, light: id => lightUp(id, 'me'), lightAs: (id, by) => lightUp(id, by), blow: id => blowOut(id),
-  get dusk() { return duskT; }, DUSK, setDusk(t) { duskT = t; }, endDusk() { duskT = DUSK - 0.5; }, get net() { return { mode, room: ROOM, who, linked, isHost: !!(link && link.isHost), open: !!(link && link.open), heard: Math.round(performance.now() - heardAt), netS }; },
+  get dusk() { return duskT; }, pose: { get paint() { return paint; }, get evening() { return evening; }, get mauve() { return mauveNow(); }, SPOT, M0, M1, get who() { return who; } }, DUSK, setDusk(t) { duskT = t; }, endDusk() { duskT = DUSK - 0.5; }, get net() { return { mode, room: ROOM, who, linked, isHost: !!(link && link.isHost), open: !!(link && link.open), heard: Math.round(performance.now() - heardAt), netS }; },
   mother: MOTHER, seeMother(v) { seenMother = v; }, places: { start: [-3.4, -13.2], centre: CENTRE, easel: [EASEL.x, EASEL.z], door: [MOTHER.x, MOTHER.z] }, route: s => at(s), LEN, blocked };
 </script>
 </body>

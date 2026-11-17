@@ -179,3 +179,23 @@ Status: the letter, its date, its recipient and its sense are verified. The full
 - The child, and what she wears, are invented. The painters' hats and what they say ("Hush! Stand here, and look where we are looking.") are invented. The only words of 1869 the level uses are Monet's, from the letter of 25 September, in the Met's translation.
 - The dress of the company is coloured by eye from the pictures; its cut is an impression. The rower's white singlet is after the Luncheon of the Boating Party, twelve years later.
 - Scoring: a clean catch (a stroke taken as the oars come forward, in time with the last) pays 2 through the shared score; a touch against a boat or bather costs 5.
+
+## What the level teaches (added 17 November 2026)
+
+The one thing: Monet (and Renoir beside him) painted fast and out of doors, to catch a moment of light, and laid the water in separate flat dabs of colour.
+
+Sources re-read 17 November 2026, both already saved here: NG (`other/ng_bathers.txt`, https://www.nationalgallery.org.uk/paintings/claude-monet-bathers-at-la-grenouillere) and the Met entry (`other/met_437135_wayback.txt`, archived https://web.archive.org/web/20241231191427/https://www.metmuseum.org/art/collection/search/437135).
+
+| Statement | Status | Source and quotation |
+|---|---|---|
+| Painted quickly, on the spot | verified | NG: "Painted quickly and technically quite crude, these studies have a directness and immediacy that could not be achieved in the studio"; "a sketch (pochade) completed rapidly on site" |
+| To catch a moment of light | verified | NG: "working swiftly, on the spot to capture a moment of light and modern life would come to be known only a few years later as Impressionism" |
+| The water is made of separate flat strokes | verified | NG (of the London picture): "the bottom right of the painting is brighter, filled with horizontal, square-ended, overlapping strokes, in greens and blues. These capture the ripples of the water". Met (of the New York picture, the one the level melts into): "the bravura Morse-code-like dashes of blue, green, and black brushstrokes" |
+| The flat stroke came from a new kind of brush | verified, not used in play | NG: the metal ferrule "led to the production of flat, rather than round, brushes ... a broad, flat and evenly painted patch of colour" |
+| Two painters, one view, two pictures | verified (already in the level) | Met: "They set their easels up side by side" |
+
+What she does: on reaching the easels she stands at Monet's viewpoint and the picture is withheld. Glints of sun come and go on the river, each for 2.8 seconds; a click or tap on a glint (or space, for the oldest one shining) lays a dab where it was: a flat, square-ended touch with two neighbours of other colours, in the Met's blue, green and black with white and pale yellow. With each dab the view itself turns further from drawing into dabs (the paint filter's strength follows the count). Ten dabs and Monet's picture is composed and melts in; Renoir's follows as before. A glint missed costs nothing and another comes; left alone, the game waits, Monet calls again every nine seconds and the line at the foot of the screen stays.
+
+Simplified: ten dabs stand for a canvas; the dabs are laid on the view, not on a canvas on an easel; "before the light moves" is a few seconds, where the real light changed over minutes.
+
+The game's own: the clickable glints; Monet's three calls ("Quick, the sun is on the water! One dab of paint for every glint, before it moves.", "Gone! The light will not wait. Dab it while it shines.", "There! The light is caught. Now look."); a child helping him. The quotations on the end card are from the two museum texts above, not from the painters.

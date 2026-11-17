@@ -15,6 +15,9 @@
   #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(16px) saturate(1.25); transition:opacity 5s ease, filter 6s ease; pointer-events:none; z-index:8; }
   #melt.show { opacity:1; filter:none; } #melt.quick, body.quick #cv { transition-duration:2.4s, 2.8s; } #cv { transition:filter 5s ease; } body.melting #cv { filter:brightness(.3) blur(4px); } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.85; }
   #tip { text-shadow:0 1px 8px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.8); }
+  /* the plain next step, always at the foot of the screen while she is playing */
+  #goal { position:fixed; left:50%; bottom:64px; transform:translateX(-50%); z-index:6; max-width:92vw; padding:.45em 1.1em; border-radius:999px; background:rgba(40,32,20,.82); color:#fff3c8; border:2px solid rgba(242,200,101,.7); font:600 clamp(15px,2vw,21px) "Iowan Old Style",Palatino,Georgia,serif; text-align:center; pointer-events:none; display:none; }
+  #goal b { color:#ffd84a; letter-spacing:.06em; } #goal s { text-decoration:none; opacity:.45; }
 </style>
 <script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
 </head>
@@ -22,7 +25,7 @@
 <canvas id="cv"></canvas>
 <div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
 <img id="melt" src="images/rain_steam_speed.jpg" alt="">
-<div id="plate"></div>
+<div id="plate"></div><div id="goal"></div>
 <button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
 <div id="title" class="screen">
   <img src="images/rain_steam_speed.jpg" alt="Rain, Steam and Speed by J. M. W. Turner">
@@ -33,6 +36,7 @@
   <h2>Rain, Steam and Speed – The Great Western Railway</h2>
   <p>J. M. W. Turner showed this picture at the Royal Academy in 1844. It hangs in the National Gallery, London. An engine of the Firefly class brings a train of open wagons west over Brunel's bridge at Maidenhead; we look east, towards London, and the old road bridge of the 1770s stands on the left.</p>
   <p><b>Real:</b> the bridge, in use from July 1839, with its two wide, flat brick arches; the track seven feet wide, its rails laid on long timbers; the engine, shaped here after the working replica of <i>Fire Fly</i> at Didcot, with one pair of seven-foot driving wheels, a tall chimney and no cab; the open wagons, in which those who paid least rode with the goods; the boat and the plough in the picture; and the hare. Turner brushed the hare in at the last, the paint has since gone transparent, and it shows now only in an engraving of 1859. The first picture you passed is his <i>Ploughing Up Turnips, near Slough</i>, shown in 1809 (Tate): Windsor Castle in the mist.</p>
+  <p><b>What you did:</b> the picture is named for rain, steam and speed, not for the train. The National Gallery quotes the historian John Gage: Turner was painting "not a view of the Great Western Railway, but an allegory of the forces of nature". So the engine is a dark shape in gold mist, and the picture would not come until you had made all three. The sixty miles an hour is the Gallery's figure for this stretch of line. That things blur into paint as the train gathers speed is the game's way of showing it; nobody let a child drive.</p>
   <p><b>Imagined:</b> you, the driver, the fireman, the passengers and what they all wear; the station; the luggage; the size and fittings of the wagons; and the view of that field from the line, which was not built until thirty years after he painted it. Nobody ran along the top of a moving train.</p>
   <p class="small">Paintings: public domain, via Wikimedia Commons. Sources for every statement: turner/research/FINDINGS.md.</p>
   <button class="go" id="again">Ride it again</button>
@@ -67,22 +71,23 @@ const FOGC = C('#dccfae'), scene = new THREE.Scene(); scene.fog = new THREE.FogE
 const camera = new THREE.PerspectiveCamera(60, 1, 0.2, 6000);
 const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
 // Each pixel takes the average colour of whichever neighbouring patch is the most even (as in munch/street.html); over it, slanting scumbles of rain.
-const post = new THREE.ShaderMaterial({ uniforms: { tScene: { value: target.texture }, uPx: { value: new THREE.Vector2() }, uTime: { value: 0 }, uRain: { value: 1 } },
+const post = new THREE.ShaderMaterial({ uniforms: { tScene: { value: target.texture }, uPx: { value: new THREE.Vector2() }, uTime: { value: 0 }, uRain: { value: 1 }, uSpeed: { value: 0 } },
   vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
-  fragmentShader: `uniform sampler2D tScene; uniform vec2 uPx; uniform float uTime, uRain; varying vec2 vUv;
+  fragmentShader: `uniform sampler2D tScene; uniform vec2 uPx; uniform float uTime, uRain, uSpeed; varying vec2 vUv;
     float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
     float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
     void main(){
-      vec2 uv = vUv + vec2(sin(vUv.y * 38.0 + uTime * 0.7), cos(vUv.x * 31.0 - uTime * 0.6)) * 0.0016;
+      vec2 uv = vUv + vec2(sin(vUv.y * 38.0 + uTime * 0.7), cos(vUv.x * 31.0 - uTime * 0.6)) * (0.0016 + 0.0034 * uSpeed); float wide = 0.95 + 2.6 * uSpeed;      /* the faster she goes, the broader the brush: outlines go, and only masses of colour are left */
       vec3 best = vec3(0.0); float bestVar = 1e9;
       for (int q = 0; q < 4; q++) {
         vec2 dir = vec2(q == 0 || q == 3 ? -1.0 : 1.0, q < 2 ? -1.0 : 1.0); vec3 m = vec3(0.0), m2 = vec3(0.0);
-        for (int j = 0; j < 4; j++) for (int i = 0; i < 4; i++) { vec3 c = texture2D(tScene, uv + dir * vec2(float(i), float(j)) * uPx * 0.95).rgb; m += c; m2 += c * c; }
+        for (int j = 0; j < 4; j++) for (int i = 0; i < 4; i++) { vec3 c = texture2D(tScene, uv + dir * vec2(float(i), float(j)) * uPx * wide).rgb; m += c; m2 += c * c; }
         m /= 16.0; m2 = abs(m2 / 16.0 - m * m); float v = m2.r + m2.g + m2.b; if (v < bestVar) { bestVar = v; best = m; }
       }
       // rain: long light strokes dragged down the canvas at a slant
       vec2 r = vec2(vUv.x * 1.6 + vUv.y * 0.55, vUv.y); float streak = noise(vec2(r.x * 170.0, r.y * 5.0 + uTime * 7.0)) * noise(vec2(r.x * 37.0 + 9.0, r.y * 2.0 + uTime * 3.1));
       best = mix(best, vec3(1.0, 0.97, 0.86), smoothstep(0.42, 0.85, streak) * 0.2 * uRain);
+      best = mix(best, vec3(0.82, 0.68, 0.40) * (0.75 + 0.5 * noise(vUv * 3.0 + uTime * 0.2)), 0.2 * uSpeed);                 /* and the gold mist comes over everything */
       float grain = hash(floor(vUv / uPx / 2.0)) * 0.05 - 0.025, weave = sin(vUv.x / uPx.x * 1.6) * sin(vUv.y / uPx.y * 1.6) * 0.012;
       vec3 col = best * (1.0 + grain + weave); col *= 1.0 - 0.26 * pow(length(vUv - 0.5) * 1.25, 2.6);
       gl_FragColor = vec4(col, 1.0);
@@ -367,6 +372,7 @@ const RAINB = 44, rainMat = new THREE.ShaderMaterial({ transparent: true, depthW
   const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.BufferAttribute(pos, 3)); g.setAttribute('aCorner', new THREE.BufferAttribute(cor, 2)); g.setIndex(idx); const m = new THREE.Mesh(g, rainMat); m.frustumCulled = false; m.renderOrder = 5; rainMat.side = THREE.DoubleSide; scene.add(m); }
 
 /* ================= play ================= */
+const VFULL = 26.8, pic = { speed: false, steam: false, rain: false, rainT: 0, done: false, t: 0, nag: 0, diss: 0, open: false };      /* sixty miles an hour (the Gallery's figure for this stretch); and the three things the picture is named for */
 let state = 'title', time = 0, muted = false, onTrain = false, wpT = 0, endT = 0, seenField = false, fieldAt = -1, fogD = 0.006, fogWant = 0.006, bubbleG = null, bubbleT = 0, beat = 0, wheelA = 0, footT = 0, nag = 0, fellT = 0;
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0, last: 0, from: -1 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false }, leapt = new Set();
 const plate = (title, line) => { SC.award(title, null, title); $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
@@ -395,6 +401,7 @@ const BRIDGE_AT = -(ENG_F + 10), bridgeLeft = () => BRIDGE_AT - valley.position.
 const CAMF = { pos: [7.5, 6.5, -(ENG_F + 58)], look: [7, 11, -(ENG_F - 46)], fov: 34, fog: 0.0052 };       // the painter's standpoint, north of the line and above it, looking east
 function reset() {
   Object.assign(me, { x: 3.4, z: -(T0 - 10), yaw: 0, vy: 0, air: false, speed: 0, y: PLAT_Y, last: 0, from: -1 }); onTrain = false; leapt.clear(); L = 0; V = 0; wpT = 0; endT = 0; seenField = false; fieldAt = -1; fogD = fogWant = 0.006; footT = 0; nag = 0;
+  Object.assign(pic, { speed: false, steam: false, rain: false, rainT: 0, done: false, t: 0, nag: 0, diss: 0, open: false });
   station.visible = true; station.position.z = 0; station.userData.bank.position.y = PLAT_Y - 0.76; field.visible = false; valley.visible = false; hare.visible = false; landW.visible = false; landE.position.z = 0; fireGlow.material.opacity = 0;
   for (const o of scen) roll(o, rnd(-420, 140));
   $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('melt').src = 'images/rain_steam_speed.jpg'; $('plate').classList.remove('show');
@@ -406,15 +413,23 @@ function begin() {
   tip(matchMedia('(pointer: coarse)').matches ? 'The train is leaving! Drag to run beside it · a second finger to leap aboard' : 'The train is leaving! Arrow keys to run beside it · space to leap aboard', 10);
 }
 function aboard() { onTrain = true; me.from = -1; me.speed *= 0.25; SC.gain(30, 'Aboard!', 2); tip('Now forward to the engine: leap from wagon to wagon', 7); station.userData.left = true; }
-// On the footplate the driver lets her sound the whistle (space, or a tap): steam from the whistle, a few points for the first blasts, and nothing to lose.
-// Holding the run key keeps the regulator open, which he praises once. Neither is needed: the train reaches the bridge whatever she does.
+// On the footplate the picture is hers to make, and it is named for what it needs: RAIN, STEAM and SPEED (not for the train: research/FINDINGS.md, 'What the level teaches').
+// Speed: she holds the regulator open (the run key, or the stick pushed forward) until the train is doing sixty; the faster it goes, the more the drawn world goes to paint.
+// Rain: she keeps it there, into the squall ahead. Steam: three pulls on the whistle cord (space, or a tap). The bridge does not come until she has all three;
+// if she does nothing the train only dawdles, the driver tells her again, and the line at the foot of the screen says which is wanting. Nothing can be lost.
 const WHISTLE = new V3(0.3, 4.05, -(FP_B + 0.375)), wh = { t: -9, n: 0, reg: 0, regPaid: false, ac: null };
 function whistleSound() { try { const AC = window.AudioContext || window.webkitAudioContext; if (!AC || muted) return; const ac = wh.ac || (wh.ac = new AC()); if (ac.state === 'suspended') ac.resume(); const t = ac.currentTime, out = ac.createGain(), dur = 0.62;
     out.gain.setValueAtTime(0.0001, t); out.gain.exponentialRampToValueAtTime(0.11, t + 0.06); out.gain.setValueAtTime(0.11, t + dur - 0.12); out.gain.exponentialRampToValueAtTime(0.0001, t + dur); out.connect(ac.destination);
     for (const [f, a, type] of [[1150, 1, 'sine'], [1163, 0.6, 'sine'], [2310, 0.22, 'triangle'], [3470, 0.08, 'sine']]) { const o = ac.createOscillator(), g = ac.createGain(); o.type = type; o.frequency.setValueAtTime(f * 0.93, t); o.frequency.exponentialRampToValueAtTime(f, t + 0.09); g.gain.value = a; o.connect(g); g.connect(out); o.start(t); o.stop(t + dur + 0.05); }
     const nb = ac.createBuffer(1, Math.floor(ac.sampleRate * dur), ac.sampleRate), d = nb.getChannelData(0); for (let i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1; const ns = ac.createBufferSource(), nf = ac.createBiquadFilter(), ng = ac.createGain(); ns.buffer = nb; nf.type = 'bandpass'; nf.frequency.value = 2400; nf.Q.value = 0.8; ng.gain.value = 0.5; ns.connect(nf); nf.connect(ng); ng.connect(out); ns.start(t); } catch (_) {} }      // the breath of steam in the note
 function whistle() { if (state !== 'footplate' || time - wh.t < 0.55) return; wh.t = time; wh.n++; whistleSound();
-  if (wh.n <= 5) SC.gain(5, wh.n === 1 ? 'The whistle!' : 'Whee-eee!', 0); if (wh.n === 1) say(driver, 'That’s the way! Let them hear us coming!', 3); }
+  if (wh.n <= 5) SC.gain(5, wh.n === 1 ? 'The whistle!' : 'Whee-eee!', 0); if (wh.n === 1) say(driver, 'That’s the way! Let them hear us coming!', 3); puff(true);
+  if (wh.n === 3 && !pic.steam) got('steam'); }
+const GOT = { speed: ['Speed', '🐇', 'Speed!'], steam: ['Steam', '💨', 'Steam!'], rain: ['Rain', '🌧️', 'Rain!'] };
+function got(k) { if (pic[k]) return; pic[k] = true; pic.nag = time + 9; SC.keep(k, { title: GOT[k][0] + ' (one of the three things Turner named his picture for)', emoji: GOT[k][1] }); SC.gain(10, GOT[k][2], 0); SND.bell(k === 'speed' ? 7 : k === 'steam' ? 9 : 5, 0.08);
+  if (k === 'speed') say(fireman, 'Sixty miles an hour! Faster than any horse alive!', 3.5); else if (k === 'rain') say(driver, 'Here’s the rain! I can’t see the rails for it!', 3.5);
+  if (pic.speed && pic.steam && pic.rain) { pic.done = true; pic.t = time; } }
+
 function fell() { const v = VEH[me.last] || VEH[0]; SC.lose(15, 'Down between the wagons!'); SND.whoosh(0.12); Object.assign(me, { x: 0, z: -(v.a + 1.0), y: v.y + 1.4, vy: 0, air: true, speed: 0, yaw: 0, from: -1 }); fellT = time; }
 function startField() { field.visible = true; field.position.z = me.z - 92; fieldAt = time; }
 function startBridge(d = 170) { valley.visible = true; valley.position.z = BRIDGE_AT - d; landW.visible = true; hare.visible = true; valleyTex.offset.set((1500 / TILE) % 1, (((-valley.position.z + 1500) / TILE + fieldTex.offset.y) % 1 + 1) % 1); }      // its ground is painted to run on from the ground already under the train
@@ -427,6 +442,7 @@ function update(dt) {
   else if (state === 'play' && !onTrain) { const gap = T0 + me.z; V += ((gap > 24 ? 1.0 : 5.6) - V) * Math.min(1, dt * 0.8); }      // it will not run away from her: if she falls far behind, it crawls
   else if (state === 'turnips') V += (0.45 - V) * Math.min(1, dt * 2.2);
   else if (state === 'tableau' || state === 'done') V = Math.max(0.3, Math.min(V, 1.3 * bridgeLeft()));                                 // the moment seized: everything slows almost to a stop on the bridge
+  else if (state === 'footplate') { pic.open = pic.done || keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') || stick.dy < -0.4; V = pic.open ? Math.min(VFULL, V + 2.3 * dt) : Math.max(5, V - 1.7 * dt); }      /* hers to drive: open, she gathers to sixty; shut, she dawdles */
   else V = Math.min(VMAX, V + 2.6 * dt);
   const dz = V * dt; L += dz; wheelA += dz;
   for (const w of wheels) w.w.rotation.x -= dz / w.r;
@@ -503,15 +519,18 @@ function update(dt) {
       if (wpT > 9.8) { state = 'play'; fogWant = 0.006; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').src = 'images/rain_steam_speed.jpg'; tip('On to the engine!', 4); }
     }
     // ---- the footplate, and the bridge
-    if (state === 'play' && onTrain && seenField && !me.air && s > TEN_B + 0.25) { state = 'footplate'; footT = 0; fogWant = 0.017; SC.gain(30, 'The footplate!', 2); say(driver, 'Hold fast, now. Maidenhead bridge! Go on: sound the whistle!', 4.5); SND.hiss(); Object.assign(wh, { t: -9, n: 0, reg: 0, regPaid: false });
-      tip(matchMedia('(pointer: coarse)').matches ? 'Tap to sound the whistle' : 'Space to sound the whistle · hold the up arrow to keep the regulator open', 8); }
+    if (state === 'play' && onTrain && seenField && !me.air && s > TEN_B + 0.25) { state = 'footplate'; footT = 0; SC.gain(30, 'The footplate!', 2); say(driver, 'She’s yours! Rain, steam and speed, that’s the Great Western. Open her up!', 5); SND.hiss(); Object.assign(wh, { t: -9, n: 0, reg: 0, regPaid: false }); pic.nag = time + 10; $('tip').classList.add('hidden'); }
     if (state === 'footplate') { footT += dt;
       if (time - wh.t < 0.6 && Math.floor(time * 22) !== Math.floor((time - dt) * 22)) { const p = puffs[puffI++ % puffs.length]; p.t = 0; p.life = rnd(0.9, 1.4); p.s.visible = true; p.s.position.copy(WHISTLE); p.v.set(rnd(-0.4, 0.4), rnd(5, 7), 0); p.k = rnd(0.3, 0.42); p.w = 1; p.s.material.rotation = rnd(-0.5, 0.5); }      // a jet of steam from the whistle
-      if (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') || stick.dy < -0.4) { wh.reg += dt; if (wh.reg > 1.6 && !wh.regPaid) { wh.regPaid = true; SC.gain(10, 'Regulator wide open!', 0); say(driver, 'Steady on the regulator. You’ll make a driver yet.', 3.5); } }
-      if (footT > 4.6 && footT < 4.7 && !wh.n) say(driver, 'Pull the cord, there. She won’t bite!', 3); me.x += (-0.1 - me.x) * dt * 2; me.z += (-(TEN_B + 1.05) - me.z) * dt * 2; me.yaw += (0 - me.yaw) * dt * 3; me.speed = 0;
-      if (footT > 6.5 && footT < 6.6) say(fireman, 'A hare on the line! See her go!', 4);
-      if (!valley.visible && footT > 1.3) startBridge();
-      if (valley.visible) fogWant = bridgeLeft() < 125 ? 0.0046 : 0.017;
+      if (pic.open && !pic.done) { wh.reg += dt; if (wh.reg > 1.6 && !wh.regPaid) { wh.regPaid = true; SC.gain(10, 'Regulator wide open!', 0); } }
+      if (!pic.speed && V >= VFULL - 0.3) got('speed');
+      if (pic.speed && !pic.rain) { if (V > VFULL - 3) pic.rainT += dt; if (pic.rainT > 4) got('rain'); }                                  /* the squall is ahead: it is met only by holding the speed */
+      if (!pic.done && time > pic.nag) { pic.nag = time + 8; if (!pic.speed || !pic.rain) say(driver, pic.open ? 'That’s it. Keep her open!' : pic.speed ? 'Don’t shut her now! Keep her open, into the rain!' : 'Open the regulator, there! She’s only dawdling.', 3.5); else say(driver, 'Now the steam: pull the whistle cord. She won’t bite!', 3.5); }
+      if (pic.done && time - pic.t > 1.2 && time - pic.t < 1.3) say(driver, 'Rain, steam and speed! Hold fast: Maidenhead bridge!', 4);
+      me.x += (-0.1 - me.x) * dt * 2; me.z += (-(TEN_B + 1.05) - me.z) * dt * 2; me.yaw += (0 - me.yaw) * dt * 3; me.speed = 0;
+      if (valley.visible && !pic.hare && bridgeLeft() < 150) { pic.hare = true; say(fireman, 'A hare on the line! See her go!', 4); }
+      if (!valley.visible && pic.done && time - pic.t > 2.2) { pic.hare = false; startBridge(250); }
+      fogWant = valley.visible ? (bridgeLeft() < 125 ? 0.0046 : 0.017) : mix(0.006, 0.017, pic.diss);
       if (valley.visible && bridgeLeft() <= V / 1.3) { state = 'tableau'; endT = 0; SND.bell(4, 0.08); [2, 4, 5, 7, 9, 10].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); bubble.classList.remove('show'); } }
     if (state === 'tableau') { endT += dt; if (window.__road.dbg.hold) endT = Math.min(endT, 6); fogWant = CAMF.fog; fireGlow.material.opacity = Math.min(0.95, endT * 0.4);
       if (endT > 3.5 && endT < 3.6) plate('Rain, Steam and Speed', 'J. M. W. Turner, 1844 · National Gallery, London'); if (endT > 7.5) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
@@ -540,9 +559,15 @@ function update(dt) {
   { const want = state === 'turnips' && wpT < 8.4 ? 1 : 0; mood += (want - mood) * Math.min(1, dt * (want ? 1.6 : 1.1)); if (Math.abs(want - mood) < 0.002) mood = want; const k = mood * mood * (3 - 2 * mood); uni.uMood.value = k;
     SUN.copy(SUN0).lerp(SUNF, k).normalize(); FOGC.copy(FOG0).lerp(FOGF, k); scene.fog.color.copy(FOGC); hemi.color.copy(HEMI0[0]).lerp(HEMIF[0], k); hemi.groundColor.copy(HEMI0[1]).lerp(HEMIF[1], k); hemi.intensity = mix(HEMI0[2], HEMIF[2], k);
     sunL.color.copy(SUNC0).lerp(SUNCF, k); sunL.intensity = mix(1.5, 1.15, k); field.userData.shade.opacity = 0.62 * k; field.userData.soilM.color.set('#f0dfb4').lerp(C('#b8a470'), k); }
-  fogD += (fogWant - fogD) * Math.min(1, dt * (fogWant > fogD ? 2.2 : 0.9)); scene.fog.density = fogD; uni.uDen.value = fogD; { const dry = state === 'turnips' ? 0 : state === 'tableau' || state === 'done' ? 0.6 : 1, k = Math.min(1, dt * 2); post.uniforms.uRain.value += (dry - post.uniforms.uRain.value) * k; rainMat.uniforms.uAlpha.value += (0.22 * dry - rainMat.uniforms.uAlpha.value) * k; }
+  { const want = state === 'footplate' ? sstep(VMAX, VFULL, V) : state === 'tableau' || state === 'done' ? 0.5 : 0; pic.diss += (want - pic.diss) * Math.min(1, dt * 1.5); post.uniforms.uSpeed.value = pic.diss; }      /* drawing into paint, by speed */
+  fogD += (fogWant - fogD) * Math.min(1, dt * (fogWant > fogD ? 2.2 : 0.9)); scene.fog.density = fogD; uni.uDen.value = fogD; { const dry = state === 'turnips' ? 0 : state === 'tableau' || state === 'done' ? 0.6 : state === 'footplate' ? (pic.rain ? 1.25 : 0.55 + 0.7 * Math.min(1, pic.rainT / 4)) : state === 'title' ? 1 : 0.55, k = Math.min(1, dt * 2); post.uniforms.uRain.value += (dry - post.uniforms.uRain.value) * k; rainMat.uniforms.uAlpha.value += (0.22 * dry - rainMat.uniforms.uAlpha.value) * k; }
   sunL.position.copy(camera.position).addScaledVector(SUN, 400); sunL.target.position.copy(camera.position);
   SND.update(0.35 + 0.5 * Math.min(1, V / VMAX), clamp(0.25 + V / VMAX * 0.6 + (me.air ? 0.15 : 0), 0, 1));
+  { const touch = matchMedia('(pointer: coarse)').matches, tick = (k, w) => pic[k] ? `<s>${w} ✓</s>` : `<b>${w}</b>`, mph = Math.min(60, Math.round(V * 2.237)); let g = null;
+    if (state === 'play') g = !onTrain ? 'Run beside the train and leap aboard the last wagon' : 'Forward to the engine: leap from wagon to wagon';
+    else if (state === 'footplate' && !pic.done) g = `The picture needs ${tick('rain', 'RAIN')}, ${tick('steam', 'STEAM')} and ${tick('speed', 'SPEED')}: ` + (!pic.speed ? `${touch ? 'push forward and hold' : 'hold ↑'} to open the regulator · ${mph} of 60 miles an hour` : !pic.rain ? `keep her at sixty, into the rain ahead · ${mph}` : `${touch ? 'tap' : 'press space'} to pull the whistle cord · ${Math.min(3, wh.n)} of 3`);
+    else if (state === 'footplate') g = 'Rain, steam and speed: hold fast for the bridge!';
+    const e = $('goal'); e.style.display = g ? 'block' : 'none'; if (g && e.dataset.g !== g) { e.dataset.g = g; e.innerHTML = '➜ ' + g; } }
 }
 // The level list lives in common/score.js. Until this level is entered there, the shared card would call it "Level 0" and offer Florence next: say nothing false instead.
 function card() { if (LEVELS.some(l => l.key === 'turner')) return; const c = $('scCard'), n = $('scNext'); if (c && c.firstChild && c.firstChild.tagName === 'I') { const br = c.firstChild.nextSibling; c.firstChild.remove(); if (br && br.tagName === 'BR') br.remove(); } if (n) { n.href = '../index.html'; n.textContent = 'Back to the gallery'; } }
@@ -560,7 +585,7 @@ reset(); requestAnimationFrame(frame);
 addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Space' && !e.repeat) whistle(); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
 addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
 const cv = $('cv'), sk = $('stick');
-cv.addEventListener('pointerdown', e => { if (state === 'footplate') { whistle(); return; } if (state !== 'play') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
+cv.addEventListener('pointerdown', e => { if (state === 'footplate') whistle(); if (state !== 'play' && state !== 'footplate') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
 cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
 const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === held.id) held.jump = false; };
 cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
@@ -571,7 +596,7 @@ window.__road = { dbg: { camera, THREE, CAMF, FCAM, field, valley, boat, plough,
   go(x, z) { me.x = x; me.z = z; me.speed = 0; me.air = false; me.vy = 0; onTrain = Math.abs(x) < 1.7 && -z > T0 - 0.3; me.y = groundY(x, z); if (onTrain) { V = VMAX; me.last = vehAt(-z)?.i ?? 0; station.visible = false; } }, face(a) { me.yaw = a; },
   route: s => at(s), LEN, wagons, VEH, T0, TEN_A, TEN_B, FP_B, ENG_F,
   places: { platform: [3.4, -(T0 - 13)], last: [0, -(wagons[0].a + 1)], goods: [0, -(wagons[2].a + 1)], trucks: [0, -(wagons[NGOODS].a + 0.6)], tender: [0, -(TEN_A + 1)], foot: [0, -(TEN_B + 0.2)] },
-  jump: { field() { seenField = false; fieldAt = -2; wpT = time - 1.3; fogD = fogWant = 0.017; }, skipField() { seenField = true; }, skipTo(s) { seenField = true; window.__road.go(0, -s); }, tableau(d = 30) { seenField = true; window.__road.go(0, -(TEN_B + 1)); state = 'footplate'; footT = 7; startBridge(d); } } };
+  jump: { field() { seenField = false; fieldAt = -2; wpT = time - 1.3; fogD = fogWant = 0.017; }, skipField() { seenField = true; }, skipTo(s) { seenField = true; window.__road.go(0, -s); }, tableau(d = 30) { seenField = true; window.__road.go(0, -(TEN_B + 1)); state = 'footplate'; footT = 7; Object.assign(pic, { speed: true, steam: true, rain: true, done: true, t: time }); startBridge(d); } }, pic };
 </script>
 </body>
 </html>

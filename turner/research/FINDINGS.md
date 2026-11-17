@@ -83,3 +83,21 @@ Also fetched and saved, not relied on: the Taplow, Maidenhead station and Parlia
 3. No moving rods (see above). Wheels turn; the chimney puffs four times to each turn of the driving wheels.
 4. The steam is small puffs, not clouds, as the Gallery describes.
 5. The end card says the hare can no longer be seen in the painting.
+
+## What the level teaches (added 17 November 2026)
+
+The one thing: Turner's picture is about rain, steam and speed, the forces themselves, and not a portrait of a train. Outlines give way to weather.
+
+| Statement | Status | Source (re-read 17 Nov 2026) |
+|---|---|---|
+| The title names three forces, and the picture is "not a view of the Great Western Railway, but an allegory of the forces of nature" | verified | NG, quoting John Gage: "These forces of nature include the rain", "Steam is represented by the three small puffs", "Speed is most obviously embodied by the train itself", and the hare |
+| The engine is a dark, indistinct mass and the landscape dissolves into haze | verified from a secondary source | WP painting: "The locomotive is depicted as a dark, indistinct black mass, defined mainly by its upright chimney"; "dissolving the landscape into an atmospheric haze" |
+| Sixty miles an hour on this stretch, "faster than any galloping horse" | verified | NG: "on long level stretches, such as the Maidenhead Viaduct, an unprecedented 60 mph could be reached" |
+| The hare, not the train, was meant to stand for speed | verified as a report | NG, from George Leslie's account. Used for the bag's "speed" token |
+| Three puffs of steam | verified | NG. The level asks for three pulls on the whistle |
+
+What she does: on the footplate the bridge will not come until she has made all three. Speed: hold the regulator open until the train reaches sixty. Rain: keep it there into the squall. Steam: pull the whistle cord three times. A line at the foot of the screen says which is wanting; the driver says it again every eight seconds; a train left alone only dawdles at 11 mph. Nothing can be lost.
+
+Simplified: the steam in the picture comes from the chimney, not the whistle; rain is weather, and here she drives into it; one child's hand on the regulator.
+
+The game's own: that the drawn world blurs into broad paint and gold mist in step with the train's speed (the paint filter widens its brush with speed). This is a way of showing the verified point, not a claim about how Turner worked. The driver's and fireman's lines are invented.

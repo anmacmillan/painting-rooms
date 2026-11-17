@@ -119,3 +119,24 @@ All painted by `tools/blender/tex_vangogh.py` with PIL (clothes, eight house fro
 2. Four pictures, not three: The Yellow House is a short fourth stop between the gate and the Night Café. It is a daylight picture seen here at night, and the plate says "painted by day".
 3. The Night Café was chosen for the staged interior on Place Lamartine; the Yellow House is built as a front.
 4. The painter never calls out: when the boy falls behind he waits and beckons.
+
+## What the level teaches (added 17 Nov 2026)
+
+The one thing: Van Gogh painted night without black. The dark is blue, violet and green, and against it he set the yellow and orange of the gas, each colour made to tell by its opposite.
+
+Sources re-read 17 Nov 2026 (the French of the letters, already saved in `research/letters/`; URLs as in the table at the head of this file: vangoghletters.org, letters 676, 678, 691).
+
+| Statement | His words | Letter | Status |
+|---|---|---|---|
+| Night without black: blue, violet and green, and the lit square sulphur yellow against them | "Voila un tableau de nuit sans noir. rien qu'avec du beau bleu et du violet et du vert, et dans cet entourage la place illuminée se colore de souffre pâle, de citron vert." | 678, to Willemien, of the Café Terrace | V |
+| He set colours against each other on purpose | "arranger les couleurs dans un tableau pour les faire vibrer et valoir par leur opposition" | 678 | V |
+| The pale stars against the gold of the gas, in the Rhône picture | "la Grande Ourse a un scintillement vert et rose dont la paleur discrète contraste avec l'or brutal du gaz" | 691, to Theo | V |
+| He painted the Rhône picture by gaslight | "le ciel étoilé peint la nuit même, sous un bec de gaz" | 691 | V |
+| Red against green in The Night Café | "J'ai cherché à exprimer avec le rouge et le vert les terribles passions humaines" | 676, to Theo | V (not used in the mechanic) |
+| Arles had gas in its streets | "1881 : éclairage des rues par une usine à gaz" | W fr_histoire | V (secondary) |
+
+What the player does: the night begins grey and black, with the gas out. A leap beside a lamp lights it; each lamp lit brings one eighth of the colour into the whole night, so that after eight the dark is blue and violet. The café's great lantern must be lit before the first picture can be made (he is turned back by the painter 24 m beyond the café until it is), and the gas jet by the easel on the river bank before the last. A boy who has lit few lamps is sent back from the river for no more than one lamp besides the jet. A yellow mark bobs over the next unlit lamp, and a line at the foot of the screen says what is wanted.
+
+Simplified: one switch of the whole night from grey to blue stands for a way of choosing colours; "opposite" is not explained (blue against yellow and orange is shown, not named as complementary); the mechanic uses only the blue and yellow pair, not the red and green of The Night Café.
+
+The game's own (I): that the gas was out; the lamplighter's pole in Camille's hand and the postman's line about it; that lamps light at a leap; the count of eight; the painter's three calls ("Camille! Not yet. Light the café's lantern for me first.", "I paint by the gas, Camille. Light the jet above me!", "Still too black behind us, and I use no black. Light the lamps along the bank!"). Van Gogh did not paint a grey night into a blue one; he never painted the grey one. The English of the letters on the end card is a plain translation from the saved French.

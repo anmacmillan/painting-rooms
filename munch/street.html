@@ -8,6 +8,8 @@
 <link rel="stylesheet" href="../common/world.css">
 <style>
   #end > img { max-height:52vh; }
+  /* the plain next step, always at the foot of the screen while she is playing */
+  #goal { position:fixed; left:50%; bottom:64px; transform:translateX(-50%); z-index:6; max-width:92vw; padding:.45em 1.1em; border-radius:999px; background:rgba(30,18,28,.84); color:#f4efe2; border:2px solid rgba(232,120,70,.7); font:600 clamp(15px,2vw,21px) "Iowan Old Style",Palatino,Georgia,serif; text-align:center; pointer-events:none; display:none; }
   #bubble { font-size:17px; }
   #plate { position:fixed; left:50%; bottom:max(34px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2.5s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.9); z-index:9; }
   #plate.show { opacity:1; }
@@ -21,7 +23,7 @@
 <canvas id="cv"></canvas>
 <div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
 <img id="melt" src="paintings/girls_bridge.jpg" alt="">
-<div id="plate"></div>
+<div id="plate"></div><div id="goal"></div>
 <button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
 <div id="title" class="screen">
   <img src="scream.jpg" alt="The Scream by Edvard Munch">
@@ -32,6 +34,7 @@
   <h2>The Girls on the Bridge</h2>
   <p>Edvard Munch painted three girls at the rail of the Åsgårdstrand pier about 1901. You have just been one of them.</p>
   <p>The road you ran down is the one in The Scream; the people you passed in the street come from Anxiety and Evening on Karl Johan.</p>
+  <p>What you did: the land bent and burned when you were afraid, and lay still when you were calm beside your sisters, and each picture came only when the world matched what you felt. That is Munch's own account of The Scream. Before he painted it he wrote: “the sun was setting, suddenly the sky turned blood red … I stood there trembling with anxiety, and I sensed an infinite scream passing through nature.” The National Museum in Oslo, which owns both pictures, says its “non-realistic colours signified a new way of creating art”, in which form and content “are meant to express the same subject matter”. That the fear follows you down the road and leaves you at the rail is the game's.</p>
   <p class="small">Paintings: public domain, via Wikimedia Commons. Street plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors.</p>
   <button class="go" id="again">Run it again</button>
 </div>
@@ -333,13 +336,17 @@ const LINES = ['Good evening.', 'Mind yourself, child.', 'Were those your sister
 const guide = makeGuide({ THREE, scene, map, nearest, at, LEN, blocked, groundY: ground, wet: (x, z) => ground(x, z) < 0, bounds: (() => { const b = [1e9, 1e9, -1e9, -1e9]; for (let s = 0; s <= LEN; s += 6) { const p = at(s); b[0] = Math.min(b[0], p.x - 150); b[1] = Math.min(b[1], p.z - 150); b[2] = Math.max(b[2], p.x + 150); b[3] = Math.max(b[3], p.z + 150); } return b; })(),
   places: [{ n: 'The Scream', x: at(S_SCREAM).x, z: at(S_SCREAM).z, s: S_SCREAM }, { n: 'Åsgårdstrand', x: at(S_VILLAGE).x, z: at(S_VILLAGE).z, s: S_VILLAGE }, { n: 'The pier', x: PIER_A[0], z: PIER_A[1], s: S_PIER }],
   style: { board: '#e6e0d2', ink: '#1c1a20', post: '#cfc9bb', land: '#2c3a2e', water: '#2a3a58', house: '#8a8478', street: '#b08a64' } });
+/* What the level teaches (research/FINDINGS.md): he painted what was felt, not what was there, so here the land IS her feeling. Dread bends the lines, heats the colours and drags at her feet.
+   The Scream can be made only when her dread is full (she must go up to the figure and let the sky go red); she then carries the fear with her (floorD) until she has stood close to her sisters,
+   and The Girls on the Bridge can be made only when the world lies still again. */
+let floorD = 0, feelNag = 0, lastS = 0, goalS = 0;
 let state = 'title', time = 0, muted = false, dread = 0, night = 0, endT = 0, sisS = S_START + 16, sisPh = 0, sisV = 0, tagged = false, railK = 0, wpT = 0, seenScream = false, bubbleG = null, bubbleT = 0, hop = 0;
 const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
 const plate = (title, line) => { SC.award(title, null, title); $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
 const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
 // points: the paintings first, then what lies on the road and the ditchs to leap (common/score.js)
 const SC = makeScore({ THREE, scene, isHouse: inHouse, walkers, washing: false, key: 'munch', at, nearest: nearest, LEN, groundY: (x, z) => floorAt(x, z) ?? ground(x, z), blocked, paintings: 2, thing: 'krone', things: 'silver kroner', ditch: 'ditch', avoid: [S_SCREAM, S_PIER + 20], half: 3.4, ditches: [0.2, 0.62, 0.8] });
-function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0 }); me.y = ground(me.x, me.z); sisS = S_START + 16; tagged = false; railK = 0; wpT = 0; seenScream = false; endT = 0; night = 0; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); }
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0 }); me.y = ground(me.x, me.z); sisS = S_START + 16; tagged = false; railK = 0; wpT = 0; seenScream = false; endT = 0; night = 0; floorD = 0; feelNag = 0; lastS = 0; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); }
 function begin() {
   SND.start({ chords: [[38, 57, 62, 65, 69], [34, 58, 62, 65, 70], [31, 55, 58, 62, 67], [33, 57, 61, 64, 69]], scale: [62, 65, 67, 69, 72, 74, 77, 79, 81, 84, 86] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
   $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
@@ -354,14 +361,14 @@ function update(dt) {
     let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.5 : 0) - stick.dy;
     turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (state !== 'play') { turn = 0; go = 0; }
     me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1);
-    const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw), slope = (ground(me.x, me.z) - ground(me.x + fx * 2, me.z + fz * 2)) / 2, top = 9.5 + clamp(slope * 60, 0, 7);
+    const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw), slope = (ground(me.x, me.z) - ground(me.x + fx * 2, me.z + fz * 2)) / 2, top = (9.5 + clamp(slope * 60, 0, 7)) * (1 - 0.15 * dread);      /* fear drags at her feet; calm, she flies */
     me.speed += (go * top - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2));
     let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
     if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;      // slide along whatever is in the way
       for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
       if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
     let f = floorAt(nx, nz) ?? me.y;
-    me.x = nx; me.z = nz;
+    const ox = me.x, oz = me.z; me.x = nx; me.z = nz;
     const jump = (keys.has('Space') || held.jump) && state === 'play';
     if (jump && !me.air) { me.vy = 6.2 + Math.abs(me.speed) * 0.22; me.air = true; SND.whoosh(0.04); }
     if (me.air) { me.vy -= (jump && me.vy < 0 ? 5 : 15) * dt; me.y += me.vy * dt; if (me.y <= f) { me.y = f; me.air = false; SND.puff(0.06); } } else me.y += (f - me.y) * Math.min(1, dt * 20);      // hold to glide down slowly: skirt as parachute
@@ -369,7 +376,9 @@ function update(dt) {
     me.lean += (turn * 0.22 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
     meG.position.set(me.x, me.y, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; pose(meG, me.ph, me.air ? 0.4 : pace, me.air);
     if (SC.update(dt, me, state === 'play', time)) me.speed *= 0.2;
-    const prog = nearest(me.x, me.z);
+    let prog = nearest(me.x, me.z);
+    if (state === 'play' && !seenScream && prog.s > S_SCREAM + 4 && prog.s > lastS) { me.x = ox; me.z = oz; me.speed = 0; prog = nearest(ox, oz); if (time > feelNag) { feelNag = time + 5; say(sisA, 'Look at the sky! Look what it is doing!', 3); } }      /* nobody gets past the figure without feeling it */
+    lastS = prog.s; goalS = prog.s;
     night += (sstep(S_VILLAGE * 0.55, S_VILLAGE * 1.05, prog.s) - night) * dt * 0.9;
 
     // the sisters: always a little ahead, waiting if she falls behind, until the pier
@@ -385,7 +394,8 @@ function update(dt) {
       else if (sisV < 0.6) { faceTo(g, me.x, me.z, dt * 5); pose(g, time * 9, 0.15); g.userData.aR.rotation.z = 2.4 + Math.sin(time * 9) * 0.4; }      // waiting: turn and wave
       else { g.rotation.y = Math.atan2(p.dx, p.dz); pose(g, sisPh + i, sisV / 6.5); }
     });
-    if (state === 'play' && sisS >= sEnd && Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z) < 3.2) { state = 'tableau'; endT = 0; SND.bell(4, 0.08); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); bubble.classList.remove('show'); }
+    if (state === 'play' && sisS >= sEnd && floorD > 0 && time > feelNag && Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z) > 4.5) { feelNag = time + 7; say(sisA, 'Come and stand with us! It is quiet here.', 3.5); }
+    if (state === 'play' && sisS >= sEnd && floorD <= 0 && dread < 0.2 && Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z) < 3.2) { state = 'tableau'; endT = 0; SND.bell(4, 0.08); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); bubble.classList.remove('show'); }
     if (state === 'tableau') {            // she takes her place at the rail, and the picture composes itself
       endT += dt; const p = at(sEnd + 0.1), tx = p.x - p.dz * 2.05, tz = p.z + p.dx * 2.05; me.x += (tx - me.x) * dt * 2; me.z += (tz - me.z) * dt * 2; me.speed = 0; me.y = floorAt(me.x, me.z) ?? me.y; me.yaw += (Math.atan2(-p.dz, -p.dx) - me.yaw) * dt * 2;
       meG.rotation.y = Math.PI - me.yaw; pose(meG, 0, 0); meG.userData.rig.rotation.x = 0.2;
@@ -394,18 +404,21 @@ function update(dt) {
     }
 
     // the waypoint: as she comes up to the figure on the road, the view becomes The Scream, melts into the painting for a moment, and lets her go
-    if (state === 'play' && !seenScream && prog.s > S_SCREAM - 11 && prog.s < S_SCREAM + 2) { state = 'scream'; seenScream = true; wpT = 0; me.speed = 0; $('melt').src = 'scream.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.whoosh(0.1); }
+    if (state === 'play' && !seenScream && prog.s > S_SCREAM - 14 && prog.s < S_SCREAM + 8 && dread > 0.8) { state = 'scream'; seenScream = true; wpT = 0; me.speed = 0; $('melt').src = 'scream.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.whoosh(0.1); }
     if (state === 'scream') {
       wpT += dt;
       if (wpT > 2.4 && wpT < 2.5) plate('The Scream', 'Edvard Munch, 1893 · National Museum, Oslo');
       if (wpT > 3.4 && wpT < 7.0) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
       if (wpT > 7.0) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
-      if (wpT > 9.2) { state = 'play'; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').src = 'paintings/girls_bridge.jpg'; say(sisA, 'Don\'t look at him! Run!', 3); hop = time + 6; }
+      if (wpT > 9.2) { state = 'play'; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').src = 'paintings/girls_bridge.jpg'; say(sisA, 'Don\'t look at him! Run!', 3); hop = time + 6; floorD = 0.5; SC.keep('dread', { title: 'Dread: the sky screamed because you did', emoji: '😱' }); }
     }
     // dread: near the figure on the road and in the thick of the crowd; it lifts by her sisters
     let want = sstep(48, 5, Math.hypot(me.x - screamer.position.x, me.z - screamer.position.z)), crowdN = 0;
     for (const w of walkers) if (Math.hypot(me.x - w.g.position.x, me.z - w.g.position.z) < 6) crowdN++;
-    want = Math.max(want, Math.min(0.5, crowdN * 0.12)) * (1 - sstep(26, 8, Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z))); if (state === 'scream') want = 1; dread += (want - dread) * dt * 1.4;
+    want = Math.max(want, Math.min(0.5, crowdN * 0.12)) * (1 - sstep(26, 8, Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z))); if (state === 'scream') want = 1;
+    if (!seenScream && state === 'play' && prog.s > S_SCREAM - 14) want = Math.max(want, 0.95);                                                              /* by the figure there is no comfort, sisters or no */
+    if (floorD > 0 && state === 'play') { const dSis = Math.min(Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z), Math.hypot(me.x - sisB.position.x, me.z - sisB.position.z)); if (dSis < 4.5 && sisS >= LEN - 1.5) { floorD = Math.max(0, floorD - dt * 0.2); if (floorD === 0) { SC.keep('calm', { title: 'Calm: beside your sisters the lines lay still', emoji: '🌙' }); SC.gain(20, 'Calm', 0); SND.bell(9, 0.07); } } want = Math.max(want, floorD * (sisS >= LEN - 1.5 ? 1 : sstep(4, 16, dSis))); }      /* the fear she carries: close to her sisters the land steadies, behind them it bends again, and she puts it down only beside them at the rail */
+    dread += (want - dread) * dt * 1.4;
 
     // camera
     if (state === 'tableau' || state === 'done') {
@@ -447,6 +460,8 @@ function update(dt) {
   scene.fog.color.copy(C('#a8674a')).lerp(C('#16264c'), n); scene.fog.near = mix(120, 40, n); scene.fog.far = mix(1500, 520, n);
   for (const m of litWindows) m.color.setScalar(mix(0.55, 1.25, n)); for (const l of lamps) { l.glow.material.opacity = 0.15 + 0.85 * n; }
   const near = lamps.map(l => [Math.hypot(l.x - me.x, l.z - me.z), l]).sort((a, b) => a[0] - b[0]); lampLights.forEach((L, i) => { if (near[i]) { L.position.set(near[i][1].x, near[i][1].y - 0.4, near[i][1].z); L.intensity = 60 * n; } else L.intensity = 0; });
+  { let g = null; if (state === 'play') g = !seenScream ? (goalS < S_SCREAM - 45 ? 'Run after your sisters, down the road' : 'The sky is as frightened as you are. Go right up to the figure on the road, if you dare') : floorD > 0 ? (sisS >= LEN - 1.5 ? 'Stand close beside your sisters at the rail, until the world lies still' : 'You have brought the fear with you: the road bends and the colours burn. Catch your sisters and keep close to steady it') : 'Calm now, and the land is calm. To the rail with your sisters';
+    const e = $('goal'); e.style.display = g ? 'block' : 'none'; if (g && e.dataset.g !== g) { e.dataset.g = g; e.textContent = '➜ ' + g; } }
   guide.update(me, at(sisS), state === 'play');
   SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(dread * 0.9 + Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
 }
@@ -468,7 +483,7 @@ const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = 
 cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
 $('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
 $('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
-window.__road = { dbg: { walkers, screamer, camera, THREE }, get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z) { me.x = x; me.z = z; me.speed = 0; const r = nearest(x, z); sisS = Math.min(LEN - 1.5, r.s + 14); }, face(a) { me.yaw = a; },
+window.__road = { feel: { get dread() { return dread; }, get floor() { return floorD; }, get seen() { return seenScream; }, see() { seenScream = true; }, get sis() { return [sisA.position.x, sisA.position.z, sisS]; }, S_SCREAM }, dbg: { walkers, screamer, camera, THREE }, get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z) { me.x = x; me.z = z; me.speed = 0; const r = nearest(x, z); sisS = Math.min(LEN - 1.5, r.s + 14); }, face(a) { me.yaw = a; },
   places: { road: [at(S_SCREAM - 16).x, at(S_SCREAM - 16).z], scream: [at(S_SCREAM - 5).x, at(S_SCREAM - 5).z], walkers: [at(S_VILLAGE - 30).x, at(S_VILLAGE - 30).z], street: [at(S_VILLAGE + 40).x, at(S_VILLAGE + 40).z], street2: [at(S_PIER - 50).x, at(S_PIER - 50).z], pier: [at(S_PIER + 20).x, at(S_PIER + 20).z], end: [at(LEN - 8).x, at(LEN - 8).z] }, route: s => at(s), LEN };
 </script>
 </body>
