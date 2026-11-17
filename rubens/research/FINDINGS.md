@@ -131,3 +131,20 @@ The final picture: on arrival in St Walburga's the view now dissolves into the p
 ## Coordinates
 
 Cathedral crossing 51.2203, 4.4015. Rubenshuis 51.21722, 4.40944. Het Steen 51.22278, 4.39750. Stadhuis 51.22139, 4.39944. St Walburga's door as set: 51.2232, 4.3977 (inference).
+
+## The teaching (added 17 Nov 2026): a workshop picture is made in order: his small oil sketch, the assistants, the master
+
+What `street.html` now makes her do: in St Walburga's the Raising stands behind the sail and is not shown until she has (1) taken the master's small oil sketch from the easel, (2) carried it to the two assistants, who mark the picture out from it (the sail is furled and the panel is seen in chalk lines), and (3) taken the box of colours to the master. Asked out of order, the assistants and the master send her back. Sources fetched 17 Nov 2026 by the MediaWiki API (`prop=extracts`), kept in `research/teach/`.
+
+| Statement | Source | Status |
+|---|---|---|
+| "He was head of a workshop in which pupils, assistants and collaborators played an important role in the execution of commissions. Rubens did all the sketches and designs for the works being created in his workshop." | en.W *The Elevation of the Cross (Rubens)* (`teach/en_The_Elevation_of_the_Cross_Rubens.json`), https://en.wikipedia.org/wiki/The_Elevation_of_the_Cross_(Rubens) | V (secondary) |
+| For this picture: a first drawn sketch (Louvre INV 20188); "Next Rubens made a painted sketch (Louvre, MNR 411)"; "Called a modello, Rubens would have provided this oil sketch to the patrons who commissioned the work"; "The modello also served as a model for the assistants to prepare for the execution of the work" | same | V (secondary; "would have" is the article's own hedge about the patrons) |
+| "Once his workshop assistants had marked the general composition on the panels, Rubens turned his attention towards the human figures", drawing in chalk from live models in the poses of the modello | same | V (secondary). The game leaves out the chalk drawings from models |
+| "Rubens's workshop paintings can be divided into three categories: those he painted by himself, those he painted in part (mainly hands and faces), and copies supervised from his drawings or oil sketches" | en.W *Peter Paul Rubens* (`teach/en_Peter_Paul_Rubens.json`), https://en.wikipedia.org/wiki/Peter_Paul_Rubens | V (secondary), as a general statement. Which category the Raising falls in was not found: the end card says so, and the master's line claims only "the finishing is mine" |
+| "Rubens made great use of them [oil sketches], as working studies, and as modelli for clients, his own assistants, engravers and tapestry-makers" | en.W *Oil sketch* (`teach/en_Oil_sketch.json`), https://en.wikipedia.org/wiki/Oil_sketch | V (secondary) |
+| Painted in the church behind a ship's sail, 1610–11 | already in this file (TOPA, above) | V (secondary) |
+| That the picture was still unfinished on the day of the errand (1612); the easel in the nave; two assistants there; every word; the sketch shown on the easel is the finished painting made small, not the Louvre modello (which differs from the finished work) | Invented or simplified | the game's own; said on the end card |
+| The marked-out state of the panel | Drawn by the game: an edge filter over `images/raising.jpg`, dark lines on an ochre ground. No source describes what the marking-out looked like | the game's own |
+
+For 1612 itself: nothing read names an assistant or a task for that year (as recorded above, "names, tasks U"). The process is attested for the Raising (1610–11), which is why the mechanic is set at that picture and not at the Descent. The English Wikipedia page fetched for the Descent (`teach/en_The_Descent_from_the_Cross_Rubens.json`) is a disambiguation stub and gave nothing.

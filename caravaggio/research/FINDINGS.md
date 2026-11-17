@@ -86,3 +86,19 @@ The whole line is on N (1748). T and M are bird's-eye views: they show the squar
 - `tools/prep_rome.py`: OSM → `map.json` (455 buildings; the arch and the obelisk footprints skipped; unsupported street names blanked).
 - `caravaggio/fronts.js`: the named fronts, in travertine and plaster painted on a canvas; each front is set out in metres along its OSM wall.
 - `tools/blender/figure.py` (world `caravaggio`): twelve figures; `child` and the pilgrim's breeches added in this pass. Clothes: `tools/blender/tex_caravaggio.py`.
+
+## The teaching (added 17 Nov 2026): one light, high and from one side
+
+What the level now makes her do: at each of the three pictures the scene stands unlit until the boy hangs his lantern. A stool low in front gives a flat, shadowless view and the painter's refusal; the tall pole at the side gives the one hard shaft, and only then does the scene melt into the painting. Sources fetched 17 Nov 2026 by the MediaWiki API (`prop=extracts`), kept in `research/teach/`.
+
+| Statement | Source | Status |
+|---|---|---|
+| He made chiaroscuro "a dominant stylistic element, darkening the shadows and transfixing the subject in a blinding shaft of light"; the manner is called tenebrism, "the shift from light to dark with little intermediate value" | en.W *Caravaggio* (`teach/en_Caravaggio.json`), https://en.wikipedia.org/wiki/Caravaggio | V (secondary) |
+| Tenebrism: "violent contrasts of light and dark, and where darkness becomes a dominating feature of the image" | en.W *Tenebrism* (`teach/en_Tenebrism.json`), https://en.wikipedia.org/wiki/Tenebrism | V (secondary) |
+| "dark subjects dramatically lit by a shaft of light from a single constricted and often unseen source" as a device, with Caravaggio "crucial in developing the style of tenebrism" | en.W *Chiaroscuro* (`teach/en_Chiaroscuro.json`), https://en.wikipedia.org/wiki/Chiaroscuro | V (secondary) |
+| In the Calling "l'unica fonte di illuminazione è una lama di luce che proviene dall'angolo in alto a destra, la cui origine si trova all'esterno del riquadro"; the picture is "la prima in cui Caravaggio fa un uso ragionato della luce" | it.W *Vocazione di san Matteo* (`teach/it_Vocazione_di_san_Matteo.json`), https://it.wikipedia.org/wiki/Vocazione_di_san_Matteo | V (secondary) |
+| In the studio "Caravaggio posizionava lanterne in modo che i modelli fossero illuminati solo in parte e a luce radente" | it.W *Caravaggio* (`teach/it_Caravaggio.json`), https://it.wikipedia.org/wiki/Caravaggio | P: one unreferenced sentence in a secondary source. The end card says "he is said to". Bellori's own account of the high light in a closed room was looked for (it.wikisource, it.W, en.W searches) and not found in a readable text, so it is not quoted |
+| A lamp low and in front gives a flat picture without cast shadows | The game's own demonstration (it is what the renderer shows); no source claims Caravaggio said so | the game's own |
+| The pole with its pulley, the stool, hoisting a lantern in the street, the painter's words | Invented | the game's own |
+
+Simplified: the lantern stands for whatever lit his studio; the shaft in each staging is placed where the level's first build put it (high left for Medusa and the Madonna, high right for the Calling, as in the painting), and the lantern on the pole is drawn near that place, not exactly at it. After the picture the boy takes the lantern down and the scene goes dark again.

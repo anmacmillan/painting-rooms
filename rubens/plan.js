@@ -31,10 +31,10 @@ export const PLAN = {
   bower: { eye: [578, 365], dir: [0, -1], stop: [0, 0], he: [-0.26, 6.12], heY: 0.02, she: [0.26, 5.85], kid: [3.0, 1.2], man: [0, 0], look: [0, 6], cam: [[0.1, 2.5, 0.95], [0.1, 6.0, 0.78], 30],
     title: 'The Honeysuckle Bower', line: 'Peter Paul Rubens, about 1609 · the painter and Isabella Brant · Alte Pinakothek, Munich', img: 'images/honeysuckle.jpg', after: 'Come, child. Bring the colours: they wait for us in the cathedral.' },
   descent: { eye: [66, 26], dir: CA => [CA.ax, CA.az], stop: [1, 5], kid: [2.6, 6.2], man: [-2.4, 7.0], look: [0, 11.5], cam: [[0, 1.2, 1.6], [0, 11.4, 4.3], 36],
-    title: 'The Descent from the Cross', line: 'Peter Paul Rubens, 1612 · painted for the Arquebusiers · Cathedral of Our Lady, Antwerp', img: 'images/descent.jpg', after: 'It hangs true. Now to the Burcht church, by the river.', after2: 'I want to see my other great picture by this light.' },
+    title: 'The Descent from the Cross', line: 'Peter Paul Rubens, 1612 · painted for the Arquebusiers · Cathedral of Our Lady, Antwerp', img: 'images/descent.jpg', after: 'It hangs true. Now to the Burcht church, by the river.', after2: 'They are at work on my other great picture there, behind a sail.' },
   raising: { eye: [WALB.door[0] + 14, WALB.door[1]], dir: [1, 0], reach: 4, kid: [2.4, 15.5], man: [-2.2, 17], look: [0, 30], cam: [[0, 12, 1.7], [0, 37, 7.2], 34],
     title: 'The Raising of the Cross', line: "Peter Paul Rubens, 1610–11 · for the high altar of St Walburga's · now in the Cathedral of Our Lady", img: 'images/raising.jpg',
-    say1: 'There it stands, up all those steps. I painted it here, behind a sail.', say2: 'Up all those steps, so that the whole church must look.' },
+    say1: 'Now the colours. The lads have done their part: the finishing is mine.', say2: 'Up all those steps, so that the whole church must look.' },
   // where the way is wider than 15 m to either side: [from, to, half-width]
   wide: [[[1, 186], [-6, 66], 30], [[-84, -62], [-159, -71], 38], [[-290, -128], [-262, -300], 24]],
   titleCam: [[-112, 3, -30], [-64, 60, -26]],

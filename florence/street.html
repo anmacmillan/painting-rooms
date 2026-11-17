@@ -29,6 +29,7 @@
   <img src="images/beata.jpg" alt="Beata Beatrix by Dante Gabriel Rossetti">
   <h2>Beata Beatrix</h2>
   <p>Dante wrote in the Vita Nuova, The New Life, that he first saw Beatrice when they were children, that nine years later she greeted him in the street, and that later still she passed him without a word. She died in 1290. He wrote about her for the rest of his life.</p>
+  <p>What you did is the story as he tells it. Everything in the book turns on her greeting. She gave it, he says, when she turned her eyes to where he “stood sorely abashed”: he did not run to her, and neither could you. Afterwards, to keep his love secret, he let people think he loved another lady, and called her his screen; the town talked, and because of that talk Beatrice “denied me her most sweet salutation, in the which alone was my blessedness”. That refusal is the moment Holiday painted. The two gossips, what they say and where they stand are the game's; in the book the screen served him for some years, not one afternoon.</p>
   <p>Rossetti and Holiday painted these scenes six hundred years afterwards. Their Florence is partly imagined: the Palazzo Vecchio you started beside was not begun until 1299. The streets and the river are the real ones.</p>
   <p class="small">Paintings: public domain, via Wikimedia Commons (Walker Art Gallery, National Gallery of Canada, Art Institute of Chicago). House fronts and far bank painted with Google's image model. Street plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors.</p>
   <button class="go" id="again">Walk it again</button>
@@ -293,14 +294,25 @@ const WAY = {
     stage() { stand(beatrice, S_GREET + 4.4, 0.3, S_GREET + 1.4, 0); stand(vanna, S_GREET + 5.2, -0.9, S_GREET + 1.4, 0); stand(maid, S_GREET + 5.8, 1.1, S_GREET + 1.4, 0); beatrice.userData.aR.rotation.x = -0.9; return [S_GREET + 1.4, 0]; },
     cam() { const p = at(S_GREET + 3.0), [x, z] = side(p, 0, 6.6), [tx, tz] = side(p, 0.2, 0); return [new V3(x, DECK + 1.7, z), new V3(tx, DECK + 1.35, tz), 44]; } },
   // later, at the corner of the Santa Trinita bridge, she passes without a word: Holiday's picture, looking back along the river to the Ponte Vecchio
-  bridge: { s: S_BRIDGE - 6, title: 'Dante and Beatrice', line: 'Henry Holiday, 1883 · Walker Art Gallery, Liverpool', img: 'images/holiday.jpg', after: [null, 'She would not look at me.'],
+  bridge: { s: S_BRIDGE - 6, title: 'Dante and Beatrice', line: 'Henry Holiday, 1883 · Walker Art Gallery, Liverpool', img: 'images/holiday.jpg', after: [null, 'She would not look at me. They have told her I love the other lady.'],
     // everything is placed from one point on the straight of the Lungarno, 12 m short of the bridge: u metres on towards the bridge, v metres towards the river
     stage() { const t = Math.min(2.6, wpT * 0.32), put = (g, u, v) => { const [x, z] = sideR(P0, u, v), [fx, fz] = sideR(P0, u + 20, v); g.position.set(x, LAND, z); faceTo(g, fx, fz, 1); };
       put(vanna, 0.6 + t, WALL_V - 5.8); put(beatrice, -0.2 + t, WALL_V - 4.5); put(maid, -2.2 + t, WALL_V - 3.7); for (const g of trio) pose(g, time * 3, 0.35); beatrice.userData.hd.rotation.y = 0.5; return [S_BRIDGE - 12 + 6.0, -(WALL_V - 1.3)]; },      // he stands at the river wall; she looks away
     cam() { const [x, z] = sideR(P0, 9.6, WALL_V - 3.3), [tx, tz] = sideR(P0, -30, WALL_V - 2.2); return [new V3(x, LAND + 1.6, z), new V3(tx, LAND + 2.2, tz), 56]; } } };
+/* ================= the teaching: the story of the Vita Nuova turns on her greeting, and he plays it =================
+   What the level asks him to do, in the book's own order. (1) The greeting cannot be run after: in the book she turned her eyes "where I stood sorely abashed" and
+   saluted him. So when she stops on the bridge he must stop too, a little way off, and stand still; if he presses up to her the ladies send him off. (2) On the way to
+   the second bridge the town is watching him. In the book he hid his love by letting people think he loved another lady, his "screen", and the talk that followed made
+   Beatrice deny him her greeting. So two gossips bar the Lungarno until he goes and stands by the other lady; and then, at the bridge, she passes without a word.
+   Sources: research/FINDINGS.md, "The teaching". The gossips, their words and the place are the game's own. */
+const TEACH = (() => { const sG = S_RIVER + (S_BRIDGE - 26 - S_RIVER) * 0.5, pG = at(sG), pL = at(sG - 8), haloT = (() => { const c = document.createElement('canvas'); c.width = c.height = 96; const g = c.getContext('2d'), r = g.createRadialGradient(48, 48, 2, 48, 48, 48); r.addColorStop(0, 'rgba(255,246,200,.95)'); r.addColorStop(0.35, 'rgba(255,226,140,.4)'); r.addColorStop(1, 'rgba(255,214,110,0)'); g.fillStyle = r; g.fillRect(0, 0, 96, 96); return new THREE.CanvasTexture(c); })();
+  const g1 = person({ name: 'town_elder', size: 1.06 }), g2 = person({ name: 'town_goodwife', size: 1.02 }), lady = person({ name: 'town_veil', size: 1.04 }), L = (() => { for (const v of [-3.6, -3.0, -2.6]) { const q = sideR(pL, 0, v); if (!blocked(q[0], q[1]) && !blocked(...sideR(pL, 0, v - 0.7))) return q; } return sideR(pL, 0, -2.4); })(), halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: haloT, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false }));
+  lady.position.set(L[0], LAND, L[1]); faceTo(lady, pL.x, pL.z, 1); pose(lady, 0, 0); halo.position.set(L[0], LAND + 2.5, L[1]); halo.scale.setScalar(1.5); halo.visible = false; scene.add(halo);
+  return { sG, pG, g1, g2, lady, L, halo, still: 0, rush: 0, told1: false, told2: false, screened: false, open: 0, nag: 0, gate: 0 }; })();
+const goalEl = document.createElement('div'); goalEl.id = 'goal'; goalEl.style.cssText = 'position:fixed;left:50%;bottom:64px;transform:translateX(-50%);z-index:6;max-width:92vw;padding:.45em 1.1em;border-radius:999px;background:rgba(244,239,226,.93);color:#3a1c14;border:1.5px solid #3a1c14;font:600 clamp(15px,2vw,21px) "Iowan Old Style",Palatino,Georgia,serif;text-align:center;pointer-events:none;display:none'; document.body.appendChild(goalEl);
 // points: the paintings first, then what lies on the road and the drains to leap (common/score.js)
 const SC = makeScore({ THREE, scene, isHouse: inHouse, walkers, slops: true, cry: '“Guarda sotto!”', key: 'florence', at, nearest: (x, z) => nearest(x, z, progS), LEN, groundY: (x, z) => floorAt(x, z) ?? LAND, blocked, paintings: Object.keys(WAY).length + 1, thing: 'florin', things: 'gold florins', ditch: 'drain', wet: false, avoid: Object.values(WAY).map(w => w.s), half: 2.6, ditchColor: '#3d3a34', lipColor: '#a39a84' });
-function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); triS = S_START + 12; triV = 0; endT = 0; wp = null; seen = {}; leg = 1; dusk = 0; progS = S_START; dove.visible = false; for (const g of trio) { g.userData.hd.rotation.x = 0; g.userData.hd.rotation.y = 0; g.scale.setScalar(g.userData.size0); pose(g, 0, 0); }
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); triS = S_START + 12; triV = 0; endT = 0; wp = null; seen = {}; leg = 1; dusk = 0; progS = S_START; Object.assign(TEACH, { still: 0, rush: 0, told1: false, told2: false, screened: false, open: 0, nag: 0, gate: 0 }); goalEl.style.display = 'none'; dove.visible = false; for (const g of trio) { g.userData.hd.rotation.x = 0; g.userData.hd.rotation.y = 0; g.scale.setScalar(g.userData.size0); pose(g, 0, 0); }
   camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
 function begin() {
   SND.start({ track: 'music.mp3', chords: [[41, 60, 64, 67, 72], [38, 57, 60, 65, 69], [36, 55, 60, 64, 67], [43, 55, 59, 62, 67]], scale: [60, 62, 64, 67, 69, 72, 74, 76, 79, 81, 84] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
@@ -316,6 +328,7 @@ function update(dt) {
     turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (state !== 'play') { turn = 0; go = 0; }
     me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1); const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
     me.speed += (go * 10.5 - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2)); let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
+    if (state === 'play' && me.speed > 0) { const s1 = nearest(nx, nz, progS).s, lim = leg === 1 && !seen.greet ? S_GREET + 1.6 : leg === 2 && !TEACH.screened ? TEACH.sG - 1.8 : 1e9; if (s1 > lim && s1 > progS && s1 - progS < 20) { nx = me.x; nz = me.z; me.speed *= 0.2; } }      /* he cannot press on past her on the bridge, nor past the gossips on the river */
     if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;      // slide along whatever is in the way
       for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
       if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
@@ -341,7 +354,24 @@ function update(dt) {
         if (triV < 0.5) { faceTo(g, me.x, me.z, dt * 3); pose(g, 0, 0); } else { g.rotation.y = Math.atan2(p.dx, p.dz); pose(g, triPh + i, Math.min(1.5, triV / 5)); } });
     }
     // waypoints: the scene is set as the painting, the view takes the painter's place, melts into the picture, and lets him go
-    for (const k in WAY) if (state === 'play' && !seen[k] && prog.s > WAY[k].s - 6 && prog.s < WAY[k].s + 6) { state = 'way'; wp = WAY[k]; wp.key = k; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); SND.whoosh(0.07); }
+    /* the teaching: stand abashed for the greeting; then the screen, and the talk that costs him the second one */
+    { const TC = TEACH; let g = state !== 'play' ? null : leg === 1 ? 'Follow Beatrice, the lady in white: do not lose her' : leg === 2 ? 'Hurry along the river: be at the next bridge before her' : 'Follow her out on to the bridge';
+      if (state === 'play' && leg === 1 && !seen.greet && prog.s > S_GREET - 10) { const dB = Math.hypot(me.x - beatrice.position.x, me.z - beatrice.position.z), stopped = triS >= S_GREET + 4.3; g = 'Do not run at her. Stop a little way off, stand quite still, and wait for her to look at you';
+        if (!TC.told1) { TC.told1 = true; TC.nag = time + 12; say(meG, 'She has stopped! I dare not go nearer.', 3.6); }
+        if (dB < 2.7 && Math.abs(me.speed) > 1.2) { me.speed = -4; TC.still = 0; if (time > TC.rush) { TC.rush = time + 5; say(vanna, 'How he presses on us! Stand off, young man.', 3.6); SC.lose(5, 'Too bold!'); } }
+        else if (stopped && dB < 13 && Math.abs(me.speed) < 0.7 && !me.air) TC.still += dt; else TC.still = Math.max(0, TC.still - dt * 2);
+        if (TC.still > 0.3) beatrice.userData.hd.rotation.x = -0.12 * Math.min(1, TC.still / 1.8);      /* her head comes up as he waits */
+        if (time > TC.nag && time > bubbleT && TC.still < 0.3) { TC.nag = time + 12; say(meG, 'If I only stand here, and am still, perhaps she will look this way.', 4); } }
+      if (state === 'play' && leg === 2) { const near = prog.s > TC.sG - 24 && prog.s < TC.sG + 6, dL = Math.hypot(me.x - TC.L[0], me.z - TC.L[1]);
+        if (!TC.screened && near) { g = 'They are watching you. Hide your secret as Dante did: go and stand beside the other lady';
+          if (!TC.told2) { TC.told2 = true; TC.nag = time + 13; say(TC.g1, 'See how young Alighieri hurries after Monna Bice! Whom do you love, boy?', 5.5); } else if (time > TC.nag && time > bubbleT) { TC.nag = time + 12; say(TC.g2, 'He will not say! Then we shall find it out.', 4); }
+          if (dL < 1.7 && Math.abs(me.speed) < 1.5) { TC.screened = true; me.speed = 0; SC.keep('screen', { title: 'The screen: a lady he let them think he loved', emoji: '🎭' }); SC.gain(30, 'A screen for the truth'); say(TC.g1, 'Aha! So it is this lady he loves. Wait till all Florence hears of it!', 5); } }
+        TC.halo.visible = !TC.screened && near; TC.halo.scale.setScalar(1.5 * (1 + 0.2 * Math.sin(time * 4.2)) * (time > TC.nag - 5 ? 1.5 : 1)); }
+      else TC.halo.visible = false;
+      TC.open += ((TC.screened ? 1 : 0) - TC.open) * Math.min(1, dt * 2); const far = Math.abs(prog.s - TC.sG) > 150 || state === 'title';
+      [TC.g1, TC.g2].forEach((q, i) => { const [x, z] = sideR(TC.pG, i ? 0.5 : -0.3, (i ? 1.2 : -1.2) * (1 + 1.6 * TC.open) + (i ? 0 : -0.4 * TC.open)); q.visible = !far; q.position.set(x, floorAt(x, z) ?? LAND, z); faceTo(q, me.x, me.z, Math.min(1, dt * 3)); pose(q, 0, 0); }); TC.lady.visible = !far; pose(TC.lady, 0, 0); if (TC.screened) faceTo(TC.lady, me.x, me.z, Math.min(1, dt * 2));
+      goalEl.style.display = g ? 'block' : 'none'; if (g && goalEl.textContent !== '➜ ' + g) goalEl.textContent = '➜ ' + g; }
+    for (const k in WAY) if (state === 'play' && !seen[k] && (k === 'greet' ? leg === 1 && TEACH.still > 1.8 : TEACH.screened && prog.s > WAY[k].s - 6 && prog.s < WAY[k].s + 6)) { state = 'way'; wp = WAY[k]; wp.key = k; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); SND.whoosh(0.07); }
     if (state === 'way') { wpT += dt; const [ds, dv] = wp.stage(), p = at(ds), [tx, tz] = side(p, 0, dv); me.x += (tx - me.x) * Math.min(1, dt * 2.5); me.z += (tz - me.z) * Math.min(1, dt * 2.5); me.y = floorAt(me.x, me.z) ?? LAND; meG.position.set(me.x, me.y, me.z);
       faceTo(meG, beatrice.position.x, beatrice.position.z, dt * 4); pose(meG, 0, 0); TURN(meG, 'upperarmR', -24, -10); TURN(meG, 'forearmR', -118, -38);                                     // his hand goes to his heart
       if (wpT > 2.6 && wpT < 2.7) plate(wp.title, wp.line); if (wpT > 3.8 && wpT < 7.8) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
@@ -399,7 +429,7 @@ const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = 
 cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
 $('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
 $('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
-window.__road = { get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z, s) { me.x = x; me.z = z; me.speed = 0; progS = s != null ? s : nearest(x, z).s; triS = Math.min(LEN - 2, progS + 12); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; }, leg(n) { leg = n; },
+window.__road = { get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z, s) { me.x = x; me.z = z; me.speed = 0; progS = s != null ? s : nearest(x, z).s; triS = Math.min(LEN - 2, progS + 12); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; }, leg(n) { leg = n; }, TEACH, goal: () => goalEl.style.display === 'none' ? '' : goalEl.textContent, dbgS: () => progS, S: { greet: S_GREET, turn: S_TURN, river: S_RIVER, bridge: S_BRIDGE }, trio,
   places: {}, route: s => at(s), LEN, S: { greet: S_GREET, turn: S_TURN, river: S_RIVER, bridge: S_BRIDGE }, probe: (x, z) => ({ w: isWater(x, z), f: floorAt(x, z), br: onBridge(x, z), d: +nearest(x, z).d.toFixed(1) }) };
 </script>
 </body>

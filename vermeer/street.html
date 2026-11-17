@@ -29,6 +29,7 @@
   <img src="images/pearl.jpg" alt="Girl with a Pearl Earring by Johannes Vermeer">
   <h2>Girl with a Pearl Earring</h2>
   <p>Johannes Vermeer painted her in Delft about 1665. Nobody knows who she was. The museum that keeps her calls the picture a tronie: a painting of an imaginary figure, not a portrait.</p>
+  <p>You opened a shutter twice, and both times it was the one on the left. That is his habit: most of his pictures are quiet rooms with one or two people in them, lit by daylight from a window on the left. In The Milkmaid the light streams in at the window on the left of the canvas; in this picture there is no window to be seen, but the bright side of her face is still the left. The shutters and the errand are the game's: nobody knows how he set his rooms up.</p>
   <p>You ran past The Little Street and looked in on The Milkmaid. He lived on the Oude Langendijk, where you ended, and the streets are the real ones.</p>
   <p class="small">Paintings: public domain, via Wikimedia Commons (Mauritshuis, Rijksmuseum). Street plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors.</p>
   <button class="go" id="again">Run it again</button>
@@ -264,7 +265,7 @@ const KT = (() => { const p = at(S_MILK), ang = Math.atan2(p.dz, p.dx), [cx, cz]
   bake(new THREE.BoxGeometry(0.34, 0.26, 0.3), P(1.35, 0.24, 1.65, 0.3), lam({ color: '#7a5636', map: strokeTex })); bake(new THREE.BoxGeometry(0.22, 0.02, 0.18), P(1.35, 0.375, 1.65, 0.3), lam({ color: '#2a1c14' }));
   unit(side(p, 0, 15)[0], side(p, 0, 15)[1], 8, 6, ang, 9, { wallH: 7, noDoor: true, endL: true, endR: true });
   const l = new THREE.PointLight(C('#fff3d8'), 28, 9, 1.4); l.position.set(cx + 2.0 * c - 0.2 * s, LAND + 2.2, cz + 2.0 * s + 0.2 * c); scene.add(l);
-  houses.push({ x: cx, z: cz + 0, w: 3.0, d: 2.6, c, s }); return { p, ang, cx, cz, c, s }; })();
+  houses.push({ x: cx - 1.2 * s, z: cz + 1.2 * c, w: 3.0, d: 1.4, c, s }, { x: cx + 2.85 * c + 1.3 * s, z: cz + 2.85 * s - 1.3 * c, w: 0.25, d: 1.2, c, s }, { x: cx - 2.85 * c + 1.3 * s, z: cz - 2.85 * s - 1.3 * c, w: 0.25, d: 1.2, c, s }); return { p, ang, cx, cz, c, s, l }; })();
 // 3. The studio: a dark wall for her to stand against, and his easel
 const ST = (() => { const p = at(LEN - 1), ang = Math.atan2(p.dz, p.dx), [cx, cz] = side(p, 2.5, 5.2), c = Math.cos(ang), s = Math.sin(ang), dark = lam({ color: '#17140f' });
   const P = (u, y, v, ry) => M4(cx + u * c - v * s, LAND + y, cz + u * s + v * c, -ang + (ry || 0));
@@ -352,6 +353,30 @@ const bird = new THREE.Group(); { const blk = lam({ color: '#16161c' }), wht = l
   const wing = sx => { const g = new THREE.Group(), w = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 0.26), lam({ color: '#16161c', side: THREE.DoubleSide })), t = new THREE.Mesh(new THREE.PlaneGeometry(0.2, 0.2), lam({ color: '#f4f2ea', side: THREE.DoubleSide })); w.rotation.x = -Math.PI / 2; w.position.x = sx * 0.27; t.rotation.x = -Math.PI / 2; t.position.set(sx * 0.42, 0.002, 0); g.add(w, t); bird.add(g); return g; };
   bird.userData = { wL: wing(-1), wR: wing(1), pearl, glint }; bird.scale.setScalar(2.1); bird.traverse(o => { if (o.isMesh) o.castShadow = true; }); scene.add(bird); }
 
+/* ================= the teaching: daylight from a window on the left =================
+   What the level asks her to do. The kitchen of The Milkmaid is shuttered when she comes to it: she must go in and open the shutter of the window on the
+   left, and only when the daylight falls across the table does the room become the painting. At the painter's house she does it again without being shown,
+   and then has to stand where the light falls. Sources: research/FINDINGS.md, "The teaching". The shutters and the errand are the game's own. */
+const TEACH = (() => { const shutM = lam({ color: '#5a4630', map: strokeTex }), paneM = new THREE.MeshBasicMaterial({ color: '#f4f1de', side: THREE.DoubleSide }), haloT = canvasTex(96, 96, (g, w, h) => { const r = g.createRadialGradient(48, 48, 2, 48, 48, 48); r.addColorStop(0, 'rgba(255,246,200,.95)'); r.addColorStop(0.35, 'rgba(255,232,150,.4)'); r.addColorStop(1, 'rgba(255,220,120,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); });
+  const leaf = (px, pz, dx, dz, inx, inz, w, hgt, y) => { const g = new THREE.Group(), m = new THREE.Mesh(new THREE.BoxGeometry(w, hgt, 0.05), shutM); m.position.x = w / 2; m.castShadow = true; g.add(m); g.position.set(px, y, pz); const th = Math.atan2(-dz, dx), sg = Math.cos(th + 1.57) * inx - Math.sin(th + 1.57) * inz > 0 ? 1 : -1; g.rotation.y = th; scene.add(g); return { g, th, sg }; };
+  const halo = (x, z, y) => { const h = new THREE.Sprite(new THREE.SpriteMaterial({ map: haloT, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false })); h.position.set(x, LAND + y, z); h.scale.setScalar(1.4); h.visible = false; scene.add(h); return h; };
+  /* the kitchen: K(u, v), u to the right as you look in, v away from the street. The window is in the left wall, v from -0.5 to 1.0 */
+  const k = KT, K = (u, v) => [k.cx - u * k.c - v * k.s, k.cz - u * k.s + v * k.c], vK = [-k.s, k.c], inK = [-k.c, -k.s];
+  const kit = { leaves: [leaf(...K(-2.5, -0.52), vK[0], vK[1], inK[0], inK[1], 0.77, 2.1, LAND + 2.15), leaf(...K(-2.5, 1.02), -vK[0], -vK[1], inK[0], inK[1], 0.77, 2.1, LAND + 2.15)], at: K(-2.0, -1.0), stand: K(-2.25, -1.25), light: k.l, full: 30, k: 0, open: false, told: false };
+  kit.halo = halo(kit.at[0], kit.at[1], 1.3);
+  { const [x, z] = K(0, -2.34), veil = new THREE.Mesh(new THREE.PlaneGeometry(5.5, 3.5), new THREE.MeshBasicMaterial({ color: '#0d0b09', transparent: true, opacity: 0.62, depthWrite: false, side: THREE.DoubleSide })); veil.position.set(x, LAND + 1.75, z); veil.rotation.y = Math.atan2(vK[0], vK[1]); veil.renderOrder = 5; scene.add(veil); kit.veil = veil; }      /* the gloom of a shuttered room, seen from the street */
+  /* the studio: S(u, v), u along the street, v away from it. The end wall at u = 3.5 is on the left as the painter sees her; a window is let into it */
+  const q = ST, S = (u, v) => [q.cx + u * q.c - v * q.s, q.cz + u * q.s + v * q.c], vS = [-q.s, q.c], inS = [-q.c, -q.s];
+  { const [x, z] = S(3.36, -0.5), pane = new THREE.Mesh(new THREE.PlaneGeometry(1.5, 1.8), paneM); pane.position.set(x, LAND + 2.1, z); pane.rotation.y = Math.atan2(inS[0], inS[1]); scene.add(pane); for (const [w, h, dy, dv] of [[1.6, 0.06, 0, 0], [0.06, 1.8, 0, 0], [1.6, 0.06, 0.45, 0], [1.6, 0.06, -0.45, 0], [0.06, 1.8, 0, 0.38], [0.06, 1.8, 0, -0.38]]) { const bar = new THREE.Mesh(new THREE.BoxGeometry(w, h, 0.03), shutM), [bx, bz] = S(3.34, -0.5 + dv); bar.position.set(bx, LAND + 2.1 + dy, bz); bar.rotation.y = pane.rotation.y; scene.add(bar); } }
+  const sl = new THREE.PointLight(C('#fff3d8'), 0, 10, 1.3); { const [x, z] = S(2.7, -0.6); sl.position.set(x, LAND + 2.5, z); scene.add(sl); }
+  const stu = { leaves: [leaf(...S(3.3, -1.27), vS[0], vS[1], inS[0], inS[1], 0.77, 1.9, LAND + 2.1), leaf(...S(3.3, 0.27), -vS[0], -vS[1], inS[0], inS[1], 0.77, 1.9, LAND + 2.1)], at: S(2.9, -2.0), spot: S(-0.6, -2.0), light: sl, full: 34, k: 0, open: false, told: false };
+  stu.halo = halo(stu.at[0], stu.at[1], 1.3);
+  const patch = new THREE.Mesh(new THREE.CircleGeometry(1.0, 28), new THREE.MeshBasicMaterial({ map: haloT, color: '#fff2c0', transparent: true, opacity: 0.0, depthWrite: false, blending: THREE.AdditiveBlending })); patch.rotation.x = -Math.PI / 2; patch.position.set(stu.spot[0], LAND + 0.04, stu.spot[1]); scene.add(patch); stu.patch = patch;
+  const set = (w, dt) => { w.k = clamp(w.k + (w.open ? dt / 1.1 : -dt * 4), 0, 1); const e = w.k * w.k * (3 - 2 * w.k); for (const l of w.leaves) l.g.rotation.y = l.th + l.sg * e * 2.8; w.light.intensity = w.full * e; if (w.veil) w.veil.material.opacity = 0.62 * (1 - e); };
+  return { kit, stu, set }; })();
+const goalEl = document.createElement('div'); goalEl.id = 'goal'; goalEl.style.cssText = 'position:fixed;left:50%;bottom:64px;transform:translateX(-50%);z-index:6;max-width:92vw;padding:.45em 1.1em;border-radius:999px;background:rgba(244,239,226,.93);color:#1c2a44;border:1.5px solid #1c2a44;font:600 clamp(15px,2vw,21px) "Iowan Old Style",Palatino,Georgia,serif;text-align:center;pointer-events:none;display:none'; document.body.appendChild(goalEl);
+let nag = 0, gateSay = 0;
+
 /* ================= play ================= */
 const guide = makeGuide({ THREE, scene, map, nearest, at, LEN, blocked, groundY: () => LAND, wet: (x, z) => !dry(x, z), bounds: B,
   places: [{ n: 'The Little Street', x: at(S_LITTLE).x, z: at(S_LITTLE).z, s: S_LITTLE }, { n: 'Markt', x: at(S_MARKT).x, z: at(S_MARKT).z, s: S_MARKT }, { n: 'The Milkmaid', x: at(S_MILK).x, z: at(S_MILK).z, s: S_MILK }, { n: 'The painter\'s house', x: at(LEN - 2).x, z: at(LEN - 2).z, s: LEN - 2 }],
@@ -367,7 +392,7 @@ const WAY = {
     cam() { const k = KT, x = k.cx - 0.55 * k.c + 2.15 * k.s, z = k.cz - 0.55 * k.s - 2.15 * k.c; return [new V3(x, LAND + 1.7, z), new V3(k.cx + 0.25 * k.c - 1.4 * k.s, LAND + 1.42, k.cz + 0.25 * k.s + 1.4 * k.c), 42]; } } };
 // points: the paintings first, then what lies on the road and the gutters to leap (common/score.js)
 const SC = makeScore({ THREE, scene, isHouse: inHouse, walkers, slops: true, cry: '“Pas op beneden!”', key: 'vermeer', at, nearest: nearest, LEN, groundY: (x, z) => floorAt(x, z) ?? LAND, blocked, paintings: Object.keys(WAY).length + 1, thing: 'ducat', things: 'gold ducats', ditch: 'gutter', avoid: Object.values(WAY).map(w => w.s), half: 2.6, ditchColor: '#3a4a52', lipColor: '#8a8478' });
-function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); birdS = S_START + 14; endT = 0; wp = null; seen = {}; headTurn = 0; meG.userData.pearl.visible = false; bird.userData.pearl.visible = true; meG.userData.hd.rotation.y = 0;
+function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); birdS = S_START + 14; endT = 0; wp = null; seen = {}; headTurn = 0; for (const w of [TEACH.kit, TEACH.stu]) { w.open = false; w.told = false; w.k = 0; TEACH.set(w, 0); } TEACH.stu.patch.material.opacity = 0; goalEl.style.display = 'none'; meG.userData.pearl.visible = false; bird.userData.pearl.visible = true; meG.userData.hd.rotation.y = 0;
   camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show', 'slow'); document.body.classList.remove('melting'); }
 function begin() {
   SND.start({ track: 'music.mp3', chords: [[43, 59, 62, 67, 71], [36, 55, 60, 64, 67], [38, 57, 62, 66, 69], [43, 55, 59, 62, 67]], scale: [67, 69, 71, 74, 76, 79, 81, 83, 86, 88, 91] }); SND.setMuted(muted); reset(); SC.start(); state = 'theft'; thT = 0; meG.userData.pearl.visible = true; bird.userData.pearl.visible = false;
@@ -382,6 +407,7 @@ function update(dt) {
     turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (state !== 'play') { turn = 0; go = 0; }
     me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1); const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
     me.speed += (go * 10.5 - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2)); let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
+    if (state === 'play' && !seen.milk && me.speed > 0) { const s0 = nearest(me.x, me.z).s, s1 = nearest(nx, nz).s; if (s1 > S_MILK + 9 && s1 > s0 && s1 - s0 < 30) { nx = me.x; nz = me.z; me.speed *= 0.3; if (time > gateSay) { gateSay = time + 6; say(milkmaid, 'Wait! The shutter, please: the window on the left.', 3.5); } } }      /* she cannot run on past the shuttered kitchen */
     if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;      // slide along whatever is in the way
       for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
       if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
@@ -415,13 +441,23 @@ function update(dt) {
       const flap = perched && birdY < 0.6 ? 1.25 : Math.sin(time * 22); bird.userData.wL.rotation.z = flap; bird.userData.wR.rotation.z = -flap; }
 
     // waypoints: the view becomes the painting, melts into it, and lets her go
-    for (const k in WAY) if (state === 'play' && !seen[k] && prog.s > WAY[k].s - 7 && prog.s < WAY[k].s + 4) { state = 'way'; wp = WAY[k]; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); SND.whoosh(0.07); }
-    if (state === 'way') { wpT += dt;
+    /* the teaching: the kitchen stays shuttered, and the studio dark, until she opens the window on the left */
+    { const K = TEACH.kit, U = TEACH.stu, inK = state === 'play' && seen.little && !seen.milk && prog.s > S_MILK - 16, inU = state === 'play' && seen.milk && prog.s > sEnd - 18; let g = state === 'play' ? 'Catch the magpie: it has your pearl earring' : null;
+      const tell = (w, who, first, again) => { if (!w.told) { w.told = true; nag = time + 15; say(who, first, 6); } else if (time > nag && time > bubbleT) { nag = time + 13; say(who, again, 4); } };
+      if (inK && !K.open) { g = 'The kitchen is shuttered and dark. Go in and open the shutter: the window on the left'; tell(K, milkmaid, 'I cannot see to pour! Be a dear and open the shutter: the window on the left.', 'The shutter, child. On the left, by the window.'); if (Math.hypot(me.x - K.at[0], me.z - K.at[1]) < 1.0) { K.open = true; me.speed = 0; SND.whoosh(0.06); SND.bell(7, 0.06, 0.5); SC.keep('daylight', { title: 'Daylight from a window on the left', emoji: '🪟' }); SC.gain(40, 'Daylight from the left'); } }
+      if (inK && K.open) g = null;
+      if (inU && !U.open) { g = 'It is too dark to paint. Open the shutter and let the daylight in from the left'; tell(U, painter, 'Is that my model? I cannot see you. It is as dark as a cellar: open the shutter, girl. The light must come from the left.', 'The shutter, on the left. I paint by daylight.'); if (Math.hypot(me.x - U.at[0], me.z - U.at[1]) < 1.0) { U.open = true; me.speed = 0; nag = time + 8; SND.whoosh(0.06); SND.bell(7, 0.06, 0.5); SC.keep('daylight', { title: 'Daylight from a window on the left', emoji: '🪟' }); SC.gain(40, 'Daylight from the left'); say(painter, 'There. Now come and stand where the light falls.', 4.5); } }
+      else if (inU && U.open) { g = 'Now stand where the light falls'; if (time > nag && time > bubbleT) { nag = time + 12; say(painter, 'Into the light, girl, where I can see you.', 4); } }
+      K.halo.visible = inK && !K.open; U.halo.visible = inU && !U.open; const pulse = 1.4 * (1 + 0.2 * Math.sin(time * 4.2)) * (time > nag - 5 ? 1.5 : 1); K.halo.scale.setScalar(pulse); U.halo.scale.setScalar(pulse);
+      TEACH.set(K, dt); TEACH.set(U, dt); U.patch.material.opacity = U.k * (0.55 + 0.15 * Math.sin(time * 3)) * (state === 'play' ? 1 : Math.max(0, 1 - endT));
+      goalEl.style.display = g ? 'block' : 'none'; if (g && goalEl.textContent !== '➜ ' + g) goalEl.textContent = '➜ ' + g; }
+    for (const k in WAY) if (state === 'play' && !seen[k] && (k === 'milk' ? seen.little && TEACH.kit.k > 0.97 : prog.s > WAY[k].s - 7 && prog.s < WAY[k].s + 4)) { state = 'way'; wp = WAY[k]; seen[k] = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); SND.whoosh(0.07); }
+    if (state === 'way') { wpT += dt; if (wp === WAY.milk) { const [hx, hz] = TEACH.kit.stand; me.x += (hx - me.x) * Math.min(1, dt * 3); me.z += (hz - me.z) * Math.min(1, dt * 3); }      /* she steps back beside the window, out of the picture */
       if (wpT > 2.6 && wpT < 2.7) plate(wp.title, wp.line); if (wpT > 3.8 && wpT < 7.6) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
       if (wpT > 7.6) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
       if (wpT > 9.8) { state = 'play'; if (wp.after[1]) say(wp.after[0] || meG, wp.after[1], 3.5); wp = null; hop = time + 6; } }
     // the end: the magpie flies into the studio; she takes her place against the dark wall and turns her head
-    if (state === 'play' && prog.s > sEnd - 4 && seen.milk) { state = 'tableau'; endT = 0; bubble.classList.remove('show'); $('melt').src = 'images/pearl.jpg'; $('melt').classList.add('slow'); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); }
+    if (state === 'play' && seen.milk && TEACH.stu.k > 0.97 && Math.hypot(me.x - TEACH.stu.spot[0], me.z - TEACH.stu.spot[1]) < 1.15) { state = 'tableau'; endT = 0; bubble.classList.remove('show'); $('melt').src = 'images/pearl.jpg'; $('melt').classList.add('slow'); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); }
     if (state === 'tableau') { endT += dt; const k = ST, tx = k.cx - 0.6 * k.c + 0.75 * k.s, tz = k.cz - 0.6 * k.s - 0.75 * k.c; me.x += (tx - me.x) * dt * 2; me.z += (tz - me.z) * dt * 2; me.speed = 0; me.y = LAND;
       // the camera stands on the street side, looking in at her against the dark wall; she faces away to the left and looks back over her shoulder
       const hp0 = new V3(); meG.userData.hd.getWorldPosition(hp0); const cp = new V3(hp0.x - 0.5 * k.c + 2.0 * k.s, hp0.y + 0.02, hp0.z - 0.5 * k.s - 2.0 * k.c), fwd = new V3(hp0.x - cp.x, 0, hp0.z - cp.z).normalize(), left = new V3(fwd.z, 0, -fwd.x);
@@ -473,7 +509,7 @@ cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lif
 $('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
 $('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
 window.__road = { get state() { return state; }, me, begin, world: { found: new Set() }, go(x, z) { me.x = x; me.z = z; me.speed = 0; const r = nearest(x, z); birdS = Math.min(LEN - 3, r.s + 12); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; },
-  places: {}, route: s => at(s), LEN, S: { little: S_LITTLE, markt: S_MARKT, milk: S_MILK } };
+  places: {}, route: s => at(s), LEN, S: { little: S_LITTLE, markt: S_MARKT, milk: S_MILK }, TEACH, goal: () => goalEl.style.display === 'none' ? '' : goalEl.textContent, dbgS: () => nearest(me.x, me.z).s, probe: (x, z) => ({ house: inHouse(x, z), blocked: blocked(x, z) }) };
 </script>
 </body>
 </html>

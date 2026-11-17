@@ -325,3 +325,19 @@ Reference only, not shown in the level: `research/ref/varvakeion.jpg` (Gary Todd
 - Plane trees in the Agora (Plutarch, Cimon 13, not read). Unverified.
 - Metope ground left pale in the level, though Wikipedia (section C, weak) says red: the level's choice, unverified either way.
 - Horses, cattle and sheep are built in three.js (`phidias/beasts.js`), not in Blender; the people are Blender figures (`tools/blender/figure.py`, world `phidias`).
+
+## The teaching (added 17 Nov 2026): the marble was painted, and the paint is what time took
+
+What `street.html` now makes her do: before each of the three stagings on the road she must fetch what the painters of that block need from a colour-grinder at the wayside (58 m short of the block) and carry it up: blue for the ground (horsemen), dark paint and a brush for what was never carved (cattle), colours for the patterns on the dresses (girls). A block will not be made until its colour has come and she cannot pass it; the goal line gives the distance back. The sources below were saved on 15 Nov 2026 and re-read in this session (17 Nov) from `research/web/`; each file carries its URL.
+
+| Statement | Source re-read | Status |
+|---|---|---|
+| The sculptures "had originally been painted in multiple colours, patterns and designs"; "carving and colour were unified in their conception" | `web/kcl_true_colours_2023.txt` (https://www.kcl.ac.uk/news/scientific-analysis-reveals-the-true-colours-of-the-parthenon-sculptures) | V (a press release of the 2023 study; it concerns the sculptures in London, mostly pediment figures) |
+| The frieze was hard to see so high up: "This was resolved to a great extent by the use of colour, in particular the blue background" | `web/pf_*.txt` (parthenonfrieze.gr, Acropolis Museum and partners) | P, as in section C: the museum's inference; no pigment reported from the frieze ground. The end card says "seems to have been" |
+| Olive branches "were not carved in relief but added in colour on the background of the frieze" | `web/pf_thematic_tours_sacrificial_procession.txt` (https://parthenonfrieze.gr/en/thematic-tours/sacrificial-procession/) | V (secondary) |
+| A bolting bull "being restrained with a rope (no doubt added in paint)" | same site, north frieze text in `web/pf_*.txt` | V (secondary; "no doubt" is the museum's deduction). The level's cattle staging is a south-frieze block, not this one: the colour-grinder says only "where a beast is held on a rope, the rope is only painted on", and the end card places the rope on the north side |
+| Athena "held a spear, added in bronze ... as is clear from the three holes" | `web/pf_*.txt` (east frieze) | V (secondary). Bronze is mentioned on the end card only; it is not one of the things she carries |
+| That the girls' dresses on the frieze carried painted patterns | Not found for the frieze. The 2023 study reports patterns on garments of the pediment figures | U for the frieze: the game extends it; the end card says the frieze figures' colours are not known |
+| Colour-grinders at the wayside, pots, a brush, the errand, every word; that painting went on during the procession | Invented | the game's own |
+
+Simplified: the blue wall and the painted figures appear in every staging as before, whatever pot she has just brought; the pots gate the stagings but do not change what each one shows. Plutarch's list of trades for the building programme includes the painter (12.6, above), which is the only support for painters on the hill.

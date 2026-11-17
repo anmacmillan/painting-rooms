@@ -37,3 +37,17 @@ All sources fetched 13 November 2026 by a research agent. EV = essentialvermeer.
 - All 16 Commons files are marked Public domain or CC0. Six are museum releases (Mauritshuis 2, NGA 2, Met 2) and one is Rijksmuseum CC0. The other nine are third-party uploads under Commons' faithful-reproduction rule, which rests on US law: Commons warns on two Rijksmuseum files that they "might not be in the public domain outside of the United States".
 - Weakest: The Music Lesson (Royal Collection, Google Art Project scan; the Trust's terms were not checked) and The Lacemaker (Commons credits the Musée du Louvre, but the file's EXIF shows a Nikon E5000 consumer camera). Decision 13 Nov: both left out of the game.
 - OpenStreetMap data is ODbL: credit "© OpenStreetMap contributors" visibly, link to openstreetmap.org/copyright, and keep delft_osm.json under ODbL.
+
+## The teaching (added 17 Nov 2026): daylight from a window on the left
+
+What `street.html` now makes her do: the kitchen of The Milkmaid is shuttered and dim until she goes in and opens the shutter of the window on the left; the painter's room is dark until she opens its left-hand shutter, and the ending does not begin until she stands where that light falls. Sources fetched 17 Nov 2026 by the MediaWiki API (`prop=extracts`), kept in `research/teach/`.
+
+| Statement | Source | Status |
+|---|---|---|
+| His works are "usually domestic interiors with one or two figures lit by a window on the left" | en.W *Johannes Vermeer* (`teach/en_Johannes_Vermeer.json`), https://en.wikipedia.org/wiki/Johannes_Vermeer | V (secondary; no count of pictures in any source read, so the end card says "most" and "habit", not a number) |
+| The Milkmaid: "Intense light streams from the window on the left side of the canvas"; the white walls "reflect the daylight with different intensities" | en.W *The Milkmaid (Vermeer)* (`teach/en_The_Milkmaid_Vermeer.json`), https://en.wikipedia.org/wiki/The_Milkmaid_(Vermeer) | V (secondary) |
+| Girl with a Pearl Earring is lit from our left | Looked at in `images/pearl.jpg` on 17 Nov 2026: the left half of the face region is much the brighter (mean grey 145 against 83). en.W *Girl with a Pearl Earring* (`teach/en_Girl_with_a_Pearl_Earring.json`) says nothing of the light, and no window is in the picture | V by inspection of the picture only; no source says a window lit her |
+| The kitchen shuttered when she arrives; the maid's request; the shutters themselves; a window in the studio's end wall; "stand where the light falls"; every word spoken | Invented | the game's own |
+| Natural ultramarine used even in shadows (the other candidate for this level) | Not looked up and not used | not verified |
+
+Simplified: "on the left" means the viewer's left as the picture is seen. Both rooms are laid out so that the window is on the left from the painter's viewpoint the staging uses. The gloom of the shuttered kitchen is a dark veil across its open front, since the room has no fourth wall. The Little Street, an outdoor scene, has no part in the mechanic.
