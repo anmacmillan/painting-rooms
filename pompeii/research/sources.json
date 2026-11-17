@@ -1,0 +1,402 @@
+[
+ {
+  "id": "pliny_6_16_la",
+  "url": "https://www.thelatinlibrary.com/pliny.ep6.html",
+  "saved_as": "texts/pliny_6_16_la.txt, web/latinlibrary_pliny_ep6.html",
+  "fetched": "2026-11-17",
+  "supports": "Latin of Pliny Ep. 6.16 (death of the Elder Pliny; view from Misenum and Stabiae, not Pompeii)",
+  "quotes": [
+   "Nonum Kal. Septembres hora fere septima mater mea indicat ei apparere nubem inusitata et magnitudine et specie.",
+   "cuius similitudinem et formam non alia magis arbor quam pinus expresserit",
+   "candida interdum, interdum sordida et maculosa prout terram cineremve sustulerat",
+   "Iam navibus cinis incidebat, quo propius accederent, calidior et densior; iam pumices etiam nigrique et ambusti et fracti igne lapides",
+   "Nam crebris vastisque tremoribus tecta nutabant",
+   "Cervicalia capitibus imposita linteis constringunt",
+   "Iam dies alibi, illic nox omnibus noctibus nigrior densiorque"
+  ]
+ },
+ {
+  "id": "pliny_6_20_la",
+  "url": "https://www.thelatinlibrary.com/pliny.ep6.html",
+  "saved_as": "texts/pliny_6_20_la.txt",
+  "fetched": "2026-11-17",
+  "supports": "Latin of Pliny Ep. 6.20 (his own experience at Misenum)",
+  "quotes": [
+   "Praecesserat per multos dies tremor terrae, minus formidolosus quia Campaniae solitus",
+   "Praeterea mare in se resorberi et tremore terrae quasi repelli videbamus.",
+   "Respicio: densa caligo tergis imminebat, quae nos torrentis modo infusa terrae sequebatur.",
+   "nox — non qualis illunis aut nubila, sed qualis in locis clausis lumine exstincto",
+   "Audires ululatus feminarum, infantum quiritatus, clamores virorum"
+  ]
+ },
+ {
+  "id": "pliny_6_16_en",
+  "url": "https://www.attalus.org/old/pliny6.html",
+  "saved_as": "texts/pliny_6_16_en.txt, web/attalus_pliny6_firth.html",
+  "fetched": "2026-11-17",
+  "supports": "English of 6.16, J. B. Firth 1900 (attalus.org: \"a few words and phrases have been modified\")",
+  "quotes": [
+   "On the 24th of August * , about the seventh hour, my mother drew his attention to the fact that a cloud of unusual size and shape had made its appearance.",
+   "in likeness and form it more closely resembled a pine-tree than anything else",
+   "At times it looked white, and at other times dirty and spotted, according to the quantity of earth and cinders that were shot up.",
+   "Already ashes were beginning to fall upon the ships, hotter and in thicker showers as they approached more nearly, with pumice-stones and black flints, charred and cracked by the heat of the flames",
+   "the buildings were beginning to shake with the repeated and intensely severe shocks of earthquake",
+   "They placed pillows on their heads and secured them with cloths, as a precaution against the falling bodies.",
+   "the darkness was blacker and thicker than any ordinary night",
+   "(*) Most archaeologists now believe that the accepted reading of the manuscripts is wrong, and that the correct date of the eruption was about 24 October - see Earth-Science Reviews, 2022:104072."
+  ]
+ },
+ {
+  "id": "pliny_6_20_en",
+  "url": "https://www.attalus.org/old/pliny6.html",
+  "saved_as": "texts/pliny_6_20_en.txt",
+  "fetched": "2026-11-17",
+  "supports": "English of 6.20, J. B. Firth 1900 (as modified by attalus.org)",
+  "quotes": [
+   "For many days previous there had been slight shocks of earthquake, which were not particularly alarming, because they are common enough in Campania.",
+   "Moreover, we saw the sea drawn back upon itself, and, as it were, repelled by the quaking of the earth.",
+   "I looked back, and a dense blackness was rolling up behind us, which spread itself over the ground and followed like a torrent.",
+   "not that of a moonless or cloudy night, but the blackness of pent-up places which never see the light",
+   "You could hear the wailing of women, the screams of little children, and the shouts of men"
+  ]
+ },
+ {
+  "id": "giacomelli_2003",
+  "url": "https://www.episodes.org/journal/download_pdf.php?doi=10.18814/epiiugs/2003/v26i3/014",
+  "saved_as": "web/episodes_giacomelli2003.pdf, web/episodes_giacomelli2003.txt",
+  "fetched": "2026-11-17",
+  "supports": "Giacomelli, Perrotta, Scandone, Scarpati, Episodes 26(3) 2003: eruption phases, column heights, fall rate, roof collapse, victim counts",
+  "quotes": [
+   "the two Plinys observed the cloud at the seventh hour of the day (1 PM). We must presume that the eruption began sometime earlier",
+   "They estimated that the eruption column rose from an height of 14 km to 26 km during the emission of white pumice and then to 32 km during the emission of grey pumice immediately before the deposition of pyroclastic flows.",
+   "a lower part of well-sorted white pumice and an upper part of gray pumice dispersed to the southeast of the volcano",
+   "The rate of deposition in the city ranged from 15 cm per hour in open areas to 25/30 cm per hour in places accumulating additional pyroclasts rolling from the steeper roofs. Within six hours from the beginning of the eruption the roofs and part of the walls of the buildings had collapsed under the pumice load.",
+   "the pumice fall deposit, generally 3 m thick, totally buried the lower part of the buildings",
+   "394 corpses were found in the pumice fall deposit and 650 in the pyroclastic density currents (PDCs) deposit. So a total of 1044 victims were recovered inside 2/3 of the city of Pompeii (the excavated part)."
+  ]
+ },
+ {
+  "id": "wikipedia_eruption",
+  "url": "https://en.wikipedia.org/wiki/Eruption_of_Mount_Vesuvius_in_79_AD",
+  "saved_as": "web/wikipedia_eruption_79.html, web/wikipedia_eruption_79.txt",
+  "fetched": "2026-11-17",
+  "supports": "POINTER ONLY: date dispute (fruits, braziers, Titus coins and Abdy rebuttal, 2018 charcoal graffito), Sigurdsson 1982 summary (2.8 m, surges 4 and 5)",
+  "quotes": [
+   "The large majority of extant medieval manuscript copies (there are no surviving Roman copies) indicate a date corresponding to August 24.",
+   "Abdy states that it is \"remarkable that both coins will have taken just two months after minting to enter circulation and reach Pompeii before the disaster.\"",
+   "In October 2018, Italian archaeologists uncovered a charcoal inscription reading \"the 16th day before the calends (first) of November,\"",
+   "it is not known whether the Oct[ober] 17 graffito referred to that day, or a day in the past or the future.",
+   "forming a 2.8 m (9 ft) layer to the south, towards Pompeii",
+   "Surges 4 and 5 are believed to have destroyed and buried Pompeii."
+  ]
+ },
+ {
+  "id": "wikipedia_pompeii",
+  "url": "https://en.wikipedia.org/wiki/Pompeii",
+  "saved_as": "web/wikipedia_Pompeii.html, web/wikipedia_Pompeii.txt",
+  "fetched": "2026-11-17",
+  "supports": "POINTER ONLY: distance of Vesuvius from Pompeii",
+  "quotes": [
+   "Mount Vesuvius (8 km or 5 mi distant)"
+  ]
+ },
+ {
+  "id": "pip_IX_12_9",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R9/9%2012%2009.htm (and p2-p10, plan)",
+  "saved_as": "web/pip_R9_12_09.html, web/pip_R9_12_09_p2.html, web/pip_R9_12_09_p6.html, web/pip_R9_12_09_plan.html",
+  "fetched": "2026-11-17",
+  "supports": "House of the Painters at Work: door, rooms, unfinished wall in room \"u\"",
+  "quotes": [
+   "This would have been the secondary entrance of the house, to kitchen and latrine. The main entrance to the house is on the western side of the insula and has been identified as IX.12.A.",
+   "The unfinished north wall in the oecus or large sitting room. The central panel of the wall contains only a traced outline of a scene that has not yet been painted. Paint pots and the remains of brushes were also found abandoned here. This gave the house its name.",
+   "Room “u”, north wall, centre panel. Painting of Cupids on chariots pulled by goats.",
+   "Partially excavated at times between 1982-2005. Further excavations 2023."
+  ]
+ },
+ {
+  "id": "grifa_2025",
+  "url": "https://www.doc.mode.unibo.it/sites/default/files/docsala/Chimica%20colori%20a%20Pomepi_compressed.pdf",
+  "saved_as": "web/unibo_chimica_colori_pompei.pdf, web/unibo_chimica_colori_pompei.txt",
+  "fetched": "2026-11-17",
+  "supports": "Grifa et al., J. Archaeological Science 177 (2025) 106201, \"Pompeian pigments\": painters house interrupted by eruption; I 9, 9 pigment workshop",
+  "quotes": [
+   "whose name derives from the presence of several pigment pots in different rooms of the domus and an imprint of the basket used by the painters to transport the pots of pigments to their place of work",
+   "in a large salon, there was clear evidence that the decoration of this room had been interrupted by the eruption in 79 CE (Varone, 1995)",
+   "working from the top down in strips, some of the lower registers remain blank, and only preparative sketches in sinopia can be seen",
+   "the House with Workshop (I 9, 9) (Borgard et al., 2003), in which Della Corte noted 150 pots containing pigments in the front room of the house"
+  ]
+ },
+ {
+  "id": "pip_IX_2_11",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R9/9%2002%2011.htm",
+  "saved_as": "web/pip_9_02_11.html",
+  "fetched": "2026-11-17",
+  "supports": "Tabernae Attiorum, colour makers and sellers, on Via Stabiana",
+  "quotes": [
+   "IX.2.11 Pompeii. Taberna Attiorum 1. Excavated 1851. (Strada Stabiana 64).",
+   "IX.2.11 and IX.2.12 was defined as Tabernae Attiorum, in which the Attii brothers made colours and sold their products."
+  ]
+ },
+ {
+  "id": "vitruvius_7",
+  "url": "https://gutenberg.pglaf.org/2/0/2/3/20239/20239-8.txt",
+  "saved_as": "texts/vitruvius_7_en.txt, web/gutenberg_20239_vitruvius_morgan.txt",
+  "fetched": "2026-11-17",
+  "supports": "Vitruvius Book VII, tr. M. H. Morgan 1914: plaster coats, colours on wet stucco, pigments, who pays for costly colours",
+  "quotes": [
+   "These colours, when they are carefully laid on stucco still wet, do not fade but are permanent.",
+   "as they are costly, they are made exceptions in contracts, to be furnished by the employer, not by the contractor",
+   "which of the ancients can be found to have used vermilion otherwise than sparingly, like a drug? But today whole walls are commonly covered with it everywhere.",
+   "Methods of making blue were first discovered in Alexandria, and afterwards Vestorius set up the making of it at Puzzuoli.",
+   "the rest is mixed with size, and used on walls by fresco painters"
+  ]
+ },
+ {
+  "id": "pliny_nh_35_la",
+  "url": "https://penelope.uchicago.edu/Thayer/L/Roman/Texts/Pliny_the_Elder/35*.html",
+  "saved_as": "web/lacus_plinyNH35_la.html, web/lacus_plinyNH35_la.txt",
+  "fetched": "2026-11-17",
+  "supports": "Pliny NH 35.30 (Latin only; no English translation could be saved): costly colours supplied by the patron",
+  "quotes": [
+   "floridi sunt — quos dominus pingenti praestat — minium, Armenium, cinnabaris, chrysocolla, Indicum, purpurissum; ceteri austeri."
+  ]
+ },
+ {
+  "id": "cuni_2016",
+  "url": "https://rd.springer.com/content/pdf/10.1186/s40494-016-0111-4.pdf",
+  "saved_as": "web/cuni2016_heritage_science_s40494-016-0111-4.pdf, web/cuni2016_heritage_science_s40494-016-0111-4.txt",
+  "fetched": "2026-11-17",
+  "supports": "J. Cuní, Heritage Science 4:44 (2016): disputes the fresco theory; giornate not visible in Third/Fourth Style walls",
+  "quotes": [
+   "The boundaries of this area, called giornata (meaning one day’s work) are confined along contour lines",
+   "Pontate are plaster patches divided by suture lines produced by the plastering being executed separately on different days.",
+   "as seen in the third and fourth Pompeian styles, where no giornate joints are visible"
+  ]
+ },
+ {
+  "id": "pip_VII_2_6",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R7/7%2002%2006.htm",
+  "saved_as": "web/pip_R7_02_06.html",
+  "fetched": "2026-11-17",
+  "supports": "House of Terentius Neo: door on Via Stabiana, portrait find-spot, MANN 9058",
+  "quotes": [
+   "VII.2.6 Pompeii. House of T. Terentius Neo. Excavated 1843, 1852, 1862 and 1868. (Strada Stabiana 32).",
+   "Portrait of Terentius Neo and his wife. Found on north wall of exedra/tablinum in centre of north side of atrium. Now in Naples Archaeological Museum. Inventory number: 9058.",
+   "Cuspium Pansam aed(ilem) Terentius Neo (rogat) [CIL IV 871]"
+  ]
+ },
+ {
+  "id": "wikipedia_terentius",
+  "url": "https://en.wikipedia.org/wiki/Portrait_of_Terentius_Neo",
+  "saved_as": "web/wikipedia_Portrait_of_Terentius_Neo.html",
+  "fetched": "2026-11-17",
+  "supports": "POINTER ONLY: Paquius Proculus misattribution",
+  "quotes": [
+   "It was sometimes erroneously called the portrait of Paquius Proculus, but this was the result of some confusion because the fresco was not found in the House of Paquius Proculus, which is in Reg I, Ins 7, 1."
+  ]
+ },
+ {
+  "id": "pip_I_7_1",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R1/1%2007%2001.htm",
+  "saved_as": "web/pip_R1_07_01.html",
+  "fetched": "2026-11-17",
+  "supports": "House of Paquius Proculus on Via dell’Abbondanza: guard-dog mosaic in entrance, programmata",
+  "quotes": [
+   "Looking south towards atrium from entrance doorway across mosaic with guard-dog.",
+   "P(ublium) Paquium Proculum [du]umvirum i(ure) d(icundo) vicini cupidi faciunt",
+   "C. Cuspium Pansa aed(ilem) Si qua verecunde viventi gloria est, Huic Iuveni debet gloria digna dari (CIL IV 7201)"
+  ]
+ },
+ {
+  "id": "pip_VI_8_5",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R6/6%2008%2005.htm",
+  "saved_as": "web/pip_R6_08_05.html",
+  "fetched": "2026-11-17",
+  "supports": "House of the Tragic Poet: Cave Canem mosaic at entrance doorway (photographed in place 2005-2023)",
+  "quotes": [
+   "VI.8.5 Pompeii. May 2015. Cave Canem mosaic at entrance doorway."
+  ]
+ },
+ {
+  "id": "pip_VI_12_2",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R6/6%2012%2002%20p1.htm",
+  "saved_as": "web/pip_6_12_02_p1.html, web/pip_6_12_02_p9.html",
+  "fetched": "2026-11-17",
+  "supports": "House of the Faun: address, exedra of the Alexander mosaic",
+  "quotes": [
+   "VI.12.2 Pompeii. Casa del Fauno or House of the Faun.",
+   "(Strada della Fortuna 55)",
+   "the Exedra where the Alexander mosaic was found"
+  ]
+ },
+ {
+  "id": "wikipedia_alexander",
+  "url": "https://en.wikipedia.org/wiki/Alexander_Mosaic",
+  "saved_as": "web/wikipedia_Alexander_Mosaic.html",
+  "fetched": "2026-11-17",
+  "supports": "POINTER ONLY: tessera count, present location",
+  "quotes": [
+   "The mosaic is made of approximately one and a half million tiny colored tiles called tesserae",
+   "The original is preserved in the National Archaeological Museum, Naples."
+  ]
+ },
+ {
+  "id": "pip_IX_12_6",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R9/9%2012%2006.htm (and p4)",
+  "saved_as": "web/pip_R9_12_06.html, web/pip_9_12_06_p4.html",
+  "fetched": "2026-11-17",
+  "supports": "House of the Chaste Lovers: bakery, door on Via dell’Abbondanza, banquet scenes in triclinium m",
+  "quotes": [
+   "Room “m”, looking north into triclinium with banqueting scenes.",
+   "Looking south through entrance doorway towards Via dell’Abbondanza."
+  ]
+ },
+ {
+  "id": "pip_VI_17_42",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R6/6%2017%2042%20garden.htm",
+  "saved_as": "web/pip_6_17_42_garden.html",
+  "fetched": "2026-11-17",
+  "supports": "House of the Golden Bracelet garden room (oecus 32): fresco removed, inv. 40691",
+  "quotes": [
+   "Oecus 32, looking east towards garden diaeta or garden room with high walls and vaulted ceiling. This was decorated on all walls with the famous garden fresco scenes.",
+   "VI.17.42 Pompeii. Oecus 32. Garden fresco from east wall. Inventory number 40691."
+  ]
+ },
+ {
+  "id": "wikipedia_mysteries",
+  "url": "https://en.wikipedia.org/wiki/Villa_of_the_Mysteries",
+  "saved_as": "web/wikipedia_Villa_of_the_Mysteries.html",
+  "fetched": "2026-11-17",
+  "supports": "POINTER ONLY: location and Room 5",
+  "quotes": [
+   "The villa is located some 400 m northwest of the town walls",
+   "It is famous for the series of exquisite frescos in Room 5"
+  ]
+ },
+ {
+  "id": "pip_abbondanza_east",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/Streets/Via_dell_abbondanza_east_p1.htm (p1-p5)",
+  "saved_as": "web/pip_Via_dell_abbondanza_east_p1.html, web/pip_Via_dell_abbondanza_east_p2.html, web/pip_Via_dell_abbondanza_east_p3.html",
+  "fetched": "2026-11-17",
+  "supports": "Order of insulae, side lanes, fountains, stepping stones east of the Holconius crossing",
+  "quotes": [
+   "Between: IX.1/I.4 IX.7, IX.11/I.6, I.7 IX.12, IX.13/I.8, I.9",
+   "Steppingstone at junction with Vicolo di Tesmo between IX.1 and IX.7.",
+   "Unnamed vicolo between IX.11 and IX.12.",
+   "Entrance to Vicolo di Paquius Proculus and water tower between I.7 and I.6.",
+   "Via dell’Abbondanza, April 2005. Wagon ruts outside I.7.1.",
+   "Looking east to fountain in roadway between IX.13 and I.9."
+  ]
+ },
+ {
+  "id": "pip_fountains",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/Fountains/Fountain%2010415.htm etc.",
+  "saved_as": "web/pip_Fountain_10415.html, web/pip_Fountain_91101.html, web/pip_Fountain_10901.html, web/pip_Fountain_70132.html, web/pip_plan_fountains.html",
+  "fetched": "2026-11-17",
+  "supports": "Public fountains on the route",
+  "quotes": [
+   "Pompeii. Fountain and water column outside I.4.15 on Via Stabiana. Fountain with comedy mask. Excavated 1852.",
+   "Pompeii. Fountain outside IX.11.1 with relief of patera or plate. Excavated 1911.",
+   "Fountain outside I.9.1 on Via dell’Abbondanza, with relief of ‘patera’ or plate. Excavated 1912.",
+   "Fountain outside VII.1.32 and VII.1.33. Fountain with relief of Venus with dove on her right shoulder. Excavated 1846."
+  ]
+ },
+ {
+  "id": "pip_IX_11_2",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R9/9%2011%2002.htm",
+  "saved_as": "web/pip_R9_11_02.html",
+  "fetched": "2026-11-17",
+  "supports": "Thermopolium of Asellina, north side of Via dell’Abbondanza: programmata",
+  "quotes": [
+   "Cn(aeum) Helvium Sabinum aed(ilem) d(ignum) r(ei) p(ublicae) o(ro) v(os) f(aciatis) Aegle rogat [CIL IV 7862]",
+   "Cn(aeum) Helvium Sabinum aed(ilem) d(ignum) r(ei) p(ublicae) o(ro) v(os) f(aciatis) Maria rogat [CIL IV 7866]",
+   "C(aium) Lollium Fuscum IIvir(um) v(iis) a(edibus) s(acris) p(ublicis) p(rocurandis) Asellinas(!) rogant(!) nec sine Zmyrina [CIL IV 7863]."
+  ]
+ },
+ {
+  "id": "pip_I_6_7",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R1/1%2006%2007%20p1.htm",
+  "saved_as": "web/pip_1_06_07_p1.html",
+  "fetched": "2026-11-17",
+  "supports": "Fullonica of Stephanus, south side: programmata",
+  "quotes": [
+   "Holconium Priscum II vir(um) fullones universi rog(ant) [CIL IV 7164]",
+   "Popidium Secundum aed(ilem) Stephanus rog(at) [CIL IV 7172]"
+  ]
+ },
+ {
+  "id": "pip_IX_7_5_7",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R9/9%2007%2005.htm, R9/9%2007%2007.htm",
+  "saved_as": "web/pip_9_07_05.html, web/pip_R9_07_07.html",
+  "fetched": "2026-11-17",
+  "supports": "Workshop of Verecundus, north side: felt-makers, Mercury painting, programmata",
+  "quotes": [
+   "IX.7.5 Pompeii. Workshop of Verecundus.",
+   "C(aium) Iulium Polyb//iu/m IIvir(um) Cuculla rog(at) [CIL IV 7841]",
+   "A graffito found there mentions a tunica lintea aurata, (CIL IV 9083)."
+  ]
+ },
+ {
+  "id": "pip_I_6_2",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R1/1%2006%2002%20p1.htm",
+  "saved_as": "web/pip_1_06_02_p1.html",
+  "fetched": "2026-11-17",
+  "supports": "House of the Cryptoporticus, south side of Via dell’Abbondanza",
+  "quotes": [
+   "Looking towards entrance doorway on south side of Via dell’Abbondanza."
+  ]
+ },
+ {
+  "id": "pip_VII_2_44",
+  "url": "https://pompeiiinpictures.com/pompeiiinpictures/R7/7%2002%2044.htm",
+  "saved_as": "web/pip_7_02_44.html",
+  "fetched": "2026-11-17",
+  "supports": "Hedone wine prices in asses, CIL IV 1679 (bar on Via degli Augustali)",
+  "quotes": [
+   "(H)edone dicit assibus hic bibitur",
+   "Hedone says, ‘You can drink here for one as, if you give two, you will drink better; if you give four, you will drink Falernian.’ [CIL IV 1679]"
+  ]
+ },
+ {
+  "id": "rogerpearse_5380",
+  "url": "https://www.roger-pearse.com/weblog/2019/10/22/bread-for-slaves-2-an-ancient-shopping-list-from-pompeii/",
+  "saved_as": "web/rogerpearse_cil_iv_5380.html",
+  "fetched": "2026-11-17",
+  "supports": "CIL IV 5380 food list exists and names three breads; the prices are in an image, not in the saved text",
+  "quotes": [
+   "It lists three types of bread – “bread”, “coarse bread”, and “bread for a slave” (panem puero)."
+  ]
+ },
+ {
+  "id": "wikipedia_sestertius",
+  "url": "https://en.wikipedia.org/wiki/Sestertius",
+  "saved_as": "web/wikipedia_Sestertius.html",
+  "fetched": "2026-11-17",
+  "supports": "POINTER ONLY: sestertius = four asses, large brass coin after Augustus",
+  "quotes": [
+   "the sestertius was accordingly revalued to four asses, still equal to one quarter of a denarius",
+   "the sestertius was reintroduced as a large brass denomination, while the as, now made of copper"
+  ]
+ },
+ {
+  "id": "kropff_price_edict",
+  "url": "http://kark.uib.no/antikk/dias/priceedict.pdf",
+  "saved_as": "web/kropff_price_edict.pdf, web/kropff_price_edict.txt",
+  "fetched": "2026-11-17",
+  "supports": "Diocletian Price Edict (AD 301, 222 years after the eruption), English tr. A. Kropff: wall painter 75, figure painter 150 a day with maintenance",
+  "quotes": [
+   "Wall painter, with",
+   "Figure painter, with"
+  ]
+ },
+ {
+  "id": "commons_images",
+  "url": "https://commons.wikimedia.org/w/api.php",
+  "saved_as": "commons/_chosen_summary.json, commons/template_Italy-MiBAC-disclaimer.json",
+  "fetched": "2026-11-17",
+  "supports": "Commons API responses (one .json and one .wikitext.txt per image) and 1600 px copies in ref/",
+  "quotes": [
+   "Reproduction of this image is permitted for personal use or study. A further authorization by the Italian Ministry of Heritage and Culture is required for reproduction for any other purpose, and particularly for commercial use."
+  ]
+ }
+]
