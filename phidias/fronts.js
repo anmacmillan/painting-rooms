@@ -14,9 +14,9 @@ export function makeFronts({ THREE, scene, T }) {
   const bat = m => { let b = batches.get(m); if (!b) batches.set(m, b = { pos: [], nor: [], uv: [] }); return b; };
   const lam = o => new THREE.MeshLambertMaterial(o), basic = o => new THREE.MeshBasicMaterial(o);
   const mk = (map, c) => lam({ map, color: c });
-  const M = { marble: mk(T.marble, '#fffaf0'), marbleWarm: mk(T.marble, '#f3e8d2'), poros: mk(T.plaster, '#d9c9a4'), plaster: mk(T.plaster, '#f0e4cc'), brick: mk(T.plaster, '#c9a47a'), tile: mk(T.tile, '#ffffff'), rock: mk(T.rock, '#ffffff'),
-    blue: lam({ color: '#2456a8' }), blueDeep: lam({ color: '#1c3f86' }), red: lam({ color: '#b63a28' }), gold: lam({ color: '#e9b52e', emissive: '#7a4a08' }), goldDeep: lam({ color: '#c98a1c', emissive: '#5a3004' }), ivory: lam({ color: '#fff3dc', emissive: '#5a4a34' }),
-    bronze: lam({ color: '#7a5a2e', emissive: '#2a1c08' }), dark: basic({ color: '#0e0c0a' }), wood: lam({ color: '#7a5a38' }), woodDark: lam({ color: '#4a3424' }), door: lam({ color: '#6a3a22' }), green: lam({ color: '#5a7a3a' }) };
+  const M = { marble: mk(T.marble, '#fbf7ec'), marbleWarm: mk(T.marble, '#f2ebd9'), poros: mk(T.plaster, '#eae1cc'), plaster: mk(T.plaster, '#f4ede0'), brick: mk(T.plaster, '#e5dbc6'), tile: mk(T.tile, '#b9442e'), rock: mk(T.rock, '#e2d9c6'),
+    blue: lam({ color: '#1f4d8f' }), blueDeep: lam({ color: '#183d76' }), red: lam({ color: '#b53b2a' }), gold: lam({ color: '#daa232', emissive: '#4a3008' }), goldDeep: lam({ color: '#c48a22', emissive: '#3a2204' }), ivory: lam({ color: '#faf3e4', emissive: '#3c3020' }),
+    bronze: lam({ color: '#8d6534', emissive: '#221606' }), dark: basic({ color: '#1a1511' }), wood: lam({ color: '#8f6942' }), woodDark: lam({ color: '#4c3826' }), door: lam({ color: '#7d442a' }), green: lam({ color: '#5c754d' }) };
   M.tile.side = THREE.DoubleSide;
   function front(ax, az, cx, cz, g = 0) { const W = Math.hypot(cx - ax, cz - az), dx = (cx - ax) / W, dz = (cz - az) / W, nx = -dz, nz = dx;
     return { ax, az, dx, dz, nx, nz, W, g, P: (u, w) => [ax + dx * u + nx * w, az + dz * u + nz * w], local: (x, z) => [(x - ax) * dx + (z - az) * dz, (x - ax) * nx + (z - az) * nz] }; }
@@ -41,12 +41,12 @@ export function makeFronts({ THREE, scene, T }) {
   const shaftG = new THREE.CylinderGeometry(0.78, 1, 1, 20, 1, true).toNonIndexed(); shaftG.computeVertexNormals(); const echG = new THREE.CylinderGeometry(1.12, 0.8, 1, 20), abaG = new THREE.BoxGeometry(2.3, 1, 2.3), cols = [];
   const column = (x, z, y, H, r, mat = M.marble) => { cols.push({ x, z, y, H, r, mat }); rounds.push({ x, z, r: r + 0.25 }); };
   function flush() {
-    for (const [m, b] of batches) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(b.nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(b.uv, 2)); const mesh = new THREE.Mesh(g, m); mesh.matrixAutoUpdate = false; mesh.castShadow = mesh.receiveShadow = true; scene.add(mesh); } batches.clear();
+    for (const [m, b] of batches) { const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(b.nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(b.uv, 2)); const mesh = new THREE.Mesh(g, m); mesh.matrixAutoUpdate = false; scene.add(mesh); } batches.clear();
     const by = new Map(); for (const c of cols) { if (!by.has(c.mat)) by.set(c.mat, []); by.get(c.mat).push(c); } cols.length = 0;
     for (const [mat, list] of by) { const fm = mat.clone(); fm.flatShading = true; const S = new THREE.InstancedMesh(shaftG, fm, list.length), E = new THREE.InstancedMesh(echG, mat, list.length), A = new THREE.InstancedMesh(abaG, mat, list.length), d = new THREE.Object3D();
       list.forEach((c, i) => { const hc = c.r * 0.72; d.rotation.set(0, 0, 0); d.position.set(c.x, c.y + (c.H - hc) / 2, c.z); d.scale.set(c.r, c.H - hc, c.r); d.updateMatrix(); S.setMatrixAt(i, d.matrix);
         d.position.set(c.x, c.y + c.H - hc * 0.78, c.z); d.scale.set(c.r, hc * 0.45, c.r); d.updateMatrix(); E.setMatrixAt(i, d.matrix); d.position.set(c.x, c.y + c.H - hc * 0.28, c.z); d.scale.set(c.r, hc * 0.56, c.r); d.updateMatrix(); A.setMatrixAt(i, d.matrix); });
-      for (const im of [S, E, A]) { im.castShadow = im.receiveShadow = true; im.frustumCulled = false; scene.add(im); } } }
+      for (const im of [S, E, A]) { im.frustumCulled = false; scene.add(im); } } }
   const solid = (F, u0, u1, w0, w1) => solids.push({ F, u0, u1, w0, w1 });
   const blocked = (x, z) => solids.some(b => { const [u, w] = b.F.local(x, z); return u > b.u0 - 0.3 && u < b.u1 + 0.3 && w > b.w0 - 0.3 && w < b.w1 + 0.3; }) || rounds.some(h => (x - h.x) ** 2 + (z - h.z) ** 2 < h.r * h.r);
   const canvasTex = (w, h, paint) => { const c = document.createElement('canvas'); c.width = w; c.height = h; paint(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; };
@@ -69,64 +69,191 @@ export function makeFronts({ THREE, scene, T }) {
     box(o.col || M.marbleWarm, F, 0, F.W, H - 0.45, H, -1.0, 0); box(M.blue, F, 0, F.W, H, H + 0.42, -0.95, -0.02); box(M.red, F, 0, F.W, H + 0.42, H + 0.5, -1.0, 0.05); roof(F, D, H + 0.5, D * 0.2);
     if (o.pictures) for (let i = 0; i < 4; i++) panel(o.pictures[i % o.pictures.length], F, 1.5 + i * (F.W - 3) / 4, 1.5 + (i + 0.88) * (F.W - 3) / 4, 1.4, 3.6, -D + 0.56);
     solid(F, 0, F.W, -D, -D + 0.7); solid(F, 0, 0.6, -D, -0.4); solid(F, F.W - 0.6, F.W, -D, -0.4); return F; }
-  /* ---------- a closed hall with a door (a council house, a fountain house, a plain house) ---------- */
+  /* ---------- a closed hall with a door, optionally fronted by a Doric colonnaded porch ---------- */
   function hall(p, g, look, o = {}) { const B = obb(p), S = sides(B.corners, g), F = facing(S, look[0], look[1]), H = o.H || 5, wall = o.wall || M.poros, long = S.find(f => f.W >= Math.max(B.L, B.Wd) - 0.01), D = Math.min(B.L, B.Wd);
-    for (const f of S) { box(wall, f, 0, f.W, 0, H, -0.5, 0); box(M.rock, f, -0.05, f.W + 0.05, 0, 0.62, -0.52, 0.07); box(M.marbleWarm, f, -0.06, f.W + 0.06, H - 0.22, H, -0.52, 0.06); solid(f, 0, f.W, -0.6, 0.1); }
+    for (const f of S) { box(wall, f, 0, f.W, -2.5, H, -0.5, 0); box(M.rock, f, -0.05, f.W + 0.05, -2.5, 0.62, -0.52, 0.07); box(M.marbleWarm, f, -0.06, f.W + 0.06, H - 0.22, H, -0.52, 0.06); solid(f, 0, f.W, -0.6, 0.1); }
     const dw = o.door || 1.1, dh = o.doorH || 2.8, dm = F.W / 2;
     box(M.marbleWarm, F, dm - dw - 0.35, dm + dw + 0.35, -0.4, 0.18, -0.1, 0.28);
     box(M.marbleWarm, F, dm - dw - 0.22, dm - dw, 0.18, dh, 0, 0.14); box(M.marbleWarm, F, dm + dw, dm + dw + 0.22, 0.18, dh, 0, 0.14);
     box(o.doorM || M.door, F, dm - dw, dm + dw, 0.18, dh, 0, 0.06);
     box(M.marbleWarm, F, dm - dw - 0.32, dm + dw + 0.32, dh, dh + 0.32, 0, 0.18);
+    if (o.porch) {
+      const n = o.porch, pd = 3.0, pu0 = Math.max(0.8, F.W * 0.12), pu1 = Math.min(F.W - 0.8, F.W * 0.88);
+      box(M.marbleWarm, F, pu0 - 0.6, pu1 + 0.6, -2.5, 0.35, 0, pd + 0.5);
+      for (let i = 0; i < n; i++) { const [cx, cz] = F.P(pu0 + (pu1 - pu0) * i / (n - 1), pd); column(cx, cz, g + 0.35, H - 0.85, 0.38, M.marble); }
+      box(M.marble, F, pu0 - 0.45, pu1 + 0.45, H - 0.5, H, 0, pd + 0.45);
+      box(M.blue, F, pu0 - 0.4, pu1 + 0.4, H, H + 0.42, 0.05, pd + 0.42);
+      box(M.red, F, pu0 - 0.45, pu1 + 0.45, H + 0.42, H + 0.54, 0, pd + 0.48);
+      ext(M.marble, F, [[pu0 - 0.5, H + 0.54], [pu1 + 0.5, H + 0.54], [(pu0 + pu1) / 2, H + 1.9]], pd, pd + 0.45);
+      ext(M.blue, F, [[pu0 + 0.4, H + 0.62], [pu1 - 0.4, H + 0.62], [(pu0 + pu1) / 2, H + 1.65]], pd + 0.42, pd + 0.46);
+    }
     if (o.windows) for (const f of S) for (let u = 2; u < f.W - 1.5; u += 3.4) {
       box(M.marbleWarm, f, u - 0.08, u + 0.58, H - 1.38, H - 1.28, 0, 0.08); box(M.wood, f, u - 0.08, u + 0.58, H - 0.70, H - 0.60, 0, 0.08);
       box(M.dark, f, u, u + 0.5, H - 1.28, H - 0.70, 0, 0.03); box(M.wood, f, u + 0.22, u + 0.28, H - 1.28, H - 0.70, 0, 0.05); }
     roof(long, D, H, D * (o.pitch || 0.2)); return F; }
+  /* ---------- a colonnaded Greek fountain house (Southeast Fountain House of the Agora) ---------- */
+  function fountainHouse(p, g, look, o = {}) {
+    const B = obb(p), S = sides(B.corners, g), F = facing(S.filter(f => f.W >= Math.max(B.L, B.Wd) - 0.01), look[0], look[1]), D = Math.min(B.L, B.Wd), H = o.H || 5.0, n = o.cols || 7;
+    box(M.marbleWarm, F, -0.7, F.W + 0.7, -2.5, 0.32, -D - 0.6, 0.9);
+    box(M.marble, F, -0.35, F.W + 0.35, 0.32, 0.62, -D - 0.25, 0.55);
+    box(M.poros, F, 0, F.W, 0.62, H, -D, -D + 0.6);
+    for (const u of [0, F.W - 0.6]) box(M.poros, F, u, u + 0.6, 0.62, H, -D, -1.6);
+    /* Marble draw-basin parapet and blue water inside the shaded portico */
+    box(M.marbleWarm, F, 1.0, F.W - 1.0, 0.62, 1.55, -D + 0.6, -2.1);
+    box(M.blue, F, 1.3, F.W - 1.3, 1.55, 1.62, -D + 0.85, -2.35);
+    /* Crisp Doric marble colonnade along the front */
+    for (let i = 0; i < n; i++) { const [x, z] = F.P(0.8 + (F.W - 1.6) * i / (n - 1), -0.45); column(x, z, g + 0.62, H - 1.15, 0.38, M.marble); }
+    box(M.marble, F, -0.1, F.W + 0.1, H - 0.55, H, -1.1, 0.08);
+    box(M.blue, F, -0.05, F.W + 0.05, H, H + 0.46, -1.0, 0.05);
+    box(M.red, F, -0.12, F.W + 0.12, H + 0.46, H + 0.58, -1.08, 0.12);
+    roof(F, D, H + 0.58, D * 0.22);
+    /* Terracotta water jars (hydriai) waiting by the marble steps */
+    for (const u of [2.2, 3.1, F.W - 2.6]) {
+      box(M.red, F, u - 0.22, u + 0.22, 0.62, 1.12, 0.12, 0.48);
+      box(M.gold, F, u - 0.13, u + 0.13, 1.12, 1.26, 0.20, 0.40);
+    }
+    solid(F, 0, F.W, -D, -1.6); return F;
+  }
+  /* ---------- a small Doric temple (e.g. inside the Eleusinion sanctuary) ---------- */
+  function templeSmall(p, g, look, o = {}) {
+    const B = obb(p), S = sides(B.corners, g), F = facing(S.filter(f => f.W <= Math.min(B.L, B.Wd) + 0.05), look[0], look[1]), D = Math.max(B.L, B.Wd), H = o.H || 6.4, n = o.cols || 4;
+    box(M.rock, F, -0.9, F.W + 0.9, -4.5, 0.35, -D - 0.9, 0.9);
+    box(M.marble, F, -0.55, F.W + 0.55, 0.35, 0.72, -D - 0.55, 0.55);
+    box(M.marble, F, -0.25, F.W + 0.25, 0.72, 1.08, -D - 0.25, 0.25);
+    /* Cella behind the front porch */
+    box(M.marbleWarm, F, 1.1, F.W - 1.1, 1.08, H, -D + 0.6, -3.0);
+    box(M.door, F, F.W / 2 - 1.1, F.W / 2 + 1.1, 1.08, 4.4, -3.05, -2.92);
+    for (let i = 0; i < n; i++) { const [x, z] = F.P(0.75 + (F.W - 1.5) * i / (n - 1), -0.75); column(x, z, g + 1.08, H - 1.65, 0.42, M.marble); }
+    box(M.marble, F, -0.1, F.W + 0.1, H - 0.58, H, -D + 0.4, 0.05);
+    box(M.blue, F, -0.05, F.W + 0.05, H, H + 0.52, -D + 0.45, 0.02);
+    box(M.red, F, -0.15, F.W + 0.15, H + 0.52, H + 0.66, -D + 0.35, 0.12);
+    const ph = F.W * 0.21;
+    ext(M.marble, F, [[-0.25, H + 0.66], [F.W + 0.25, H + 0.66], [F.W / 2, H + 0.66 + ph]], -0.8, 0.15);
+    ext(M.blue, F, [[0.7, H + 0.78], [F.W - 0.7, H + 0.78], [F.W / 2, H + 0.66 + ph - 0.35]], 0.12, 0.18);
+    ext(M.marble, F, [[-0.25, H + 0.66], [F.W + 0.25, H + 0.66], [F.W / 2, H + 0.66 + ph]], -D + 0.3, -D + 0.9);
+    const Lf = front(...F.P(F.W, -D), ...F.P(F.W, 0), g);
+    roof(Lf, F.W, H + 0.66, ph, 0.35, M.tile);
+    solid(F, 0, F.W, -D, 0); return F;
+  }
   /* ---------- a walled enclosure open to the sky (the Aiakeion, a precinct) ---------- */
   function enclosure(p, g, o = {}) { const H = o.H || 3, gy = typeof g === 'function' ? g : () => g; for (let i = 0; i < p.length; i++) { const a = p[i], b = p[(i + 1) % p.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L < 0.5) continue; const n = Math.max(1, Math.round(L / 5));      // on a slope the wall steps down with the ground
       for (let k = 0; k < n; k++) { const q = t => [a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t], c = q(k / n), d = q((k + 1) / n), m = q((k + 0.5) / n), f = front(c[0], c[1], d[0], d[1], gy(m[0], m[1])); box(o.wall || M.poros, f, 0, f.W, -3, H, -0.25, 0.25); box(M.marbleWarm, f, -0.1, f.W + 0.1, H, H + 0.18, -0.33, 0.33); solid(f, 0, f.W, -0.4, 0.4); } } }
-  /* ---------- the Tholos: a round house under a conical roof ---------- */
-  function tholos(p, g) { let cx = 0, cz = 0; for (const q of p) { cx += q[0] / p.length; cz += q[1] / p.length; } const R = Math.hypot(p[0][0] - cx, p[0][1] - cz), wall = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 6.6, 40), M.poros), rf = new THREE.Mesh(new THREE.ConeGeometry(R + 0.6, 4.2, 40), M.tile);
-    wall.position.set(cx, g + 3.3 - 0.5, cz); rf.position.set(cx, g + 6.1 + 2.1, cz); for (const m of [wall, rf]) { m.castShadow = m.receiveShadow = true; scene.add(m); } rounds.push({ x: cx, z: cz, r: R + 0.3 }); }
-  /* ---------- an Athenian house: stone socle and string-course, plastered or ochre walls, cornice band and rafters, framed shuttered windows, recessed prothyron doorway and stone bench ---------- */
-  function house(x, z, ang, W, D, g, k = 0) { const F = frontAt(x, z, ang, W, g), H = 3.4 + (k % 3) * 0.38, wall = [M.plaster, M.brick, M.poros, M.marbleWarm][k % 4], c = [F.P(0, 0), F.P(W, 0), F.P(W, -D), F.P(0, -D)];
-    const bandM = k % 3 === 0 ? M.red : k % 3 === 1 ? M.marbleWarm : M.poros, shutM = k % 2 ? M.wood : M.woodDark;
+  /* ---------- the Tholos: a round classical house under a conical terracotta roof with marble base, pilasters, and painted frieze ring ---------- */
+  function tholos(p, g) { let cx = 0, cz = 0; for (const q of p) { cx += q[0] / p.length; cz += q[1] / p.length; } const R = Math.hypot(p[0][0] - cx, p[0][1] - cz);
+    const base = new THREE.Mesh(new THREE.CylinderGeometry(R + 0.55, R + 0.75, 1.2, 32), M.marbleWarm);
+    const wall = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 6.2, 32), M.poros);
+    const frz = new THREE.Mesh(new THREE.CylinderGeometry(R + 0.12, R + 0.12, 0.55, 32), M.blue);
+    const cor = new THREE.Mesh(new THREE.CylinderGeometry(R + 0.32, R + 0.22, 0.28, 32), M.marble);
+    const rf = new THREE.Mesh(new THREE.ConeGeometry(R + 0.7, 4.6, 32), M.tile);
+    const fin = new THREE.Mesh(new THREE.CylinderGeometry(0.18, 0.32, 0.9, 12), M.gold);
+    base.position.set(cx, g + 0.1, cz); wall.position.set(cx, g + 3.4, cz); frz.position.set(cx, g + 6.75, cz); cor.position.set(cx, g + 7.15, cz); rf.position.set(cx, g + 7.25 + 2.3, cz); fin.position.set(cx, g + 12.1, cz);
+    for (const m of [base, wall, frz, cor, rf, fin]) scene.add(m);
+    for (let i = 0; i < 12; i++) { const a = i * Math.PI * 2 / 12; column(cx + Math.cos(a) * (R + 0.15), cz + Math.sin(a) * (R + 0.15), g + 0.65, 5.9, 0.28, M.marbleWarm); }
+    rounds.push({ x: cx, z: cz, r: R + 0.5 }); }
+  /* ---------- a votive bronze or marble statue on a tall stepped Agora base ---------- */
+  function votiveStatue(x, z, ang, y, bronze = true) {
+    const F = frontAt(x, z, ang, 1.5, y);
+    box(M.poros, F, -0.35, 1.85, -1.0, 0.28, -1.65, 0.35);
+    box(M.marbleWarm, F, -0.12, 1.62, 0.28, 0.54, -1.42, 0.12);
+    box(M.marble, F, 0.08, 1.42, 0.54, 1.95, -1.22, -0.08);
+    box(M.marbleWarm, F, 0.0, 1.5, 1.95, 2.14, -1.30, 0.0);
+    const [sx, sz] = F.P(0.75, -0.65), m = bronze ? M.bronze : M.marble;
+    const g = new THREE.Group(), add = (geo, px, py, pz, rx = 0, rz = 0) => { const o = new THREE.Mesh(geo, m); o.position.set(px, py, pz); o.rotation.set(rx, 0, rz); g.add(o); };
+    add(new THREE.CylinderGeometry(0.18, 0.24, 1.15, 10), 0, 2.75, 0);
+    add(new THREE.CylinderGeometry(0.22, 0.19, 0.62, 10), 0, 3.60, 0);
+    add(new THREE.SphereGeometry(0.17, 10, 8), 0, 4.10, 0);
+    add(new THREE.CylinderGeometry(0.055, 0.05, 0.72, 8), 0.30, 3.85, 0.12, -0.45, -0.35);
+    add(new THREE.CylinderGeometry(0.03, 0.03, 2.6, 6), 0.42, 3.55, 0.16);
+    g.position.set(sx, y, sz); g.rotation.y = ang; scene.add(g);
+    rounds.push({ x: sx, z: sz, r: 1.3 });
+  }
+  /* ---------- stepped timber viewing benches (ikria, attested by post-holes along the Way in FINDINGS.md) ---------- */
+  function ikria(x, z, ang, W, y) {
+    const F = frontAt(x, z, ang, W, y);
+    for (let t = 0; t < 3; t++) {
+      const y0 = 0.42 + t * 0.44, d0 = -0.55 - t * 0.62;
+      box(M.wood, F, 0, W, y0, y0 + 0.10, d0 - 0.48, d0);
+      for (let u = 0.4; u <= W - 0.3; u += 2.2) box(M.woodDark, F, u - 0.07, u + 0.07, -0.5, y0, d0 - 0.34, d0 - 0.14);
+    }
+    solid(F, 0, W, -2.5, -0.4);
+  }
+  /* ---------- a courtyard wall spur connecting adjacent houses into Athenian city blocks ---------- */
+  function courtyardWall(ax, az, bx, bz, g, H = 2.4) {
+    const F = front(ax, az, bx, bz, g);
+    if (F.W < 0.8) return;
+    box(M.plaster, F, 0, F.W, -2.2, H, -0.25, 0.25);
+    box(M.tile, F, -0.08, F.W + 0.08, H, H + 0.22, -0.35, 0.35);
+  }
+  /* ---------- Themistoclean city wall and twin-towered gate (Thriasian Gate horizon cue on NW edge) ---------- */
+  function cityGate(x, z, ang, y, W = 38) {
+    const F = frontAt(x, z, ang, W, y), m = W / 2, pass = 4.6, H = 7.2, TH = 9.4;
+    for (const [a, b] of [[0, m - pass - 4.2], [m + pass + 4.2, W]]) {
+      box(M.poros, F, a, b, -3, H, -3.2, 0);
+      box(M.rock, F, a, b, -3, 2.2, -3.3, 0.15);
+      box(M.marbleWarm, F, a, b, H, H + 0.35, -3.35, 0.15);
+      for (let u = a + 0.8; u < b - 0.8; u += 2.2) box(M.poros, F, u, u + 1.1, H + 0.35, H + 1.15, -0.5, 0.1);
+    }
+    for (const [a, b] of [[m - pass - 4.2, m - pass], [m + pass, m + pass + 4.2]]) {
+      box(M.poros, F, a, b, -3, TH, -4.4, 1.2);
+      box(M.rock, F, a - 0.1, b + 0.1, -3, 2.5, -4.5, 1.3);
+      box(M.marbleWarm, F, a - 0.15, b + 0.15, TH, TH + 0.35, -4.55, 1.35);
+      roof(front(...F.P(a, 1.2), ...F.P(b, 1.2), y), 5.6, TH + 0.35, 1.3, 0.3);
+    }
+    box(M.poros, F, m - pass, m + pass, 5.2, H + 0.2, -3.2, 0);
+    box(M.marbleWarm, F, m - pass - 0.2, m + pass + 0.2, H + 0.2, H + 0.55, -3.3, 0.15);
+  }
+  /* ---------- an Athenian house: stone socle and string-course, plastered or ochre walls, cornice band and rafters, framed shuttered windows, recessed prothyron doorway, stone bench, shaded awning, and pithoi ---------- */
+  function house(x, z, ang, W, D, g, k = 0) { const F = frontAt(x, z, ang, W, g), H = 3.5 + (k % 3) * 0.45, wall = [M.plaster, M.marbleWarm, M.poros, M.brick][k % 4], c = [F.P(0, 0), F.P(W, 0), F.P(W, -D), F.P(0, -D)];
+    const bandM = k % 3 === 0 ? M.red : k % 3 === 1 ? M.blue : M.marbleWarm, shutM = k % 2 ? M.wood : M.woodDark;
     for (const f of sides(c, g)) {
-      box(wall, f, 0, f.W, -2.5, H, -0.4, 0);
+      box(wall, f, 0, f.W, -3.8, H, -0.4, 0);
       /* Stone rubble footing and dressed string-course */
-      box(M.rock, f, -0.04, f.W + 0.04, -2.5, 0.58, -0.42, 0.08);
-      box(M.poros, f, -0.06, f.W + 0.06, 0.58, 0.70, -0.43, 0.10);
+      box(M.rock, f, -0.04, f.W + 0.04, -3.8, 0.62, -0.42, 0.08);
+      box(M.poros, f, -0.06, f.W + 0.06, 0.62, 0.74, -0.43, 0.10);
       /* Upper cornice band and projecting wooden rafter ends under the eaves */
       box(bandM, f, -0.04, f.W + 0.04, H - 0.22, H - 0.06, -0.42, 0.06);
-      for (let ru = 0.6; ru < f.W - 0.4; ru += 1.4) box(M.woodDark, f, ru, ru + 0.14, H - 0.10, H + 0.02, 0, 0.28);
+      for (let ru = 0.6; ru < f.W - 0.4; ru += 1.6) box(M.woodDark, f, ru, ru + 0.14, H - 0.10, H + 0.02, 0, 0.26);
       /* Framed windows with stone sill, timber lintel, mullion, and open wooden shutters */
       const wy0 = H - 1.32, wy1 = H - 0.66;
-      for (let u = 1.7; u < f.W - 1.4; u += 3.2) {
+      for (let u = 1.7; u < f.W - 1.4; u += 3.3) {
         if (f === F && u > W * 0.24 - 0.6 && u < W * 0.24 + 2.1) continue;
-        box(M.poros, f, u - 0.10, u + 0.62, wy0 - 0.09, wy0, 0, 0.10); /* stone sill */
-        box(M.woodDark, f, u - 0.12, u + 0.64, wy1, wy1 + 0.10, 0, 0.10); /* timber lintel */
-        box(M.wood, f, u - 0.07, u, wy0, wy1, 0, 0.07); box(M.wood, f, u + 0.52, u + 0.59, wy0, wy1, 0, 0.07); /* jambs */
+        box(M.poros, f, u - 0.10, u + 0.62, wy0 - 0.09, wy0, 0, 0.10);
+        box(M.woodDark, f, u - 0.12, u + 0.64, wy1, wy1 + 0.10, 0, 0.10);
+        box(M.wood, f, u - 0.07, u, wy0, wy1, 0, 0.07); box(M.wood, f, u + 0.52, u + 0.59, wy0, wy1, 0, 0.07);
         box(M.dark, f, u, u + 0.52, wy0, wy1, 0, 0.025);
-        box(M.wood, f, u + 0.23, u + 0.29, wy0, wy1, 0, 0.055); /* central mullion */
-        box(shutM, f, u - 0.30, u - 0.07, wy0 + 0.02, wy1 - 0.02, 0, 0.065); /* left open shutter */
-        box(shutM, f, u + 0.59, u + 0.82, wy0 + 0.02, wy1 - 0.02, 0, 0.065); /* right open shutter */
+        box(M.wood, f, u + 0.23, u + 0.29, wy0, wy1, 0, 0.055);
+        box(shutM, f, u - 0.30, u - 0.07, wy0 + 0.02, wy1 - 0.02, 0, 0.065);
+        box(shutM, f, u + 0.59, u + 0.82, wy0 + 0.02, wy1 - 0.02, 0, 0.065);
       }
       solid(f, 0, f.W, -0.5, 0.15);
     }
     /* Doorway (prothyron): stepped stone threshold, stone jambs, panelled double door leaves, lintel and timber hood */
     const du0 = W * 0.28, du1 = du0 + 1.24, dm = (du0 + du1) / 2, dh = 2.25;
-    box(M.marbleWarm, F, du0 - 0.28, du1 + 0.28, -0.4, 0.16, -0.05, 0.28); /* threshold step */
-    box(M.poros, F, du0 - 0.18, du0, 0.16, dh, 0, 0.15); box(M.poros, F, du1, du1 + 0.18, 0.16, dh, 0, 0.15); /* stone jambs */
-    box(M.door, F, du0, du1, 0.16, dh, 0, 0.07); /* door leaves */
-    box(M.woodDark, F, dm - 0.04, dm + 0.04, 0.16, dh, 0, 0.095); /* centre seam */
-    for (const ry of [0.45, 1.15, 1.85]) box(M.woodDark, F, du0 + 0.06, du1 - 0.06, ry, ry + 0.09, 0, 0.09); /* cross rails */
-    box(M.woodDark, F, du0 - 0.26, du1 + 0.26, dh, dh + 0.18, 0, 0.20); /* timber lintel */
-    box(M.marbleWarm, F, du0 - 0.32, du1 + 0.32, dh + 0.18, dh + 0.30, 0, 0.34); /* projecting hood cornice */
-    /* Roadside stone bench beside the doorway */
+    box(M.marbleWarm, F, du0 - 0.28, du1 + 0.28, -0.4, 0.16, -0.05, 0.28);
+    box(M.poros, F, du0 - 0.18, du0, 0.16, dh, 0, 0.15); box(M.poros, F, du1, du1 + 0.18, 0.16, dh, 0, 0.15);
+    box(M.door, F, du0, du1, 0.16, dh, 0, 0.07);
+    box(M.woodDark, F, dm - 0.04, dm + 0.04, 0.16, dh, 0, 0.095);
+    for (const ry of [0.45, 1.15, 1.85]) box(M.woodDark, F, du0 + 0.06, du1 - 0.06, ry, ry + 0.09, 0, 0.09);
+    box(M.woodDark, F, du0 - 0.26, du1 + 0.26, dh, dh + 0.18, 0, 0.20);
+    box(M.marbleWarm, F, du0 - 0.32, du1 + 0.32, dh + 0.18, dh + 0.30, 0, 0.34);
+    /* Roadside stone bench, shaded cloth/tile awning on timber posts, and terracotta pithoi */
     if (k % 2 === 0 && du1 + 2.6 < W - 0.5) {
       box(M.poros, F, du1 + 0.55, du1 + 2.35, -0.3, 0.46, 0, 0.45);
       box(M.marbleWarm, F, du1 + 0.50, du1 + 2.40, 0.46, 0.55, 0, 0.50);
     }
-    roof(F, D, H, D * 0.17, 0.48); }
+    if (k % 3 !== 2 && W >= 11) {
+      const aw0 = Math.min(du1 + 0.35, W - 4.1), aw1 = Math.min(W - 0.4, aw0 + 3.6);
+      if (aw1 - aw0 > 2.2) {
+        sheet(k % 2 ? M.red : M.gold, F, [[aw0, H - 0.48, 0.05], [aw1, H - 0.48, 0.05], [aw1, H - 0.88, 1.25], [aw0, H - 0.88, 1.25]]);
+        for (const pu of [aw0 + 0.15, aw1 - 0.15]) box(M.woodDark, F, pu - 0.07, pu + 0.07, -0.3, H - 0.85, 1.12, 1.24);
+      }
+    }
+    if (k % 2 === 1 && du0 > 1.5) {
+      box(M.red, F, du0 - 0.92, du0 - 0.46, 0.0, 0.66, 0.06, 0.52);
+      box(M.gold, F, du0 - 0.82, du0 - 0.56, 0.66, 0.84, 0.16, 0.42);
+      box(M.red, F, du0 - 0.88, du0 - 0.50, 0.84, 0.92, 0.10, 0.48);
+    }
+    roof(F, D, H, D * 0.18, 0.42); }
 
   /* ---------- the Parthenon. c: its four corners on the ground (the lowest step), from OpenStreetMap, as [NW, NE, SE, SW]; g: the ground the steps stand on ---------- */
   function parthenon(c, g, pics) {
@@ -220,11 +347,21 @@ export function makeFronts({ THREE, scene, T }) {
     for (const u of [m - pass - 2.6, m - pass + 0.1, m + pass - 0.1, m + pass + 2.6]) { const [cx, cz] = F.P(u, -0.5); column(cx, cz, y + 0.3, H - 0.3, 0.44, M.marbleWarm); }
     box(M.marbleWarm, F, 0, W, H, H + 0.6, -D, 0); box(M.blue, F, 0, W, H + 0.6, H + 1.0, -D + 0.05, -0.05); box(M.red, F, -0.1, W + 0.1, H + 1.0, H + 1.1, -D - 0.1, 0.1);
     ext(M.marbleWarm, F, [[0, H + 1.1], [W, H + 1.1], [m, H + 2.9]], -0.5, -0.1); ext(M.blue, F, [[1.2, H + 1.2], [W - 1.2, H + 1.2], [m, H + 2.6]], -0.1, -0.05); roof(F, D, H + 1.1, 1.8, 0.4); return F; }
-  /* ---------- the citadel wall along a line of points: its top a little above the ground inside, its foot set on limestone cliff crags outside ---------- */
-  function wall(p, top, foot, skip, mat = M.poros, cliff = false) { for (let i = 0; i < p.length - 1; i++) { const a = p[i], b = p[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L < 0.4 || skip((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)) continue; const F = front(a[0], a[1], b[0], b[1], 0), t = Math.max(top(a[0], a[1]), top(b[0], b[1])) + 1.6, f = Math.min(foot(a[0], a[1]), foot(b[0], b[1])) - 1.5;
-      box(mat, F, -0.35, L + 0.35, f, t, -0.75, 0.75); box(M.marbleWarm, F, -0.4, L + 0.4, t, t + 0.24, -0.85, 0.85);
-      if (cliff) { const cf = f - 13 - (i % 3) * 3.0, ct = Math.min(t - 1.2, f + 2.2 + (i % 2) * 0.9), wOut = 3.2 + (i % 4) * 1.1;
-        box(M.rock, F, -0.8, L + 0.8, cf, ct, -0.5, wOut);
-        if (L > 3.0) box(M.rock, F, L * 0.12, L * 0.88, cf - 5, ct - 1.6, 0.2, wOut + 2.6); } } }
-  return { M, front, frontAt, ext, box, sheet, panel, column, flush, blocked, solids, rounds, obb, sides, canvasTex, stoa, hall, enclosure, tholos, house, parthenon, parthenos, bronzeAthena, altar, herm, stele, horos, tyrannicides, gate, wall };
+  /* ---------- the citadel wall along a line of points: built retaining walls crowning sheer stepped carved limestone Acropolis cliffs ---------- */
+  function wall(p, top, foot, skip, mat = M.poros, cliff = false) { for (let i = 0; i < p.length - 1; i++) { const a = p[i], b = p[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L < 0.4 || skip((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)) continue; const F = front(a[0], a[1], b[0], b[1], 0), t = Math.max(top(a[0], a[1]), top(b[0], b[1])) + 1.2, f = Math.min(foot(a[0], a[1]), foot(b[0], b[1])) - 1.5;
+      box(mat, F, -0.35, L + 0.35, f, t, -0.85, 0.85); box(M.marble, F, -0.45, L + 0.45, t, t + 0.35, -0.98, 0.98);
+      if (cliff) {
+        /* Massive sheer stepped limestone precipice plunging straight down from the retaining wall (reads unmistakably as the Acropolis rock from the Agora!) */
+        const cf = f - 36 - (i % 3) * 5.0, ct = Math.min(t - 1.4, f + 5.0 + (i % 2) * 1.8), wOut = 4.5 + (i % 4) * 1.4;
+        box(M.rock, F, -0.9, L + 0.9, cf, ct, -0.6, wOut);
+        if (L > 2.2) {
+          box(M.rock, F, L * 0.06, L * 0.94, cf - 8, (cf + ct) * 0.56, 0.5, wOut + 4.4);
+          box(M.poros, F, L * 0.12, L * 0.88, ct - 4.5, t - 0.6, -0.4, wOut * 0.42);
+        }
+        /* Embedded marble column drums of the Older Parthenon in the north citadel wall (FINDINGS.md Section E) */
+        if (a[1] < 405 && b[1] < 405 && a[0] > 270 && a[0] < 380 && L > 3.5) {
+          for (let u = 1.2; u < L - 1.0; u += 2.8) box(M.marble, F, u - 0.62, u + 0.62, t - 2.6, t - 1.0, 0.65, 1.15);
+        }
+      } } }
+  return { M, front, frontAt, ext, box, sheet, panel, column, flush, blocked, solids, rounds, obb, sides, canvasTex, stoa, hall, fountainHouse, templeSmall, enclosure, tholos, house, parthenon, parthenos, bronzeAthena, altar, herm, stele, horos, tyrannicides, votiveStatue, ikria, courtyardWall, cityGate, gate, wall };
 }
