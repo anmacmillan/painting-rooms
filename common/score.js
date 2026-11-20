@@ -1,6 +1,7 @@
 // Points, things to pick up along the road, ditches to leap, a clock, and the way on to the next level. Shared by every street.
 // The paintings are the main score: each tableau she reaches is worth far more than anything on the ground.
 import { getName, setName, postScore, topScores } from './board.js';
+import { pick, push } from './player.js';      /* who is playing, and her progress kept in the family database */
 import './offline.js';      /* offline play: stores this level the first time it is opened */
 export const LEVELS = [
   { key: 'phidias', at: [23.73, 37.97], href: 'phidias/street.html', name: 'Athens, 438 BC', place: 'Athens', year: '438 BC', title: 'The Procession', by: 'Phidias', img: 'phidias/images/frieze.jpg', paintings: 4, coin: 'owls' },
@@ -137,9 +138,12 @@ export function makeScore(o) {
   const flow = n => { streak = clock - lastGain < 3.2 ? streak + n : n; lastGain = clock; const m = 1 + Math.min(3, Math.floor(streak / 4)); if (m > mult) say(`×${m}  keep it flowing!`); mult = m; };
   const lose = (n, msg) => { if (n > 0 && typeof fly === 'function') fly('−' + n, true); pts = Math.max(0, pts - n); streak = 0; mult = 1; say(msg); show(); hud.classList.remove('hurt'); void hud.offsetWidth; hud.classList.add('hurt'); if (SND && SND.puff) SND.puff(0.12); };
   hud.innerHTML = '<span class="coin"></span><span class="n">0</span><span><span id="scWho"></span><small class="p"></small><small class="c"></small></span>';
+  { const home = document.createElement('span'); home.id = 'scHome'; home.textContent = '\u2302'; home.title = 'Save and go back to the map'; home.style.cssText = 'pointer-events:auto;cursor:pointer;font-style:normal;font-size:1.7em;line-height:1;margin-left:.5em;padding:.05em .3em;border-left:1px solid rgba(242,200,101,.45);color:#ffe9a0'; hud.appendChild(home); let armed = 0;
+    home.addEventListener('click', async e => { e.stopPropagation(); if (Date.now() - armed > 3500) { armed = Date.now(); home.textContent = 'Map?'; home.style.fontSize = '1em'; setTimeout(() => { if (Date.now() - armed >= 3400) { home.textContent = '\u2302'; home.style.fontSize = '1.7em'; } }, 3500); return; }
+      home.textContent = 'Saving\u2026'; try { localStorage.setItem('paintingRooms.at', String(Math.max(0, lvl))); } catch (err) { /* private window */ } await Promise.race([push(), new Promise(r => setTimeout(r, 1800))]); location.href = new URL('../index.html', import.meta.url).href; }); }
   // the place, the year and who is playing; a tap on it sets or changes the nickname
   const who = hud.querySelector('#scWho'), L = LEVELS[lvl], paintWho = () => { who.textContent = (L ? `${L.place}, ${L.year}` : '') + ' · ' + (getName() || 'who is playing?'); };
-  who.addEventListener('click', () => { const n = window.prompt('A nickname for the family board', getName() || ''); if (n != null && n.trim()) { setName(n.trim()); paintWho(); } }); paintWho(); const hN = hud.querySelector('.n'), hP = hud.querySelector('.p'), hC = hud.querySelector('.c');
+  who.addEventListener('click', () => { pick().then(paintWho); }); paintWho(); const hN = hud.querySelector('.n'), hP = hud.querySelector('.p'), hC = hud.querySelector('.c');
   const show = () => { hN.textContent = pts; hP.textContent = `${seen.size} of ${o.paintings} paintings`; hC.innerHTML = `${got} ${o.things || 'coins'}` + (gm() > 1 ? ` <span class="x">×${gm()}</span>` : '') + (power.wings > 0 ? ` <span class="x">🪽${Math.ceil(power.wings)}</span>` : '') + (power.laurel > 0 ? ` <span class="x">🌿${Math.ceil(power.laurel)}</span>` : ''); };
   const fly = (txt, bad) => { const f = document.createElement('div'); f.className = 'scFly' + (bad ? ' bad' : ''); f.textContent = txt; f.style.left = (50 + (Math.random() - 0.5) * 14) + '%'; f.style.top = (30 + (Math.random() - 0.5) * 6) + '%'; document.body.appendChild(f); setTimeout(() => f.remove(), 1300); };
   const bump = gain => { hud.classList.remove('bump'); void hud.offsetWidth; hud.classList.add('bump'); fly('+' + gain); };
@@ -187,7 +191,7 @@ export function makeScore(o) {
   function finish() {
     if (!running) return; running = false; hud.style.display = 'none'; bag.style.display = 'none';
     const secs = Math.round(clock), par = o.par || Math.round(LEN / 4.5 + 45), bonus = Math.max(0, Math.min(150, 5 * Math.round((150 - Math.max(0, secs - par)) / 5)));      // full marks inside a brisk time for this road, a point a second lost after it pts += PTS.finish + bonus;
-    const all = loadScores(), was = all[o.key] || {}, best = Math.max(was.best || 0, pts); all[o.key] = { best, time: Math.min(was.time || 1e9, secs), paintings: Math.max(was.paintings || 0, seen.size), of: o.paintings, found: [...new Set([...(was.found || []), ...seen])], coins: Math.max(was.coins || 0, got), runs: (was.runs || 0) + 1, done: Date.now() }; saveScores(all);
+    const all = loadScores(), was = all[o.key] || {}, best = Math.max(was.best || 0, pts); all[o.key] = { best, time: Math.min(was.time || 1e9, secs), paintings: Math.max(was.paintings || 0, seen.size), of: o.paintings, found: [...new Set([...(was.found || []), ...seen])], coins: Math.max(was.coins || 0, got), runs: (was.runs || 0) + 1, done: Date.now() }; saveScores(all); setTimeout(() => push(), 400);
     const total = LEVELS.reduce((t, l) => t + ((all[l.key] || {}).best || 0), 0), next = LEVELS[lvl + 1], mm = Math.floor(secs / 60), ss = String(secs % 60).padStart(2, '0');
     const end = document.getElementById('end'), again = document.getElementById('again'), card = document.createElement('p'); card.id = 'scCard';
     const plural = (n, w) => `${n} ${w}${n === 1 ? '' : 's'}`;

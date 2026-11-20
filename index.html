@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Painting Rooms: a journey through time</title>
 <link rel="manifest" href="manifest.webmanifest">
+<style>
+  #me { position:fixed; right:1.2rem; top:4.4rem; z-index:6; display:flex; flex-wrap:wrap; gap:.5em; justify-content:flex-end; max-width:min(94vw, 44rem); pointer-events:auto; }
+  #me a, #me button { position:static; font:inherit; font-size:.9rem; padding:.42em .95em; border-radius:2em; border:1px solid rgba(242,200,101,.6); background:rgba(27,26,23,.82); color:#f4efe2; cursor:pointer; text-decoration:none; white-space:nowrap; }
+  #me #meWho { background:#f2c865; color:#23262c; font-weight:600; } #me button:disabled { opacity:.75; cursor:default; }
+  @media (max-width:900px) { #me { top:7.4rem; left:1.2rem; right:auto; justify-content:flex-start; } }
+</style>
 <meta name="theme-color" content="#1b1a17">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -54,7 +60,7 @@
   <p class="ui how">Tap a city or a picture and she walks there. Drag the map to look about. Arrow keys walk the road; Enter steps in.</p>
   <div class="ui away" id="card"><span class="th"></span><span><b></b><i></i><span class="st"></span></span><button id="enter"></button></div>
   <div class="ui" id="stops"></div>
-  <button class="ui" id="keep" hidden style="position:fixed; right:1rem; top:1rem; z-index:6; font:inherit; font-size:.85rem; padding:.45em .9em; border-radius:2em; border:1px solid rgba(242,200,101,.6); background:rgba(27,26,23,.82); color:#f4efe2; cursor:pointer"></button>
+  <button id="keep" hidden></button>
 <script type="module">
   /* offline play: every level opened is stored; this button stores them all, for a journey with no network */
   import { ready, onOffline, saveLevel, state } from './common/offline.js';
@@ -65,6 +71,20 @@
   onOffline(m => { if (m.offline === 'state') { saved = new Set(m.saved); sizes = m.sizes || {}; paint(); } if (m.offline === 'progress' && busy) paint(`Keeping ${m.key}: ${Math.round(100 * m.done / m.of)}% · ${queue.length} to go`); if (m.offline === 'saved') { if (m.ok) saved.add(m.key); if (busy) next(); else paint(); } });
   b.addEventListener('click', () => { if (busy) return; queue = Object.keys(sizes).filter(k => !saved.has(k)); busy = true; next(); });
   ready.then(r => { if (r) state(); });
+  /* who is playing, and her progress in the family database */
+  import { getName } from './common/board.js';
+  import { pick, push, sync } from './common/player.js';
+  setTimeout(async () => {      /* after the map below has drawn its bar */
+    const bar = document.createElement('div'), who = document.createElement('a'), sv = document.createElement('a'); who.href = sv.href = '#'; who.id = 'meWho'; sv.id = 'saveNow'; bar.id = 'me'; document.body.appendChild(bar); bar.appendChild(document.getElementById('keep'));
+    const paintWho = () => { who.textContent = (getName() || 'Who is playing?') + ' \u25BE'; }; paintWho(); sv.textContent = 'Save'; bar.prepend(sv); bar.prepend(who);
+    const redraw = () => { try { sessionStorage.setItem('pr.synced', '1'); } catch (e) { /* private window */ } location.reload(); };
+    who.addEventListener('click', async e => { e.preventDefault(); const r = await pick(); paintWho(); if (r.changed) redraw(); });
+    sv.addEventListener('click', async e => { e.preventDefault(); if (!getName()) { const r = await pick(); paintWho(); if (r.changed) return redraw(); } sv.textContent = 'Saving\u2026'; sv.textContent = (await push()) ? 'Saved \u2713' : 'Saved on this device (no network)'; });
+    let once = false; try { once = !!sessionStorage.getItem('pr.synced'); sessionStorage.removeItem('pr.synced'); } catch (e) { /* private window */ }
+    if (!getName()) { const r = await pick(); paintWho(); if (r.changed) return redraw(); }
+    else if (!once && await sync()) return redraw();      /* another device had newer progress: show it */
+    if (getName()) sv.textContent = 'Saved \u2713';
+  }, 0);
 </script>
 <script type="module">
   import { LEVELS, loadScores } from './common/score.js';
@@ -75,7 +95,7 @@
   LEVELS.forEach((l, k) => { const r = all[l.key], d = done(l), n = d ? Math.min(l.paintings, r.paintings || 0) : 0; of += l.paintings; if (d) { total += r.best; found += n; }
     const a = document.createElement('a'); a.href = l.href; a.className = d ? 'done' : k === nextIdx ? 'next' : 'todo'; a.innerHTML = `<span class="th" style="background-image:url(${l.img})"><span class="n">${d ? '✓' : k + 1}</span></span><b></b><small></small>`; a.querySelector('b').textContent = l.place; a.querySelector('small').textContent = l.year;
     a.addEventListener('click', e => { e.preventDefault(); if (here === k && !walking) location.href = l.href; else walkTo(k); }); stops.append(a); rows.push(a); });
-  { const g = document.createElement('span'); g.className = 'gap'; stops.append(g); for (const [href, img, name] of [['rousseau/', 'rousseau/painting.jpg', 'Five Monkeys'], ['seurat/', 'seurat/painting.jpg', 'Sunday on the Island']]) { const a = document.createElement('a'); a.href = href; a.className = 'room'; a.innerHTML = `<span class="th" style="background-image:url(${img})"></span><b></b><small>a side room</small>`; a.querySelector('b').textContent = name; stops.append(a); } }
+  { const g = document.createElement('span'); g.className = 'gap'; stops.append(g); for (const [href, img, name] of [['kuniyoshi/street.html', 'kuniyoshi/thumb.jpg', 'The Ruined Palace, Edo'], ['rousseau/', 'rousseau/painting.jpg', 'Five Monkeys'], ['seurat/', 'seurat/painting.jpg', 'Sunday on the Island']]) { const a = document.createElement('a'); a.href = href; a.className = 'room'; a.innerHTML = `<span class="th" style="background-image:url(${img})"></span><b></b><small>a side room</small>`; a.querySelector('b').textContent = name; stops.append(a); } }
   document.getElementById('progress').innerHTML = `<span><b>${total}</b> points</span><span><b>${found}</b> of ${of} paintings</span><span><b>${LEVELS.filter(done).length}</b> of ${LEVELS.length} ages</span><a href="book.html">Sketchbook</a><a href="/arcade/">Arcade</a>`;
   // the map: the coast of western Europe (Natural Earth, public domain), the stops where they really are, and the road between them in order of time
   const E = await (await fetch('./common/europe.json')).json(), [W, Ea, S, N] = E.box, merc = lat => Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)), y0 = merc(S), y1 = merc(N);
