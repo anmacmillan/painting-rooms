@@ -151,3 +151,8 @@ for reproduction for any other purpose, and particularly for commercial use." Th
 culturali applies to the objects whatever a Commons page says; this site is non-commercial.
 
 Every texture is painted by `tools/blender/tex_pompeii.py`; the two portrait faces are crops of neo.jpg (CC0).
+
+## 10. Rework notes (20 November 2026)
+
+- **Route shortened to 360 m on the same OpenStreetMap street plan**: starts 26 m south-east of Terentius Neo (VII 2, 6) on the Via Stabiana facing north-west toward his doorway and Vesuvius, then turns south-east down the Via Stabiana past the Attii colour shop (IX 2, 11–12), left at the Holconius crossroads onto the Via dell'Abbondanza past Paquius Proculus (I 7, 1) and Asellina's bar (IX 11, 2), and straight to the House of the Painters at Work (IX 12, 9). The Vicolo di Balbo and Vicolo di Tesmo return loop was removed so there is one turn and no backtracking.
+- **ours** The workshop boy who guides the girl home, the painted ground trail, and the Fourth-Style fresco panels on the exterior street fronts (`fresco_tex.js`, `fresco_fx.js`). In excavated Pompeii, Fourth-Style red, yellow-ochre and black panels with slender painted architecture and garlands survive primarily on interior walls (such as room `u` of IX 12, 9, `wall.jpg`, and `painters_at_work_wall_detail.jpg`); carrying that manner across the street fronts and sky is an artistic choice (stated on the end card) so the whole frame reads as Roman wall painting. No new external images were downloaded or added.

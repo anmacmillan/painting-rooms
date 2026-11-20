@@ -10,37 +10,42 @@ export function makeProps({ THREE }) {
   return { pot, loaf, tray, setTray, cushion, COL, lam };
 }
 
-export function makeHouse({ THREE, scene, TOWN, T, FIG, Tn, arms, onBone, PROPS, at, side, hAt, h0, OWN, pHome, pDog, pNeo, half, S_FAR, LEN, sDog, sOutF, W }) {
+export function makeHouse({ THREE, scene, TOWN, T, FIG, Tn, arms, onBone, PROPS, at, side, hAt, h0, OWN, pHome, pDog, pNeo, half, S_NEO, S_CROSS, LEN, sDog, sBackF, W }) {
   const V3 = THREE.Vector3, lam = o => new THREE.MeshLambertMaterial(o), basic = o => new THREE.MeshBasicMaterial(o), D2R = Math.PI / 180, mix = (a, b, t) => a + (b - a) * t, clamp = (v, a = 0, b = 1) => Math.max(a, Math.min(b, v)), sstep = (a, b, x) => { const t = clamp((x - a) / (b - a)); return t * t * (3 - 2 * t); };
   const ctex = (w, h, draw) => { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; return t; };
   const on = (o, cast = true, recv = true) => { o.traverse(m => { if (m.isMesh) { m.castShadow = cast; m.receiveShadow = recv; } }); return o; };
   const KERB = TOWN.KERB;
   /* a front of the level's own: clears the rule-made bays round it and returns a frame on the house wall. sg: +1 right of the way, -1 left */
   function own(p, sg, hw, w) { const [x, z] = side(p, 0, sg * hw), tx = p.dx, tz = p.dz, nx = -sg * -p.dz, nz = -sg * p.dx; const ox = x - tx * w / 2, oz = z - tz * w / 2; return TOWN.frame(ox, oz, tx, tz, nx, nz, h0(x, z) + KERB - 0.02); }
+  /* vertical warm fresco beacon cylinder over each pigment stop so a child spots it down the street */
+  const beamG = new THREE.CylinderGeometry(0.18, 0.45, 3.8, 12, 1, true);
+  const mkBeam = (col, x, y, z) => { const m = new THREE.Mesh(beamG, basic({ color: col, transparent: true, opacity: 0.24, side: THREE.DoubleSide, depthWrite: false })); m.position.set(x, y + 1.9, z); scene.add(m); return m; };
 
   /* ================= 1. the sellers' counters: a shop front each, with the pots of colour on the counter ================= */
   const pickAt = {}, sellers = [];
-  for (const pk of W.picks) { const s0 = sideS(pk.p), p = at(s0), hw = half(s0), F = own(p, pk.side, hw, 5.2); F.pentOK = false; TOWN.bay(F, 5.2, { kind: 'shop', ow: 3.4, two: true, H: 6.6, counter: false, pent: hw > 3, dado: 'red', up: 'white' });
-    TOWN.block('counter', F, 1.2, 3.4, 0, 0.92, -0.7, -0.1, 'sill');
-    const g = new THREE.Group(), [cx, cy, cz] = F.P(2.3, 0.93, -0.4); g.position.set(cx, cy, cz); g.rotation.y = Math.atan2(F.n[0], F.n[1]); scene.add(g);
-    for (let i = 0; i < 5; i++) { const o = PROPS.pot(i % 2 ? pk.id : pk.also[i % pk.also.length], 0.085); o.position.set(-0.8 + i * 0.4, 0, (i % 2) * 0.12 - 0.05); g.add(o); } const heap = new THREE.Mesh(new THREE.ConeGeometry(0.16, 0.2, 12), PROPS.lam(PROPS.COL[pk.id])); heap.position.set(0, 0.1, -0.02); g.add(heap); on(g);
+  for (const pk of W.picks) { const s0 = sBackF(pk.p), p = at(s0), hw = half(s0), F = own(p, pk.side, hw, 5.4); F.pentOK = false; TOWN.bay(F, 5.4, { kind: 'shop', ow: 3.4, two: true, H: 6.6, counter: false, pent: hw > 3, mid: pk.id === 'blue' ? 'ochre' : 'red', garland: true });
+    TOWN.block('counter', F, 1.2, 3.5, 0, 0.92, -0.7, -0.1, 'sill');
+    const g = new THREE.Group(), [cx, cy, cz] = F.P(2.35, 0.93, -0.4); g.position.set(cx, cy, cz); g.rotation.y = Math.atan2(F.n[0], F.n[1]); scene.add(g);
+    for (let i = 0; i < 5; i++) { const o = PROPS.pot(i % 2 ? pk.id : pk.also[i % pk.also.length], 0.09); o.position.set(-0.8 + i * 0.4, 0, (i % 2) * 0.12 - 0.05); g.add(o); } const heap = new THREE.Mesh(new THREE.ConeGeometry(0.18, 0.24, 12), PROPS.lam(PROPS.COL[pk.id])); heap.position.set(0, 0.12, -0.02); g.add(heap); on(g);
     const man = FIG.spawn(pk.fig || 'man_beard', { size: 1.1, adult: true }), [mx, my, mz] = F.P(2.4, 0, -1.3); man.position.set(mx, my, mz); man.rotation.y = Math.atan2(F.n[0], F.n[1]); FIG.pose(man, 0, 0);
-    const [px, , pz] = F.P(2.3, 0, 1.0), mark = new THREE.Mesh(new THREE.TorusGeometry(0.5, 0.05, 8, 28), basic({ color: PROPS.COL[pk.id] === '#1c1a18' ? '#ffe9a0' : PROPS.COL[pk.id] })); mark.rotation.x = Math.PI / 2; mark.position.set(px, hAt(px, pz) + 0.08, pz); scene.add(mark);
-    const float = PROPS.pot(pk.id, 0.16); float.position.set(px, hAt(px, pz) + 1.15, pz); scene.add(float);
-    pickAt[pk.id] = { x: px, z: pz, g: man, mark, float, heap }; sellers.push({ man, pk, F });
+    const [px, , pz] = F.P(2.35, 0, 1.35), colHex = PROPS.COL[pk.id] === '#1c1a18' ? '#f0c868' : PROPS.COL[pk.id];
+    const mark = new THREE.Mesh(new THREE.TorusGeometry(0.62, 0.06, 8, 28), basic({ color: colHex })); mark.rotation.x = Math.PI / 2; mark.position.set(px, hAt(px, pz) + 0.08, pz); scene.add(mark);
+    const float = PROPS.pot(pk.id, 0.2); float.position.set(px, hAt(px, pz) + 1.25, pz); scene.add(float);
+    const beam = mkBeam(colHex, px, hAt(px, pz), pz);
+    pickAt[pk.id] = { x: px, z: pz, g: man, mark, float, beam, heap }; sellers.push({ man, pk, F });
     /* the shop's sign: painted over the opening */
-    const sign = ctex(512, 96, (c, w, h) => { c.fillStyle = '#efe6d2'; c.fillRect(0, 0, w, h); c.fillStyle = '#8f1f16'; c.font = 'bold 60px Georgia, serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(pk.sign, w / 2, h / 2 + 4); });
-    const sg = new THREE.Mesh(new THREE.PlaneGeometry(2.6, 0.48), lam({ map: sign })), [sx, sy, sz] = F.P(2.6, 3.25, 0.03); sg.position.set(sx, sy, sz); sg.rotation.y = Math.atan2(F.n[0], F.n[1]); scene.add(sg); }
-  function sideS(pt) { return sOutF(pt); }
-  const took = id => { const m = pickAt[id]; m.mark.visible = m.float.visible = false; };
+    const sign = ctex(512, 96, (c, w, h) => { c.fillStyle = '#efe6d2'; c.fillRect(0, 0, w, h); c.strokeStyle = '#a8392b'; c.lineWidth = 6; c.strokeRect(4, 4, w - 8, h - 8); c.fillStyle = '#8f1f16'; c.font = 'bold 58px Georgia, serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText(pk.sign, w / 2, h / 2 + 4); });
+    const sg = new THREE.Mesh(new THREE.PlaneGeometry(2.7, 0.5), lam({ map: sign })), [sx, sy, sz] = F.P(2.7, 3.25, 0.04); sg.position.set(sx, sy, sz); sg.rotation.y = Math.atan2(F.n[0], F.n[1]); scene.add(sg); }
+  const took = id => { const m = pickAt[id]; if (!m) return; m.mark.visible = m.float.visible = m.beam.visible = false; };
 
-  /* ================= 2. the dog in the doorway of Paquius Proculus (I 7, 1): the mosaic is still on the floor of that doorway ================= */
-  const dogF = own(pDog, -1, half(sDog), 6.4); TOWN.bay(dogF, 6.4, { kind: 'door', ow: 2.0, at: 2.2, oh: 3.3, open: true, two: true, H: 7.2, dado: 'red', up: 'white', pent: false });
+  /* ================= 2. the dog in the doorway of Paquius Proculus (I 7, 1): south side of Via dell'Abbondanza (+1 walking east) ================= */
+  const dogF = own(pDog, 1, half(sDog), 6.4); TOWN.bay(dogF, 6.4, { kind: 'door', ow: 2.0, at: 2.2, oh: 3.3, open: true, two: true, H: 7.2, mid: 'red', pent: false, garland: true });
   const mosaic = ctex(512, 1024, (c, w, h) => { c.fillStyle = '#e9e4d8'; c.fillRect(0, 0, w, h); c.fillStyle = '#26262a'; c.fillRect(22, 22, w - 44, 14); c.fillRect(22, h - 36, w - 44, 14); c.fillRect(22, 22, 14, h - 44); c.fillRect(w - 36, 22, 14, h - 44);
     c.strokeStyle = 'rgba(60,60,64,.35)'; c.lineWidth = 1; for (let i = 0; i < w; i += 9) { c.beginPath(); c.moveTo(i, 0); c.lineTo(i, h); c.stroke(); } for (let j = 0; j < h; j += 9) { c.beginPath(); c.moveTo(0, j); c.lineTo(w, j); c.stroke(); }
     /* the two leaves of a door, one ajar, set in black stones at the head of the floor, as in the mosaic */
     c.fillStyle = '#3a3a40'; c.fillRect(120, 60, 120, 250); c.fillRect(272, 60, 120, 250); c.fillStyle = '#e9e4d8'; for (const x of [134, 286]) for (const y of [76, 196]) c.fillRect(x, y, 92, 98); });
-  { const m = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 3.4), lam({ map: mosaic })), [x, y, z] = dogF.P(3.2, 0.02, -1.9); m.rotation.x = -Math.PI / 2; m.rotation.z = -Math.atan2(dogF.n[0], dogF.n[1]) + Math.PI; m.position.set(x, y, z); m.receiveShadow = true; scene.add(m); }
+  { const m = new THREE.Mesh(new THREE.PlaneGeometry(2.0, 3.4), lam({ map: mosaic })), [x, y, z] = dogF.P(3.2, 0.03, -1.9); m.rotation.x = -Math.PI / 2; m.rotation.z = -Math.atan2(dogF.n[0], dogF.n[1]) + Math.PI; m.position.set(x, y, z); m.receiveShadow = true; scene.add(m);
+    const dl = new THREE.PointLight(new THREE.Color('#ffe4b8'), 12, 8, 1.4), [lx, ly, lz] = dogF.P(3.2, 2.3, -1.2); dl.position.set(lx, ly, lz); scene.add(dl); }
   const DOG = makeDog(); { const [x, y, z] = dogF.P(3.2, 0.03, -1.0); DOG.g.position.set(x, y, z); DOG.home = [x, y, z]; DOG.face = Math.atan2(dogF.n[0], dogF.n[1]); DOG.g.rotation.y = DOG.face; }
   function makeDog() {
     const g = new THREE.Group(), coat = lam({ color: '#2e2a28' }), light = lam({ color: '#5a4e44' }), red = lam({ color: '#b0281e' }), iron = lam({ color: '#6a6a70' });
@@ -61,9 +66,38 @@ export function makeHouse({ THREE, scene, TOWN, T, FIG, Tn, arms, onBone, PROPS,
     pose(0, 0, 0); return { g, pose, lie: 0 };
   }
 
-  /* ================= 3. Terentius Neo the baker and his wife, at the door of VII 2, 6 on the Via Stabiana ================= */
-  const neoF = own(pNeo, -1, half(S_FAR - 1), 6.4); TOWN.bay(neoF, 6.4, { kind: 'door', ow: 2.6, at: 1.9, oh: 3.2, open: true, two: true, H: 6.8, pent: false, dado: 'red', up: 'white' });
+  /* ================= 3. Terentius Neo and his wife, at the door of VII 2, 6 on the Via Stabiana ================= */
+  const neoF = own(pNeo, -1, half(S_NEO - 1), 6.4); TOWN.bay(neoF, 6.4, { kind: 'door', ow: 2.6, at: 1.9, oh: 3.2, open: true, two: true, H: 6.8, pent: false, mid: 'ochre', garland: true });
+  const [nrx, , nrz] = neoF.P(3.2, 0, 1.45);
+  const redMark = new THREE.Mesh(new THREE.TorusGeometry(0.65, 0.06, 8, 28), basic({ color: '#d43628' })); redMark.rotation.x = Math.PI / 2; redMark.position.set(nrx, hAt(nrx, nrz) + 0.08, nrz); scene.add(redMark);
+  const redFloat = PROPS.pot('red', 0.21); redFloat.position.set(nrx, hAt(nrx, nrz) + 1.3, nrz); scene.add(redFloat);
+  const redBeam = mkBeam('#d43628', nrx, hAt(nrx, nrz), nrz);
+  pickAt.red = { x: nrx, z: nrz, mark: redMark, float: redFloat, beam: redBeam };
+
+  /* ================= 3b. House of the Painters at Work (IX 12, 9): unmistakable glowing fresco portal at HOME ================= */
+  const homeF = own(pHome, -1, half(LEN - 1), 6.4); TOWN.bay(homeF, 6.4, { kind: 'door', ow: 2.8, at: 1.8, oh: 3.4, open: true, two: true, H: 7.2, pent: false, mid: 'red', garland: true });
+  const homeSign = ctex(512, 96, (c, w, h) => { c.fillStyle = '#efe6d2'; c.fillRect(0, 0, w, h); c.strokeStyle = '#a8392b'; c.lineWidth = 6; c.strokeRect(4, 4, w - 8, h - 8); c.fillStyle = '#8f1f16'; c.font = 'bold 46px Georgia, serif'; c.textAlign = 'center'; c.textBaseline = 'middle'; c.fillText('DOMVS PICTORVM', w / 2, h / 2 + 3); });
+  { const sg = new THREE.Mesh(new THREE.PlaneGeometry(3.1, 0.56), lam({ map: homeSign })), [sx, sy, sz] = homeF.P(3.2, 3.65, 0.05); sg.position.set(sx, sy, sz); sg.rotation.y = Math.atan2(homeF.n[0], homeF.n[1]); scene.add(sg); }
+  const [hx, , hz] = homeF.P(3.2, 0, 1.5);
+  const homeBeam = mkBeam('#f2c868', hx, hAt(hx, hz), hz);
+  const homeGlow = new THREE.PointLight(new THREE.Color('#ffbe64'), 24, 24, 1.3); homeGlow.position.set(hx, hAt(hx, hz) + 2.4, hz); scene.add(homeGlow);
+  const homeRing = new THREE.Mesh(new THREE.TorusGeometry(0.95, 0.07, 8, 32), basic({ color: '#f2c868' })); homeRing.rotation.x = Math.PI / 2; homeRing.position.set(hx, hAt(hx, hz) + 0.09, hz); scene.add(homeRing);
+
+  /* ================= 3c. In-world painted fresco trail chevrons along the street paving ================= */
+  const trailPts = [];
+  const chevG = new THREE.BufferGeometry();
+  chevG.setAttribute('position', new THREE.Float32BufferAttribute([0, 0, 0.55, -0.45, 0, -0.25, -0.22, 0, -0.25, 0, 0, 0.55, -0.22, 0, -0.25, 0, 0, 0.16, 0, 0, 0.55, 0, 0, 0.16, 0.22, 0, -0.25, 0, 0, 0.55, 0.22, 0, -0.25, 0.45, 0, -0.25], 3));
+  const chevM = basic({ color: '#e6b244', side: THREE.DoubleSide, transparent: true, opacity: 0.72, depthWrite: false });
+  for (let s = 6; s < LEN - 4; s += 9.5) {
+    const p = at(s), m = new THREE.Mesh(chevG, chevM);
+    m.position.set(p.x, h0(p.x, p.z) + 0.06, p.z); m.rotation.y = Math.atan2(p.dx, p.dz);
+    m.renderOrder = 3; scene.add(m); trailPts.push({ m, s, x: p.x, z: p.z });
+  }
   const neoG = new THREE.Group(); { const [x, y, z] = neoF.P(3.2, 0, 0); neoG.position.set(x, y, z); neoG.rotation.y = Math.atan2(neoF.n[0], neoF.n[1]); scene.add(neoG); }
+  /* Warm golden-ochre fresco wall behind Terentius Neo & his wife (matching MANN 9058) */
+  { const backT = ctex(256, 256, (c, w, h) => { c.fillStyle = '#cca96e'; c.fillRect(0, 0, w, h); for (let i = 0; i < 300; i++) { c.fillStyle = i % 2 ? 'rgba(244,230,196,.12)' : 'rgba(130,86,44,.10)'; c.fillRect(Math.random() * w, Math.random() * h, 26, 12); } c.strokeStyle = '#923024'; c.lineWidth = 14; c.strokeRect(7, 7, w - 14, h - 14); });
+    const bg = new THREE.Mesh(new THREE.PlaneGeometry(2.4, 2.6), lam({ map: backT })); bg.position.set(-0.08, 1.45, -1.35); neoG.add(bg);
+    const nl = new THREE.PointLight(new THREE.Color('#ffebd0'), 9, 7, 1.4); nl.position.set(0, 2.1, 0.3); neoG.add(nl); }
   
   const neo = FIG.spawn('neo', { size: 1.16, adult: true }), wife = FIG.spawn('wife', { size: 1.08, adult: true }); scene.remove(neo, wife); neoG.add(neo, wife);
   /* seen from the street she stands on the left and a little forward, he on the right, as in the painting */
@@ -127,7 +161,7 @@ export function makeHouse({ THREE, scene, TOWN, T, FIG, Tn, arms, onBone, PROPS,
   const master = FIG.spawn('pictor', { size: 1.14, adult: true }), mate = FIG.spawn('tector', { size: 1.12, adult: true }), lad = FIG.spawn('youth', { size: 1.0 }), girl2 = FIG.spawn('girl', { size: 0.9 }); for (const f of [master, mate, lad, girl2]) { scene.remove(f); room.add(f); f.userData.sh.visible = false; }
   const brush = new THREE.Mesh(new THREE.CylinderGeometry(0.008, 0.012, 0.3, 6), PROPS.lam('#5a3a1c')); master.userData.aR.add(brush); brush.position.set(0, 0.1, 0.05); const float = new THREE.Mesh(new THREE.BoxGeometry(0.26, 0.03, 0.12), PROPS.lam('#8a6a44')); mate.userData.aR.add(float); float.position.set(0, 0.06, 0.06);
   const tray2 = PROPS.tray(); onBone(girl2, 'spine', tray2, 0, 0.98, 0.3);
-  const dust = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(600).map(() => Math.random()), 3)), new THREE.PointsMaterial({ color: '#e6dccb', size: 0.025, transparent: true, opacity: 0 })); dust.scale.set(RW, RH, RD); dust.position.set(-RW / 2, 0, -RD / 2); room.add(dust);
+  const dust = new THREE.Points(new THREE.BufferGeometry().setAttribute('position', new THREE.BufferAttribute(new Float32Array(600).map(() => Math.random()), 3)), new THREE.PointsMaterial({ color: '#e6dccb', size: 0.025, transparent: true, opacity: 0, depthWrite: false })); dust.scale.set(RW, RH, RD); dust.position.set(-RW / 2, 0, -RD / 2); dust.visible = false; room.add(dust);
   const W2 = (x, y, z) => new V3(x, y, z).applyMatrix4(room.matrixWorld); room.updateMatrixWorld(true);
   const stand = (f, x, z, ry, pace = 0, ph = 0) => { f.position.set(x, 0, z); f.rotation.y = ry; FIG.pose(f, ph, pace); };
   function roomIdle(t, work = 1) {
@@ -135,35 +169,34 @@ export function makeHouse({ THREE, scene, TOWN, T, FIG, Tn, arms, onBone, PROPS,
     stand(mate, PX + 1.5, -1.9, Math.PI, 0); Tn(mate, 'upperarmR', -70 - 26 * Math.sin(t * 1.6) * work, 0, 0); Tn(mate, 'forearmR', -30); Tn(mate, 'spine', 14);
     stand(lad, 1.0, -0.75, 2.2, 0); lad.position.y = -0.42; for (const S of 'LR') { Tn(lad, 'thigh' + S, -80, S === 'L' ? 16 : -16, 0); Tn(lad, 'shin' + S, 120); } Tn(lad, 'spine', 22); Tn(lad, 'upperarmR', -40, 0, 0); Tn(lad, 'forearmR', -70 - 14 * Math.sin(t * 6) * work); }
   /* the opening: inside the room. The master shows the girl the wet square and sends her out */
-  const introCam = t => t < 4.6 ? { pos: W2(2.7, 1.6, 2.3), look: W2(-0.7, 1.3, -2.2), fov: 56, cut: t < 0.1 } : t < 9.4 ? { pos: W2(PX + 1.0, 1.62, 0.5), look: W2(PX - 0.1, PY - 0.1, -2.6), fov: 42 } : { pos: W2(2.7, 1.7, 2.3), look: W2(-1.0, 1.2, -0.6), fov: 56 };
+  const introCam = t => t < 2.6 ? { pos: W2(2.7, 1.6, 2.3), look: W2(-0.7, 1.3, -2.2), fov: 56, cut: t < 0.1 } : t < 5.0 ? { pos: W2(PX + 1.0, 1.62, 0.5), look: W2(PX - 0.1, PY - 0.1, -2.6), fov: 42 } : { pos: W2(2.7, 1.7, 2.3), look: W2(-1.0, 1.2, -0.6), fov: 56 };
   const speaker = who => who === 'master' ? master : who === 'mate' ? mate : girl2;
 
-  /* ================= the three stagings ================= */
+  /* ================= the three stagings (order: Neo -> Dog -> Painters' Room) ================= */
   const camAt = (F, u, y, w) => new V3(...F.P(u, y, w));
-  const stDog = { key: 'dog', title: W.dog.title, line: W.dog.line, quote: W.dog.quote, img: 'images/dog.jpg', tPlate: 2.6, tMelt: 3.4, tEnd: 11.5, holdAt: 3.2, barked: false,
-    ready: (s, me) => s > sDog - 3.5 && s < sDog + 8, enter() { this.plated = false; }, reset() { this.plated = false; this.barked = false; DOG.lie = 0; tess.reset(); },
-    update(t) { DOG.lie = sstep(0.2, 1.6, t); DOG.g.rotation.y = DOG.face + Math.PI / 2 * sstep(0.2, 1.4, t); DOG.pose(DOG.lie, 0, t); },
-    cam: t => ({ pos: camAt(dogF, 3.2, 3.0, 2.2), look: camAt(dogF, 3.2, 0.2, -1.2), fov: 40 }),
-    stones(t) { tess.run(t - 3.4, 2.8, 'images/dog.jpg'); }, exit() { } };
-  const stNeo = { key: 'neo', title: W.neo.title, line: W.neo.line, quote: W.neo.quote, img: 'images/neo.jpg', tPlate: 2.8, tMelt: 4.0, tEnd: 11.0, holdAt: 3.6,
-    ready: (s, me) => s > S_FAR - 4.5, enter() { this.plated = false; }, reset() { this.plated = false; posePair(0); loafGive.visible = false; },
-    update(t) { posePair(sstep(0.3, 2.0, t)); },
+  const stNeo = { key: 'neo', title: W.neo.title, line: W.neo.line, quote: W.neo.quote, img: 'images/neo.jpg', tPlate: 2.1, tMelt: 3.1, tEnd: 8.6, holdAt: 2.8,
+    ready: (s, me, E) => !E.on && s > S_NEO - 4.2, enter() { this.plated = false; took('red'); }, reset() { this.plated = false; posePair(0); loafGive.visible = false; },
+    update(t) { posePair(sstep(0.2, 1.8, t)); },
     cam: t => { const D = 3.3, c = new V3(-0.1, 1.5, -0.7).applyMatrix4(neoG.matrixWorld), n = new V3(neoF.n[0], 0, neoF.n[1]); return { pos: c.clone().addScaledVector(n, D), look: c, fov: fitH(1.05, D), near: 0.6 }; }, exit() { posePair(0); } };
+  const stDog = { key: 'dog', title: W.dog.title, line: W.dog.line, quote: W.dog.quote, img: 'images/dog.jpg', tPlate: 2.0, tMelt: 2.8, tEnd: 8.6, holdAt: 2.5, barked: false,
+    ready: (s, me, E) => E.on && s > sDog - 3.6 && s < sDog + 8, enter() { this.plated = false; }, reset() { this.plated = false; this.barked = false; DOG.lie = 0; tess.reset(); },
+    update(t) { DOG.lie = sstep(0.2, 1.4, t); DOG.g.rotation.y = DOG.face + Math.PI / 2 * sstep(0.2, 1.3, t); DOG.pose(DOG.lie, 0, t); },
+    cam: t => ({ pos: camAt(dogF, 3.2, 3.0, 2.2), look: camAt(dogF, 3.2, 0.2, -1.2), fov: 40 }),
+    stones(t) { tess.run(t - 2.8, 2.5, 'images/dog.jpg'); }, exit() { } };
   const fitH = (H, D) => 2 * Math.atan(H / 2 / D) / D2R * Math.max(1, (innerHeight / innerWidth) * 0.92);
   let pIn = { wet: 1, got: [], t0: 0 };
-  const stWall = { key: 'wall', title: W.wall.title, line: W.wall.line, quote: W.wall.quote, img: 'images/wall.jpg', tPlate: 14.5, tMelt: 16, tEnd: 24.5, holdAt: 14, hideMe: true,
-    ready: (s, me, E) => E.on && s > LEN - 4.5, enter(me) { this.plated = false; this.said = {}; }, reset() { this.plated = false; this.said = {}; drawPatch(1, 0, 0, 0); dust.material.opacity = 0; kit.visible = true; for (const f of [master, mate, lad, girl2]) f.visible = true; },
+  const stWall = { key: 'wall', title: W.wall.title, line: W.wall.line, quote: W.wall.quote, img: 'images/wall.jpg', tPlate: 9.8, tMelt: 11.2, tEnd: 17.5, holdAt: 9.4, hideMe: true,
+    ready: (s, me, E) => E.on && s > LEN - 5.5, enter(me) { this.plated = false; this.said = {}; dust.visible = false; }, reset() { this.plated = false; this.said = {}; drawPatch(1, 0, 0, 0); dust.material.opacity = 0; dust.visible = false; kit.visible = true; for (const f of [master, mate, lad, girl2]) f.visible = true; },
     update(t, dt, me) { const c = this.ctx, wet = c.G.wet, got = [...c.G.got], say = (k, who, text, secs) => { if (!this.said[k]) { this.said[k] = true; c.say(speaker(who), text, secs); } };
-      const leave = sstep(8.8, 11, t), gone = t > 11.2; roomIdle(c.time, t < 3 ? 1 : 0); if (t > 5 && t < 7) { Tn(master, 'upperarmR', -120, 30, 0); Tn(master, 'forearmR', -30); }
-      /* she comes in with the tray */
-      { const k = sstep(0, 2.2, t); stand(girl2, mix(-2.6, PX - 1.0, k) + leave * -2.4, mix(2.2, -0.9, k) + leave * 3.4, mix(Math.PI * 0.9, Math.PI * 0.8, k) + leave * 2.2, k < 1 || (leave > 0 && leave < 1) ? 0.7 : 0, c.time * 9); Tn(girl2, 'upperarmL', -52, 8, 0); Tn(girl2, 'forearmL', -62); Tn(girl2, 'upperarmR', -52, -8, 0); Tn(girl2, 'forearmR', -62); PROPS.setTrayOnce(tray2, got, t > 7.6); }
-      if (t > 2.3) say('a', 'master', wet > 0 ? W.wall.wetLine : W.wall.dryLine, 4.2);
-      drawPatch(Math.max(0.2, wet) * (1 - sstep(11.5, 16, t)), 0, 0, 0);      /* not one stroke goes on: the square is still only an outline today. It dries pale */
-      if (t > 4.4 && !this.said.pts) { this.said.pts = true; c.paid(wet > 0 ? got.length : 0, got.length); }
-      if (t > 7) { if (!this.said.q) { c.quake(2.6); } say('q', 'mate', W.wall.quakeLine, 2.2); dust.material.opacity = 0.7 * sstep(7, 7.4, t) * (1 - sstep(10, 14, t)); const a = dust.geometry.attributes.position; for (let i = 0; i < a.count; i++) { let y = a.getY(i) - dt * 0.12; if (y < 0) y = 1; a.setY(i, y); } a.needsUpdate = true; }
-      if (t > 9.0) say('l', 'master', W.wall.leaveLine, 3.4);
+      const leave = sstep(6.2, 8.2, t), gone = t > 8.4; roomIdle(c.time, t < 2.2 ? 1 : 0); if (t > 3.6 && t < 5.0) { Tn(master, 'upperarmR', -120, 30, 0); Tn(master, 'forearmR', -30); }
+      { const k = sstep(0, 1.8, t); stand(girl2, mix(-2.6, PX - 1.0, k) + leave * -2.4, mix(2.2, -0.9, k) + leave * 3.4, mix(Math.PI * 0.9, Math.PI * 0.8, k) + leave * 2.2, k < 1 || (leave > 0 && leave < 1) ? 0.7 : 0, c.time * 9); Tn(girl2, 'upperarmL', -52, 8, 0); Tn(girl2, 'forearmL', -62); Tn(girl2, 'upperarmR', -52, -8, 0); Tn(girl2, 'forearmR', -62); PROPS.setTrayOnce(tray2, got, t > 5.4); }
+      if (t > 1.8) say('a', 'master', wet > 0 ? W.wall.wetLine : W.wall.dryLine, 3.2);
+      drawPatch(Math.max(0.2, wet) * (1 - sstep(8.2, 11.2, t)), 0, 0, 0);
+      if (t > 3.2 && !this.said.pts) { this.said.pts = true; c.paid(wet > 0 ? got.length : 0, got.length); }
+      if (t > 4.8) { if (!this.said.q) { c.quake(2.4); } say('q', 'mate', W.wall.quakeLine, 1.8); dust.material.opacity = 0.7 * sstep(4.8, 5.2, t) * (1 - sstep(7.8, 10.5, t)); dust.visible = dust.material.opacity > 0.01; const a = dust.geometry.attributes.position; for (let i = 0; i < a.count; i++) { let y = a.getY(i) - dt * 0.12; if (y < 0) y = 1; a.setY(i, y); } a.needsUpdate = true; } else dust.visible = false;
+      if (t > 6.4) say('l', 'master', W.wall.leaveLine, 2.8);
       for (const [f, dx, dz] of [[master, -2.3, 3.6], [mate, -3.6, 3.4], [lad, -3.0, 2.6]]) if (leave > 0) { f.position.y = 0; f.position.x += dx * leave; f.position.z += dz * leave; f.rotation.y = 2.4; FIG.pose(f, c.time * 9, leave < 1 ? 0.8 : 0); f.visible = !gone; } girl2.visible = !gone; },
-    cam: t => t < 4.4 ? { pos: W2(2.7, 1.6, 2.3), look: W2(-0.7, 1.3, -2.2), fov: 56, k: t < 0.1 ? 60 : 1.6 } : t < 7.2 ? { pos: W2(PX + 1.0, 1.62, 0.5), look: W2(PX - 0.1, PY - 0.1, -2.6), fov: 42, k: 1.4 } : t < 11.6 ? { pos: W2(2.7, 1.75, 2.3), look: W2(-0.9, 1.2, -0.8), fov: 58, k: 1.3 } : { pos: W2(...W.room.photoCam.pos), look: W2(...W.room.photoCam.look), fov: W.room.photoCam.fov, k: 0.9 }, exit() { } };
+    cam: t => t < 3.2 ? { pos: W2(2.7, 1.6, 2.3), look: W2(-0.7, 1.3, -2.2), fov: 56, k: t < 0.1 ? 60 : 1.6 } : t < 5.0 ? { pos: W2(PX + 1.0, 1.62, 0.5), look: W2(PX - 0.1, PY - 0.1, -2.6), fov: 42, k: 1.5 } : t < 8.4 ? { pos: W2(2.7, 1.75, 2.3), look: W2(-0.9, 1.2, -0.8), fov: 58, k: 1.4 } : { pos: W2(...W.room.photoCam.pos), look: W2(...W.room.photoCam.look), fov: W.room.photoCam.fov, k: 1.1 }, exit() { } };
   PROPS.setTrayOnce = (tr, ids, down) => { const key = ids.join() + down; if (tr.userData.key === key) return; tr.userData.key = key; PROPS.setTray(tr, down ? [] : ids); if (down) ids.forEach((id, i) => { if (!kit.userData['d' + id]) { const o = id === 'bread' ? PROPS.loaf() : PROPS.pot(id, 0.085); o.position.set(PX - 0.9 + i * 0.22, 0.01, -0.75); kit.add(o); kit.userData['d' + id] = o; } }); };
   /* the mosaic gives way to the photograph stone by stone, since that is how it was made */
   const tess = (() => { const cv = document.getElementById('tess'), g = cv.getContext('2d'), im = new Image(); let order = null, done = 0, src = '', N = 0, cols = 0, rows = 0, ts = 14;
@@ -171,18 +204,27 @@ export function makeHouse({ THREE, scene, TOWN, T, FIG, Tn, arms, onBone, PROPS,
     return { reset() { cv.style.display = 'none'; order = null; }, run(t, secs, url) { if (t < 0) return; if (src !== url) { src = url; im.src = url; } if (!im.complete || !im.naturalWidth) return; if (!order) { fit(); cv.style.display = 'block'; document.body.classList.add('melting'); }
         const want = Math.min(N, Math.floor(N * Math.min(1, t / secs))), sx = im.naturalWidth / cv.width, gap = t > secs + 0.8 ? 0 : 1; if (t > secs + 0.8 && done !== -1) { g.drawImage(im, 0, 0, cv.width, cv.height); done = -1; }
         while (done >= 0 && done < want) { const i = order[done++], x = (i % cols) * ts, y = Math.floor(i / cols) * ts; g.drawImage(im, x * sx, y * sx, ts * sx, ts * sx, x, y, ts - gap, ts - gap); } } }; })();
-  const stages = [stDog, stNeo, stWall];
+  const stages = [stNeo, stDog, stWall];
 
   /* ================= notices painted on the walls ================= */
   function notices(bays, dist) { let k = 0; const texs = W.notices.map(n => ctex(1024, 256, (c, w, h) => { c.fillStyle = '#efe8d8'; c.fillRect(0, 0, w, h); c.fillStyle = n.black ? '#1a1614' : '#a81f16'; c.textAlign = 'center'; c.textBaseline = 'middle'; const lines = n.t.split('|'); lines.forEach((ln, i) => { let px = i ? 62 : 104; c.font = `${px}px "Times New Roman", Georgia, serif`; while (c.measureText(ln).width > w - 50 && px > 26) { px -= 3; c.font = `${px}px "Times New Roman", Georgia, serif`; } c.fillText(ln, w / 2, lines.length === 1 ? h / 2 : i ? h * 0.76 : h * 0.34); }); })).map(t => lam({ map: t }));
     for (const b of bays) { if (dist(b.mid[0], b.mid[2]) > 7.5) continue; for (const [a, c] of b.free) { if (c - a < 2.3 || k % 3 === 2) { k++; continue; } const wdt = Math.min(2.6, c - a - 0.2), u = (a + c) / 2, m = new THREE.Mesh(new THREE.PlaneGeometry(wdt, wdt * 0.25), texs[k % texs.length]), [x, y, z] = b.F.P(u, Math.max(1.75, b.dH + 0.45), 0.02); m.position.set(x, y, z); m.rotation.y = Math.atan2(b.F.n[0], b.F.n[1]); scene.add(m); k++; } } }
 
   function update(dt, c) { stWall.ctx = c;
-    if (c.state === 'intro') { roomIdle(c.time, 1); const t = c.intro, k = sstep(0.5, 2.4, t); stand(girl2, mix(-2.6, PX - 1.0, k), mix(2.2, -0.9, k), Math.PI * 0.85, k < 1 ? 0.6 : 0, c.time * 8); PROPS.setTrayOnce(tray2, [], false); if (t > 6.5) { const k2 = sstep(6.5, 9, t); girl2.position.x += -1.8 * k2; girl2.position.z += 3.2 * k2; girl2.rotation.y = 0.3; FIG.pose(girl2, c.time * 9, k2 < 1 ? 0.8 : 0); } }
+    if (c.state === 'intro') { roomIdle(c.time, 1); const t = c.intro, k = sstep(0.3, 1.8, t); stand(girl2, mix(-2.6, PX - 1.0, k), mix(2.2, -0.9, k), Math.PI * 0.85, k < 1 ? 0.6 : 0, c.time * 8); PROPS.setTrayOnce(tray2, [], false); if (t > 4.2) { const k2 = sstep(4.2, 6.4, t); girl2.position.x += -1.8 * k2; girl2.position.z += 3.2 * k2; girl2.rotation.y = 0.3; FIG.pose(girl2, c.time * 9, k2 < 1 ? 0.8 : 0); } }
     /* the dog: up and barking while she is near and has not yet stopped for him */
-    const dd = Math.hypot(DOG.home[0] - c.me.x, DOG.home[2] - c.me.z); if (c.state === 'play') { const near = dd < 11 && c.G.stage === 0, k = near ? 1 : 0; DOG.lie = c.G.stage > 0 ? 1 : 0; DOG.pose(DOG.lie, k, c.time); if (c.G.stage === 0) DOG.g.rotation.y = DOG.face; if (near && !stDog.barked) { stDog.barked = true; c.say(DOG.g, W.dog.bark, 2.5); } }
-    for (const id in pickAt) { const m = pickAt[id]; m.float.rotation.y = c.time * 1.5; m.float.position.y = hAt(m.x, m.z) + 1.15 + 0.08 * Math.sin(c.time * 3); m.mark.scale.setScalar(1 + 0.12 * Math.sin(c.time * 4)); }
+    const dd = Math.hypot(DOG.home[0] - c.me.x, DOG.home[2] - c.me.z); if (c.state === 'play') { const near = dd < 12 && c.G.stage === 1, k = near ? 1 : 0; DOG.lie = c.G.stage > 1 ? 1 : 0; DOG.pose(DOG.lie, k, c.time); if (c.G.stage <= 1) DOG.g.rotation.y = DOG.face; if (near && !stDog.barked) { stDog.barked = true; c.say(DOG.g, W.dog.bark, 2.5); } }
+    for (const id in pickAt) { const m = pickAt[id]; if (!m.float.visible) continue; m.float.rotation.y = c.time * 1.6; m.float.position.y = hAt(m.x, m.z) + 1.25 + 0.1 * Math.sin(c.time * 3); m.mark.scale.setScalar(1 + 0.12 * Math.sin(c.time * 4)); }
+    homeRing.scale.setScalar(1 + 0.1 * Math.sin(c.time * 3.5)); homeBeam.visible = homeRing.visible = c.E.on;
+    /* In-world painted street chevrons: show next 50 m ahead of player, hidden behind her */
+    const showTrail = c.state === 'play';
+    for (const tp of trailPts) {
+      const ahead = tp.s - c.progS;
+      const okLeg = c.E.on ? tp.s > S_NEO : tp.s <= S_NEO;
+      tp.m.visible = showTrail && okLeg && ahead > 1.5 && ahead < 52;
+      if (tp.m.visible) tp.m.position.y = h0(tp.x, tp.z) + c.depth + 0.07 + 0.02 * Math.sin(c.time * 4 - tp.s * 0.25);
+    }
   }
-  function reset() { for (const id in pickAt) pickAt[id].mark.visible = pickAt[id].float.visible = true; for (const k in kit.userData) if (k[0] === 'd') { kit.remove(kit.userData[k]); delete kit.userData[k]; } tray2.userData.key = null; }
-  return { stages, pickAt, took, reset, update, introCam, speaker, notices, DOG, room, drawPatch, neoG, dogF, neoF, W2 };
+  function reset() { for (const id in pickAt) { pickAt[id].mark.visible = pickAt[id].float.visible = pickAt[id].beam.visible = true; } for (const k in kit.userData) if (k[0] === 'd') { kit.remove(kit.userData[k]); delete kit.userData[k]; } tray2.userData.key = null; }
+  return { stages, pickAt, took, reset, update, introCam, speaker, notices, DOG, room, drawPatch, neoG, dogF, neoF, homeF, W2 };
 }
