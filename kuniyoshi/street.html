@@ -1,0 +1,1206 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>The Ruined Palace at Sōma: Kuniyoshi in Woodblock Layers</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="../common/world.css">
+<style>
+  :root {
+    --washi: #ece0c7;
+    --sumi: #1a1613;
+    --vermilion: #c24724;
+    --indigo: #3f677d;
+    --straw: #c4ae73;
+  }
+  html, body { background: #171411; color: var(--washi); }
+  canvas#cv { touch-action: none; }
+
+  /* Title screen: bold woodblock broadsheet on warm washi paper */
+  #title {
+    background: var(--washi);
+    color: var(--sumi);
+    justify-content: flex-end;
+    padding: 0;
+    transition: opacity 0.6s ease;
+  }
+  #title > img {
+    position: absolute;
+    inset: 3.5vh 3vw 27vh 3vw;
+    width: calc(100% - 6vw);
+    height: calc(100% - 30.5vh);
+    object-fit: contain;
+    box-shadow: 0 10px 34px rgba(26, 22, 19, 0.28);
+    background: #14110e;
+    border: 3px solid var(--sumi);
+  }
+  #title .words {
+    position: relative;
+    background: linear-gradient(rgba(236, 224, 199, 0), rgba(236, 224, 199, 0.96) 28%, var(--washi) 65%);
+    padding: 40px 24px max(4.2vh, env(safe-area-inset-bottom));
+    width: 100%;
+    box-sizing: border-box;
+  }
+  #title h1 {
+    color: var(--sumi);
+    font-size: clamp(28px, 5.2vw, 56px);
+    letter-spacing: 0.015em;
+    margin-bottom: 0.12em;
+  }
+  #title p {
+    color: #3a322a;
+    opacity: 1;
+    font-size: clamp(14px, 1.9vw, 18px);
+  }
+  #title button.go, #end button.go {
+    background: var(--vermilion);
+    color: #f8f1e2;
+    border: 2px solid var(--sumi);
+    box-shadow: 0 4px 0 var(--sumi);
+    letter-spacing: 0.03em;
+    transition: transform 0.12s, box-shadow 0.12s;
+  }
+  #title button.go:active, #end button.go:active {
+    transform: translateY(2px);
+    box-shadow: 0 2px 0 var(--sumi);
+  }
+
+  /* Woodblock printer's rack (top-left): 5 colour blocks lighting up as printed */
+  #rack {
+    position: fixed;
+    top: max(14px, env(safe-area-inset-top));
+    left: max(14px, env(safe-area-inset-left));
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 7px 11px;
+    background: rgba(236, 224, 199, 0.92);
+    border: 2px solid var(--sumi);
+    border-radius: 6px;
+    box-shadow: 3px 3px 0 rgba(26, 22, 19, 0.55);
+    color: var(--sumi);
+    transition: opacity 0.8s;
+  }
+  #rack.hidden { opacity: 0; pointer-events: none; }
+  .blkChip {
+    position: relative;
+    width: 34px;
+    height: 38px;
+    border: 1.8px solid var(--sumi);
+    border-radius: 3px;
+    background: #f3ead6;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    line-height: 1;
+    color: var(--sumi);
+    transition: transform 0.35s cubic-bezier(0.2, 1.5, 0.4, 1), background 0.4s;
+  }
+  .blkChip.key {
+    background: var(--sumi);
+    color: var(--washi);
+  }
+  .blkChip.done {
+    transform: scale(1.06);
+  }
+  .blkChip.active {
+    outline: 2.5px solid var(--vermilion);
+    outline-offset: 2px;
+  }
+  .blkChip small {
+    font-size: 8px;
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+    text-transform: uppercase;
+    font-family: system-ui, -apple-system, sans-serif;
+    font-weight: 600;
+  }
+  .blkChip.done::after {
+    content: "";
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+    background: var(--vermilion);
+    border: 1.2px solid var(--sumi);
+  }
+
+  /* Subtle top-right sound toggle */
+  #bMute {
+    background: rgba(236, 224, 199, 0.92);
+    border: 2px solid var(--sumi);
+    box-shadow: 2px 2px 0 rgba(26, 22, 19, 0.45);
+    color: var(--sumi);
+    z-index: 12;
+  }
+
+  /* Bottom woodblock slip caption (quiet, readable over both paper and dark ink) */
+  #cue {
+    position: fixed;
+    left: 50%;
+    bottom: max(22px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    max-width: min(760px, 88vw);
+    padding: 8px 18px;
+    background: rgba(236, 224, 199, 0.93);
+    color: var(--sumi);
+    border: 1.8px solid var(--sumi);
+    border-radius: 4px;
+    box-shadow: 3px 3px 0 rgba(26, 22, 19, 0.5);
+    font-size: clamp(14px, 1.9vw, 17px);
+    font-style: italic;
+    text-align: center;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.6s;
+  }
+  #cue.show { opacity: 1; }
+
+  /* Kento Registration Guide (appears only while sliding a colour block into register) */
+  #kentoBox {
+    position: fixed;
+    right: max(18px, env(safe-area-inset-right));
+    bottom: max(20px, env(safe-area-inset-bottom));
+    z-index: 14;
+    width: 218px;
+    background: rgba(242, 233, 212, 0.96);
+    color: var(--sumi);
+    border: 2px solid var(--sumi);
+    border-radius: 6px;
+    box-shadow: 4px 4px 0 rgba(26, 22, 19, 0.65);
+    padding: 10px 12px 11px;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(18px);
+    pointer-events: none;
+    transition: opacity 0.35s, transform 0.35s;
+  }
+  #kentoBox.show {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+  #kentoBox .kTitle {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  #kentoBox .kSub {
+    font-size: 12.5px;
+    font-style: italic;
+    line-height: 1.3;
+    margin-bottom: 7px;
+  }
+  #kentoCv {
+    display: block;
+    margin: 0 auto;
+    width: 170px;
+    height: 112px;
+    background: #f4ebd7;
+    border: 1.5px solid var(--sumi);
+    border-radius: 3px;
+  }
+  #kentoSnap {
+    margin-top: 8px;
+    display: none;
+    width: 100%;
+    padding: 6px 10px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    background: var(--vermilion);
+    color: #f8f1e2;
+    border: 1.5px solid var(--sumi);
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  #kentoSnap.show { display: block; }
+
+  /* Touch leap button (ergonomic for iPad, unobtrusive on desktop) */
+  #bJump {
+    position: fixed;
+    right: max(18px, env(safe-area-inset-right));
+    bottom: max(22px, env(safe-area-inset-bottom));
+    z-index: 11;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    border: 2px solid var(--sumi);
+    background: rgba(236, 224, 199, 0.88);
+    color: var(--sumi);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    box-shadow: 3px 3px 0 rgba(26, 22, 19, 0.5);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.4s, transform 0.1s;
+  }
+  #bJump.hidden { opacity: 0; pointer-events: none; }
+  #bJump:active { transform: scale(0.93); }
+
+  /* Touch joystick indicator */
+  #stick {
+    border: 2px solid rgba(26, 22, 19, 0.55);
+    background: rgba(236, 224, 199, 0.25);
+  }
+  #stick i {
+    background: rgba(194, 71, 36, 0.72);
+    border: 1.5px solid var(--sumi);
+  }
+
+  /* Final dissolve into the authentic British Museum triptych */
+  #melt {
+    position: fixed;
+    inset: 0;
+    background: #171411;
+    opacity: 0;
+    transition: opacity 2.2s ease;
+    pointer-events: none;
+    z-index: 16;
+  }
+  #melt.show { opacity: 1; }
+  #melt img {
+    position: absolute;
+    inset: 0;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  /* Museum title plate during the finale reveal */
+  #plate {
+    position: fixed;
+    left: 50%;
+    bottom: max(28px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 1.6s;
+    pointer-events: none;
+    z-index: 18;
+    color: var(--sumi);
+    background: rgba(236, 224, 199, 0.94);
+    padding: 0.55em 1.4em 0.65em;
+    border-top: 2px solid var(--sumi);
+    border-bottom: 2px solid var(--sumi);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.45);
+    max-width: 90vw;
+  }
+  #plate.show { opacity: 1; }
+  #plate i { display: block; font-size: clamp(19px, 2.8vw, 30px); }
+  #plate span { font-size: clamp(12px, 1.6vw, 15px); opacity: 0.88; }
+
+  /* End card styled in Kuniyoshi's paper & sumi manner */
+  #end {
+    background: #191512;
+    color: var(--washi);
+    padding-top: 2.0vh;
+    padding-bottom: 2.4vh;
+    gap: 0.75vh;
+    transition: opacity 0.85s ease;
+    z-index: 24;
+  }
+  #end > img {
+    max-width: min(86vw, 115vh);
+    max-height: 26vh;
+    border: 4px solid var(--washi);
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.65);
+    background: #0e0c0a;
+  }
+  #end h2 { color: #f6ebd5; font-size: clamp(18px, 2.5vw, 25px); margin: 0.08em 0; }
+  #end p { color: #e8dcc4; line-height: 1.38; font-size: clamp(12px, 1.45vw, 14px); max-width: min(740px, 92vw); margin: 0.1em 0; }
+  #end b { color: #f3c87b; }
+  #end .small { opacity: 0.7; font-size: 11px; }
+  #end .endActions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-top: 0.3em;
+  }
+  #end button.go { margin-top: 0.4em; padding: 0.5em 1.5em; font-size: clamp(15px, 2vw, 19px); }
+  #end a.backBtn {
+    display: inline-block;
+    text-decoration: none;
+    margin-top: 0.4em;
+    font: inherit;
+    font-size: clamp(15px, 2vw, 19px);
+    color: var(--washi);
+    border: 1.5px solid rgba(236, 224, 199, 0.55);
+    border-radius: 999px;
+    padding: 0.5em 1.4em;
+  }
+
+  /* Loading state on title button until WebP layers are ready */
+  #start:disabled { opacity: 0.6; cursor: wait; }
+
+  @media (max-width: 680px) {
+    #rack { gap: 4px; padding: 5px 7px; }
+    .blkChip { width: 28px; height: 34px; font-size: 11px; }
+    .blkChip small { font-size: 7px; }
+    #kentoBox { width: 184px; padding: 8px; }
+    #kentoCv { width: 152px; height: 96px; }
+    #cue { bottom: max(96px, env(safe-area-inset-bottom)); font-size: 14px; }
+  }
+</style>
+<script type="importmap">{ "imports": { "three": "../vendor/three@0.160.0/build/three.module.js" } }</script>
+</head>
+<body>
+<canvas id="cv"></canvas>
+<div id="stick"><i></i></div>
+
+<!-- 5-block woodblock printer's rack -->
+<div id="rack" class="hidden" aria-label="Colour blocks printed">
+  <div class="blkChip key done" title="Key block (black outline)">墨<small>Key</small></div>
+  <div class="blkChip" data-b="0" title="Straw & Ochre">黄<small>Straw</small></div>
+  <div class="blkChip" data-b="1" title="Indigo & Blue">藍<small>Blue</small></div>
+  <div class="blkChip" data-b="2" title="Vermilion Red">朱<small>Red</small></div>
+  <div class="blkChip" data-b="3" title="Smoke Grey">灰<small>Grey</small></div>
+  <div class="blkChip" data-b="4" title="Night Black">夜<small>Night</small></div>
+</div>
+
+<div id="cue"></div>
+
+<!-- Kento registration guide card -->
+<div id="kentoBox" aria-live="polite">
+  <div class="kTitle" id="kTitle">Line up the colour block</div>
+  <div class="kSub" id="kSub">Slide the colour into the registration corner (arrows or drag)</div>
+  <canvas id="kentoCv" width="340" height="224"></canvas>
+  <button id="kentoSnap" type="button">Snap into register</button>
+</div>
+
+<button id="bJump" class="hidden" type="button" aria-label="Leap">Leap</button>
+<button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+
+<div id="melt"><img id="meltImg" src="images/takiyasha.jpg" alt="Takiyasha the Witch and the Skeleton Spectre, by Utagawa Kuniyoshi"></div>
+<div id="plate"><i>Takiyasha the Witch and the Skeleton Spectre</i><span>Utagawa Kuniyoshi, about 1844 · British Museum, London</span></div>
+
+<div id="title" class="screen">
+  <img src="images/takiyasha.jpg" alt="Takiyasha the Witch and the Skeleton Spectre, colour woodblock triptych by Utagawa Kuniyoshi, about 1844">
+  <div class="words">
+    <h1>The Ruined Palace at Sōma</h1>
+    <p>inside Utagawa Kuniyoshi’s woodblock triptych <i>Takiyasha the Witch and the Skeleton Spectre</i>, about 1844</p>
+    <button class="go" id="start" disabled>Preparing blocks…</button>
+  </div>
+</div>
+
+<div id="end" class="screen hidden">
+  <img src="images/takiyasha.jpg" alt="Takiyasha the Witch and the Skeleton Spectre, by Utagawa Kuniyoshi">
+  <h2>Takiyasha the Witch and the Skeleton Spectre</h2>
+  <p>Utagawa Kuniyoshi designed this three-sheet colour woodblock print (<i>nishiki-e</i>) in Edo around 1844. This impression hangs in the British Museum in London (1915,0823,0.915–916); another is in the Victoria and Albert Museum.</p>
+  <p><b>What the print shows:</b> after the rebel warlord Taira no Masakado was defeated in AD 939, his daughter Princess Takiyasha stayed in his ruined palace at Sōma. On the left sheet she reads a spell from a scroll to summon a giant skeleton spectre, which rips away the tattered palace blinds to frighten the court warrior Ōya no Tarō Mitsukuni and his companion.</p>
+  <p><b>How a colour woodblock print is made:</b> a designer drew the picture on paper and a block cutter carved the black outlines into cherry wood to make the key block. From black-and-white key-block proofs, separate blocks were carved for each colour, with tiny registration notches (<i>kentō</i>) cut into the margin so the printer could line every colour up over the black outline before rubbing the handmade paper with a bamboo pad.</p>
+  <p><b>The game’s own:</b> a real Edo colour print typically used ten to sixteen woodblocks; here the print’s own colours are separated into five blocks so you can print the whole triptych in one walk. The girl crossing the floorboards and the layered depth of the ruined palace are the game’s own.</p>
+  <p class="small">Picture: Utagawa Kuniyoshi (died 1861), public domain, British Museum impression via Wikimedia Commons. Woodblock printing facts verified from the Victoria &amp; Albert Museum and the Library of Congress.</p>
+  <div class="endActions">
+    <button class="go" id="again" type="button">Print it again</button>
+    <a class="backBtn" href="../index.html">Back to the map</a>
+  </div>
+</div>
+
+<div id="err">This world needs WebGL, which this browser could not start.</div>
+
+<script src="../common/sound.js"></script>
+<script type="module">
+import * as THREE from 'three';
+import {
+  BLOCK_INFO,
+  makePlateMaterial,
+  makeWoodblockPlayer,
+  makeWoodblockPickup,
+  makePrintAudio,
+} from './woodblock.js';
+
+const $ = id => document.getElementById(id);
+const SND = window.Sound;
+const PA = makePrintAudio();
+const clamp = (x, a, b) => Math.max(a, Math.min(b, x));
+const mix = (a, b, t) => a + (b - a) * t;
+const sstep = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
+
+/* ================= Renderer (colour-true SRGB, NoToneMapping, iPad-friendly PR cap) ================= */
+let renderer;
+try {
+  renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: true, powerPreference: 'high-performance' });
+} catch (e) {
+  $('err').style.display = 'flex';
+  throw e;
+}
+const PR = Math.min(window.devicePixelRatio || 1, 1.5);
+renderer.setPixelRatio(PR);
+renderer.outputColorSpace = THREE.SRGBColorSpace;
+renderer.toneMapping = THREE.NoToneMapping;
+renderer.setClearColor(0x171411, 1);
+
+const scene = new THREE.Scene();
+const PW = 8.0, PH = 8.0 * (1018 / 2048);
+const CAM_D = 5.4;
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 40);
+camera.position.set(0, 0, CAM_D);
+
+function resize() {
+  const w = window.innerWidth, h = window.innerHeight;
+  renderer.setSize(w, h, false);
+  camera.aspect = w / h;
+  /* Compute exact rest distance so the full 8.0 x 3.977 triptych always fits cleanly on any screen aspect */
+  const vFovRad = camera.fov * Math.PI / 180;
+  const distH = (PH * 0.54) / Math.tan(vFovRad / 2);
+  const distW = (PW * 0.53) / (Math.tan(vFovRad / 2) * camera.aspect);
+  restCamD = Math.max(CAM_D, distH, distW);
+  camera.updateProjectionMatrix();
+}
+let restCamD = CAM_D;
+resize();
+window.addEventListener('resize', resize);
+
+/* ================= Shared Shader Uniforms Across All 8 Depth Plates ================= */
+const sharedUniforms = {
+  uTime:       { value: 0 },
+  uDepthScale: { value: 0.24 },
+  uMotionAmp:  { value: 1.0 },
+  uBlocks:     { value: [0, 0, 0, 0, 0] },
+  uSweep:      { value: [-0.25, -0.25, -0.25, -0.25, -0.25] },
+  uAlignIdx:   { value: -1.0 },
+  uRegOffset:  { value: new THREE.Vector2(0, 0) },
+  uSkullTrack: { value: new THREE.Vector2(0, 0) },
+  uScrollWake: { value: 0.0 },
+  uBlindWake:  { value: 0.0 },
+  uSkelWake:   { value: 0.0 },
+};
+
+/* ================= Load Depth-Sliced Print Layers & Colour-Block Masks ================= */
+const PLATE_CONFIG = [
+  { key: 'p0_backdrop',       z: -1.25, order: 0, segX: 12, segY: 8,  motion: 0, floor: false },
+  { key: 'p1_floor',          z:  0.18, order: 1, segX: 32, segY: 16, motion: 0, floor: true  },
+  { key: 'p2_skeleton_body',  z: -0.68, order: 2, segX: 32, segY: 24, motion: 5, floor: false },
+  { key: 'p3_skeleton_skull', z: -0.38, order: 3, segX: 20, segY: 20, motion: 6, floor: false },
+  { key: 'p4_takiyasha',      z: -0.04, order: 4, segX: 28, segY: 28, motion: 1, floor: false },
+  { key: 'p5_warriors',       z:  0.24, order: 5, segX: 20, segY: 18, motion: 2, floor: false },
+  { key: 'p6_blind_left',     z:  0.48, order: 7, segX: 20, segY: 36, motion: 3, floor: false },
+  { key: 'p7_blind_right',    z:  0.50, order: 7, segX: 24, segY: 14, motion: 4, floor: false },
+];
+
+const loader = new THREE.TextureLoader();
+const loadTex = (url, srgb) => new Promise((ok, no) => {
+  loader.load(url, t => {
+    t.colorSpace = srgb ? THREE.SRGBColorSpace : THREE.NoColorSpace;
+    t.wrapS = t.wrapT = THREE.ClampToEdgeWrapping;
+    t.minFilter = THREE.LinearMipmapLinearFilter;
+    t.magFilter = THREE.LinearFilter;
+    t.generateMipmaps = true;
+    ok(t);
+  }, undefined, no);
+});
+
+const stageGroup = new THREE.Group();
+scene.add(stageGroup);
+
+async function loadAllPlates() {
+  const manifest = await fetch('layers/manifest.json').then(r => r.json());
+  await Promise.all(PLATE_CONFIG.map(async cfg => {
+    const info = manifest.plates[cfg.key];
+    const [tColor, tMask1, tMask2] = await Promise.all([
+      loadTex('layers/' + info.col, true),
+      loadTex('layers/' + info.m1, false),
+      loadTex('layers/' + info.m2, false),
+    ]);
+    const mat = makePlateMaterial(THREE, {
+      tColor, tMask1, tMask2,
+      uBounds: [info.u0, info.v0, info.u1, info.v1],
+      zBase: cfg.z,
+      isFloor: cfg.floor,
+      isOpaque: info.opaque,
+      motionMode: cfg.motion,
+      camD: CAM_D,
+      pw: PW,
+      ph: PH,
+      sharedUniforms,
+    });
+    const geom = new THREE.PlaneGeometry(1, 1, cfg.segX, cfg.segY);
+    const mesh = new THREE.Mesh(geom, mat);
+    mesh.renderOrder = cfg.order;
+    mesh.frustumCulled = false;
+    stageGroup.add(mesh);
+  }));
+}
+
+/* ================= Projective UV -> World Position Helper (matches shader exactly) ================= */
+function uvToWorld(u, v, zBase) {
+  const zEff = zBase * sharedUniforms.uDepthScale.value;
+  const s = (CAM_D - zEff) / CAM_D;
+  return {
+    x: (u - 0.5) * PW * s,
+    y: (0.5 - v) * PH * s,
+    z: zEff,
+    s,
+  };
+}
+function floorZAtV(v) {
+  const ft = sstep(0.70, 0.99, v);
+  return mix(-0.18, 0.56, ft);
+}
+
+/* ================= Player (Edo Woodblock Girl) & 5 Carved Woodblock Pickups ================= */
+const playerVis = makeWoodblockPlayer(THREE, sharedUniforms);
+playerVis.sprite.renderOrder = 6;
+playerVis.shadow.renderOrder = 5.5;
+stageGroup.add(playerVis.group);
+
+const pickups = BLOCK_INFO.map(info => {
+  const pk = makeWoodblockPickup(THREE, info);
+  pk.mesh.renderOrder = 6.2;
+  stageGroup.add(pk.mesh);
+  return { info, mesh: pk.mesh, mat: pk.mat, taken: false, popT: 0 };
+});
+
+/* Floating woodblock ink motes & pale paper spirit wisps drifting between the depth layers */
+const wispGroup = new THREE.Group();
+stageGroup.add(wispGroup);
+const wispTex = (() => {
+  const c = document.createElement('canvas'); c.width = 64; c.height = 64;
+  const g = c.getContext('2d');
+  g.fillStyle = '#f2e6cc';
+  g.strokeStyle = '#1a1512';
+  g.lineWidth = 4;
+  g.beginPath(); g.ellipse(32, 36, 12, 16, 0, 0, Math.PI * 2); g.fill(); g.stroke();
+  g.beginPath(); g.moveTo(26, 22); g.quadraticCurveTo(32, 4, 38, 22); g.fill(); g.stroke();
+  const t = new THREE.CanvasTexture(c);
+  t.colorSpace = THREE.SRGBColorSpace;
+  return t;
+})();
+const wisps = [];
+for (let i = 0; i < 16; i++) {
+  const m = new THREE.MeshBasicMaterial({ map: wispTex, transparent: true, opacity: 0.0, depthWrite: false });
+  const sp = new THREE.Mesh(new THREE.PlaneGeometry(0.16, 0.16), m);
+  sp.renderOrder = 6.4;
+  wispGroup.add(sp);
+  wisps.push({
+    mesh: sp, mat: m,
+    u: 0.08 + (i / 15) * 0.84,
+    v: 0.20 + ((i * 37) % 10) * 0.055,
+    z: mix(-0.85, 0.42, (i * 53 % 11) / 10),
+    ph: i * 1.37,
+    spd: 0.45 + (i % 4) * 0.16,
+  });
+}
+
+/* ================= Game State ================= */
+const G = {
+  state: 'title',     /* 'title' | 'play' | 'register' | 'printing' | 'finale' | 'end' */
+  time: 0,
+  printed: [false, false, false, false, false],
+  printedCount: 0,
+  activeIdx: -1,
+  regOffset: new THREE.Vector2(0, 0),
+  regTime: 0,
+  printT: 0,
+  finaleT: 0,
+  cueTimer: 0,
+  muted: false,
+  targetDepth: 0.24,
+  player: {
+    u: 0.085,
+    v: 0.835,
+    vy: 0,
+    jumpY: 0,
+    facing: 1,
+    walkPh: 0,
+    stepCd: 0,
+    moving: false,
+  },
+  cam: { x: -2.2, y: -0.15, z: 2.85 },
+  pointerLean: { x: 0, y: 0 },
+  fpsSamples: [],
+  fpsAvg: 60,
+};
+
+function showCue(text, duration = 6.0) {
+  const el = $('cue');
+  el.textContent = text;
+  el.classList.add('show');
+  G.cueTimer = duration;
+}
+
+function updateRackUI() {
+  document.querySelectorAll('#rack .blkChip[data-b]').forEach(el => {
+    const idx = Number(el.dataset.b);
+    const info = BLOCK_INFO[idx];
+    el.classList.toggle('done', G.printed[idx]);
+    el.classList.toggle('active', G.activeIdx === idx && (G.state === 'register' || G.state === 'printing'));
+    if (G.printed[idx]) {
+      el.style.background = info.swatch;
+      el.style.color = idx === 0 ? '#1a1613' : '#f6eedc';
+    } else {
+      el.style.background = '#f3ead6';
+      el.style.color = '#1a1613';
+    }
+  });
+}
+
+/* ================= Kento Registration Guide Canvas Drawing ================= */
+const kCv = $('kentoCv');
+const kCtx = kCv.getContext('2d');
+
+function drawKentoDiagram() {
+  const w = kCv.width, h = kCv.height;
+  kCtx.clearRect(0, 0, w, h);
+  /* Warm paper ground with subtle woodcut border */
+  kCtx.fillStyle = '#f3ead5';
+  kCtx.fillRect(0, 0, w, h);
+
+  /* Key-block fixed reference sheet corner (black) */
+  const cx = w * 0.52, cy = h * 0.56;
+  kCtx.strokeStyle = 'rgba(26,22,19,0.22)';
+  kCtx.lineWidth = 2;
+  kCtx.setLineDash([6, 6]);
+  kCtx.strokeRect(24, 18, cx - 24, cy - 18);
+  kCtx.setLineDash([]);
+
+  /* Fixed black L-shaped kento corner stop (kagi-kento) & side bar (hikitsuke) */
+  kCtx.strokeStyle = '#1a1613';
+  kCtx.lineWidth = 7;
+  kCtx.lineCap = 'square';
+  kCtx.beginPath();
+  kCtx.moveTo(cx - 56, cy); kCtx.lineTo(cx, cy); kCtx.lineTo(cx, cy - 48);
+  kCtx.moveTo(36, cy); kCtx.lineTo(78, cy);
+  kCtx.stroke();
+
+  /* Moving colour block corner driven by G.regOffset */
+  const info = BLOCK_INFO[G.activeIdx];
+  if (!info) return;
+  const scale = 2600;
+  const ox = clamp(G.regOffset.x * scale, -110, 110);
+  const oy = clamp(G.regOffset.y * scale, -75, 75);
+  const dist = Math.hypot(G.regOffset.x, G.regOffset.y);
+  const close = dist < 0.009;
+
+  /* Translucent colour sheet corner moving toward the kento corner */
+  kCtx.save();
+  kCtx.translate(ox, oy);
+  kCtx.fillStyle = info.swatch;
+  kCtx.globalAlpha = 0.28;
+  kCtx.fillRect(24, 18, cx - 24, cy - 18);
+  kCtx.globalAlpha = 0.95;
+  kCtx.strokeStyle = info.swatch;
+  kCtx.lineWidth = 6;
+  kCtx.beginPath();
+  kCtx.moveTo(cx - 56, cy); kCtx.lineTo(cx, cy); kCtx.lineTo(cx, cy - 48);
+  kCtx.moveTo(36, cy); kCtx.lineTo(78, cy);
+  kCtx.stroke();
+  /* Crisp ink outline on the coloured corner so pale Straw stays vivid */
+  kCtx.strokeStyle = '#1a1613';
+  kCtx.lineWidth = 1.6;
+  kCtx.strokeRect(cx - 10, cy - 10, 14, 14);
+  kCtx.restore();
+
+  /* Alignment guide arrow when not yet close */
+  if (!close && dist > 0.002) {
+    const ang = Math.atan2(-oy, -ox);
+    const ax = cx + ox * 0.55, ay = cy + oy * 0.55;
+    kCtx.strokeStyle = '#c24724';
+    kCtx.lineWidth = 3;
+    kCtx.beginPath();
+    kCtx.moveTo(cx + ox - Math.cos(ang) * 14, cy + oy - Math.sin(ang) * 14);
+    kCtx.lineTo(cx + Math.cos(ang) * 14, cy + Math.sin(ang) * 14);
+    kCtx.stroke();
+    kCtx.fillStyle = '#c24724';
+    kCtx.beginPath();
+    kCtx.arc(cx, cy, 4.5, 0, Math.PI * 2);
+    kCtx.fill();
+  }
+
+  /* Bottom status label */
+  kCtx.fillStyle = close ? '#2c6b3f' : '#1a1613';
+  kCtx.font = 'italic 19px Georgia, serif';
+  kCtx.textAlign = 'center';
+  kCtx.fillText(close ? 'Almost in register…' : 'Match the corner mark (kentō)', w / 2, h - 14);
+}
+
+/* ================= Input Handling (Keyboard + iPad Touch Joystick + Registration Drag) ================= */
+const keys = new Set();
+window.addEventListener('keydown', e => {
+  if (['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Space', ' '].includes(e.key)) e.preventDefault();
+  keys.add(e.code);
+  if ((e.code === 'Space' || e.code === 'Enter') && G.state === 'play') triggerJump();
+  if ((e.code === 'Space' || e.code === 'Enter') && G.state === 'register') {
+    if (G.regOffset.length() < 0.011 || G.regTime > 4.0) lockRegister();
+  }
+});
+window.addEventListener('keyup', e => keys.delete(e.code));
+
+function triggerJump() {
+  if (G.player.jumpY <= 0.005) {
+    G.player.vy = 2.15;
+    PA.stepTap();
+    if (SND && SND.puff) SND.puff(0.04);
+  }
+}
+
+/* Touch / Pointer drag: virtual joystick in 'play', direct 1:1 block slide in 'register' */
+const stickEl = $('stick');
+const stickKnob = stickEl.querySelector('i');
+const drag = { active: false, id: null, x0: 0, y0: 0, dx: 0, dy: 0, lastX: 0, lastY: 0 };
+
+const cv = $('cv');
+cv.addEventListener('pointerdown', e => {
+  if (G.state !== 'play' && G.state !== 'register') return;
+  PA.ensure();
+  drag.active = true;
+  drag.id = e.pointerId;
+  drag.x0 = drag.lastX = e.clientX;
+  drag.y0 = drag.lastY = e.clientY;
+  drag.dx = drag.dy = 0;
+  cv.setPointerCapture(e.pointerId);
+  if (G.state === 'play') {
+    stickEl.style.left = e.clientX + 'px';
+    stickEl.style.top = e.clientY + 'px';
+    stickEl.style.display = 'block';
+    stickKnob.style.transform = 'translate(0px,0px)';
+  }
+});
+
+cv.addEventListener('pointermove', e => {
+  /* Subtle parallax lean from mouse position */
+  G.pointerLean.x = (e.clientX / window.innerWidth - 0.5) * 2;
+  G.pointerLean.y = (e.clientY / window.innerHeight - 0.5) * 2;
+  if (!drag.active || e.pointerId !== drag.id) return;
+  if (G.state === 'play') {
+    const rx = e.clientX - drag.x0, ry = e.clientY - drag.y0;
+    const len = Math.hypot(rx, ry), maxR = 44;
+    const cl = len > maxR ? maxR / len : 1;
+    drag.dx = (rx * cl) / maxR;
+    drag.dy = (ry * cl) / maxR;
+    stickKnob.style.transform = `translate(${rx * cl}px, ${ry * cl}px)`;
+  } else if (G.state === 'register') {
+    const mx = e.clientX - drag.lastX, my = e.clientY - drag.lastY;
+    drag.lastX = e.clientX; drag.lastY = e.clientY;
+    const sens = 0.00014;
+    G.regOffset.x = clamp(G.regOffset.x + mx * sens, -0.05, 0.05);
+    G.regOffset.y = clamp(G.regOffset.y + my * sens, -0.04, 0.04);
+  }
+});
+
+function endDrag(e) {
+  if (!drag.active || (e && e.pointerId !== drag.id)) return;
+  drag.active = false; drag.dx = drag.dy = 0;
+  stickEl.style.display = 'none';
+}
+cv.addEventListener('pointerup', endDrag);
+cv.addEventListener('pointercancel', endDrag);
+
+$('bJump').addEventListener('pointerdown', e => { e.stopPropagation(); triggerJump(); });
+$('kentoSnap').addEventListener('click', () => { if (G.state === 'register') lockRegister(); });
+
+/* Mute button */
+$('bMute').addEventListener('click', () => {
+  G.muted = !G.muted;
+  if (SND && SND.setMuted) SND.setMuted(G.muted);
+  PA.setMuted(G.muted);
+  $('waves').style.opacity = G.muted ? '0.15' : '1';
+});
+
+/* ================= Block Registration & Printing Transitions ================= */
+function startRegister(idx) {
+  G.state = 'register';
+  G.activeIdx = idx;
+  G.regTime = 0;
+  const info = BLOCK_INFO[idx];
+  G.regOffset.set(info.regStart[0], info.regStart[1]);
+  sharedUniforms.uAlignIdx.value = idx;
+  sharedUniforms.uRegOffset.value.copy(G.regOffset);
+  drag.active = false; drag.dx = drag.dy = 0; stickEl.style.display = 'none';
+
+  $('kTitle').textContent = `Block ${idx + 1} · ${info.name}`;
+  $('kSub').textContent = 'Slide the colour block into register (arrows or drag)';
+  $('kentoSnap').classList.remove('show');
+  $('kentoBox').classList.add('show');
+  $('bJump').classList.add('hidden');
+  showCue(info.cue, 12.0);
+  updateRackUI();
+  PA.woodClack(0.92 + idx * 0.06);
+  if (SND && SND.bell) SND.bell(2 + idx, 0.065);
+}
+
+function lockRegister() {
+  if (G.state !== 'register') return;
+  const idx = G.activeIdx;
+  G.state = 'printing';
+  G.printT = 0;
+  G.regOffset.set(0, 0);
+  sharedUniforms.uRegOffset.value.set(0, 0);
+  sharedUniforms.uAlignIdx.value = -1.0;
+  sharedUniforms.uBlocks.value[idx] = 1.0;
+  sharedUniforms.uSweep.value[idx] = -0.22;
+  G.printed[idx] = true;
+  G.printedCount = G.printed.filter(Boolean).length;
+
+  $('kentoBox').classList.remove('show');
+  updateRackUI();
+  PA.woodClack(1.18);
+  setTimeout(() => PA.barenRub(1.45), 140);
+  if (SND && SND.bell) {
+    SND.bell(4 + idx, 0.075, 0.05);
+    SND.bell(7 + idx, 0.065, 0.18);
+  }
+  showCue(`In register! Printing ${BLOCK_INFO[idx].name} across the triptych…`, 2.6);
+}
+
+function finishPrinting() {
+  const idx = G.activeIdx;
+  sharedUniforms.uSweep.value[idx] = 1.38;
+  G.activeIdx = -1;
+  updateRackUI();
+
+  /* Awaken the print's depth & animations progressively as colours arrive */
+  G.targetDepth = [0.24, 0.42, 0.62, 0.80, 0.96, 1.0][G.printedCount] || 1.0;
+
+  if (G.printedCount >= 5) {
+    G.state = 'finale';
+    G.finaleT = 0;
+    $('rack').classList.add('hidden');
+    $('bJump').classList.add('hidden');
+    showCue(BLOCK_INFO[idx].awake, 3.2);
+    PA.templeBell();
+    if (SND && SND.bell) [0, 3, 5, 7, 10].forEach((n, i) => SND.bell(n, 0.075, i * 0.22));
+  } else {
+    G.state = 'play';
+    $('bJump').classList.remove('hidden');
+    showCue(BLOCK_INFO[idx].awake, 5.2);
+  }
+}
+
+/* ================= Start / Reset ================= */
+function beginRoom() {
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  PA.ensure();
+  if (SND && SND.start) {
+    /* Haunting Japanese In-sen / Miyako-bushi pentatonic scale (D, Eb, G, A, Bb, D) */
+    SND.start({
+      chords: [[38, 45, 50], [38, 43, 51], [40, 45, 50], [38, 45, 51]],
+      scale: [50, 51, 55, 57, 62, 63, 67, 69, 74, 75, 79],
+    });
+  }
+  G.state = 'play';
+  G.printed = [false, false, false, false, false];
+  G.printedCount = 0;
+  G.activeIdx = -1;
+  G.targetDepth = 0.24;
+  G.finaleT = 0;
+  G.player = { u: 0.085, v: 0.835, vy: 0, jumpY: 0, facing: 1, walkPh: 0, stepCd: 0, moving: false };
+  G.cam = { x: -2.3, y: -0.22, z: 2.85 };
+
+  sharedUniforms.uDepthScale.value = 0.24;
+  sharedUniforms.uMotionAmp.value = 1.0;
+  sharedUniforms.uBlocks.value = [0, 0, 0, 0, 0];
+  sharedUniforms.uSweep.value = [-0.25, -0.25, -0.25, -0.25, -0.25];
+  sharedUniforms.uAlignIdx.value = -1.0;
+  sharedUniforms.uRegOffset.value.set(0, 0);
+  sharedUniforms.uScrollWake.value = 0;
+  sharedUniforms.uBlindWake.value = 0;
+  sharedUniforms.uSkelWake.value = 0;
+  playerVis.uniforms.uOpacity.value = 1.0;
+  playerVis.shMat.opacity = 1.0;
+
+  for (const p of pickups) {
+    p.taken = false;
+    p.popT = 0;
+    p.mesh.visible = true;
+    p.mat.opacity = 1.0;
+    p.mesh.scale.setScalar(1.0);
+  }
+
+  $('title').classList.add('hidden');
+  $('end').classList.add('hidden');
+  $('melt').classList.remove('show');
+  $('plate').classList.remove('show');
+  $('kentoBox').classList.remove('show');
+  $('rack').classList.remove('hidden');
+  $('bJump').classList.remove('hidden');
+  updateRackUI();
+  PA.woodClack(0.85);
+  showCue('The key block alone: black line on bare paper. Walk right to find the first colour block.', 7.5);
+}
+
+$('start').addEventListener('click', beginRoom);
+$('again').addEventListener('click', beginRoom);
+
+/* ================= Main Fixed-Step Animation Loop ================= */
+let lastTs = performance.now();
+
+function step(now) {
+  requestAnimationFrame(step);
+  const rawDt = (now - lastTs) / 1000;
+  lastTs = now;
+  const dt = Math.min(rawDt, 0.05);
+  if (rawDt > 0.001 && rawDt < 0.25) {
+    G.fpsSamples.push(1 / rawDt);
+    if (G.fpsSamples.length > 60) G.fpsSamples.shift();
+    G.fpsAvg = G.fpsSamples.reduce((a, b) => a + b, 0) / G.fpsSamples.length;
+  }
+
+  G.time += dt;
+  sharedUniforms.uTime.value = G.time;
+
+  if (G.cueTimer > 0) {
+    G.cueTimer -= dt;
+    if (G.cueTimer <= 0 && G.state === 'play') $('cue').classList.remove('show');
+  }
+
+  /* Smoothly ease awakening uniforms */
+  const wantScroll = G.printed[0] ? 1.0 : 0.0;
+  const wantBlind  = G.printed[1] ? 1.0 : 0.0;
+  const wantSkel   = G.printed[3] ? 1.0 : (G.printed[2] ? 0.52 : 0.0);
+  sharedUniforms.uScrollWake.value = mix(sharedUniforms.uScrollWake.value, wantScroll, Math.min(1, dt * 1.8));
+  sharedUniforms.uBlindWake.value  = mix(sharedUniforms.uBlindWake.value,  wantBlind,  Math.min(1, dt * 1.6));
+  sharedUniforms.uSkelWake.value   = mix(sharedUniforms.uSkelWake.value,   wantSkel,   Math.min(1, dt * 1.4));
+
+  /* Smoothly ease global depth scale during play/printing */
+  if (G.state !== 'finale' && G.state !== 'end') {
+    sharedUniforms.uDepthScale.value = mix(sharedUniforms.uDepthScale.value, G.targetDepth, Math.min(1, dt * 1.8));
+  }
+
+  /* --- PLAY STATE --- */
+  if (G.state === 'play') {
+    let ix = drag.dx, iy = drag.dy;
+    if (keys.has('ArrowLeft')  || keys.has('KeyA')) ix -= 1;
+    if (keys.has('ArrowRight') || keys.has('KeyD')) ix += 1;
+    if (keys.has('ArrowUp')    || keys.has('KeyW')) iy -= 1;
+    if (keys.has('ArrowDown')  || keys.has('KeyS')) iy += 1;
+    const ilen = Math.hypot(ix, iy);
+    if (ilen > 1) { ix /= ilen; iy /= ilen; }
+
+    const walkSpeedU = 0.088;  /* ~10s to cross the entire triptych briskly, ~2-3 min with 5 registrations & exploring */
+    const walkSpeedV = 0.095;
+    G.player.u = clamp(G.player.u + ix * walkSpeedU * dt, 0.045, 0.945);
+    G.player.v = clamp(G.player.v + iy * walkSpeedV * dt, 0.775, 0.925);
+    G.player.moving = Math.abs(ix) > 0.08 || Math.abs(iy) > 0.08;
+    if (Math.abs(ix) > 0.08) G.player.facing = ix > 0 ? 1 : -1;
+
+    /* Jump physics */
+    if (G.player.jumpY > 0 || G.player.vy > 0) {
+      G.player.jumpY += G.player.vy * dt;
+      G.player.vy -= 6.8 * dt;
+      if (G.player.jumpY <= 0) { G.player.jumpY = 0; G.player.vy = 0; }
+    }
+
+    /* Walk sprite frame & gentle wood floorboard footsteps */
+    if (G.player.jumpY > 0.04) {
+      playerVis.uniforms.uFrame.value = 5.0;
+    } else if (G.player.moving) {
+      G.player.walkPh += dt * 7.5;
+      playerVis.uniforms.uFrame.value = Math.floor(G.player.walkPh) % 4;
+      G.player.stepCd -= dt;
+      if (G.player.stepCd <= 0) { G.player.stepCd = 0.34; PA.stepTap(); }
+    } else {
+      playerVis.uniforms.uFrame.value = 4.0;
+    }
+    playerVis.uniforms.uFlip.value = G.player.facing;
+    playerVis.uniforms.uPlayerU.value = G.player.u;
+
+    /* Check pickup collisions with the 5 carved cherrywood blocks */
+    for (const p of pickups) {
+      if (p.taken) continue;
+      const du = Math.abs(G.player.u - p.info.u);
+      const dv = Math.abs(G.player.v - p.info.v);
+      const dy = Math.abs(G.player.jumpY - p.info.jumpH);
+      if (du < 0.036 && dv < 0.075 && dy < 0.34) {
+        p.taken = true;
+        p.popT = 0.45;
+        startRegister(p.info.index);
+        break;
+      }
+    }
+
+    /* Soundscape tension rises as she approaches the skeleton and prints more blocks */
+    if (SND && SND.update) {
+      const nearSkel = sstep(0.28, 0.78, G.player.u);
+      SND.update(0.25 + 0.5 * nearSkel, 0.12 + 0.55 * G.printedCount / 5);
+    }
+  }
+
+  /* --- KENTŌ REGISTRATION STATE --- */
+  if (G.state === 'register') {
+    G.regTime += dt;
+    let rx = 0, ry = 0;
+    if (keys.has('ArrowLeft')  || keys.has('KeyA')) rx -= 1;
+    if (keys.has('ArrowRight') || keys.has('KeyD')) rx += 1;
+    if (keys.has('ArrowUp')    || keys.has('KeyW')) ry -= 1;
+    if (keys.has('ArrowDown')  || keys.has('KeyS')) ry += 1;
+    const rSpeed = 0.022;
+    G.regOffset.x = clamp(G.regOffset.x + rx * rSpeed * dt, -0.05, 0.05);
+    G.regOffset.y = clamp(G.regOffset.y + ry * rSpeed * dt, -0.04, 0.04);
+
+    /* Gentle magnetic feel once very close, then snap cleanly into register! */
+    const dist = G.regOffset.length();
+    if (dist < 0.008 && dist > 0.0001 && rx === 0 && ry === 0 && !drag.active) {
+      G.regOffset.multiplyScalar(Math.max(0, 1 - dt * 2.2));
+    }
+    sharedUniforms.uRegOffset.value.copy(G.regOffset);
+    drawKentoDiagram();
+
+    if (G.regTime > 5.5) $('kentoSnap').classList.add('show');
+    if (G.regOffset.length() < 0.0042) {
+      lockRegister();
+    }
+  }
+
+  /* --- BAREN PRINTING SWEEP STATE --- */
+  if (G.state === 'printing') {
+    G.printT += dt;
+    const dur = 1.75;
+    const sweep = mix(-0.20, 1.35, sstep(0, dur, G.printT));
+    sharedUniforms.uSweep.value[G.activeIdx] = sweep;
+    if (G.printT >= dur) {
+      finishPrinting();
+    }
+  }
+
+  /* --- FINALE: LIVING 3D BEAT -> LAYERS SETTLE FLAT -> REAL PRINT REVEAL --- */
+  if (G.state === 'finale') {
+    G.finaleT += dt;
+    /* 0..3.0s: savour the full-colour living 3D triptych; fade the player gently into the paper */
+    const playerFade = 1.0 - sstep(0.6, 2.2, G.finaleT);
+    playerVis.uniforms.uOpacity.value = playerFade;
+    playerVis.shMat.opacity = playerFade;
+
+    /* 2.8..6.4s: all 8 depth plates settle smoothly flat (z -> 0) into 1:1 registration! */
+    const flatT = sstep(2.8, 6.4, G.finaleT);
+    sharedUniforms.uDepthScale.value = 1.0 - flatT;
+    sharedUniforms.uMotionAmp.value  = 1.0 - sstep(2.4, 5.6, G.finaleT);
+
+    /* 6.4..8.6s: dissolve cleanly into the real British Museum triptych and show title plate */
+    if (G.finaleT > 6.4 && !$('melt').classList.contains('show')) {
+      $('melt').classList.add('show');
+      $('plate').classList.add('show');
+      $('cue').classList.remove('show');
+    }
+    /* 10.2s: hide title plate cleanly and open the opaque End Card */
+    if (G.finaleT > 10.2) {
+      G.state = 'end';
+      $('plate').classList.remove('show');
+      $('melt').classList.remove('show');
+      $('end').classList.remove('hidden');
+    }
+  }
+
+  /* --- POSITION PLAYER, PICKUPS, WISPS & SKULL TRACKING --- */
+  const pFloorZ = floorZAtV(G.player.v) + 0.04;
+  const pw = uvToWorld(G.player.u, G.player.v, pFloorZ);
+  playerVis.group.position.set(pw.x, pw.y + G.player.jumpY, pw.z);
+  playerVis.shadow.position.y = -G.player.jumpY + 0.01;
+  playerVis.shadow.scale.setScalar(clamp(1.0 - G.player.jumpY * 0.45, 0.45, 1.0));
+
+  /* Skeleton skull subtly tracks the player across the floorboards! */
+  const wantTrackX = G.state === 'finale' ? 0 : clamp((G.player.u - 0.48) * 1.8, -1.0, 1.0);
+  const wantTrackY = G.state === 'finale' ? 0 : clamp((0.83 - G.player.v) * 2.5 - 0.25 + G.player.jumpY * 0.4, -0.6, 0.5);
+  sharedUniforms.uSkullTrack.value.x = mix(sharedUniforms.uSkullTrack.value.x, wantTrackX, Math.min(1, dt * 2.2));
+  sharedUniforms.uSkullTrack.value.y = mix(sharedUniforms.uSkullTrack.value.y, wantTrackY, Math.min(1, dt * 2.2));
+
+  /* Update floating cherrywood colour block pickups */
+  for (const p of pickups) {
+    if (!p.mesh.visible) continue;
+    const zBase = floorZAtV(p.info.v) + 0.06;
+    const pos = uvToWorld(p.info.u, p.info.v, zBase);
+    const bob = Math.sin(G.time * 2.4 + p.info.index * 1.4) * 0.055;
+    if (p.taken) {
+      p.popT -= dt;
+      const k = 1 - Math.max(0, p.popT) / 0.45;
+      p.mesh.position.set(pos.x, pos.y + 0.28 + p.info.jumpH + k * 0.55, pos.z);
+      p.mesh.scale.setScalar(1 + k * 0.65);
+      p.mat.opacity = 1 - k * k;
+      if (p.popT <= 0) p.mesh.visible = false;
+    } else {
+      p.mesh.position.set(pos.x, pos.y + 0.28 + p.info.jumpH + bob, pos.z);
+      p.mesh.rotation.z = Math.sin(G.time * 1.6 + p.info.index) * 0.06;
+    }
+  }
+
+  /* Update drifting woodblock spirit wisps (only wake up after Block 2/3, fade out before finale) */
+  const wispVis = G.state === 'finale'
+    ? (1.0 - sstep(1.2, 3.0, G.finaleT)) * 0.42
+    : sstep(1, 3, G.printedCount) * 0.42;
+  for (const w of wisps) {
+    const wu = (w.u + Math.sin(G.time * 0.22 * w.spd + w.ph) * 0.03);
+    const wv = w.v + Math.cos(G.time * 0.35 * w.spd + w.ph) * 0.025;
+    const wp = uvToWorld(wu, wv, w.z);
+    w.mesh.position.set(wp.x, wp.y, wp.z);
+    w.mat.opacity = wispVis * (0.55 + 0.45 * Math.sin(G.time * 1.8 + w.ph));
+  }
+
+  /* --- CINEMATIC DIORAMA CAMERA --- */
+  let tx = 0, ty = 0, tz = restCamD;
+  if (G.state === 'play') {
+    /* Frame ~1.4 sheets with rich horizontal & subtle vertical parallax following the player */
+    const px = (G.player.u - 0.5) * PW;
+    tx = clamp(px * 0.72 + G.pointerLean.x * 0.14, -2.15, 2.15);
+    ty = 0.02 + (0.84 - G.player.v) * 0.45 - G.pointerLean.y * 0.07;
+    tz = Math.max(3.05, restCamD * 0.62);
+  } else if (G.state === 'register' || G.state === 'printing') {
+    /* Pull back wider so she sees the colour block aligning & printing across the whole triptych! */
+    const focusU = G.activeIdx >= 0 ? BLOCK_INFO[G.activeIdx].u : 0.5;
+    tx = clamp((focusU - 0.5) * PW * 0.24, -0.85, 0.85);
+    ty = 0.0;
+    tz = Math.max(4.45, restCamD * 0.88);
+  } else if (G.state === 'finale' || G.state === 'end') {
+    /* Exact rest viewpoint (0, 0, restCamD) so flattening registers pixel-for-pixel! */
+    tx = 0; ty = 0; tz = restCamD;
+  } else {
+    /* Gentle breathing behind the title screen */
+    tx = Math.sin(G.time * 0.22) * 0.22;
+    ty = Math.cos(G.time * 0.18) * 0.06;
+    tz = restCamD * 0.96;
+  }
+
+  const camEase = Math.min(1, dt * (G.state === 'finale' ? 1.8 : 3.2));
+  G.cam.x = mix(G.cam.x, tx, camEase);
+  G.cam.y = mix(G.cam.y, ty, camEase);
+  G.cam.z = mix(G.cam.z, tz, camEase);
+  camera.position.set(G.cam.x, G.cam.y, G.cam.z);
+  /* Look straight along -Z (with very slight gentle toe-in only during play, zero at finale!) */
+  const lookFrac = G.state === 'finale' || G.state === 'end' ? 0.0 : 0.18;
+  camera.lookAt(G.cam.x * (1.0 - lookFrac), G.cam.y * (1.0 - lookFrac), 0);
+
+  renderer.render(scene, camera);
+}
+
+/* ================= Expose Read-Only Inspection Hook for Verification ================= */
+window.__kuniyoshi = {
+  get state()        { return G.state; },
+  get printedCount() { return G.printedCount; },
+  get activeIdx()    { return G.activeIdx; },
+  get playerU()      { return G.player.u; },
+  get playerV()      { return G.player.v; },
+  get playerJumpY()  { return G.player.jumpY; },
+  get depthScale()   { return sharedUniforms.uDepthScale.value; },
+  get regOffset()    { return [G.regOffset.x, G.regOffset.y]; },
+  get fps()          { return Math.round(G.fpsAvg * 10) / 10; },
+  get pickups()      { return pickups.map(p => ({ id: p.info.id, u: p.info.u, v: p.info.v, jumpH: p.info.jumpH, taken: p.taken })); },
+};
+
+/* ================= Boot ================= */
+loadAllPlates().then(() => {
+  const btn = $('start');
+  btn.disabled = false;
+  btn.textContent = 'Step in';
+  requestAnimationFrame(step);
+}).catch(err => {
+  console.error('Failed to load Kuniyoshi layers:', err);
+  $('start').textContent = 'Could not load print layers';
+});
+</script>
+</body>
+</html>

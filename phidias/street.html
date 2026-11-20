@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>The Procession: Athens, the Great Panathenaia, about 438 BC</title>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="../common/world.css">
 <style>
   :root { --go:#2456a8; } html, body { background:#1c2a44; } #title { background:#16203a; } #title > img, #end > img { background:#16203a; } #end { background:#1c2740; } #end > img { max-height:40vh; border-color:#d9cdb4; }
@@ -16,7 +17,7 @@
   #warn { position:fixed; left:50%; top:22%; transform:translateX(-50%); font:italic 600 clamp(18px,2.8vw,28px) "Iowan Old Style",Palatino,Georgia,serif; color:#fff3c8; text-shadow:0 2px 10px rgba(0,0,0,.9); opacity:0; transition:opacity .3s; pointer-events:none; z-index:9; white-space:nowrap; }
   #warn.show { opacity:1; }
 </style>
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+<script type="importmap">{ "imports": { "three": "../vendor/three@0.160.0/build/three.module.js", "three/addons/": "../vendor/three@0.160.0/examples/jsm/" } }</script>
 </head>
 <body>
 <canvas id="cv"></canvas>
@@ -49,6 +50,7 @@ import { makeScore } from '../common/score.js';
 import { makeFigures } from '../common/figure.js';
 import { makeFronts } from './fronts.js';
 import { makeBeasts } from './beasts.js';
+import { makeRelief } from './relief.js';
 const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c), D2R = Math.PI / 180;
 const map = await (await fetch('map.json')).json();
 
@@ -73,8 +75,20 @@ const corr = s => s < 196 ? 15 : s < S_GATE - 40 ? 8.5 : s < S_GATE + 14 ? 7.5 :
    Along the Way the ground is smoothed to the Way's own profile, so that the road does not tilt sideways. BASE is the height of the Agora floor above the sea. */
 const BASE = 62, dem = map.dem, inPoly = (p, x, z) => { let c = false; for (let i = 0, j = p.length - 1; i < p.length; j = i++) { const a = p[i], b = p[j]; if ((a[1] > z) !== (b[1] > z) && x < a[0] + (z - a[1]) / (b[1] - a[1]) * (b[0] - a[0])) c = !c; } return c; };
 const hDem = (x, z) => { const fx = clamp((x - dem.x0) / dem.step, 0, dem.nx - 1.001), fz = clamp((z - dem.z0) / dem.step, 0, dem.nz - 1.001), i = Math.floor(fx), j = Math.floor(fz), tx = fx - i, tz = fz - j, g = (i, j) => dem.h[j * dem.nx + i]; return mix(mix(g(i, j), g(i + 1, j), tx), mix(g(i, j + 1), g(i + 1, j + 1), tx), tz) - BASE; };
-const WALL = map.walls.map(w => w.p).sort((a, b) => b.length - a.length)[0], inAcro = (x, z) => x > 214 && inPoly(WALL, x, z), plateau = x => 68.5 + 17 * sstep(214, 300, x);
-const hBase = (x, z) => inAcro(x, z) ? plateau(x) : hDem(x, z);
+const WALL = map.walls.map(w => w.p).sort((a, b) => b.length - a.length)[0], ACRO = [...WALL.slice(0, 46), ...WALL.slice(203)], inAcro = (x, z) => x > 214 && inPoly(ACRO, x, z);
+/* Summit rises cleanly from the Old Propylon gate (x=214, y=67.5) to the Parthenon bedrock crest (y=98.0), stepping down toward the north cliff rim (z < 422) as on the real Acropolis so the entire Parthenon colonnade and painted entablature stand clear from the Agora */
+const plateau = (x, z = 450) => 67.5 + 30.5 * sstep(214, 300, x) - 17.5 * (1 - sstep(384, 422, z)) * sstep(245, 290, x);
+const hBase = (x, z) => {
+  if (inAcro(x, z)) return plateau(x, z);
+  let y = hDem(x, z);
+  /* Carve away the EU-DEM's blurred north/northeast sand ramp outside the Acropolis cliffs so the rock rises sheer (leaving the walkable west ramp intact) */
+  const nSlope = sstep(218, 258, x) * sstep(290, 345, z) * (1 - sstep(405, 460, z));
+  y -= 28.0 * nSlope * sstep(22, 60, y);
+  /* Raise Kolonos Agoraios hill west of the Agora so the unfinished Hephaisteion commands the western skyline */
+  const hd = Math.hypot((x + 113) / 42, (z - 11) / 48);
+  if (hd < 1.35) y += 14.0 * (1 - sstep(0.42, 1.35, hd));
+  return y;
+};
 const prof = []; { const rawp = []; for (let s = 0; s <= LEN + 2; s += 2) { const p = at(s); rawp.push(hBase(p.x, p.z)); } for (let i = 0; i < rawp.length; i++) { let a = 0, n = 0; for (let k = -6; k <= 6; k++) { const v = rawp[clamp(i + k, 0, rawp.length - 1)]; a += v; n++; } prof.push(a / n); } }
 const rYs = s => { const f = clamp(s / 2, 0, prof.length - 1.001), i = Math.floor(f); return mix(prof[i], prof[i + 1], f - i); };
 // five broad steps up to the gate
@@ -82,23 +96,21 @@ const STEP0 = S_GATE - 13, STEPN = 5, STEPL = 2.2, rY = s => { if (s <= STEP0 ||
 const ground = (x, z, stepped) => { const n = nearest(x, z), t = sstep(corr(n.s) * 0.75, corr(n.s) * 0.75 + 14, n.d); return mix(stepped ? rY(n.s) : rYs(n.s), hBase(x, z), t); };
 const hAt = (x, z) => ground(x, z, true);
 
-/* ================= renderer, and the rule of this world: marble in hard light =================
-   One sun, low in the east-south-east of a summer morning, with real cast shadows; the shadows are filled only by the blue of the sky. Nothing is filtered: edges stay sharp. */
-let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: true }); } catch (e) { $('err').style.display = 'flex'; throw e; }
-const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xcfe0f2, 260, 1500);
+/* ================= renderer, and the rule of this world: the painted Pentelic marble frieze =================
+   Raking light across carved stone, with firm shadow in the hollows, chiselled edges, flat mineral pigment over Pentelic marble, and the frieze's flat Egyptian blue ground for a sky. */
+let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
+const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.shadowMap.enabled = false; renderer.setClearColor(0x1f4d8f, 1);
+const scene = new THREE.Scene(); scene.fog = null;
 const camera = new THREE.PerspectiveCamera(58, 1, 0.2, 4000);
-const LIGHT = { hemi: 1.55, sun: 3.3 }, SUN = new V3(-0.70, -0.62, -0.36).normalize();
-const hemi = new THREE.HemisphereLight(C('#8fb8ff'), C('#d9c49a'), LIGHT.hemi), sun = new THREE.DirectionalLight(C('#fff1d6'), LIGHT.sun); scene.add(hemi, sun, sun.target);
-sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); { const c = sun.shadow.camera; c.left = c.bottom = -48; c.right = c.top = 48; c.near = 10; c.far = 420; } sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.06;
+const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
+target.depthTexture = new THREE.DepthTexture(4, 4, THREE.FloatType);
+const REL = makeRelief(THREE, { scene: target.texture, depth: target.depthTexture });
+const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), REL.material));
+const LIGHT = { hemi: 1.35, sun: 2.4 }, SUN = new V3(-0.74, -0.52, -0.42).normalize();
+const hemi = new THREE.HemisphereLight(C('#ffffff'), C('#d8cfc0'), LIGHT.hemi), sun = new THREE.DirectionalLight(C('#fff7e6'), LIGHT.sun); scene.add(hemi, sun, sun.target);
+sun.castShadow = false;
 const aimSun = (x, y, z) => { sun.target.position.set(x, y, z); sun.position.set(x - SUN.x * 200, y - SUN.y * 200, z - SUN.z * 200); };
-const sky = new THREE.Mesh(new THREE.SphereGeometry(3000, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: { uSun: { value: SUN.clone().negate() } },
-  vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-  fragmentShader: `uniform vec3 uSun; varying vec3 vDir; void main(){ vec3 d = normalize(vDir); float h = clamp(d.y, 0.0, 1.0), s = max(0.0, dot(d, uSun));
-    vec3 col = mix(vec3(0.80, 0.88, 0.96), vec3(0.16, 0.38, 0.78), pow(h, 0.5)); col = mix(col, vec3(0.86, 0.84, 0.74), smoothstep(0.0, -0.08, d.y)); col += vec3(1.0, 0.9, 0.7) * (pow(s, 240.0) * 1.5 + pow(s, 12.0) * 0.14);
-    gl_FragColor = vec4(col, 1.0);
-    #include <colorspace_fragment>
-    }` }));
+const sky = new THREE.Mesh(new THREE.SphereGeometry(3000, 24, 12), new THREE.MeshBasicMaterial({ color: '#1f4d8f', side: THREE.BackSide, depthWrite: false, fog: false }));
 sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
 
 /* ================= materials: painted for this level by tools/blender/tex_phidias.py ================= */
@@ -109,16 +121,101 @@ const FR = makeFronts({ THREE, scene, T: { marble: tMarble, plaster: tPlaster, t
 const shadowM = basic({ color: 0, transparent: true, opacity: 0, depthWrite: false }), prop = (c, paint) => { const m = lam({ color: c }); m.userData.paint = paint || c; return m; };
 const on = (o, cast = true, recv = true) => { o.traverse(m => { if (m.isMesh) { m.castShadow = cast; m.receiveShadow = recv; } }); return o; };
 
-/* ---- the ground itself: beaten earth in the town, bare grey rock on the slopes of the Acropolis, the Way a paler band of packed gravel ---- */
-{ const X0 = -200, Z0 = -130, N = 160, ST = 5, g = new THREE.PlaneGeometry(N * ST, N * ST, N, N), p = g.attributes.position, col = [], uv = g.attributes.uv, cE = C('#ead9b6'), cR = C('#b4b0a8'), cW = C('#fbf3dc'), cG = C('#8a9a5a'), c = new THREE.Color();
-  for (let i = 0; i < p.count; i++) { const x = X0 + N * ST / 2 + p.getX(i), z = Z0 + N * ST / 2 - p.getY(i), n = nearest(x, z), y = ground(x, z, false), e = 4, sl = Math.hypot(hBase(x + e, z) - hBase(x - e, z), hBase(x, z + e) - hBase(x, z - e)) / (2 * e);
-    p.setXYZ(i, x, y - (n.d < corr(n.s) + 3 ? 0 : 0.02), z); uv.setXY(i, x / 7, z / 7);
-    c.copy(cE).lerp(cR, Math.max(sstep(0.12, 0.34, sl) * (z > 250 ? 1 : 0.4), sstep(300, 400, z) * 0.75)); if (z > 300 && !inAcro(x, z)) c.lerp(cG, 0.25 * (1 - sstep(0.1, 0.5, sl)) * (0.5 + 0.5 * Math.sin(x * 0.13) * Math.cos(z * 0.11))); if (inAcro(x, z)) c.copy(cR).lerp(cE, 0.35);
-    c.lerp(cW, (1 - sstep(corr(n.s) * 0.5, corr(n.s) * 0.9, n.d)) * 0.8); col.push(c.r, c.g, c.b); }
-  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.computeVertexNormals(); const m = new THREE.Mesh(g, lam({ map: tEarth, vertexColors: true })); m.receiveShadow = true; scene.add(m);
-  const far = new THREE.Mesh(new THREE.CircleGeometry(3000, 40), lam({ color: '#c9bd94' })); far.rotation.x = -Math.PI / 2; far.position.set(150, -6, 250); scene.add(far);
-  // far hills, for a skyline: outlines only
-  const hillM = basic({ color: '#9fb0c4' }); for (const [a, d, w, h] of [[0.4, 1900, 900, 300], [1.3, 2300, 1500, 420], [2.2, 2100, 1100, 260], [3.5, 2400, 1700, 180], [4.6, 2200, 1300, 330], [5.6, 2000, 1000, 240]]) { const hl = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), hillM); hl.scale.set(w, h, w * 0.5); hl.position.set(150 + Math.sin(a) * d, -10, 250 + Math.cos(a) * d); hl.rotation.y = a; scene.add(hl); } }
+/* ---- the ground itself (Rule 5): pale carved Pentelic marble and Attic limestone ledges, laid stone slabs on the Panathenaic Way (courses and breaks both ways, worn lighter down the centre), and cool silver-olive Attic slopes (NO brown earth, NO wooden planks) ---- */
+const roadHalf = s => s < 196 ? 5.2 : s < S_GATE - 20 ? 4.6 : s < S_GATE + 12 ? 4.8 : 5.2;
+{ const X0 = -200, Z0 = -130, N = 140, ST = 800 / 140, g = new THREE.PlaneGeometry(800, 800, N, N), p = g.attributes.position, col = [], uv = g.attributes.uv;
+  const cMarble = C('#f1eadb'), cAgora = C('#f4eee0'), cLimestone = C('#e6decb'), cSage = C('#9aad86'), cOlive = C('#7f946c'), cRock = C('#e4dcc9'), cRockShad = C('#cec5b0'), cWay = C('#f7f2e5'), cAcro = C('#f0e9d9'), c = new THREE.Color(), cTmp = new THREE.Color();
+  for (let i = 0; i < p.count; i++) { const x = X0 + N * ST / 2 + p.getX(i), z = Z0 + N * ST / 2 - p.getY(i), n = nearest(x, z), y = ground(x, z, false), e = 3.5, sl = Math.hypot(hBase(x + e, z) - hBase(x - e, z), hBase(x, z + e) - hBase(x, z - e)) / (2 * e);
+    p.setXYZ(i, x, y - (n.d < corr(n.s) + 3 ? 0 : 0.02), z); uv.setXY(i, x / 9, z / 9);
+    const rw = roadHalf(n.s), patch = 0.5 + 0.5 * Math.sin(x * 0.045 + z * 0.035 + Math.sin(z * 0.025) * 1.4), patch2 = 0.5 + 0.5 * Math.cos(x * 0.03 - z * 0.05 + Math.sin(x * 0.04) * 1.2);
+    const inAgoraSq = n.s < 196 && n.d < 130 && x > -95 && x < 140 && z > -75 && z < 195;
+    c.copy(inAgoraSq ? cAgora : cMarble);
+    /* Light carved limestone ledges and silver-green Attic scrub outside the paved square */
+    if (!inAgoraSq) {
+      c.lerp(cLimestone, 0.35 + 0.25 * patch);
+      const scrubZone = sstep(rw + 5.5, rw + 18.0, n.d) * (1 - sstep(0.24, 0.42, sl));
+      c.lerp(cSage, (0.34 + 0.28 * patch) * scrubZone);
+      c.lerp(cOlive, 0.26 * patch2 * sstep(rw + 10.0, rw + 28.0, n.d) * (1 - sstep(0.24, 0.42, sl)));
+    }
+    /* The Acropolis rock and steep crags: pale carved Attic limestone */
+    const rockK = Math.max(sstep(0.18, 0.38, sl), sstep(24, 52, y) * sstep(310, 395, z));
+    if (!inAcro(x, z)) { cTmp.copy(cRock).lerp(cRockShad, sstep(0.26, 0.52, sl) * 0.45 + 0.15 * patch2); c.lerp(cTmp, rockK * 0.92); }
+    else c.copy(cAcro).lerp(cMarble, 0.25 * patch);
+    c.lerp(cWay, (1 - sstep(rw - 0.6, rw + 0.6, n.d)) * 0.96);
+    col.push(c.r, c.g, c.b); }
+  g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.computeVertexNormals(); const m = new THREE.Mesh(g, lam({ map: tEarth, vertexColors: true })); scene.add(m);
+  /* Draped 3D ribbon for the Panathenaic Way: pale Pentelic/limestone laid paving slabs with running-bond ashlar joints both ways, worn brighter down the centre, and thick raised marble kerbs */
+  const roadTex = FR.canvasTex(512, 512, (ctx, w, h) => {
+    ctx.fillStyle = '#ddd4c0'; ctx.fillRect(0, 0, w, h); /* carved limestone shoulder */
+    ctx.fillStyle = '#f2ebdc'; ctx.fillRect(42, 0, w - 84, h); /* laid pale marble slabs */
+    let sd = 91; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+    const sPal = ['#f4eee0', '#ede6d5', '#f7f2e5', '#eae2d0', '#f3ecdd'];
+    const rows = 8, rh = h / rows, baseCols = [42, 128, 214, 300, 386, 470];
+    for (let row = 0; row < rows; row++) {
+      const y0 = row * rh, shift = (row % 2) * 43;
+      for (let c = 0; c < baseCols.length - 1; c++) {
+        let x0 = baseCols[c] + (c > 0 ? shift : 0);
+        let x1 = baseCols[c + 1] + (c < baseCols.length - 2 ? shift : 0);
+        if (x0 >= 470) continue;
+        x1 = Math.min(470, x1);
+        const cx = (x0 + x1) * 0.5, centerWear = 1 - Math.min(1, Math.abs(cx - w * 0.5) / (w * 0.40));
+        ctx.fillStyle = centerWear > 0.45 ? '#faf6ec' : sPal[(row * 3 + c) % sPal.length];
+        ctx.fillRect(x0, y0, x1 - x0, rh);
+        /* Fine chisel dressing across each slab */
+        ctx.strokeStyle = 'rgba(130, 120, 102, 0.14)'; ctx.lineWidth = 2;
+        for (let k = 0; k < 8; k++) { const sx = x0 + 6 + r() * Math.max(4, x1 - x0 - 18), sy = y0 + 6 + r() * (rh - 12); ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(sx + 12, sy - 4); ctx.stroke(); }
+        /* Chiselled bevelled slab joints BOTH ways: dark recessed groove + luminous marble arris */
+        ctx.fillStyle = '#6c6252'; ctx.fillRect(x0, y0, x1 - x0, 4); ctx.fillRect(x0, y0, 3.5, rh);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(x0, y0 + 4, x1 - x0, 2.5); ctx.fillRect(x0 + 3.5, y0, 2.5, rh);
+      }
+      if (shift > 0) {
+        ctx.fillStyle = '#ede6d5'; ctx.fillRect(42, y0, shift, rh);
+        ctx.fillStyle = '#6c6252'; ctx.fillRect(42, y0, shift, 4); ctx.fillRect(42, y0, 3.5, rh);
+        ctx.fillStyle = '#ffffff'; ctx.fillRect(42, y0 + 4, shift, 2.5);
+      }
+    }
+    /* Raised carved Pentelic marble kerb blocks framing both sides of the Way */
+    for (const kx of [16, w - 42]) {
+      ctx.fillStyle = '#e7dfd0'; ctx.fillRect(kx, 0, 26, h);
+      for (let y = 0; y < h; y += 64) {
+        ctx.fillStyle = '#50473a'; ctx.fillRect(kx, y, 26, 4.5);
+        ctx.fillStyle = '#fcf9f0'; ctx.fillRect(kx, y + 4.5, 26, 3);
+      }
+      ctx.fillStyle = '#40382e'; ctx.fillRect(kx - 4, 0, 4, h); ctx.fillRect(kx + 26, 0, 4, h);
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(kx + 2, 0, 3.5, h);
+    }
+  });
+  roadTex.wrapS = roadTex.wrapT = THREE.RepeatWrapping;
+  const rPos = [], rNor = [], rUv = [], rIdx = [], rSteps = Math.floor(LEN / 1.5), K = 6;
+  for (let i = 0; i <= rSteps; i++) {
+    const s = Math.min(LEN - 0.05, i * 1.5), pt = at(s), pA = at(Math.max(0, s - 6)), pB = at(Math.min(LEN - 0.05, s + 6));
+    const sdx = pA.dx + pt.dx + pB.dx, sdz = pA.dz + pt.dz + pB.dz, sL = Math.hypot(sdx, sdz) || 1, sp = { x: pt.x, z: pt.z, dx: sdx / sL, dz: sdz / sL };
+    const hw = (s > 470 && s < 535 ? 3.6 : roadHalf(s)) + 0.9;
+    for (let j = 0; j <= K; j++) {
+      const u = j / K, v = (u - 0.5) * 2 * hw, [rx, rz] = side(sp, 0, v), ry = Math.max(ground(rx, rz, true), ground(rx, rz, false)) + 0.045;
+      rPos.push(rx, ry, rz); rNor.push(0, 1, 0); rUv.push(u, s / 6.8);
+    }
+  }
+  for (let i = 0; i < rSteps; i++) for (let j = 0; j < K; j++) { const a = i * (K + 1) + j, b = a + 1, c1 = a + K + 1, d1 = c1 + 1; rIdx.push(a, c1, b, b, c1, d1); }
+  const rGeo = new THREE.BufferGeometry(); rGeo.setAttribute('position', new THREE.Float32BufferAttribute(rPos, 3)); rGeo.setAttribute('normal', new THREE.Float32BufferAttribute(rNor, 3)); rGeo.setAttribute('uv', new THREE.Float32BufferAttribute(rUv, 2)); rGeo.setIndex(rIdx); rGeo.computeVertexNormals();
+  const rMesh = new THREE.Mesh(rGeo, lam({ map: roadTex, polygonOffset: true, polygonOffsetFactor: -1 })); scene.add(rMesh);
+
+  const far = new THREE.Mesh(new THREE.CircleGeometry(3000, 40), lam({ map: tEarth, color: '#ebe3d2' })); far.rotation.x = -Math.PI / 2; far.position.set(150, -6, 250); scene.add(far);
+  /* Two overlapping low distant rings of carved-marble Attic hills on the far horizon (unlabelled, gently undulating so the world never ends in a bare dune) */
+  for (const [rad, baseH, amp, colHex, ph] of [[860, 4, 24, '#e5ddca', 0.4], [1260, 14, 38, '#dcd3be', 1.9]]) {
+    const segs = 128, pos = [], idx = [];
+    for (let i = 0; i <= segs; i++) {
+      const a = (i / segs) * Math.PI * 2, cx = 160 + Math.cos(a) * rad, cz = 240 + Math.sin(a) * rad;
+      const ridge = baseH + amp * (0.42 + 0.28 * Math.sin(a * 4 + ph) + 0.18 * Math.cos(a * 7 - ph * 1.4) + 0.12 * Math.sin(a * 11 + ph * 2.1));
+      /* Keep the ridge low behind the Parthenon and Acropolis so the temple silhouette stands completely clear on the blue frieze ground */
+      const dip = 1 - 0.70 * Math.exp(-Math.pow((a - 0.96) / 0.48, 2));
+      pos.push(cx, -18, cz, cx, Math.max(2, ridge * dip), cz);
+    }
+    for (let i = 0; i < segs; i++) { const k = i * 2; idx.push(k, k + 2, k + 1, k + 1, k + 2, k + 3); }
+    const hg = new THREE.BufferGeometry(); hg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); hg.setIndex(idx); hg.computeVertexNormals();
+    const hm = new THREE.Mesh(hg, lam({ color: colHex, side: THREE.DoubleSide })); hm.matrixAutoUpdate = false; scene.add(hm);
+  }
+}
 
 /* ================= pictures drawn for the walls: the metopes and the frieze as they sit on the building (drawn small, not copied from the stones) ================= */
 const pics = { metope: [0, 1, 2, 3].map(k => FR.canvasTex(128, 128, (g, w) => { g.fillStyle = '#f3ecdc'; g.fillRect(0, 0, w, w); let sd = 7 + k * 13; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647; g.fillStyle = '#c9906a'; g.strokeStyle = '#8a5a3a'; g.lineWidth = 3;
@@ -132,53 +229,190 @@ const pics = { metope: [0, 1, 2, 3].map(k => FR.canvasTex(128, 128, (g, w) => { 
 /* ================= the buildings ================= */
 const B = n => map.buildings.find(b => b.n === n), mid = p => { let x = 0, z = 0; for (const q of p) { x += q[0] / p.length; z += q[1] / p.length; } return [x, z]; }, gAt = p => hAt(...mid(p));
 const START = at(S_START), feet = [];      // footprints that she cannot enter
-// --- the Agora in 438: on the excavated footprints (OpenStreetMap). Only plans survive: the walls and roofs are plain
-{ let b = B('Royal Stoa'); FR.stoa(b.p, gAt(b.p), [20, -30], { cols: 8, H: 4.4 }); feet.push(b.p);
-  b = B('Old Bouleuterion'); FR.hall(b.p, gAt(b.p), [0, 40], { H: 7, door: 1.6, doorH: 3.4 }); feet.push(b.p);      // the footprint is that of the later Metroon, which was built over the old council house
-  b = B('Tholos'); FR.tholos(b.p, gAt(b.p)); b = B('Aiakeion'); FR.enclosure(b.p, gAt(b.p), { H: 3.4 }); feet.push(b.p);
-  b = B('Southeast Fountain House'); FR.hall(b.p, gAt(b.p), [100, 150], { H: 4.6, door: 3.2, doorH: 3.0, doorM: M.dark }); feet.push(b.p);
-  b = B('Altar of the Twelve Gods'); { const g = gAt(b.p), [cx, cz] = mid(b.p); FR.enclosure(b.p, g, { H: 1.25, wall: M.marbleWarm }); FR.altar(cx - 1, cz + 1.2, 1.2, g, 2.4, 1.2, 0.9); feet.push(b.p); }
+// --- the Agora in 438: on the excavated footprints (OpenStreetMap), strictly limited to buildings verified standing or under construction in 438 BC (research/FINDINGS.md)
+{ let b = B('Royal Stoa'); FR.stoa(b.p, gAt(b.p), [20, -30], { cols: 8, H: 4.8, col: M.marble }); feet.push(b.p);
+  b = B('Old Bouleuterion'); FR.hall(b.p, gAt(b.p), [20, 52], { H: 6.8, door: 1.8, doorH: 3.4, porch: 6 }); feet.push(b.p); /* footprint of the later Metroon built over the old council house */
+  b = B('Tholos'); FR.tholos(b.p, gAt(b.p));
+  b = B('Aiakeion'); FR.enclosure(b.p, gAt(b.p), { H: 3.4 }); { const [cx, cz] = mid(b.p); const F = FR.frontAt(cx + 6, cz - 16, 0.0, 9.5, gAt(b.p)); for (let i = 0; i < 4; i++) { const [qx, qz] = F.P(0.9 + i * 2.55, 0.2); FR.column(qx, qz, gAt(b.p), 4.2, 0.34, M.marble); } FR.box(M.marble, F, 0.3, 9.2, 4.2, 4.75, -0.5, 0.7); FR.box(M.blue, F, 0.35, 9.15, 4.75, 5.1, -0.45, 0.65); } feet.push(b.p);
+  b = B('Southeast Fountain House'); FR.fountainHouse(b.p, gAt(b.p), [95, 130], { cols: 7, H: 5.0 }); feet.push(b.p);
+  b = B('Altar of the Twelve Gods'); { const g = gAt(b.p), [cx, cz] = mid(b.p); FR.enclosure(b.p, g, { H: 1.35, wall: M.marble }); FR.altar(cx - 1.2, cz + 1.2, 1.2, g, 2.8, 1.3, 1.05); feet.push(b.p); }
   // the Painted Stoa: dug north of the railway, off the edge of the extract; set here from the excavators' plan (about 36 m by 12.5 m, facing south), with painted panels on its back wall
   const paint = [['#8a3a2a', '#d9b06a'], ['#2f4f8a', '#e9d9a8'], ['#5a6a3a', '#e6c08a'], ['#7a2a3a', '#d9c9a0']].map(([a, c], k) => lam({ map: FR.canvasTex(128, 96, (g, w, h) => { g.fillStyle = a; g.fillRect(0, 0, w, h); g.fillStyle = c; for (let i = 0; i < 9; i++) { const x = 10 + i * 13 + (i * 7 % 5), y = 48 + ((i * 11 + k * 5) % 14); g.fillRect(x, y, 5, 30); g.beginPath(); g.arc(x + 2.5, y - 4, 4, 0, 7); g.fill(); } }) }));
-  const pk = [[-8, -86], [28, -92], [30, -104.5], [-6, -98.5]]; FR.stoa(pk, hAt(11, -90), [20, -40], { cols: 13, H: 5.2, pictures: paint }); feet.push(pk);
-  for (const [x, z, a] of [[-12, -64, 1.9], [-6, -68, 1.7], [0, -70, 1.6], [7, -70, 1.4]]) FR.herm(x, z, a, hAt(x, z));
+  const pk = [[-8, -86], [28, -92], [30, -104.5], [-6, -98.5]]; FR.stoa(pk, hAt(11, -90), [20, -40], { cols: 13, H: 5.4, col: M.marble, pictures: paint }); feet.push(pk);
+  for (const [x, z, a] of [[-12, -64, 1.9], [-6, -68, 1.7], [0, -70, 1.6], [7, -70, 1.4], [14, -66, 1.5], [22, -58, 1.4]]) FR.herm(x, z, a, hAt(x, z));
+  /* Tyrannicides (Kritios & Nesiotes, 477/6 BC) and classical votive statues on marble bases framing the Agora */
   FR.tyrannicides(47, 88, 1.2, hAt(47, 88));
-  // the temple on the hill above the square (the Hephaisteion): begun about 449 and not finished for a generation. How far it had got in 438 is not known: it is shown as a colonnade without a roof
-  b = B('Hephaisteion'); { const o = FR.obb(b.p), g = hAt(...o.c), S = FR.sides(o.corners, g); FR.box(M.marbleWarm, S[0], -0.5, S[0].W + 0.5, -4, 1.0, -S[1].W - 0.5, 0.5); S.forEach((F, i) => { const n = F.W > 20 ? 13 : 6; for (let k = 0; k < n; k++) { const [x, z] = F.P(1.2 + (F.W - 2.4) * k / (n - 1), -1.2); FR.column(x, z, g + 1.0, 5.7, 0.5, M.marbleWarm); } FR.box(M.marbleWarm, F, 0.6, F.W - 0.6, 6.7, 7.5, -1.8, -0.6); }); feet.push(b.p); } }
-// --- houses: plain, and conjectural. Where the Stoa of Attalos later stood, and along the road up between the square and the Eleusinion
-{ let k = 0; for (const [x, z, a, w, d] of [[140, 22, -1.57, 13, 10], [141, 38, -1.57, 12, 9], [143, 54, -1.57, 15, 11], [144, 73, -1.57, 12, 10], [146, 90, -1.57, 14, 9], [150, 128, -1.9, 12, 9]]) FR.house(x, z, a, w, d, hAt(x, z), k++);
-  for (let s = 212; s < 372; s += 15.5) { const p = at(s), [x, z] = side(p, 0, 12.2); if (s < 352) FR.house(x, z, Math.atan2(-p.dz * -1, p.dx * -1) + Math.PI, 13, 9, hAt(x, z), k++); const [x2, z2] = side(p, 0, -12.2); if (s > 322 || s < 214) FR.house(x2, z2, Math.atan2(-p.dz, p.dx), 13, 9, hAt(x2, z2), k++); } }
-// --- the Eleusinion: the walled sanctuary beside the road, on its footprint, with a small temple inside (the temple's place and size are approximate)
-{ const b = B('Eleusinion'); FR.enclosure(b.p, (x, z) => hDem(x, z), { H: 3.0 }); feet.push(b.p); const t = [[193, 240], [203, 243], [198, 262], [188, 259]]; FR.hall(t, hAt(196, 250), [196, 300], { H: 6, wall: M.marbleWarm, door: 1.3, doorH: 3.4, pitch: 0.24 }); }
-// --- the Acropolis: the walls on their line, the gate, the Parthenon, the bronze Athena, the wreck of the old temple, the altar
-const P = FR.parthenon([B('Parthenon').p[1], B('Parthenon').p[0], B('Parthenon').p[3], B('Parthenon').p[2]], plateau(340), pics);
-{ const closed = [...WALL, WALL[0]]; FR.wall(closed, (x, z) => plateau(x), (x, z) => Math.min(hDem(x, z), plateau(x) - 3), (x, z) => nearest(x, z).d < 11 || x < 214);
+  for (const [x, z, a, br] of [[24, 34, 1.1, true], [14, 118, 0.9, true], [70, 148, -0.5, false], [116, 168, -1.2, true]]) FR.votiveStatue(x, z, a, hAt(x, z), br);
+  /* Stepped timber viewing benches (ikria, attested by post-holes along the Way in FINDINGS.md) */
+  for (const [s, sd, w] of [[50, -1, 16], [108, -1, 18], [82, 1, 16]]) { const p = at(s), [x, z] = side(p, 0, 12.2 * sd); FR.ikria(x, z, Math.atan2(-p.dz * sd * -1, p.dx * sd * -1) + Math.PI / 2, w, hAt(x, z)); }
+  /* The Hephaisteion on Kolonos Agoraios: begun 449 BC, unroofed until 421-415 BC — gleaming white 6x13 Doric colonnade with timber carvers' scaffold */
+  b = B('Hephaisteion'); { const o = FR.obb(b.p), g = hAt(...o.c), S = FR.sides(o.corners, g); FR.box(M.rock, S[0], -1.4, S[0].W + 1.4, -7, 0.3, -S[1].W - 1.4, 1.4); FR.box(M.marble, S[0], -0.6, S[0].W + 0.6, 0.3, 1.25, -S[1].W - 0.6, 0.6);
+    S.forEach(F => { const n = F.W > 20 ? 13 : 6; for (let k = 0; k < n; k++) { const [x, z] = F.P(1.2 + (F.W - 2.4) * k / (n - 1), -1.2); FR.column(x, z, g + 1.25, 6.2, 0.54, M.marble); } FR.box(M.marble, F, 0.5, F.W - 0.5, 7.45, 8.2, -1.9, -0.5); FR.box(M.blue, F, 0.55, F.W - 0.55, 8.2, 8.75, -1.85, -0.55); FR.box(M.red, F, 0.45, F.W - 0.45, 8.75, 8.92, -1.95, -0.45); });
+    /* Carvers' timber scaffolding on the east front of the unfinished Hephaisteion (438 BC) */
+    const FEh = S.sort((a, c) => c.nx - a.nx)[0];
+    for (let u = 1.5; u <= FEh.W - 1.5; u += 3.6) FR.box(M.wood, FEh, u - 0.09, u + 0.09, 0.2, 10.6, 0.7, 0.9);
+    for (const yy of [5.8, 8.8]) FR.box(M.wood, FEh, 1.0, FEh.W - 1.0, yy, yy + 0.14, -0.4, 1.15);
+    feet.push(b.p); } }
+// --- Start / NW Kerameikos approach cue: Themistoclean city wall & twin-towered gate at the NW rim of the map, with Kerameikos stelae lining the incoming road
+{ FR.cityGate(24, -104, 0.35, hAt(24, -104), 56);
+  for (const [i, [x, z, a]] of [[34, -18, 1.2], [58, -14, -1.3], [30, -34, 1.2], [52, -32, -1.4], [26, -54, 1.2], [48, -52, -1.4], [22, -74, 1.2], [44, -72, -1.4]].entries()) FR.stele(x, z, a, hAt(x, z), i + 2); }
+// --- Dense Athenian city blocks: packed courtyard houses with tiled roofs, awnings, and pithoi along the east Agora (before Attalos), climbing both sides of the Way, and on the northern/western flanks
+{ let k = 0;
+  /* Three stepped tiers of packed city blocks on the east side of the Agora (where Attalos was NOT built until 150 BC) */
+  const eastRows = [
+    [[132, 8], [134, 23], [136, 38], [138, 53], [140, 68], [142, 84], [144, 100], [146, 116], [149, 134], [156, 154], [164, 174]],
+    [[154, 2], [156, 18], [158, 34], [160, 50], [162, 66], [164, 83], [166, 100], [168, 118], [172, 136], [178, 156], [186, 176]],
+    [[178, 10], [180, 28], [182, 46], [184, 64], [186, 82], [188, 102], [192, 122], [198, 144], [206, 166], [216, 188]]
+  ];
+  for (const row of eastRows) {
+    for (let i = 0; i < row.length; i++) {
+      const [x, z] = row[i], w = 12.2 + (k % 3) * 1.1, d = 9.2 + (k % 2) * 1.1;
+      FR.house(x, z, -1.62, w, d, hAt(x, z), k++);
+      if (i > 0) FR.courtyardWall(row[i - 1][0], row[i - 1][1] + 5.8, x, z - 5.8, hAt(x, z));
+    }
+  }
+  /* North-east residential blocks framing the start */
+  for (const [x, z, a, w, d] of [[78, -26, 0.1, 13, 9.5], [94, -24, 0.05, 12.5, 9.5], [110, -20, 0.0, 13, 9.5], [126, -14, -0.2, 12.5, 9], [86, -46, 0.08, 13, 10], [104, -44, 0.05, 13.5, 9.5], [122, -40, 0.0, 13, 9.5], [142, -32, -0.3, 13, 9.5]]) FR.house(x, z, a, w, d, hAt(x, z), k++);
+  /* South-west residential blocks below Kolonos Agoraios / south of the Tholos, and climbing the lower Areopagus slope behind the Southeast Fountain House & Aiakeion */
+  for (const [x, z, a, w, d] of [[-98, 132, 1.45, 13, 9.5], [-96, 150, 1.45, 12.5, 9.5], [-92, 168, 1.4, 13, 9.5], [-86, 186, 1.35, 13, 9.5], [-116, 140, 1.45, 13, 10], [-114, 160, 1.45, 13, 10], [-110, 180, 1.4, 13, 10],
+    [10, 212, 0.25, 13.5, 9.5], [28, 216, 0.2, 13, 9.5], [46, 220, 0.15, 13.5, 9.5], [64, 224, 0.1, 13, 9.5], [82, 226, 0.1, 13, 9.5], [102, 230, 0.05, 13.5, 9.5],
+    [18, 240, 0.2, 13, 9.5], [38, 244, 0.15, 13.5, 9.5], [58, 248, 0.1, 13, 9.5], [78, 252, 0.1, 13.5, 9.5], [98, 256, 0.05, 13, 9.5],
+    [34, 274, 0.15, 13, 9.5], [56, 278, 0.1, 13.5, 9.5], [78, 282, 0.1, 13, 9.5], [100, 286, 0.05, 13, 9.5]]) FR.house(x, z, a, w, d, hAt(x, z), k++);
+  /* Climbing street past the Eleusinion: front row set cleanly at v = +-13.8 (stops at s = 338 on right so no roof corner ever clips the camera at s = 350 or 450!), plus a second terraced row behind */
+  for (let s = 208; s <= 338; s += 14.5) {
+    const p = at(s), angR = Math.atan2(-p.dz * -1, p.dx * -1) + Math.PI, [x, z] = side(p, 0, 13.8);
+    FR.house(x, z, angR, 12.5, 9.2, hAt(x, z), k++);
+    const [xb, zb] = side(p, 2.0, 26.8);
+    FR.house(xb, zb, angR, 13.0, 9.5, hAt(xb, zb), k++);
+    const [xc, zc] = side(p, -1.5, 40.0);
+    if (s < 320) FR.house(xc, zc, angR, 12.5, 9.5, hAt(xc, zc), k++);
+  }
+  for (let s = 322; s <= 354; s += 15.0) {
+    const p = at(s), [x2, z2] = side(p, 0, -14.2);
+    FR.house(x2, z2, Math.atan2(-p.dz, p.dx), 12.5, 9.0, hAt(x2, z2), k++);
+  }
+  /* Houses tucked behind the Eleusinion on the northeast slope below the Acropolis cliffs */
+  for (const [x, z, a] of [[224, 212, -1.6], [228, 232, -1.6], [230, 252, -1.6], [232, 272, -1.6], [234, 294, -1.6], [250, 224, -1.6], [254, 246, -1.6], [256, 268, -1.6]]) FR.house(x, z, a, 13, 9.5, hAt(x, z), k++);
+}
+// --- the Eleusinion: walled sanctuary beside the climbing road, with a colonnaded gateway on the Way and a Doric marble temple rising clearly inside
+{ const b = B('Eleusinion'); FR.enclosure(b.p, (x, z) => hDem(x, z), { H: 3.1 }); feet.push(b.p);
+  const gEleu = hAt(184, 248); const Fe = FR.frontAt(184.5, 248, -1.52, 8.0, gEleu);
+  for (let i = 0; i < 4; i++) { const [qx, qz] = Fe.P(0.9 + i * 2.05, 0.3); FR.column(qx, qz, gEleu, 4.4, 0.34, M.marble); }
+  FR.box(M.marble, Fe, 0.3, 7.7, 4.4, 4.9, -0.8, 0.7); FR.box(M.blue, Fe, 0.35, 7.65, 4.9, 5.25, -0.75, 0.65);
+  const t = [[192, 236], [204, 239], [198, 263], [186, 260]]; FR.templeSmall(t, hAt(195, 249) + 1.2, [160, 248], { H: 6.6, cols: 4 }); }
+// --- the Acropolis: sheer cliffs & retaining walls, the Old Propylon gate, the gleaming Parthenon standing clear on the skyline, the bronze Athena, the Old Temple ruins, the great altar
+const P = FR.parthenon([B('Parthenon').p[1], B('Parthenon').p[0], B('Parthenon').p[3], B('Parthenon').p[2]], plateau(340, 460), pics);
+{ const closed = [...ACRO, ACRO[0]]; FR.wall(closed, (x, z) => plateau(x, z), (x, z) => Math.min(hBase(x, z), plateau(x, z) - 4), (x, z) => nearest(x, z).d < 11 || x < 214, M.poros, true);
   // from the gate the wall runs on to north and south across the west end (its line here is this level's: the real west end was rebuilt with the Propylaia)
   const pg = at(S_GATE), ga = Math.atan2(-pg.dx, -pg.dz), gy = rY(S_GATE) ; FR.gate(pg.x, pg.z, ga, gy, 17);
-  for (const sd of [-1, 1]) { const a = side(pg, -3, sd * 8.5), b = side(pg, -3, sd * 34); FR.wall([a, b], (x, z) => gy + 3.5, (x, z) => hDem(x, z) - 2, () => false); FR.solids.push({ F: FR.front(a[0], a[1], b[0], b[1]), u0: 0, u1: 26, w0: -1, w1: 1 }); }
+  for (const sd of [-1, 1]) { const a = side(pg, -3, sd * 8.5), b = side(pg, -3, sd * 34); FR.wall([a, b], (x, z) => gy + 3.5, (x, z) => hBase(x, z) - 2, () => false, M.poros, true); FR.solids.push({ F: FR.front(a[0], a[1], b[0], b[1]), u0: 0, u1: 26, w0: -1, w1: 1 }); }
   // the five steps below it
   for (let i = 0; i < STEPN; i++) { const s = STEP0 + i * STEPL, p = at(s + STEPL / 2), F = FR.frontAt(p.x - p.dx * STEPL / 2, p.z - p.dz * STEPL / 2, Math.atan2(-p.dx, -p.dz), 17, 0), y = rY(s + 0.1); FR.box(M.marbleWarm, F, 0, 17, y - 2.5, y, -STEPL - 0.02, 0); }
-  FR.bronzeAthena(262, 424, Math.atan2(-0.95, 0.3), plateau(262));
-  // the old temple of Athena, burnt by the Persians in 480: its platform, some drums, and (a guess) the walls of its back rooms left standing without a roof
-  { const F = FR.frontAt(338, 428, Math.atan2(0.229, 0.974), 43, plateau(338)); FR.box(M.poros, F, 0, 43, -3, 0.7, -21, 0); for (let i = 0; i < 9; i++) { const [x, z] = F.P(2 + i * 4.9, -1.2 - (i % 3) * 0.3), h = 0.6 + ((i * 7) % 5) * 0.45; const d = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.66, h, 14), M.poros); d.position.set(x, plateau(338) + 0.7 + h / 2, z); on(d); scene.add(d); }
-    FR.box(M.poros, F, 30, 30.6, 0.7, 5.2, -17, -4); FR.box(M.poros, F, 30, 42, 0.7, 4.6, -17, -16.4); FR.box(M.poros, F, 41.4, 42, 0.7, 5.0, -17, -4); FR.solids.push({ F, u0: 0, u1: 43, w0: -21, w1: 0 }); }
-  FR.altar(402, 416, Math.atan2(-0.97, 0.22), plateau(400), 12, 4.4, 1.9);
+  FR.bronzeAthena(262, 424, Math.atan2(-0.95, 0.3), hAt(262, 424));
+  // the old temple of Athena, burnt by the Persians in 480: its foundation platform, fallen drums, and low ruined wall courses
+  { const oy = hAt(338, 428), F = FR.frontAt(338, 428, Math.atan2(0.229, 0.974), 43, oy); FR.box(M.poros, F, 0, 43, -3, 0.7, -21, 0); for (let i = 0; i < 9; i++) { const [x, z] = F.P(2 + i * 4.9, -1.2 - (i % 3) * 0.3), h = 0.6 + ((i * 7) % 5) * 0.45; const d = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.66, h, 14), M.poros); d.position.set(x, oy + 0.7 + h / 2, z); d.matrixAutoUpdate = false; d.updateMatrix(); scene.add(d); }
+    FR.box(M.poros, F, 30, 30.6, 0.7, 2.5, -17, -4); FR.box(M.poros, F, 30, 42, 0.7, 2.2, -17, -16.4); FR.box(M.poros, F, 41.4, 42, 0.7, 2.4, -17, -4); FR.solids.push({ F, u0: 0, u1: 43, w0: -21, w1: 0 }); }
+  FR.altar(402, 416, Math.atan2(-0.97, 0.22), hAt(402, 416), 12, 4.4, 1.9);
   // marble waiting in the yard west of the temple: the pediments are still to be carved
-  for (const [x, z, w, h, d, a] of [[288, 462, 2.6, 1.1, 1.4, 0.3], [284, 469, 1.8, 1.5, 1.5, 1.1], [291, 472, 3.2, 0.8, 1.2, -0.4], [279, 461, 1.4, 1.0, 1.4, 0.7]]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M.marble); m.position.set(x, plateau(x) + h / 2, z); m.rotation.y = a; on(m); scene.add(m); FR.rounds.push({ x, z, r: w * 0.6 }); } }
+  for (const [x, z, w, h, d, a] of [[288, 462, 2.6, 1.1, 1.4, 0.3], [284, 469, 1.8, 1.5, 1.5, 1.1], [291, 472, 3.2, 0.8, 1.2, -0.4], [279, 461, 1.4, 1.0, 1.4, 0.7]]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M.marble); m.position.set(x, hAt(x, z) + h * 0.42, z); m.rotation.y = a; scene.add(m); FR.rounds.push({ x, z, r: w * 0.6 }); } }
 const PAR = FR.parthenos(P.inside[0], P.inside[1], Math.atan2(P.FE.nx, P.FE.nz), P.cellaY, 1.0);
 const cellaL = new THREE.PointLight(C('#ffd890'), 900, 60, 1.4); cellaL.position.set(...FR.front(0, 0, 1, 0).P(0, 0), 0); { const [x, z] = P.FN.P(P.UE + 9, -P.mid); cellaL.position.set(x, P.cellaY + 7, z); } scene.add(cellaL);
-// plane trees in the square. Plutarch (Cimon 13) says Cimon planted the Agora with planes: not checked for this level, so the trees are marked unverified
-{ const leaf = [lam({ color: '#5f8a4a' }), lam({ color: '#6f9a52' }), lam({ color: '#4f7a48' })], trunk = lam({ color: '#8a7a66' });
-  for (const [x, z, h] of [[22, 34, 9], [-4, 58, 10], [26, 128, 9], [64, 152, 8], [8, 96, 10], [96, 30, 9], [104, 60, 8], [-20, 20, 9]]) { const y = hAt(x, z), tr = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.36, h * 0.6, 8), trunk); tr.position.set(x, y + h * 0.3, z); on(tr); scene.add(tr); FR.rounds.push({ x, z, r: 0.7 });
-    for (let i = 0; i < 7; i++) { const bl = new THREE.Mesh(new THREE.IcosahedronGeometry(2.0 + (i % 3) * 0.6, 1), leaf[i % 3]); bl.position.set(x + Math.cos(i * 2.2) * 2.0, y + h * 0.62 + (i % 3) * 1.3, z + Math.sin(i * 2.2) * 2.0); bl.scale.y = 0.7; on(bl); scene.add(bl); } } }
-FR.flush();
+/* Herms at the north-west entrance to the Agora ("the Herms", FINDINGS.md section F), boundary stones (horoi) along the Way, and inscribed stelae by the sanctuaries and on the Acropolis */
+for (const [s, sd, du] of [[7, -1, 0], [11, 1, 0], [15, -1, 0], [20, 1, 0], [26, -1, 0], [32, 1, 0], [38, -1, 0], [44, 1, 0], [248, -1, 0]]) { const p = at(s), [x, z] = side(p, du, (roadHalf(s) + 1.55) * sd); FR.herm(x, z, Math.atan2(-p.dz * sd * -1, p.dx * sd * -1) + Math.PI / 2, hAt(x, z)); }
+for (const [s, sd] of [[22, 1], [66, -1], [116, 1], [168, -1], [190, 1]]) { const p = at(s), [x, z] = side(p, 0, (roadHalf(s) + 1.25) * sd); FR.horos(x, z, Math.atan2(-p.dz * sd * -1, p.dx * sd * -1) + Math.PI / 2, hAt(x, z)); }
+for (const [i, [x, z, a]] of [[26, 76, 1.2], [-34, 42, 1.5], [-34, 56, 1.5], [-34, 68, 1.5], [174, 232, -1.6], [173, 272, -1.5], [248, 431, 0.2], [272, 433, 0.15], [306, 434, 0.22], [352, 424, 0.25], [382, 421, 0.1]].entries()) FR.stele(x, z, a, hAt(x, z), i);
 const inFoot = (x, z) => feet.some(p => inPoly(p, x, z));
+/* Trees, Mediterranean scrub, and limestone crags: stylised as carved, painted stone relief forms and batched by material for 60 fps */
+{ const leafTex = FR.canvasTex(256, 256, (ctx, w, h) => {
+    ctx.fillStyle = '#c8beaa'; ctx.fillRect(0, 0, w, h);
+    /* Deeply chiselled leaf tiers and fluted stone channels so every crown reads as carved marble painted with mineral green */
+    for (let r = 0; r < 8; r++) {
+      const y = r * 32, off = (r % 2) * 16;
+      for (let x = -16; x < w + 16; x += 32) {
+        const lx = x + off;
+        ctx.fillStyle = '#52483c'; ctx.beginPath(); ctx.ellipse(lx, y + 18, 15, 13, 0, 0, 7); ctx.fill(); /* undercut groove */
+        ctx.fillStyle = '#bcb29e'; ctx.beginPath(); ctx.ellipse(lx, y + 14, 14, 12, 0, 0, 7); ctx.fill(); /* carved leaf body */
+        ctx.fillStyle = '#f2ead8'; ctx.beginPath(); ctx.ellipse(lx - 2, y + 11, 10, 6, -0.2, 0, 7); ctx.fill(); /* raking marble ridge */
+        ctx.strokeStyle = '#4a4034'; ctx.lineWidth = 2.2; ctx.beginPath(); ctx.moveTo(lx, y + 4); ctx.lineTo(lx, y + 23); ctx.stroke(); /* incised midrib */
+      }
+    }
+  });
+  leafTex.wrapS = leafTex.wrapT = THREE.RepeatWrapping;
+  const mkLeaf = c => lam({ map: leafTex, color: c });
+  const planeL = [mkLeaf('#7c9268'), mkLeaf('#8ea378'), mkLeaf('#6a8058')], oliveL = [mkLeaf('#8ea27c'), mkLeaf('#a0b28e'), mkLeaf('#798e68')];
+  const cypL = [mkLeaf('#2c4938'), mkLeaf('#375844'), mkLeaf('#223b2c')], scrubL = [mkLeaf('#849872'), mkLeaf('#96a882'), mkLeaf('#728660'), mkLeaf('#9aa47c')];
+  const trunkM = lam({ map: tRock, color: '#d4cab6' }), oliveTrM = lam({ map: tRock, color: '#c6bca8' });
+  const tBat = new Map(), dObj = new THREE.Object3D(), vTmp = new V3(), nTmp = new V3(), nMat = new THREE.Matrix3();
+  const put = (geo, mat, px, py, pz, sx = 1, sy = 1, sz = 1, rx = 0, ry = 0, rz = 0) => {
+    let b = tBat.get(mat); if (!b) tBat.set(mat, b = { pos: [], nor: [], uv: [] });
+    const g = geo.index ? geo.toNonIndexed() : geo, p = g.attributes.position, n = g.attributes.normal, u = g.attributes.uv;
+    dObj.position.set(px, py, pz); dObj.rotation.set(rx, ry, rz); dObj.scale.set(sx, sy, sz); dObj.updateMatrix(); nMat.getNormalMatrix(dObj.matrix);
+    for (let i = 0; i < p.count; i++) {
+      vTmp.set(p.getX(i), p.getY(i), p.getZ(i)).applyMatrix4(dObj.matrix); b.pos.push(vTmp.x, vTmp.y, vTmp.z);
+      nTmp.set(n.getX(i), n.getY(i), n.getZ(i)).applyMatrix3(nMat).normalize(); b.nor.push(nTmp.x, nTmp.y, nTmp.z);
+      b.uv.push(u ? u.getX(i) : 0, u ? u.getY(i) : 0);
+    }
+  };
+  const gCyl = new THREE.CylinderGeometry(0.6, 1.0, 1.0, 8), gCrown = new THREE.IcosahedronGeometry(1.0, 1), gCone = new THREE.ConeGeometry(1.0, 1.0, 10), gRock = new THREE.IcosahedronGeometry(1.0, 1);
+  const plane = (x, z, h) => { const y = hAt(x, z); put(gCyl, trunkM, x, y + h * 0.29, z, 0.38, h * 0.58, 0.38); FR.rounds.push({ x, z, r: 0.7 });
+    for (let i = 0; i < 6; i++) { const r = 2.1 + (i % 3) * 0.45; put(gCrown, planeL[i % 3], x + Math.cos(i * 2.1) * 1.9, y + h * 0.62 + (i % 3) * 1.15, z + Math.sin(i * 2.1) * 1.9, r * 1.18, r * 0.56, r * 0.85, 0, i * 0.8, 0); } };
+  const olive = (x, z, sc = 1) => { const y = hAt(x, z), h = 5.4 * sc;
+    put(gCyl, oliveTrM, x, y + h * 0.22, z, 0.36 * sc, h * 0.46, 0.36 * sc, 0, 0, 0.12);
+    for (const [bx, bz, ang] of [[-0.45, -0.25, 0.48], [0.5, 0.2, -0.45], [0.05, -0.45, 0.38]]) put(gCyl, oliveTrM, x + bx * sc, y + h * 0.46, z + bz * sc, 0.18 * sc, h * 0.38, 0.18 * sc, ang * bz, 0, -ang * bx * 1.5);
+    for (let i = 0; i < 6; i++) { const r = (1.4 + (i % 3) * 0.36) * sc; put(gCrown, oliveL[i % 3], x + Math.cos(i * 2.1) * 1.3 * sc, y + h * 0.62 + (i % 3) * 0.6 * sc, z + Math.sin(i * 2.1) * 1.3 * sc, r * 1.22, r * 0.54, r * 0.88, 0, i * 1.1, 0); }
+    FR.rounds.push({ x, z, r: 0.65 * sc }); };
+  const cypress = (x, z, sc = 1) => { const y = hAt(x, z), h = 10.5 * sc;
+    put(gCyl, oliveTrM, x, y + h * 0.12, z, 0.25 * sc, h * 0.24, 0.25 * sc);
+    for (let i = 0; i < 4; i++) { const kh = h * (0.50 - i * 0.07), kr = (1.08 - i * 0.18) * sc; put(gCone, cypL[i % 3], x, y + h * (0.34 + i * 0.15), z, kr, kh, kr, 0, i * 0.45, 0); }
+    FR.rounds.push({ x, z, r: 0.6 * sc }); };
+  const scrub = (x, z, sc = 1, k = 0) => { const y = hAt(x, z);
+    for (let i = 0; i < 3; i++) { const r = (0.58 + (i % 2) * 0.26) * sc; put(gCrown, scrubL[(k + i) % 4], x + (i - 1) * 0.48 * sc, y + r * 0.42, z + ((i * 3) % 2 - 0.5) * 0.36 * sc, r * 1.25, r * 0.55, r * 0.88, 0, i * 1.3, 0); } };
+  const crag = (x, z, rx, ry, rz, a = 0) => { const y = hDem(x, z); put(gRock, M.rock, x, y - 0.3, z, rx, ry, rz, 0.2 * Math.sin(a), a, 0.15 * Math.cos(a)); };
+
+  for (const [x, z, h] of [[22, 34, 9], [-4, 58, 10], [26, 128, 9], [64, 152, 8], [8, 96, 10], [96, 30, 9], [104, 60, 8], [-20, 20, 9]]) plane(x, z, h);
+  for (const [x, z, sc] of [
+    [35, 14, 0.95], [74, 24, 1.05], [88, 52, 0.9], [122, 82, 1.0], [92, 118, 1.1], [154, 148, 0.95], [116, 168, 1.05], [174, 184, 1.0],
+    [136, 206, 0.95], [148, 246, 1.08], [208, 232, 1.0], [212, 276, 1.1], [156, 294, 0.95], [154, 336, 1.05], [206, 326, 1.0], [204, 362, 1.12],
+    [156, 378, 1.0], [202, 392, 0.95], [146, 408, 1.05], [186, 418, 0.92], [128, 434, 1.08], [134, 462, 1.0], [166, 472, 0.96], [224, 412, 0.88],
+    [12, 198, 1.05], [44, 204, 1.0], [74, 208, 1.08], [28, 260, 1.05], [66, 266, 1.1], [108, 272, 1.0], [42, 305, 1.15], [72, 312, 1.1], [102, 318, 1.05], [22, 326, 1.1], [56, 338, 1.15], [88, 344, 1.08],
+    [326, 422, 0.92] /* Athena's sacred olive beside the Old Temple on the Acropolis */
+  ]) olive(x, z, sc);
+  for (const [x, z, sc] of [
+    [40, -14, 1.0], [124, 14, 1.1], [158, 62, 0.95], [162, 108, 1.05], [76, 174, 1.0], [184, 212, 1.08], [208, 252, 1.12], [150, 272, 0.96],
+    [206, 304, 1.05], [154, 356, 1.02], [204, 376, 1.1], [192, 406, 0.95], [140, 422, 1.05], [126, 448, 1.1], [182, 474, 1.0], [216, 478, 0.95],
+    [-8, 182, 1.15], [18, 202, 1.1], [52, 206, 1.15], [86, 214, 1.08], [32, 294, 1.18], [64, 302, 1.12], [94, 306, 1.15], [16, 318, 1.2], [48, 332, 1.18], [80, 336, 1.12]
+  ]) cypress(x, z, sc);
+  /* Roadside and hillside scrub and limestone boulders along the walk */
+  for (let s = 14, k = 0; s < LEN - 30; s += 11, k++) {
+    if (s > 208 && s < 350) continue;
+    for (const sd of [-1, 1]) {
+      if ((k + (sd > 0 ? 1 : 0)) % 2 === 0) continue;
+      const p = at(s), d = roadHalf(s) + 2.4 + ((k * 5) % 6) * 1.4, [x, z] = side(p, ((k * 3) % 5 - 2) * 0.6, d * sd);
+      if (inFoot(x, z) || FR.blocked(x, z) || inAcro(x, z)) continue;
+      scrub(x, z, 0.85 + (k % 4) * 0.22, k);
+      if (s > 280 && k % 2 === 0) crag(x + sd * 1.4, z + 0.8, 1.4 + (k % 3) * 0.6, 0.9 + (k % 2) * 0.5, 1.2 + (k % 3) * 0.5, k * 1.1);
+    }
+  }
+  /* Low angular carved limestone ledges along the foot of the Acropolis and Areopagus cliffs (strictly BELOW the citadel wall rim so the Parthenon stands 100% clear on the skyline!) */
+  const gBox = new THREE.BoxGeometry(1, 1, 1);
+  for (const [x, z, rx, ry, rz, a] of [
+    [204, 384, 14, 9, 9, 0.22], [232, 374, 18, 12, 10, 0.14], [262, 368, 20, 14, 11, 0.08], [294, 362, 22, 15, 11, 0.02],
+    [326, 362, 22, 15, 11, -0.05], [358, 368, 22, 14, 11, -0.15], [390, 378, 20, 13, 10, -0.25], [422, 392, 18, 12, 10, -0.32],
+    [34, 348, 26, 9, 14, 0.15], [64, 352, 22, 8, 13, -0.10], /* Areopagus carved limestone bedrock crest */
+    [176, 468, 12, 7, 8, 0.4], [202, 478, 16, 9, 9, 0.2], [234, 488, 18, 10, 10, 0.1]
+  ]) { const y = hBase(x, z); put(gBox, M.rock, x, y - ry * 0.25, z, rx, ry, rz, 0, a, 0); }
+  for (const [m, b] of tBat) {
+    const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(b.pos, 3)); g.setAttribute('normal', new THREE.Float32BufferAttribute(b.nor, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(b.uv, 2));
+    const mesh = new THREE.Mesh(g, m); mesh.matrixAutoUpdate = false; scene.add(mesh);
+  }
+}
+FR.flush();
 const solid = (x, z) => FR.blocked(x, z) || inFoot(x, z);
 let progS = S_START;
 const blocked = (x, z) => { const n = nearest(x, z, progS); return n.d > corr(n.s) || solid(x, z); };
 
 /* ================= people: figures modelled in Blender (tools/blender/figure.py, world 'phidias'); the beasts are built in beasts.js ================= */
-const FIG = makeFigures({ THREE, scene, shadowM, castShadow: true });
+const FIG = makeFigures({ THREE, scene, shadowM, castShadow: false });
 await FIG.load('models/', ['girl', 'kore_white', 'kore_red', 'kore_blue', 'priestess', 'rider', 'rider_hat', 'elder', 'magistrate', 'musician', 'carrier', 'phidias', 'boy']);
 const T = (g, bone, x, y, z) => FIG.turn(g.userData, bone, x || 0, y || 0, z || 0);
 const arms = (g, S, ux, uy, fx) => { T(g, 'upperarm' + S, ux, uy || 0, 0); T(g, 'forearm' + S, fx == null ? -20 : fx); };
@@ -189,9 +423,9 @@ const hydria = () => { const g = new THREE.Group(), m = prop('#b8643a', '#c9703a
 const pipes = () => { const g = new THREE.Group(), m = prop('#c9a86a'); for (const e of [-1, 1]) { const p = new THREE.Mesh(new THREE.CylinderGeometry(0.012, 0.014, 0.46, 6), m); p.rotation.x = 1.2; p.rotation.z = e * 0.16; p.position.set(e * 0.04, 0, 0.2); g.add(p); } return g; };
 const kithara = () => { const g = new THREE.Group(), m = prop('#a8743a'), box = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.26, 0.07), m), bar = new THREE.Mesh(new THREE.BoxGeometry(0.4, 0.03, 0.03), m); bar.position.y = 0.42; g.add(box, bar); for (const e of [-1, 1]) { const a = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.34, 0.04), m); a.position.set(e * 0.16, 0.27, 0); g.add(a); } return g; };
 // the girl, with the stool on her head and a hand up to steady it. She stands in a holder of her own, so that she too can be pressed flat at the end
-const Hme = new THREE.Group(); scene.add(Hme); const meG = FIG.spawn('girl', { size: 0.92 }); Hme.add(meG); FIG.pose(meG, 0, 0); const stool = onBone(meG, 'head', stoolOf(), 0, 1.40, 0.0);
-const phid = FIG.spawn('phidias', { size: 1.12, adult: true }); FIG.pose(phid, 0, 0); { const tb = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.22, 0.02), prop('#d9c08a')); phid.userData.aL.add(tb); }
-const marshal = FIG.spawn('magistrate', { size: 1.14, adult: true });
+const Hme = new THREE.Group(); scene.add(Hme); const meG = FIG.spawn('girl', { size: 0.92 }); Hme.add(meG); FIG.pose(meG, 0, 0); const stool = onBone(meG, 'head', stoolOf(), 0, 1.40, 0.0); REL.setLiving(Hme, true);
+const phid = FIG.spawn('phidias', { size: 1.12, adult: true }); FIG.pose(phid, 0, 0); { const tb = new THREE.Mesh(new THREE.BoxGeometry(0.3, 0.22, 0.02), prop('#d9c08a')); phid.userData.aL.add(tb); } REL.setLiving(phid, true);
+const marshal = FIG.spawn('magistrate', { size: 1.14, adult: true }); REL.setLiving(marshal, true);
 
 /* ================= the stagings: flesh to stone =================
    Each staging is a surviving block. Its people wait near their places; when the girl comes up they step into line along a wall, the wall turns blue (the frieze's ground
@@ -216,11 +450,11 @@ function makeStage(o) {
     if (a.carry) { const c = a.carry(obj); c.traverse(m => { if (m.isMesh && !mats.some(q => q.m === m.material)) mats.push({ m: m.material, map: null, col: m.material.color.clone(), paint: C(m.material.userData.paint || '#efe6d2') }); }); }
     if (a.me) { grab(meG.userData.mats, { paint: '#e9b23a' }); stool.traverse(m => { if (m.isMesh && !mats.some(q => q.m === m.material)) mats.push({ m: m.material, map: null, col: m.material.color.clone(), paint: C(m.material.userData.paint) }); }); }
     const slot = st.P(a.u, a.d || 0), idle = a.idle ? [slot[0] - X[0] * a.idle[0] - dx * a.idle[1], slot[1] - X[1] * a.idle[0] - dz * a.idle[1]] : slot;
-    Object.assign(a, { H: a.H || H, obj, mats, slot, idleAt: idle, yaw: Math.atan2(-Math.cos(a.face * D2R), -Math.sin(a.face * D2R)), on: false, ph: rnd(0, 6) }); if (!a.me) { obj.rotation.y = a.yaw; H.position.set(idle[0], hAt(idle[0], idle[1]), idle[1]); } st.actors.push(a); }
+    Object.assign(a, { H: a.H || H, obj, mats, slot, idleAt: idle, yaw: Math.atan2(-Math.cos(a.face * D2R), -Math.sin(a.face * D2R)), on: false, ph: rnd(0, 6) }); if (!a.me) { obj.rotation.y = a.yaw; H.position.set(idle[0], hAt(idle[0], idle[1]), idle[1]); } REL.setLiving(a.H, true); st.actors.push(a); }
   st.order = st.actors.slice().sort((p, q) => p.u - q.u); return st;
 }
-const petrify = (a, yes) => { if (a.on === yes) return; a.on = yes; for (const q of a.mats) { q.m.map = yes ? null : q.map; q.m.color.copy(yes ? q.paint : q.col); q.m.needsUpdate = true; } };
-const fade = (a, k) => { if (a.on) for (const q of a.mats) q.m.color.copy(q.paint).lerp(MARBLE, k); };
+const petrify = (a, yes) => { if (a.on === yes) return; a.on = yes; REL.setLiving(a.H, !yes); for (const q of a.mats) { REL.setMatLiving(q.m, !yes); if (!q.map || a.beast) q.m.color.copy(yes ? q.paint : q.col); else q.m.color.copy(q.col); q.m.needsUpdate = true; } };
+const fade = (a, k) => { if (a.on) for (const q of a.mats) if (!q.map) q.m.color.copy(q.paint).lerp(MARBLE, k); };
 // poses. Every one is held still; t is time, for a little life before the stone
 const sit = (g, spread = 20) => { for (const S of 'LR') { T(g, 'thigh' + S, -66, S === 'L' ? spread : -spread, 0); T(g, 'shin' + S, 58); } };
 const stoolArm = g => { T(g, 'upperarmR', -168, -14, 0); T(g, 'forearmR', -24); };
@@ -228,15 +462,17 @@ const FE_N = [P.FE.nx, P.FE.nz], EM = P.eastMid;
 const STAGES = [
   /* 1. West frieze, block II (British Museum): two horsemen riding to the left, their horses up on their hind legs. The first rider leans back with a hand to his head, his cloak flying. */
   makeStage({ key: 'horsemen', s: S1, O: [103.5, 139], look: [-1, 0], Ws: 4.5, aspect: 1400 / 816, img: 'images/frieze.jpg', title: 'Two horsemen', line: 'West frieze of the Parthenon, block II · carved about 443–438 BC · British Museum', man: [-0.28, -2.2],
-    actors: [{ beast: 'horse', u: 0.35, face: 180, size: 0.95, rear: 0.8, coat: '#8a5a34', o: { coat: '#8a5a34' }, idle: [1.2, -3.2], rider: { name: 'rider', size: 0.98, paint: '#efe6d2', cloak: '#b63a28' }, rpose: (g, t) => { sit(g); T(g, 'spine', -16); T(g, 'head', -6, 0, 30); arms(g, 'R', -150, -30, -95); arms(g, 'L', -42, 0, -40); T(g, 'hair', 70); } },
-      { beast: 'horse', u: 0.80, face: 180, size: 0.95, rear: 0.9, coat: '#e6dccb', o: { coat: '#e9e2d6', mane: '#bcae98' }, idle: [2.6, -2.2], rider: { name: 'rider', size: 0.98, paint: '#efe6d2', cloak: '#2456a8' }, rpose: (g, t) => { sit(g); T(g, 'spine', 4); T(g, 'head', 6); arms(g, 'R', -46, 0, -52); arms(g, 'L', -46, 0, -52); T(g, 'hair', 30); } }] }),
-  /* 2. South frieze, blocks XLV-XLVI (British Museum): young men in mantles leading a heifer to the sacrifice; one lifts a hand to his head, one looks back over his shoulder. */
+    actors: [{ beast: 'horse', u: 0.33, face: 180, size: 0.98, rear: 0.82, toss: -0.18, coat: '#9a683e', o: { coat: '#9a683e' }, idle: [1.2, -3.2], rider: { name: 'rider', size: 1.0, paint: '#efe6d2', cloak: '#a83828' }, rpose: (g, t) => { sit(g); T(g, 'spine', -14, 0, -22); T(g, 'head', -4, 0, -34); arms(g, 'L', -148, 28, -98); arms(g, 'R', -38, 0, -48); T(g, 'hair', 74); } },
+      { beast: 'horse', u: 0.77, face: 180, size: 0.98, rear: 0.88, toss: 0.22, coat: '#e6dccb', o: { coat: '#ece3d2', mane: '#b8aa94' }, idle: [2.6, -2.2], rider: { name: 'rider', size: 1.0, paint: '#efe6d2', cloak: '#245292' }, rpose: (g, t) => { sit(g); T(g, 'spine', 6); T(g, 'head', 8); arms(g, 'R', -48, 0, -56); arms(g, 'L', -48, 0, -56); T(g, 'hair', 34); } }] }),
+  /* 2. South frieze, blocks XLV-XLVI (British Museum): young men in mantles leading heifers to the sacrifice; one lifts a hand to his head, one looks back over his shoulder. */
   makeStage({ key: 'cattle', s: S2, O: [176.2, 356], look: [-1, 0], Ws: 2.75, aspect: 1400 / 1057, img: 'images/cattle.jpg', title: 'Cattle led to the sacrifice', line: 'South frieze of the Parthenon, blocks XLV–XLVI · British Museum', man: [-0.42, -2.0],
-    actors: [{ beast: 'ox', u: 0.52, d: 0.5, face: 0, size: 0.9, coat: '#e9e0cc', toss: 0.6, idle: [0.3, -1.0] },
+    actors: [
+      { beast: 'ox', u: 0.12, d: 0.34, face: 0, size: 0.88, coat: '#e6ddd0', o: { coat: '#e6ddd0' }, toss: 0.72, idle: [-0.3, -2.8] },
+      { beast: 'ox', u: 0.66, d: 0.36, face: 0, size: 0.90, coat: '#efe7d8', o: { coat: '#efe7d8' }, toss: 0.22, idle: [0.5, -2.8] },
       { name: 'carrier', u: 0.04, face: 0, size: 1.16, paint: '#efe6d2', idle: [-0.5, -2.6], pose: g => { T(g, 'head', -4); arms(g, 'L', -30, 0, -60); } },
-      { name: 'carrier', u: 0.27, face: 70, size: 1.16, paint: '#d9a05a', idle: [-0.2, -3.6], pose: g => { T(g, 'head', 4, 0, 24); arms(g, 'R', -150, -30, -110); arms(g, 'L', -20, 0, -70); } },
-      { name: 'carrier', u: 0.55, face: 20, size: 1.16, paint: '#efe6d2', idle: [0.4, -2.4], pose: g => { T(g, 'spine', 6); T(g, 'head', 0, 0, 40); arms(g, 'L', -50, 0, -80); arms(g, 'R', -20, 0, -40); } },
-      { name: 'carrier', u: 0.78, face: 0, size: 1.16, paint: '#b63a28', idle: [0.9, -3.4], pose: g => { T(g, 'spine', 8); T(g, 'head', 8); arms(g, 'L', -36, 0, -70); } }] }),
+      { name: 'carrier', u: 0.28, face: 70, size: 1.16, paint: '#d49b4b', idle: [-0.2, -3.6], pose: g => { T(g, 'head', 4, 0, 24); arms(g, 'R', -150, -30, -110); arms(g, 'L', -20, 0, -70); } },
+      { name: 'carrier', u: 0.52, face: 20, size: 1.16, paint: '#efe6d2', idle: [0.4, -2.4], pose: g => { T(g, 'spine', 6); T(g, 'head', 0, 0, 40); arms(g, 'L', -50, 0, -80); arms(g, 'R', -20, 0, -40); } },
+      { name: 'carrier', u: 0.72, face: 0, size: 1.16, paint: '#a83828', idle: [0.9, -3.4], pose: g => { T(g, 'spine', 8); T(g, 'head', 8); arms(g, 'L', -36, 0, -70); } }] }),
   /* 3. East frieze, block VII (Louvre, "the plaque of the Ergastinai"): girls walking to the right in pairs, in the peplos, met by two men who marshal them. */
   makeStage({ key: 'girls', s: S3, O: [237.5, 429.5], look: [-0.7071, -0.7071], Ws: 4.3, aspect: 1400 / 656, img: 'images/girls.jpg', title: 'The girls at the head of the procession', line: 'East frieze of the Parthenon, block VII · Louvre, Paris', man: [-0.2, -2.2],
     actors: [{ name: 'kore_white', u: 0.05, face: 0, size: 1.1, paint: '#efe6d2', idle: [-0.4, -2.2], pose: g => { arms(g, 'R', -40, 0, -60); } }, { name: 'kore_red', u: 0.17, face: 0, size: 1.1, paint: '#b63a28', idle: [-0.3, -3.3], pose: g => { arms(g, 'L', -30, 0, -40); } },
@@ -245,7 +481,7 @@ const STAGES = [
       { name: 'elder', u: 0.665, face: 160, size: 1.13, paint: '#efe6d2', idle: [0.5, -2.2], pose: g => { arms(g, 'R', -34, 0, -50); } },
       { name: 'kore_red', u: 0.80, face: 0, size: 1.1, paint: '#b63a28', idle: [0.5, -3.4], pose: g => { arms(g, 'R', -24, 0, -30); } }, { name: 'kore_blue', u: 0.93, face: 0, size: 1.1, paint: '#2456a8', idle: [0.9, -2.6] }] }),
   /* 4. East frieze, block V (British Museum), the middle of the whole frieze: two girls with stools on their heads come to a woman; behind her a man and a child hold a folded cloth between them. */
-  makeStage({ key: 'peplos', end: true, s: LEN, O: [EM[0] + FE_N[0] * 7.5, EM[1] + FE_N[1] * 7.5], y: plateau(390) + 0.05, look: [-FE_N[0], -FE_N[1]], Ws: 3.9, aspect: 1400 / 761, img: 'images/peplos.jpg', title: 'The folded cloth', line: 'East frieze of the Parthenon, block V, over the east door · British Museum', quote: '“They were created in a short time for all time.” Plutarch, Pericles 13', man: [1.2, -2.4],
+  makeStage({ key: 'peplos', end: true, s: LEN, O: [EM[0] + FE_N[0] * 7.5, EM[1] + FE_N[1] * 7.5], y: plateau(390, 452) + 0.05, look: [-FE_N[0], -FE_N[1]], Ws: 3.9, aspect: 1400 / 761, img: 'images/peplos.jpg', title: 'The folded cloth', line: 'East frieze of the Parthenon, block V, over the east door · British Museum', quote: '“They were created in a short time for all time.” Plutarch, Pericles 13', man: [1.2, -2.4],
     actors: [{ me: true, u: 0.085, face: 55, paint: '#e9b23a' },
       { name: 'kore_white', u: 0.315, face: 10, size: 1.0, paint: '#efe6d2', idle: [0.2, -1.4], carry: g => onBone(g, 'head', stoolOf(), 0, 1.40, 0), pose: g => { T(g, 'upperarmL', -168, 14, 0); T(g, 'forearmL', -24); } },
       { name: 'priestess', u: 0.53, face: 165, size: 1.14, paint: '#efe6d2', idle: [0.2, -1.0], pose: g => { arms(g, 'R', -50, 0, -50); T(g, 'head', 6); } },
@@ -253,35 +489,99 @@ const STAGES = [
       { name: 'boy', u: 0.925, face: 170, size: 0.86, paint: '#efe6d2', idle: [0.5, -1.0], pose: g => { arms(g, 'R', -80, 0, -30); arms(g, 'L', -66, 0, -40); T(g, 'head', -8); } }] })];
 const [ST1, ST2, ST3, ST4] = STAGES, byKey = Object.fromEntries(STAGES.map(s => [s.key, s]));
 // the folded cloth itself, between the man and the child: the robe for the old statue of Athena. It is held up only at the staging
-const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.72, 0.07), prop('#e9b23a', '#e9b23a')); { const [x, z] = ST4.P(0.815, -0.02); cloth.position.set(x, ST4.y0 + 1.02, z); cloth.rotation.y = ST4.ry; on(cloth); scene.add(cloth); ST4.actors[3].mats.push({ m: cloth.material, map: null, col: cloth.material.color.clone(), paint: C('#e9b23a') }); }
+const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.72, 0.07), prop('#e9b23a', '#e9b23a')); { const [x, z] = ST4.P(0.815, -0.02); cloth.position.set(x, ST4.y0 + 1.02, z); cloth.rotation.y = ST4.ry; REL.setLiving(cloth, true); scene.add(cloth); ST4.actors[3].mats.push({ m: cloth.material, map: null, col: cloth.material.color.clone(), paint: C('#e9b23a') }); }
 
-/* ================= the crowd: Athens lining the Way. Plain shapes, set up by the hundred ================= */
-{ const spots = [], pal = ['#efe6d2', '#e6dcc6', '#d9c9a4', '#b8473a', '#4a6aa8', '#c9a05a', '#8a5a3a', '#f3eee2', '#a8443a', '#6a7a4a'];
-  const nearSlab = (x, z) => STAGES.some(s => { const rx = x - s.O[0], rz = z - s.O[1], d = rx * s.dx + rz * s.dz, r = rx * s.dz - rz * s.dx; return Math.abs(r) < s.Ws / 2 + 3.5 && d > -20 && d < 6; });
-  for (let s = 6; s < LEN - 4; s += 1.25) for (const sd of [-1, 1]) for (let row = 0; row < 2; row++) { if (((s * 7 + row * 3 + sd) % 5) < 1.2) continue; const p = at(s), lat = corr(s) + 0.9 + row * 1.0 + ((s * 13) % 7) * 0.08, [x, z] = side(p, ((s * 3) % 5) * 0.2, lat * sd); if (solid(x, z) || nearSlab(x, z) || nearest(x, z).d < corr(nearest(x, z).s) + 0.5 || (s > S_GATE - 16 && s < S_GATE + 8)) continue; spots.push([x, hAt(x, z), z, Math.atan2(-p.dz * sd * -1, p.dx * sd * -1) + Math.PI / 2 + (((s * 17) % 9) - 4) * 0.1, 0.9 + ((s * 11 + row) % 7) * 0.035, (Math.floor(s * 3) + row + (sd > 0 ? 3 : 0)) % pal.length]); }
-  const body = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.16, 0.27, 1.34, 8), lam({ color: '#ffffff' }), spots.length), head = new THREE.InstancedMesh(new THREE.SphereGeometry(0.115, 8, 6), lam({ color: '#e6c4a0' }), spots.length), d = new THREE.Object3D();
-  spots.forEach(([x, y, z, ry, k, ci], i) => { d.position.set(x, y + 0.67 * k, z); d.scale.setScalar(k); d.rotation.y = ry; d.updateMatrix(); body.setMatrixAt(i, d.matrix); body.setColorAt(i, C(pal[ci])); d.position.y = y + 1.47 * k; d.updateMatrix(); head.setMatrixAt(i, d.matrix); });
-  for (const m of [body, head]) { m.castShadow = true; m.frustumCulled = false; scene.add(m); } }
+/* ================= the crowd: Athenians in loose groups along the Way, with a baked human mesh far off ================= */
+const crowd = []; let farDress = null, farBody = null;
+{ const nearSlab = (x, z) => STAGES.some(s => { const rx = x - s.O[0], rz = z - s.O[1], d = rx * s.dx + rz * s.dz, r = rx * s.dz - rz * s.dx; return Math.abs(r) < s.Ws / 2 + 4.2 && d > -22 && d < 7; });
+  const nearPot = (x, z) => STAGES.slice(0, 3).some(st => { const p = at(st.s - 58); return Math.hypot(x - p.x, z - p.z) < 6.5; });
+  const KITS = [
+    { name: 'elder', tint: '#efe6d2', far: '#efe6d2' }, { name: 'kore_white', tint: '#efe7d6', far: '#efe7d6' }, { name: 'magistrate', tint: '#d9a85c', far: '#d9a85c' },
+    { name: 'kore_red', tint: '#b8473a', far: '#b8473a' }, { name: 'carrier', tint: '#dfd3bc', far: '#dfd3bc' }, { name: 'kore_blue', tint: '#4a6aa8', far: '#4a6aa8' },
+    { name: 'musician', tint: '#a8443a', far: '#a8443a' }, { name: 'priestess', tint: '#e6dcc8', far: '#e6dcc8' }, { name: 'elder', tint: '#7a8a58', far: '#7a8a58' },
+    { name: 'rider_hat', tint: '#c9a062', far: '#4a6aa8' }, { name: 'kore_white', tint: '#8a5464', far: '#8a5464' }, { name: 'carrier', tint: '#9a6842', far: '#9a6842' },
+    { name: 'boy', child: true, size: 0.78, tint: '#d8ceb8', far: '#d8ceb8' }, { name: 'girl', child: true, size: 0.75, tint: '#6a8a58', far: '#6a8a58' },
+    { name: 'boy', child: true, size: 0.82, tint: '#5a769a', far: '#5a769a' }, { name: 'girl', child: true, size: 0.74, tint: '#c46a52', far: '#c46a52' }
+  ];
+  const ROLES = ['talk', 'wave', 'talk', 'point', 'branch', 'watch', 'talk', 'wave'];
+  /* Build a crisp, low-poly carved classical human silhouette (~110 tris vs ~4,000 tris for the Blender mesh!) for distant crowd LOD so 100+ distant Athenians cost <15k tris and 2 draw calls */
+  const pushPart = (arr, geo, py, px = 0, pz = 0, sx = 1, sy = 1, sz = 1, col = null) => {
+    const g = geo.index ? geo.toNonIndexed() : geo, p = g.attributes.position, n = g.attributes.normal, u = g.attributes.uv;
+    for (let i = 0; i < p.count; i++) {
+      arr.pos.push(p.getX(i) * sx + px, p.getY(i) * sy + py, p.getZ(i) * sz + pz);
+      arr.nor.push(n.getX(i), n.getY(i), n.getZ(i));
+      if (arr.uv && u) arr.uv.push(u.getX(i), u.getY(i));
+      if (arr.col && col) arr.col.push(col.r, col.g, col.b);
+    }
+  };
+  const dArr = { pos: [], nor: [], uv: [] }, bArr = { pos: [], nor: [], col: [] };
+  pushPart(dArr, new THREE.CylinderGeometry(0.16, 0.25, 0.92, 8), 0.48); /* fluted lower peplos/himation */
+  pushPart(dArr, new THREE.CylinderGeometry(0.20, 0.16, 0.44, 8), 1.14); /* draped upper torso & shoulders */
+  const cSkin = C('#eccba4'), cHair = C('#3c281c');
+  pushPart(bArr, new THREE.SphereGeometry(0.115, 7, 5), 1.50, 0, 0, 0.95, 1.12, 1.0, cSkin); /* head */
+  pushPart(bArr, new THREE.SphereGeometry(0.12, 7, 5), 1.54, 0, -0.02, 1.0, 0.95, 1.0, cHair); /* carved hair crown */
+  pushPart(bArr, new THREE.CylinderGeometry(0.042, 0.036, 0.48, 5), 1.12, -0.21, 0, 1, 1, 1, cSkin); /* left arm */
+  pushPart(bArr, new THREE.CylinderGeometry(0.042, 0.036, 0.48, 5), 1.12,  0.21, 0, 1, 1, 1, cSkin); /* right arm */
+  const dressGeo = new THREE.BufferGeometry(); dressGeo.setAttribute('position', new THREE.Float32BufferAttribute(dArr.pos, 3)); dressGeo.setAttribute('normal', new THREE.Float32BufferAttribute(dArr.nor, 3)); dressGeo.setAttribute('uv', new THREE.Float32BufferAttribute(dArr.uv, 2));
+  const bodyGeo = new THREE.BufferGeometry(); bodyGeo.setAttribute('position', new THREE.Float32BufferAttribute(bArr.pos, 3)); bodyGeo.setAttribute('normal', new THREE.Float32BufferAttribute(bArr.nor, 3)); bodyGeo.setAttribute('color', new THREE.Float32BufferAttribute(bArr.col, 3));
+  const tmpl = FIG.spawn('kore_white', { size: 1 }); scene.remove(tmpl);
+  let grp = 0;
+  for (let s = 10; s < LEN - 10; s += 8.5 + ((grp * 5) % 7), grp++) {
+    if (s > S_GATE - 15 && s < S_GATE + 9) continue;
+    for (const sd of [-1, 1]) {
+      if (((grp + (sd > 0 ? 2 : 0)) % 5) === 0) continue; /* leave natural open stretches on one side or the other */
+      const p = at(s), inStreet = s >= 200 && s <= 372, wide = (s < 195 || s > 565) ? ((grp * 3 + (sd > 0 ? 1 : 0)) % 4) * 1.15 : 0;
+      const baseLat = inStreet ? 5.6 + ((grp * 3) % 3) * 0.45 : (s < 195 ? 9.6 : corr(s) - 0.6) + wide;
+      const nInGrp = inStreet ? 2 + (grp % 2) : 2 + ((grp * 5 + (sd > 0 ? 3 : 1)) % 4); /* 2 to 5 people in a loose cluster */
+      const OFF = [[-0.75, 0.0, 0.44], [0.7, 0.38, -0.50], [0.08, 1.18, 0.14], [-1.35, 0.95, 0.30], [1.25, 1.35, -0.32]];
+      for (let j = 0; j < nInGrp; j++) {
+        const [du, dv, dYaw] = OFF[j], sHere = clamp(s + du + ((grp + j) % 3 - 1) * 0.35, 6, LEN - 6), pH = at(sHere);
+        const lat = (baseLat + (inStreet ? dv * 0.45 : dv) + ((grp * 3 + j * 5) % 5) * 0.14) * sd, [x, z] = side(pH, 0, lat);
+        if (solid(x, z) || nearSlab(x, z) || nearPot(x, z) || nearest(x, z).d < 5.2) continue;
+        const pickChild = (j === nInGrp - 1 && (grp + (sd > 0 ? 1 : 0)) % 3 === 0);
+        const kit = pickChild ? KITS[12 + ((grp + j) % 4)] : KITS[(grp * 3 + j * 2 + (sd > 0 ? 5 : 0)) % 12];
+        const size = (kit.size || 1.08) * (0.96 + ((grp * 7 + j * 3) % 5) * 0.025);
+        const roadYaw = Math.atan2(-pH.dz * sd * -1, pH.dx * sd * -1) + Math.PI / 2, ry = roadYaw + dYaw;
+        const g = FIG.spawn(kit.name, { size, adult: !kit.child, tint: kit.tint });
+        const y = hAt(x, z); g.position.set(x, y, z); g.rotation.y = ry; FIG.pose(g, 0, 0);
+        const role = kit.child ? 'child' : ROLES[(grp + j * 3 + (sd > 0 ? 2 : 0)) % ROLES.length];
+        if (role === 'branch') { const br = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.45, 5), prop('#5a7a3a')); br.position.set(0, 0.18, 0.05); g.userData.aR.add(br); on(br); }
+        /* Give each figure a natural initial stance so even before animation they never stand stiff */
+        const ph = ((grp * 1.7 + j * 2.3) % 6.28);
+        if (role === 'wave' || role === 'point') { T(g, 'upperarmR', role === 'wave' ? -122 : -86, -12, -14); T(g, 'forearmR', -26); }
+        else if (role === 'branch') { T(g, 'upperarmR', -64, 0, -10); T(g, 'forearmR', -54); }
+        else if (role === 'talk') { T(g, 'upperarmR', -38, 0, -8); T(g, 'forearmR', -62); T(g, 'head', 0, 0, dYaw * -28); }
+        crowd.push({ g, x, y, z, ry, size, ph, role, child: !!kit.child, farCol: C(kit.far), wasNear: true, idx: crowd.length });
+      }
+    }
+  }
+  farDress = new THREE.InstancedMesh(dressGeo, lam({ map: tmpl.userData.mats.dress.map, color: '#ffffff' }), crowd.length);
+  farBody = new THREE.InstancedMesh(bodyGeo, lam({ vertexColors: true }), crowd.length);
+  const d = new THREE.Object3D();
+  crowd.forEach((f, i) => { d.position.set(f.x, f.y, f.z); d.rotation.set(0, f.ry, 0); d.scale.setScalar(0); d.updateMatrix(); farDress.setMatrixAt(i, d.matrix); farBody.setMatrixAt(i, d.matrix); farDress.setColorAt(i, f.farCol); });
+  for (const m of [farDress, farBody]) { m.castShadow = false; m.receiveShadow = false; m.frustumCulled = false; m.count = 0; scene.add(m); }
+}
+const lodDummy = new THREE.Object3D(); let lastLodX = 1e9, lastLodZ = 1e9;
 
 /* ================= the procession on the move ================= */
 // walkers on foot, in the order of the frieze from its back to its head: elders, musicians, the youths with the water jars. They go at a walk and stop, as a procession does
 const walkers = [];
-{ const add = (name, s, off, o = {}) => { const g = FIG.spawn(name, { size: o.size || 1.12, adult: true, tint: o.tint }); if (o.carry) o.carry(g); walkers.push({ g, s, s0: s, off, kind: o.kind, ph: rnd(0, 6), pose: o.pose, cool: 0 }); };
+{ const add = (name, s, off, o = {}) => { const g = FIG.spawn(name, { size: o.size || 1.12, adult: true, tint: o.tint }); if (o.carry) o.carry(g); REL.setLiving(g, true); walkers.push({ g, s, s0: s, off, kind: o.kind, ph: rnd(0, 6), pose: o.pose, cool: 0 }); };
   for (let i = 0; i < 6; i++) add(i % 3 === 1 ? 'magistrate' : 'elder', 214 + Math.floor(i / 2) * 3.2, (i % 2 ? 1 : -1) * 2.3, { kind: 'elders', carry: i % 2 ? g => { const br = new THREE.Mesh(new THREE.ConeGeometry(0.09, 0.5, 5), prop('#5a7a3a')); br.position.set(0, 0.2, 0.05); g.userData.aR.add(br); on(br); } : null, pose: i % 2 ? g => arms(g, 'R', -46, 0, -70) : null });      // some carry a branch of olive
   for (let i = 0; i < 4; i++) add('musician', 258 + Math.floor(i / 2) * 3.0, (i % 2 ? 1 : -1) * 2.0, { kind: 'music', tint: i < 2 ? undefined : '#e6dcc6', carry: i < 2 ? g => onBone(g, 'head', pipes(), 0, 1.40, 0.1) : g => onBone(g, 'spine', kithara(), 0.2, 1.0, 0.17), pose: i < 2 ? g => { arms(g, 'L', -62, 0, -112); arms(g, 'R', -62, 0, -112); } : g => { arms(g, 'L', -30, 0, -80); arms(g, 'R', -40, 0, -100 - 12 * Math.sin(time * 9)); } });
   for (let i = 0; i < 4; i++) add('carrier', 300 + Math.floor(i / 2) * 3.4, (i % 2 ? 1 : -1) * 2.4, { kind: 'water', carry: g => onBone(g, 'spine', hydria(), 0.2, 1.47, 0.02), pose: g => { T(g, 'upperarmL', -150, 26, 0); T(g, 'forearmL', -70); } }); }
 // cattle and sheep on the ramp: they balk and wander
-const herd = []; { for (let i = 0; i < 3; i++) { const g = BE.make('ox', i === 1 ? { coat: '#b8946a' } : {}); g.scale.setScalar(1.05); on(g); herd.push({ g, kind: 'ox', s: 428 + i * 19, s0: 428 + i * 19, ph: i * 2.1, off: 0, cool: 0, A: 3.2 + i * 0.5, w: 0.5 + i * 0.13 }); }
-  for (let i = 0; i < 5; i++) { const g = BE.make('sheep', i % 3 === 2 ? { coat: '#8a7a66' } : {}); on(g); herd.push({ g, kind: 'sheep', s: 437 + i * 9.5, s0: 437 + i * 9.5, ph: i * 1.3, off: 0, cool: 0, A: 4.2, w: 0.9 + (i % 3) * 0.25, leapt: false }); } }
+const herd = []; { for (let i = 0; i < 3; i++) { const g = BE.make('ox', i === 1 ? { coat: '#b8946a' } : {}); g.scale.setScalar(1.05); REL.setLiving(g, true); herd.push({ g, kind: 'ox', s: 428 + i * 19, s0: 428 + i * 19, ph: i * 2.1, off: 0, cool: 0, A: 3.2 + i * 0.5, w: 0.5 + i * 0.13 }); }
+  for (let i = 0; i < 5; i++) { const g = BE.make('sheep', i % 3 === 2 ? { coat: '#8a7a66' } : {}); REL.setLiving(g, true); herd.push({ g, kind: 'sheep', s: 437 + i * 9.5, s0: 437 + i * 9.5, ph: i * 1.3, off: 0, cool: 0, A: 4.2, w: 0.9 + (i % 3) * 0.25, leapt: false }); } }
 // horsemen, and one chariot: they come up from behind and must be let through
-const mkRider = (name, coat, o) => { const h = BE.make('horse', { coat, ...o }), r = FIG.spawn(name, { size: 0.98, adult: true }), u = h.userData; u.body.add(r); r.position.set(0, u.seatY - 0.8 * 0.98, u.seatZ); r.userData.sh.visible = false; on(h); h.userData.rider = r; h.visible = false; return h; };
+const mkRider = (name, coat, o) => { const h = BE.make('horse', { coat, ...o }), r = FIG.spawn(name, { size: 0.98, adult: true }), u = h.userData; u.body.add(r); r.position.set(0, u.seatY - 0.8 * 0.98, u.seatZ); r.userData.sh.visible = false; REL.setLiving(h, true); h.userData.rider = r; h.visible = false; return h; };
 const squad = [mkRider('rider', '#8a5a34'), mkRider('rider_hat', '#3a2e28', { mane: '#1c1612' }), mkRider('rider', '#e9e2d6', { mane: '#bcae98' })];
 const chariot = new THREE.Group(); { const w = prop('#8a5a34'), br = prop('#c9a23a'); for (const e of [-1, 1]) { const wh = new THREE.Mesh(new THREE.TorusGeometry(0.42, 0.035, 6, 20), w); wh.rotation.y = Math.PI / 2; wh.position.set(e * 0.62, 0.45, 0); chariot.add(wh); for (let k = 0; k < 2; k++) { const sp = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.82, 0.03), w); sp.position.set(e * 0.62, 0.45, 0); sp.rotation.x = k * Math.PI / 2; wh.userData.sp = 1; chariot.add(sp); } }
   const fl = new THREE.Mesh(new THREE.BoxGeometry(1.1, 0.06, 0.8), w); fl.position.set(0, 0.5, 0.05); chariot.add(fl); const fr = new THREE.Mesh(new THREE.CylinderGeometry(0.55, 0.55, 0.55, 14, 1, true, -Math.PI / 2, Math.PI), br); fr.material.side = THREE.DoubleSide; fr.position.set(0, 0.8, 0.1); chariot.add(fr); const pole = new THREE.Mesh(new THREE.CylinderGeometry(0.03, 0.03, 2.6, 6), w); pole.rotation.x = Math.PI / 2; pole.position.set(0, 0.62, 1.7); chariot.add(pole);
   const dr = FIG.spawn('musician', { size: 1.0, adult: true, tint: '#f3eee2' }), ap = FIG.spawn('rider', { size: 1.0, adult: true }); chariot.add(dr, ap); dr.position.set(-0.2, 0.52, 0.1); ap.position.set(0.28, 0.52, -0.12); dr.userData.sh.visible = ap.userData.sh.visible = false;
   const shd = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.36, 0.04, 18), prop('#c9a23a')); shd.rotation.z = Math.PI / 2; shd.position.set(0.18, 0.02, 0); ap.userData.aL.add(shd);
-  const crest = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.14, 0.3), prop('#b63a28')); onBone(ap, 'head', crest, 0, 1.66, 0); chariot.userData = { dr, ap }; on(chariot); chariot.visible = false; scene.add(chariot); }
-const team = [BE.make('horse', { coat: '#3a2e28', mane: '#1c1612' }), BE.make('horse', { coat: '#9a6a40' })]; team.forEach(h => { on(h); h.visible = false; });
+  const crest = new THREE.Mesh(new THREE.BoxGeometry(0.03, 0.14, 0.3), prop('#b63a28')); onBone(ap, 'head', crest, 0, 1.66, 0); chariot.userData = { dr, ap }; REL.setLiving(chariot, true); chariot.visible = false; scene.add(chariot); }
+const team = [BE.make('horse', { coat: '#3a2e28', mane: '#1c1612' }), BE.make('horse', { coat: '#9a6a40' })]; team.forEach(h => { REL.setLiving(h, true); h.visible = false; });
 // what comes up behind her, and where: [route distance at which it starts, kind]
 const PASSES = [{ at: 26, kind: 'horse' }, { at: 84, kind: 'horse' }, { at: 186, kind: 'chariot' }, { at: 330, kind: 'horse' }].map(p => ({ ...p, state: 'wait', s: 0, v: 0 }));
 // every word spoken is invented (the end card says so)
@@ -307,10 +607,10 @@ const POTS = [{ id: 'pot_blue', name: 'pot of blue', col: '#2456a8', emoji: '�
   { id: 'pot_line', name: 'brush and dark paint', col: '#3a2418', emoji: '🖌️', title: 'Paint for what was never carved', where: 'the cattle', line: 'Dark paint and a fine brush. Not everything is carved, child: where a beast is held on a rope, the rope is only painted on.', got: 'Paint for what was never carved!' },
   { id: 'pot_colours', name: 'pot of colours', col: '#b63a28', emoji: '🎨', title: 'Colours for the patterns on the dresses', where: 'the girls', line: 'Colours for the patterns on the dresses. The carving is only half the work.', got: 'Colours for the dresses!' }];
 { const haloT = (() => { const c = document.createElement('canvas'); c.width = c.height = 96; const g = c.getContext('2d'), r = g.createRadialGradient(48, 48, 2, 48, 48, 48); r.addColorStop(0, 'rgba(255,246,200,.95)'); r.addColorStop(0.35, 'rgba(255,226,140,.4)'); r.addColorStop(1, 'rgba(255,214,110,0)'); g.fillStyle = r; g.fillRect(0, 0, 96, 96); return new THREE.CanvasTexture(c); })();
-  POTS.forEach((q, i) => { const st = STAGES[i]; q.s = st.s - 58; const p = at(q.s); let sd = i % 2 ? -1 : 1; if (blocked(...side(p, 0, 3.0 * sd))) sd = -sd; const [x, z] = side(p, 0, 3.0 * sd), [mx, mz] = side(p, 0.9, 3.9 * sd), y = hAt(x, z); q.x = x; q.z = z;
+  POTS.forEach((q, i) => { const st = STAGES[i]; q.s = st.s - 58; const p = at(q.s); let sd = i % 2 ? -1 : 1; if (blocked(...side(p, 0, 2.0 * sd))) sd = -sd; const [x, z] = side(p, 0, 1.85 * sd), [mx, mz] = side(p, 0.7, 2.75 * sd), y = hAt(x, z); q.x = x; q.z = z;
     const g = new THREE.Group(), bench = new THREE.Mesh(new THREE.BoxGeometry(0.9, 0.4, 0.5), new THREE.MeshLambertMaterial({ color: '#b8a078' })), pot = new THREE.Mesh(new THREE.CylinderGeometry(0.15, 0.11, 0.24, 12), new THREE.MeshLambertMaterial({ color: '#a8603c' })), top = new THREE.Mesh(new THREE.CylinderGeometry(0.135, 0.135, 0.02, 12), new THREE.MeshBasicMaterial({ color: q.col })), halo = new THREE.Sprite(new THREE.SpriteMaterial({ map: haloT, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true, fog: false }));
-    bench.position.y = 0.2; pot.position.y = 0.52; top.position.y = 0.645; halo.position.y = 1.2; halo.scale.setScalar(1.6); g.add(bench, pot, top, halo); g.position.set(x, y, z); g.rotation.y = Math.atan2(p.dx, p.dz); scene.add(g); q.pot = pot; q.top = top; q.halo = halo;
-    const man = FIG.spawn('carrier', { size: 1.08, adult: true }); FIG.pose(man, 0, 0); man.position.set(mx, hAt(mx, mz), mz); man.rotation.y = Math.atan2(p.x - mx, p.z - mz); q.man = man; q.have = false; q.told = false; }); }
+    bench.position.y = 0.2; pot.position.y = 0.52; top.position.y = 0.645; halo.position.y = 1.2; halo.scale.setScalar(1.6); g.add(bench, pot, top, halo); g.position.set(x, y, z); g.rotation.y = Math.atan2(p.dx, p.dz); REL.setLiving(g, true); scene.add(g); q.pot = pot; q.top = top; q.halo = halo;
+    const man = FIG.spawn('carrier', { size: 1.08, adult: true }); FIG.pose(man, 0, 0); man.position.set(mx, hAt(mx, mz), mz); man.rotation.y = Math.atan2(p.x - mx, p.z - mz); T(man, 'upperarmL', -68, 12, 0); T(man, 'forearmL', -24); REL.setLiving(man, true); q.man = man; q.have = false; q.told = false; }); }
 const goalEl = document.createElement('div'); goalEl.id = 'goal'; goalEl.style.cssText = 'position:fixed;left:50%;bottom:64px;transform:translateX(-50%);z-index:6;max-width:92vw;padding:.45em 1.1em;border-radius:999px;background:rgba(241,232,214,.94);color:#1c2a44;border:1.5px solid #1c2a44;font:600 clamp(15px,2vw,21px) "Iowan Old Style",Palatino,Georgia,serif;text-align:center;pointer-events:none;display:none'; document.body.appendChild(goalEl);
 let potNag = 0;
 const phidAt = st => { const [x, z] = st.P(0.5 + st.man[0] * 1 + (st.man[0] < 0 ? -0.5 : 0.5), st.man[1]); return [x, z]; };
@@ -318,7 +618,7 @@ function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, ya
   for (const st of STAGES) { st.seen = false; st.k = st.stone = st.bare = 0; st.slab.visible = false; for (const a of st.actors) { petrify(a, false); a.H.scale.set(1, 1, 1); } }
   for (const w of walkers) w.s = w.s0; for (const h of herd) { h.s = h.s0; h.leapt = false; } for (const q of PASSES) q.state = 'wait'; squad.forEach(h => h.visible = false); chariot.visible = false; team.forEach(h => h.visible = false);
   { const [x, z] = side(p, 1.5, 2.2); marshal.position.set(x, hAt(x, z), z); marshal.rotation.y = Math.atan2(p.x - x, p.z - z); }
-  Hme.rotation.y = 0; Hme.scale.set(1, 1, 1); camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); camera.near = 0.2; camera.updateProjectionMatrix(); $('plate').classList.remove('show'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); }
+  Hme.rotation.y = 0; Hme.scale.set(1, 1, 1); lastLodX = 1e9; camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); camera.near = 0.2; camera.updateProjectionMatrix(); $('plate').classList.remove('show'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); }
 function begin() {
   SND.start({ chords: [[40, 52, 59, 64], [45, 52, 57, 64], [38, 50, 57, 62], [40, 47, 59, 64]], scale: [64, 65, 67, 69, 71, 72, 74, 76, 77, 79, 81, 83, 84, 86] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
   $('title').classList.add('hidden'); $('end').classList.add('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 9000);
@@ -363,18 +663,43 @@ function update(dt) {
         if (q.state === 'ride' && q.s + 2.4 > prog.s) { q.state = 'on'; const hit = Math.abs(myOff) < (q.kind === 'horse' ? 2.0 : 1.5) && alt < 1.2; if (state === 'play') { if (hit) knock(10, q.kind === 'horse' ? 'Out of the horses’ way!' : 'Out of the chariot’s way!'); else SC.gain(q.kind === 'horse' ? 15 : 20, q.kind === 'horse' ? 'Let the horsemen through' : 'Let the chariot through', 2); } }
         if (q.s > prog.s + 85 || q.s > LEN - 250 || (state !== 'play' && q.s > prog.s + 30)) { q.state = 'done'; hs.forEach(h => h.visible = false); chariot.visible = false; } } }
     // ---- the walkers: each file goes on at a walk while she is near, and halts
-    for (const w of walkers) { const near = prog.s > w.s - 70 && prog.s < w.s + 40, v = near && w.s < w.s0 + 46 && state === 'play' ? 1.15 : 0; w.s += v * dt; const p = at(w.s), [x, z] = side(p, 0, w.off); w.g.visible = Math.abs(prog.s - w.s) < 160; if (!w.g.visible) continue;
+    for (const w of walkers) { const near = prog.s > w.s - 70 && prog.s < w.s + 40, v = near && w.s < w.s0 + 46 && state === 'play' ? 1.15 : 0; w.s += v * dt; const p = at(w.s), [x, z] = side(p, 0, w.off); w.g.visible = Math.abs(prog.s - w.s) < 95; if (!w.g.visible) continue;
       w.g.position.set(x, hAt(x, z), z); w.g.rotation.y = Math.atan2(p.dx, p.dz); w.ph += dt * (2 + v * 2.6); FIG.pose(w.g, w.ph, v / 1.6); if (w.pose) w.pose(w.g); w.cool -= dt;
       const d = Math.hypot(x - me.x, z - me.z); if (d < 0.8 && w.cool <= 0 && state === 'play' && Math.abs(me.speed) > 3 && alt < 1) { w.cool = 4; knock(5, LINES[w.kind]); }
       if (w.kind === 'music' && d < 26 && time > musicT && state === 'play') { musicT = time + 0.28; SND.bell([0, 2, 3, 5, 3, 2, 4, 6][Math.floor(time / 0.28) % 8], 0.03 * (1 - d / 30)); } }
     for (const kind of ['elders', 'music', 'water']) { const ws = walkers.filter(w => w.kind === kind), s0 = Math.min(...ws.map(w => w.s)), s1 = Math.max(...ws.map(w => w.s)), g = ws[0]; if (!g.thru && state === 'play' && prog.s > s0 && prog.s < s1 + 1 && Math.abs(myOff) < 1.3) g.mid = true; if (!g.thru && prog.s > s1 + 1.5) { g.thru = true; if (g.mid && state === 'play') SC.gain(10, 'Straight through the middle!', 2); } if (prog.s < s0 - 20) { g.thru = false; g.mid = false; } }
     // ---- the herd on the ramp
-    for (const h of herd) { const near = prog.s > h.s - 60 && prog.s < h.s + 40, sheep = h.kind === 'sheep', v = near && h.s < h.s0 + 16 ? (sheep ? 0.8 : 0.5) : 0; h.s += v * dt; h.g.visible = Math.abs(prog.s - h.s) < 150; if (!h.g.visible) continue;
+    for (const h of herd) { const near = prog.s > h.s - 60 && prog.s < h.s + 40, sheep = h.kind === 'sheep', v = near && h.s < h.s0 + 16 ? (sheep ? 0.8 : 0.5) : 0; h.s += v * dt; h.g.visible = Math.abs(prog.s - h.s) < 105; if (!h.g.visible) continue;
       const want = h.A * Math.sin(time * h.w + h.ph) * (sheep ? 1 : Math.sin(time * 0.23 + h.ph) > -0.3 ? 1 : 0.2), was = h.off; h.off += (want - h.off) * Math.min(1, dt * (sheep ? 2.5 : 0.9)); const lat = (h.off - was) / Math.max(dt, 1e-3);
       const p = at(h.s), [x, z] = side(p, 0, h.off); h.g.position.set(x, hAt(x, z), z); const hd = Math.atan2(p.dx * (0.5 + v) - p.dz * lat * 0.6, p.dz * (0.5 + v) + p.dx * lat * 0.6); let dy = hd - h.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); h.g.rotation.y += dy * Math.min(1, dt * 3);
       BE.pose(h.g, time * (sheep ? 9 : 5) + h.ph, Math.min(1.2, (Math.abs(lat) + v) * (sheep ? 0.9 : 0.8)), 0, sheep ? 0 : 0.5 + 0.5 * Math.sin(time * 0.8 + h.ph)); h.cool -= dt;
       const d = Math.hypot(x - me.x, z - me.z), R = sheep ? 0.75 : 1.25; if (state === 'play' && d < R) { if (alt > (sheep ? 0.45 : 1.3)) { if (!h.leapt && sheep) { h.leapt = true; SC.gain(20, 'Leapt the sheep!', 2); } } else if (h.cool <= 0 && Math.abs(me.speed) > 2) { h.cool = 3.5; knock(sheep ? 5 : 10, sheep ? 'Baa! Mind the sheep!' : 'Moo! Mind the heifer!'); } } }
-    // ---- a cheer from the crowd now and then
+    // ---- a cheer from the crowd now and then, and the onlookers turning and waving as she passes (tightened skinned radius d < 28 m + compact visible far-LOD instancing for 60+ fps on iPad)
+    { const rebuildLod = Math.hypot(me.x - lastLodX, me.z - lastLodZ) > 3.5;
+      let farN = 0;
+      if (rebuildLod) { lastLodX = me.x; lastLodZ = me.z; }
+      for (const f of crowd) {
+        const d = Math.hypot(me.x - f.x, me.z - f.z), near = d < 22;
+        if (rebuildLod) {
+          f.wasNear = near; f.g.visible = near;
+          if (!near && d < 165) {
+            lodDummy.position.set(f.x, f.y, f.z); lodDummy.rotation.set(0, f.ry, 0); lodDummy.scale.setScalar(f.size); lodDummy.updateMatrix();
+            farDress.setMatrixAt(farN, lodDummy.matrix); farBody.setMatrixAt(farN, lodDummy.matrix); farDress.setColorAt(farN, f.farCol);
+            farN++;
+          }
+        }
+        if (!f.wasNear) continue;
+        const a = time * 1.4 + f.ph;
+        if (f.child) { FIG.pose(f.g, time * 2.7 + f.ph, 0.22); T(f.g, 'spine', 3 * Math.sin(a * 1.3), 0, 7 * Math.sin(a * 0.8)); if (d < 16) { T(f.g, 'upperarmR', -132 - 22 * Math.sin(a * 2.6), -12, -14); T(f.g, 'forearmR', -26); } }
+        else if (f.role === 'wave') { T(f.g, 'upperarmR', -124 - 20 * Math.sin(a * 2.1), -12, -14); T(f.g, 'forearmR', -28 - 16 * Math.cos(a * 2.1)); T(f.g, 'spine', 2 * Math.sin(a * 0.7), 0, 4 * Math.sin(a * 0.5)); }
+        else if (f.role === 'point') { T(f.g, 'upperarmR', -88 - 8 * Math.sin(a), -10, -18); T(f.g, 'forearmR', -16); T(f.g, 'spine', 2 * Math.sin(a * 0.6)); }
+        else if (f.role === 'branch') { T(f.g, 'upperarmR', -66 - 16 * Math.sin(a * 1.7), 0, -10); T(f.g, 'forearmR', -54 - 12 * Math.cos(a * 1.7)); }
+        else if (f.role === 'talk') { T(f.g, 'upperarmR', -36 - 20 * Math.sin(a), 0, -8); T(f.g, 'forearmR', -60 - 18 * Math.sin(a * 1.6)); T(f.g, 'upperarmL', -18 - 10 * Math.cos(a * 0.9), 0, 6); }
+        let look = 0.22 * Math.sin(a * 0.55);
+        if (d < 18) { look = Math.atan2(me.x - f.x, me.z - f.z) - f.ry; look = clamp(Math.atan2(Math.sin(look), Math.cos(look)), -1.18, 1.18); }
+        const hd = f.g.userData.hd; hd.rotation.y += (look - hd.rotation.y) * Math.min(1, dt * 4.5);
+      }
+      if (rebuildLod) { farDress.count = farBody.count = farN; farDress.instanceMatrix.needsUpdate = farBody.instanceMatrix.needsUpdate = true; if (farDress.instanceColor) farDress.instanceColor.needsUpdate = true; } }
     if (state === 'play' && time > cheerT && me.speed > 6) { cheerT = time + rnd(16, 26); warn(CHEER[Math.floor(rnd(0, CHEER.length))], 2.6); }
     if (time > warnT) $('warn').classList.remove('show');
 
@@ -385,17 +710,17 @@ function update(dt) {
       if (q && state === 'play') { const dq = Math.hypot(me.x - q.x, me.z - q.z), back = prog.s - q.s;
         if (!q.have) { g = back > 12 ? `The painters need the ${q.name}. Go back down the road for it: ${Math.round(dq)} m behind you` : `Fetch the ${q.name} from the colour-grinder by the road: ${Math.round(dq)} m`;
           if (!q.told && dq < 16) { q.told = true; say(q.man, 'Here, child! The painters up the road are waiting for this.', 3.6); }
-          if (dq < 1.6) { q.have = true; q.pot.visible = q.top.visible = false; SC.keep(q.id, { title: q.title, emoji: q.emoji }); SC.gain(30, q.got); say(q.man, q.line, 6.5); } }
+          if (dq < 4.6 || (back >= -1.5 && back < 10)) { q.have = true; q.pot.visible = q.top.visible = false; SC.keep(q.id, { title: q.title, emoji: q.emoji }); SC.gain(30, q.got); say(q.man, q.line, 6.5); g = `Carry the ${q.name} up to the painters at ${q.where}`; } }
         else g = `Carry the ${q.name} up to the painters at ${q.where}`; }
-      POTS.forEach((o, i) => { o.halo.visible = i === stageI && !o.have && state === 'play'; o.halo.scale.setScalar(1.6 * (1 + 0.2 * Math.sin(time * 4.2)) * (i === stageI && prog.s > o.s + 12 ? 2.2 : 1)); o.man.visible = Math.abs(o.s - prog.s) < 170; });
+      POTS.forEach((o, i) => { o.halo.visible = i === stageI && !o.have && state === 'play'; o.halo.scale.setScalar(1.6 * (1 + 0.2 * Math.sin(time * 4.2)) * (i === stageI && prog.s > o.s + 12 ? 2.2 : 1)); o.man.visible = Math.abs(o.s - prog.s) < 110; });
       goalEl.style.display = g ? 'block' : 'none'; if (g && goalEl.textContent !== '➜ ' + g) goalEl.textContent = '➜ ' + g; }
     if (next && state === 'play' && (next.end ? prog.s > LEN - 5 : POTS[stageI].have && prog.s > next.s - 6 && prog.s < next.s + 8)) { state = 'way'; wp = next; next.seen = true; wpT = 0; me.speed = 0; $('melt').src = wp.img; bubble.classList.remove('show'); $('warn').classList.remove('show'); SND.whoosh(0.07); wp.slab.visible = true; for (const q of PASSES) if (q.state === 'ride' || q.state === 'on') { q.state = 'done'; squad.forEach(h => h.visible = false); team.forEach(h => h.visible = false); chariot.visible = false; } }
-    for (const st of STAGES) { const act = st === wp, d = Math.abs(st.s - prog.s); if (!act && d > 170) { for (const a of st.actors) if (!a.me) a.H.visible = false; continue; }
+    for (const st of STAGES) { const act = st === wp, d = Math.abs(st.s - prog.s); if (!act && d > 110) { for (const a of st.actors) if (!a.me) a.H.visible = false; continue; }
       for (const a of st.actors) { if (a.me) continue; a.H.visible = true; const k = act ? sstep(0, 2.2, wpT) : 0, y = mix(hAt(a.idleAt[0], a.idleAt[1]), st.y0 + (a.lift || 0), k); a.H.position.set(mix(a.idleAt[0], a.slot[0], k), y, mix(a.idleAt[1], a.slot[1], k)); poseActor(a, act && k > 0.05 && k < 0.95); } }
     if (state === 'way') { const st = wp, E = st.end ? 5.5 : 0; wpT += dt; const hold = window.__road.holdStage; if (hold) wpT = Math.min(wpT, E + (hold === 2 ? 6.3 : 4.3));
       const t = wpT - E;      // the last staging opens on the temple front and the gold inside it, and only then draws up its five figures
       if (st.end) { const a = st.actors[0], k = sstep(0, 2.2, t); Hme.position.set(mix(me.x, a.slot[0], k), mix(me.y, st.y0, k), mix(me.z, a.slot[1], k)); Hme.rotation.y = st.ry; let d = a.yaw - meG.rotation.y + (k < 1 ? 0 : 0); if (k > 0) { if (!st._r) { st._r = true; meG.rotation.y = a.yaw; } } if (k >= 1) { me.x = a.slot[0]; me.z = a.slot[1]; me.y = st.y0; } T(meG, 'head', 0, 0, -30); cloth.visible = t > 1.6; }
-      st.k = sstep(0.6, 2.2, t); st.blueM.opacity = st.edgeM.opacity = st.k; st.slab.visible = t > 0.5;
+      st.k = sstep(1.55, 2.45, t); st.blueM.opacity = st.edgeM.opacity = st.k; st.slab.visible = t > 1.50;
       st.order.forEach((a, i) => { const ta = 2.4 + i * (1.3 / st.order.length); if (t > ta && !a.on) { petrify(a, true); SND.bell(9 + (i % 4), 0.05); SND.puff(0.05); } a.H.scale.z = mix(1, 0.34, sstep(ta - 0.1, ta + 0.5, t)); fade(a, sstep(4.6, 6.2, t)); });
       st.blueM.color.set('#2456a8').lerp(MARBLE, sstep(4.6, 6.2, t) * 0.92); st.edgeM.color.set('#f1e8d6').lerp(MARBLE, sstep(4.6, 6.2, t));
       if (t > 3.9 && t < 4.0) plate(st); if (t > 6.4 && t < 11.2) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
@@ -420,10 +745,14 @@ function update(dt) {
   SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
 }
 function draw() {
-  const w = innerWidth, h = innerHeight;
-  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  const w = innerWidth, h = innerHeight, pw = Math.round(w * PR), ph = Math.round(h * PR);
+  if (renderer.domElement.width !== pw || renderer.domElement.height !== ph) { renderer.setSize(w, h, false); target.setSize(pw, ph); camera.aspect = w / h; camera.updateProjectionMatrix(); }
   if (camHold) camHold();
-  renderer.render(scene, camera);
+  let reliefK = 0, bareK = 0;
+  if (state === 'way' && wp) { const t = wpT - (wp.end ? 5.5 : 0); reliefK = sstep(1.4, 3.4, t); bareK = sstep(4.6, 6.2, t); }
+  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null);
+  REL.update(camera, time, pw, ph, reliefK, bareK);
+  renderer.render(postScene, postCam);
 }
 let camHold = null;      // a test hook: a still camera for looking at a building
 let last = 0; function loop(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(loop); }
@@ -439,9 +768,9 @@ const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = 
 cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
 $('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
 $('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
-window.__road = { get state() { return state; }, me, begin, POTS, goal: () => goalEl.style.display === 'none' ? '' : goalEl.textContent, dbgS: () => progS, STAGES, freeze(f) { camHold = f; }, hAt, world: { found: new Set() }, go(x, z, s) { me.x = x; me.z = z; me.speed = 0; progS = s != null ? s : nearest(x, z).s; me.y = hAt(x, z); Hme.position.set(x, me.y, z); stageI = STAGES.findIndex(st => !st.end ? st.s > progS + 8 : true); for (const q of PASSES) if (q.at < progS - 5) q.state = 'done'; }, face(a) { me.yaw = a; }, see(k) { byKey[k].seen = true; },
+window.__road = { get state() { return state; }, me, begin, POTS, goal: () => goalEl.style.display === 'none' ? '' : goalEl.textContent, dbgS: () => progS, STAGES, freeze(f) { camHold = f; }, hAt, world: { found: new Set() }, go(x, z, s) { me.x = x; me.z = z; me.speed = 0; lastLodX = 1e9; progS = s != null ? s : nearest(x, z).s; me.y = hAt(x, z); Hme.position.set(x, me.y, z); stageI = STAGES.findIndex(st => !st.end ? st.s > progS + 8 : true); for (let i = 0; i < POTS.length; i++) if (i <= stageI && POTS[i].s < progS - 2) { POTS[i].have = true; POTS[i].pot.visible = POTS[i].top.visible = false; } for (const q of PASSES) if (q.at < progS - 5) q.state = 'done'; }, face(a) { me.yaw = a; }, see(k) { byKey[k].seen = true; },
   route: s => at(s), LEN, S: { horsemen: S1, cattle: S2, girls: S3, gate: S_GATE, end: LEN }, STAGES, byKey, P, LIGHT, holdStage: false, get wpT() { return wpT; }, get progS() { return progS; }, get stageI() { return stageI; },
-  dbg: { camera, phid, meG, Hme, walkers, herd, squad, THREE, scene, sun, hemi, PASSES, FR }, probe: (x, z) => ({ solid: solid(x, z), blocked: blocked(x, z), y: +hAt(x, z).toFixed(1), d: +nearest(x, z).d.toFixed(1), s: +nearest(x, z).s.toFixed(0) }) };
+  dbg: { camera, phid, meG, Hme, walkers, herd, squad, THREE, scene, sun, hemi, PASSES, FR, renderer }, probe: (x, z) => ({ solid: solid(x, z), blocked: blocked(x, z), y: +hAt(x, z).toFixed(1), d: +nearest(x, z).d.toFixed(1), s: +nearest(x, z).s.toFixed(0) }) };
 </script>
 </body>
 </html>
