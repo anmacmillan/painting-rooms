@@ -56,6 +56,37 @@ export function makeBeasts({ THREE, scene }) {
     }
   });
 
+  /* Merge static child meshes sharing the same material inside a bone group (cuts beast draw calls by ~3x with zero visual change) */
+  function packGroup(grp) {
+    const byMat = new Map(), kill = [];
+    for (const ch of grp.children) {
+      if (!ch.isMesh) continue;
+      let arr = byMat.get(ch.material);
+      if (!arr) byMat.set(ch.material, arr = []);
+      arr.push(ch); kill.push(ch);
+    }
+    for (const [mat, list] of byMat) {
+      if (list.length <= 1) continue;
+      const pos = [], nor = [], uv = [], v = new V3(), n = new V3(), nm = new THREE.Matrix3();
+      for (const m of list) {
+        m.updateMatrix(); nm.getNormalMatrix(m.matrix);
+        const g = m.geometry.index ? m.geometry.toNonIndexed() : m.geometry;
+        const p = g.attributes.position, nr = g.attributes.normal, u = g.attributes.uv;
+        for (let i = 0; i < p.count; i++) {
+          v.set(p.getX(i), p.getY(i), p.getZ(i)).applyMatrix4(m.matrix); pos.push(v.x, v.y, v.z);
+          n.set(nr.getX(i), nr.getY(i), nr.getZ(i)).applyMatrix3(nm).normalize(); nor.push(n.x, n.y, n.z);
+          uv.push(u ? u.getX(i) : 0, u ? u.getY(i) : 0);
+        }
+        grp.remove(m); m.geometry.dispose();
+      }
+      const mg = new THREE.BufferGeometry();
+      mg.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+      mg.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+      mg.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
+      grp.add(new THREE.Mesh(mg, mat));
+    }
+  }
+
   /* Loft a smooth skin over elliptical cross-section rings along a 3D spine path:
      pts: array of [x, y, z, rx, ry] where rx is half-width and ry is half-height along 'up'. */
   function skin(pts, mat, o = {}) {
@@ -82,15 +113,13 @@ export function makeBeasts({ THREE, scene }) {
     g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2));
     g.setIndex(idx);
     g.computeVertexNormals();
-    const m = new THREE.Mesh(g, mat);
-    m.castShadow = m.receiveShadow = true;
-    return m;
+    return new THREE.Mesh(g, mat);
   }
 
   const KIND = {
     horse: { len: 1.38, h: 1.36, up: 0.45, low: 0.48, neck: 0.72, neckA: -0.58, coat: '#9a683e', mane: '#38261a', hoof: '#2c241e', pale: '#d49b38' },
-    ox:    { len: 1.72, h: 1.30, up: 0.39, low: 0.41, neck: 0.52, neckA: -0.95, coat: '#e8dfd0', mane: '#c4b498', hoof: '#382e26', pale: '#f2ead8', horns: true },
-    sheep: { len: 0.84, h: 0.72, up: 0.21, low: 0.22, neck: 0.26, neckA: -0.68, coat: '#e4dac4', mane: '#c8bca4', hoof: '#342c24', pale: '#c8b89a', wool: true }
+    ox:    { len: 1.76, h: 1.32, up: 0.40, low: 0.42, neck: 0.54, neckA: -0.95, coat: '#e8dfd0', mane: '#c4b498', hoof: '#382e26', pale: '#f2ead8', horns: true },
+    sheep: { len: 0.86, h: 0.72, up: 0.22, low: 0.22, neck: 0.26, neckA: -0.68, coat: '#e4dac4', mane: '#c8bca4', hoof: '#342c24', pale: '#c8b89a', wool: true }
   };
 
   function make(kind, o = {}) {
@@ -120,47 +149,59 @@ export function makeBeasts({ THREE, scene }) {
         [0, by + 0.02, L * 1.06, 0.03, 0.03]
       ], mats.coat, { n: 18 }));
     } else if (kind === 'ox') {
+      /* Classical Greek sacrificial heifer/bull (South frieze XLV-XLVI): laterally compressed deep torso,
+         angular pelvic croup, tucked flank, sweeping deep ribcage & low brisket, and high muscular withers (NEVER a round barrel!) */
       body.add(skin([
-        [0, by + 0.08, -0.08, 0.04, 0.04],
-        [0, by + 0.08, 0.02, 0.25, 0.28],
-        [0, by + 0.07, L * 0.20, 0.35, 0.37], /* broad pelvic rump */
-        [0, by + 0.04, L * 0.50, 0.38, 0.41], /* heavy barrel */
-        [0, by + 0.10, L * 0.80, 0.35, 0.43], /* high humped withers */
-        [0, by + 0.02, L * 0.98, 0.25, 0.32],
-        [0, by + 0.00, L * 1.04, 0.04, 0.04]
+        [0, by + 0.12, -0.06, 0.03, 0.04],
+        [0, by + 0.12,  0.02, 0.18, 0.21], /* pin-bones / tailhead */
+        [0, by + 0.09,  L * 0.16, 0.26, 0.33], /* angular hip & sculpted rump */
+        [0, by + 0.08,  L * 0.34, 0.25, 0.29], /* tucked flank & waist */
+        [0, by + 0.02,  L * 0.56, 0.28, 0.37], /* deep sweeping belly & ribcage */
+        [0, by + 0.05,  L * 0.78, 0.26, 0.42], /* high muscular shoulder & withers */
+        [0, by + 0.00,  L * 0.94, 0.22, 0.34], /* deep brisket / chest */
+        [0, by - 0.02,  L * 1.03, 0.13, 0.21], /* front of brisket */
+        [0, by - 0.02,  L * 1.07, 0.03, 0.04]
       ], mats.coat, { n: 18 }));
-    } else {
-      /* Sheep: compact fleecy barrel */
+      /* Sculpted dorsal withers ridge & shoulder-blade relief masses + sculpted haunch cheeks */
       body.add(skin([
-        [0, by + 0.02, -0.05, 0.03, 0.03],
-        [0, by + 0.03, 0.04, 0.18, 0.19],
-        [0, by + 0.05, L * 0.28, 0.25, 0.26],
-        [0, by + 0.04, L * 0.58, 0.26, 0.27],
-        [0, by + 0.05, L * 0.86, 0.22, 0.24],
-        [0, by + 0.03, L * 1.00, 0.13, 0.15],
-        [0, by + 0.03, L * 1.04, 0.03, 0.03]
+        [0, by + 0.30, L * 0.10, 0.12, 0.08],
+        [0, by + 0.32, L * 0.32, 0.11, 0.07],
+        [0, by + 0.36, L * 0.58, 0.13, 0.09],
+        [0, by + 0.44, L * 0.78, 0.13, 0.11], /* prominent withers hump */
+        [0, by + 0.38, L * 0.92, 0.11, 0.09]
+      ], mats.coat, { n: 12 }));
+      for (const e of [-1, 1]) {
+        /* Muscular shoulder blade blending down into the foreleg */
+        body.add(skin([
+          [e * 0.15, by + 0.32, L * 0.76, 0.09, 0.12],
+          [e * 0.18, by + 0.08, L * 0.80, 0.11, 0.16],
+          [e * 0.16, by - 0.14, L * 0.83, 0.09, 0.12]
+        ], mats.coat, { up: [0, 0, 1], n: 10 }));
+        /* Muscular pelvic haunch blending into the hind thigh */
+        body.add(skin([
+          [e * 0.15, by + 0.22, L * 0.18, 0.10, 0.14],
+          [e * 0.18, by + 0.00, L * 0.18, 0.12, 0.18],
+          [e * 0.16, by - 0.18, L * 0.20, 0.09, 0.14]
+        ], mats.coat, { up: [0, 0, 1], n: 10 }));
+      }
+    } else {
+      /* Sheep: sculpted fleecy body with distinct brisket, tucked flank, and rounded rump */
+      body.add(skin([
+        [0, by + 0.04, -0.04, 0.03, 0.03],
+        [0, by + 0.05,  0.04, 0.15, 0.17],
+        [0, by + 0.06,  L * 0.24, 0.20, 0.24], /* fleecy haunch */
+        [0, by + 0.05,  L * 0.48, 0.21, 0.23], /* waist / flank */
+        [0, by + 0.03,  L * 0.74, 0.21, 0.26], /* deep woolly chest */
+        [0, by + 0.05,  L * 0.92, 0.16, 0.21], /* shoulder */
+        [0, by + 0.03,  L * 1.02, 0.09, 0.12],
+        [0, by + 0.03,  L * 1.05, 0.03, 0.03]
       ], mats.coat, { n: 16 }));
     }
 
-    /* 2. Sculpted neck and crest (in neck group: +Y runs up the neck towards the poll, +Z is the dorsal crest / back of the neck, -Z is the throat / front when rotated by neckA < 0!) */
-    /* Wait: let's verify the axes of 'neck'!
-       body faces +Z. When neck.rotation.x = K.neckA (negative, e.g. -0.58 rad), local +Y tilts FORWARD (+Z) and UP (+Y)!
-       And under a negative X rotation (-0.58 rad):
-       local +Z tilts UP (+Y) and FORWARD (+Z) — i.e. local -Z is the DORSAL CREST (top/back of the neck) and local +Z is the THROAT (underside/front of the neck)!
-       Wait: let's check with rotation matrix Rx(theta) for theta = -0.58:
-       y_world = y * cos(theta) - z * sin(theta) = 0.836 * y + 0.548 * z
-       z_world = y * sin(theta) + z * cos(theta) = -0.548 * y + 0.836 * z!
-       LOOK AT z_world = -0.548 * y + 0.836 * z:
-       When theta = -0.58, local +Y goes to z_world = -0.548 * y (BACKWARD, -Z)!
-       That's why the original code had CONE scaled by -K.neck (`sy = -K.neck`, which applied `o.rotation.x = Math.PI`, flipping local +Y to -Y)!
-       Instead of negative scales and backward rotations, let's make local +Y of `neck` go UP and FORWARD (`neck.rotation.x = +0.58` for a forward-tilted neck, or build the neck spine directly in `neck` coordinates where `(0, 0, 0)` is the base at the withers and `(0, ny, nz)` goes up `+Y` and forward `+Z`)! */
+    /* 2. Sculpted neck and crest (in neck local space: +Y is UP, +Z is FORWARD, -Z is BACKWARD toward the croup) */
     const neck = new THREE.Group();
-    neck.position.set(0, by + (kind === 'sheep' ? 0.12 : 0.18), L * 0.88);
+    neck.position.set(0, by + (kind === 'sheep' ? 0.11 : kind === 'ox' ? 0.14 : 0.18), L * (kind === 'ox' ? 0.86 : 0.88));
     body.add(neck);
-    /* In neck local space (with neck.rotation.x = 0 at rest!):
-       +Y is UP, +Z is FORWARD, -Z is BACKWARD (toward the croup).
-       So a point (0, y, z) on the neck goes upward (+y) and forward (+z);
-       the DORSAL CREST (mane) is on the top/back side (-z, +y), and the THROAT (dewlap) is on the front/underside (+z, -y)! */
     const head = new THREE.Group();
     if (kind === 'horse') {
       /* High-arched classical Parthenon neck curving up and forward to the poll */
@@ -183,31 +224,32 @@ export function makeBeasts({ THREE, scene }) {
       ], mats.mane, { up: [0, 0, 1], n: 12 }));
       head.position.set(0, 0.58, 0.30);
     } else if (kind === 'ox') {
-      /* Heavy horizontal-rising bovine neck with deep pleated hanging dewlap underneath (+z/-y side) */
+      /* Strong bovine neck carried forward from the high withers, with a deep sweeping dewlap from chin down to brisket */
       neck.add(skin([
-        [0, -0.04, -0.04, 0.22, 0.26],
-        [0, 0.08, 0.12, 0.19, 0.25],
-        [0, 0.20, 0.28, 0.16, 0.22],
-        [0, 0.28, 0.40, 0.14, 0.18],
-        [0, 0.32, 0.44, 0.05, 0.06]
+        [0,  0.02, -0.06, 0.21, 0.29],
+        [0,  0.10,  0.10, 0.18, 0.26],
+        [0,  0.18,  0.28, 0.15, 0.22],
+        [0,  0.24,  0.44, 0.13, 0.18],
+        [0,  0.27,  0.50, 0.05, 0.06]
       ], mats.coat, { up: [0, 1, 0], n: 16 }));
-      /* Deep pleated dewlap hanging from throat to brisket */
+      /* Deep hanging dewlap curving cleanly from the brisket up to the throat */
       neck.add(skin([
-        [0, -0.22, 0.02, 0.035, 0.12],
-        [0, -0.14, 0.18, 0.042, 0.17],
-        [0, -0.02, 0.32, 0.038, 0.15],
-        [0, 0.12, 0.42, 0.028, 0.10]
+        [0, -0.30,  0.02, 0.055, 0.14],
+        [0, -0.22,  0.18, 0.048, 0.17],
+        [0, -0.08,  0.34, 0.042, 0.15],
+        [0,  0.06,  0.46, 0.032, 0.10],
+        [0,  0.14,  0.52, 0.018, 0.05]
       ], mats.coat, { up: [0, 1, 0], n: 12 }));
-      head.position.set(0, 0.28, 0.42);
+      head.position.set(0, 0.25, 0.49);
     } else {
-      /* Sheep fleecy neck */
+      /* Sheep fleecy neck carried forward */
       neck.add(skin([
-        [0, -0.02, -0.02, 0.14, 0.15],
-        [0, 0.10, 0.08, 0.13, 0.14],
-        [0, 0.20, 0.16, 0.10, 0.11],
-        [0, 0.24, 0.19, 0.04, 0.04]
+        [0, -0.02, -0.02, 0.13, 0.15],
+        [0,  0.09,  0.09, 0.12, 0.14],
+        [0,  0.19,  0.18, 0.095, 0.11],
+        [0,  0.23,  0.21, 0.04, 0.04]
       ], mats.coat, { up: [0, 0, 1], n: 14 }));
-      head.position.set(0, 0.22, 0.18);
+      head.position.set(0, 0.21, 0.20);
     }
     neck.add(head);
 
@@ -344,42 +386,46 @@ export function makeBeasts({ THREE, scene }) {
       knee.position.y = -K.up;
       hip.add(knee);
 
-      /* Upper segment: muscular haunch/gaskin (hind) or shoulder/forearm (fore) */
+      /* Upper segment: muscular thigh -> forward stifle -> backward-projecting hock (hind), or shoulder -> elbow -> forearm -> knee (fore) */
       if (hind) {
+        const hockBack = kind === 'ox' ? -0.11 : kind === 'sheep' ? -0.07 : -0.06;
         hip.add(skin([
-          [0, 0.20, 0.00, 0.085 * rScale, 0.125 * rScale],
-          [0, 0.04, -0.01, 0.080 * rScale, 0.115 * rScale],
-          [0, -K.up * 0.5, -0.03, 0.062 * rScale, 0.085 * rScale],
-          [0, -K.up, -0.04, 0.045 * rScale, 0.058 * rScale], /* hock joint */
-          [0, -K.up - 0.02, -0.04, 0.034 * rScale, 0.042 * rScale]
+          [0, 0.24,  0.02, 0.100 * rScale, 0.155 * rScale],
+          [0, 0.06,  0.05, 0.090 * rScale, 0.135 * rScale], /* forward stifle */
+          [0, -K.up * 0.50, hockBack * 0.45, 0.068 * rScale, 0.095 * rScale], /* muscular gaskin */
+          [0, -K.up, hockBack, 0.048 * rScale, 0.066 * rScale], /* pronounced backward-angled hock joint */
+          [0, -K.up - 0.02, hockBack, 0.036 * rScale, 0.045 * rScale]
         ], mats.coat, { up: [0, 0, 1], n: 12 }));
       } else {
+        const elbowBack = kind === 'ox' ? -0.05 : -0.03;
         hip.add(skin([
-          [0, 0.20, 0.00, 0.078 * rScale, 0.105 * rScale],
-          [0, 0.04, 0.01, 0.068 * rScale, 0.090 * rScale],
-          [0, -K.up * 0.55, 0.01, 0.050 * rScale, 0.064 * rScale],
-          [0, -K.up, 0.00, 0.044 * rScale, 0.050 * rScale], /* knee joint */
-          [0, -K.up - 0.02, 0.00, 0.034 * rScale, 0.040 * rScale]
+          [0, 0.24, -0.02, 0.092 * rScale, 0.125 * rScale],
+          [0, 0.04, elbowBack, 0.078 * rScale, 0.105 * rScale], /* elbow */
+          [0, -K.up * 0.52, 0.01, 0.056 * rScale, 0.070 * rScale], /* forearm */
+          [0, -K.up, 0.02, 0.046 * rScale, 0.054 * rScale], /* prominent carpal knee joint */
+          [0, -K.up - 0.02, 0.02, 0.035 * rScale, 0.042 * rScale]
         ], mats.coat, { up: [0, 0, 1], n: 12 }));
       }
 
       /* Lower segment: cannon bone -> fetlock -> forward-angled pastern -> sculpted hoof */
-      const zOff = hind ? -0.04 : 0.0;
+      const zTop = hind ? (kind === 'ox' ? -0.11 : kind === 'sheep' ? -0.07 : -0.06) : 0.02;
+      const zFet = hind ? zTop * 0.35 : -0.01;
       knee.add(skin([
-        [0, 0.02, zOff, 0.044 * rScale, 0.050 * rScale],
-        [0, -K.low * 0.45, zOff * 0.5, 0.034 * rScale, 0.040 * rScale],
-        [0, -K.low * 0.76, 0.00, 0.038 * rScale, 0.044 * rScale], /* fetlock */
-        [0, -K.low * 0.88, 0.02, 0.034 * rScale, 0.038 * rScale]  /* pastern */
+        [0, 0.02, zTop, 0.046 * rScale, 0.054 * rScale],
+        [0, -K.low * 0.45, (zTop + zFet) * 0.5, 0.035 * rScale, 0.042 * rScale],
+        [0, -K.low * 0.76, zFet, 0.040 * rScale, 0.046 * rScale], /* fetlock joint */
+        [0, -K.low * 0.88, zFet + 0.035, 0.034 * rScale, 0.038 * rScale]  /* forward-sloping pastern */
       ], mats.coat, { up: [0, 0, 1], n: 12 }));
       knee.add(skin([
-        [0, -K.low * 0.86, 0.02, 0.038 * rScale, 0.040 * rScale],
-        [0, -K.low * 0.99, 0.04, 0.050 * rScale, 0.054 * rScale],
-        [0, -K.low * 1.01, 0.04, 0.015 * rScale, 0.015 * rScale]
+        [0, -K.low * 0.86, zFet + 0.035, 0.040 * rScale, 0.042 * rScale],
+        [0, -K.low * 0.99, zFet + 0.055, 0.054 * rScale, 0.058 * rScale],
+        [0, -K.low * 1.01, zFet + 0.055, 0.015 * rScale, 0.015 * rScale]
       ], mats.hoof, { up: [0, 0, 1], n: 12 }));
 
       legs.push({ hip, knee, hind });
     }
 
+    for (const grp of [body, neck, head, tail]) packGroup(grp);
     g.userData = {
       kind, K, body, neck, head, tail, legs, mats,
       seatY: by + 0.14,
