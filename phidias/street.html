@@ -255,13 +255,65 @@ const [ST1, ST2, ST3, ST4] = STAGES, byKey = Object.fromEntries(STAGES.map(s => 
 // the folded cloth itself, between the man and the child: the robe for the old statue of Athena. It is held up only at the staging
 const cloth = new THREE.Mesh(new THREE.BoxGeometry(0.62, 0.72, 0.07), prop('#e9b23a', '#e9b23a')); { const [x, z] = ST4.P(0.815, -0.02); cloth.position.set(x, ST4.y0 + 1.02, z); cloth.rotation.y = ST4.ry; on(cloth); scene.add(cloth); ST4.actors[3].mats.push({ m: cloth.material, map: null, col: cloth.material.color.clone(), paint: C('#e9b23a') }); }
 
-/* ================= the crowd: Athens lining the Way. Plain shapes, set up by the hundred ================= */
-{ const spots = [], pal = ['#efe6d2', '#e6dcc6', '#d9c9a4', '#b8473a', '#4a6aa8', '#c9a05a', '#8a5a3a', '#f3eee2', '#a8443a', '#6a7a4a'];
-  const nearSlab = (x, z) => STAGES.some(s => { const rx = x - s.O[0], rz = z - s.O[1], d = rx * s.dx + rz * s.dz, r = rx * s.dz - rz * s.dx; return Math.abs(r) < s.Ws / 2 + 3.5 && d > -20 && d < 6; });
-  for (let s = 6; s < LEN - 4; s += 1.25) for (const sd of [-1, 1]) for (let row = 0; row < 2; row++) { if (((s * 7 + row * 3 + sd) % 5) < 1.2) continue; const p = at(s), lat = corr(s) + 0.9 + row * 1.0 + ((s * 13) % 7) * 0.08, [x, z] = side(p, ((s * 3) % 5) * 0.2, lat * sd); if (solid(x, z) || nearSlab(x, z) || nearest(x, z).d < corr(nearest(x, z).s) + 0.5 || (s > S_GATE - 16 && s < S_GATE + 8)) continue; spots.push([x, hAt(x, z), z, Math.atan2(-p.dz * sd * -1, p.dx * sd * -1) + Math.PI / 2 + (((s * 17) % 9) - 4) * 0.1, 0.9 + ((s * 11 + row) % 7) * 0.035, (Math.floor(s * 3) + row + (sd > 0 ? 3 : 0)) % pal.length]); }
-  const body = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.16, 0.27, 1.34, 8), lam({ color: '#ffffff' }), spots.length), head = new THREE.InstancedMesh(new THREE.SphereGeometry(0.115, 8, 6), lam({ color: '#e6c4a0' }), spots.length), d = new THREE.Object3D();
-  spots.forEach(([x, y, z, ry, k, ci], i) => { d.position.set(x, y + 0.67 * k, z); d.scale.setScalar(k); d.rotation.y = ry; d.updateMatrix(); body.setMatrixAt(i, d.matrix); body.setColorAt(i, C(pal[ci])); d.position.y = y + 1.47 * k; d.updateMatrix(); head.setMatrixAt(i, d.matrix); });
-  for (const m of [body, head]) { m.castShadow = true; m.frustumCulled = false; scene.add(m); } }
+/* ================= the crowd: Athenians in loose groups along the Way, with a baked human mesh far off ================= */
+const crowd = []; let farDress = null, farBody = null;
+{ const nearSlab = (x, z) => STAGES.some(s => { const rx = x - s.O[0], rz = z - s.O[1], d = rx * s.dx + rz * s.dz, r = rx * s.dz - rz * s.dx; return Math.abs(r) < s.Ws / 2 + 4.2 && d > -22 && d < 7; });
+  const nearPot = (x, z) => STAGES.slice(0, 3).some(st => { const p = at(st.s - 58); return Math.hypot(x - p.x, z - p.z) < 6.5; });
+  const KITS = [
+    { name: 'elder', tint: '#efe6d2', far: '#efe6d2' }, { name: 'kore_white', tint: '#efe7d6', far: '#efe7d6' }, { name: 'magistrate', tint: '#d9a85c', far: '#d9a85c' },
+    { name: 'kore_red', tint: '#b8473a', far: '#b8473a' }, { name: 'carrier', tint: '#dfd3bc', far: '#dfd3bc' }, { name: 'kore_blue', tint: '#4a6aa8', far: '#4a6aa8' },
+    { name: 'musician', tint: '#a8443a', far: '#a8443a' }, { name: 'priestess', tint: '#e6dcc8', far: '#e6dcc8' }, { name: 'elder', tint: '#7a8a58', far: '#7a8a58' },
+    { name: 'rider_hat', tint: '#c9a062', far: '#4a6aa8' }, { name: 'kore_white', tint: '#8a5464', far: '#8a5464' }, { name: 'carrier', tint: '#9a6842', far: '#9a6842' },
+    { name: 'boy', child: true, size: 0.78, tint: '#d8ceb8', far: '#d8ceb8' }, { name: 'girl', child: true, size: 0.75, tint: '#6a8a58', far: '#6a8a58' },
+    { name: 'boy', child: true, size: 0.82, tint: '#5a769a', far: '#5a769a' }, { name: 'girl', child: true, size: 0.74, tint: '#c46a52', far: '#c46a52' }
+  ];
+  const ROLES = ['talk', 'wave', 'talk', 'point', 'branch', 'watch', 'talk', 'wave'];
+  /* Build a real human far-LOD geometry from the loaded Blender figure so distant groups never read as skittles */
+  const tmpl = FIG.spawn('kore_white', { size: 1 }); scene.remove(tmpl); tmpl.updateMatrixWorld(true);
+  let dressGeo = null; const bPos = [], bNor = [], bCol = [];
+  const pushGeo = (geo, col) => { const g = geo.index ? geo.toNonIndexed() : geo, p = g.attributes.position, n = g.attributes.normal;
+    for (let i = 0; i < p.count; i++) { bPos.push(p.getX(i), p.getY(i), p.getZ(i)); bNor.push(n.getX(i), n.getY(i), n.getZ(i)); bCol.push(col.r, col.g, col.b); } };
+  tmpl.traverse(m => { if (!m.isMesh || m === tmpl.userData.sh) return; const u = tmpl.userData, mk = Object.keys(u.mats).find(k => u.mats[k] === m.material);
+    if (mk === 'dress') dressGeo = m.geometry.clone();
+    else if (mk === 'skin' || mk === 'face' || mk === 'hose') pushGeo(m.geometry, C('#eccba4'));
+    else if (mk === 'hair' || mk === 'dark' || mk === 'beard') pushGeo(m.geometry, C('#362419')); });
+  const bodyGeo = new THREE.BufferGeometry(); bodyGeo.setAttribute('position', new THREE.Float32BufferAttribute(bPos, 3)); bodyGeo.setAttribute('normal', new THREE.Float32BufferAttribute(bNor, 3)); bodyGeo.setAttribute('color', new THREE.Float32BufferAttribute(bCol, 3));
+  let grp = 0;
+  for (let s = 10; s < LEN - 10; s += 8.5 + ((grp * 5) % 7), grp++) {
+    if (s > S_GATE - 15 && s < S_GATE + 9) continue;
+    for (const sd of [-1, 1]) {
+      if (((grp + (sd > 0 ? 2 : 0)) % 5) === 0) continue; /* leave natural open stretches on one side or the other */
+      const p = at(s), inStreet = s >= 200 && s <= 372, wide = (s < 195 || s > 565) ? ((grp * 3 + (sd > 0 ? 1 : 0)) % 4) * 1.15 : 0;
+      const baseLat = inStreet ? 5.6 + ((grp * 3) % 3) * 0.45 : (s < 195 ? 9.6 : corr(s) - 0.6) + wide;
+      const nInGrp = inStreet ? 2 + (grp % 2) : 2 + ((grp * 5 + (sd > 0 ? 3 : 1)) % 4); /* 2 to 5 people in a loose cluster */
+      const OFF = [[-0.75, 0.0, 0.44], [0.7, 0.38, -0.50], [0.08, 1.18, 0.14], [-1.35, 0.95, 0.30], [1.25, 1.35, -0.32]];
+      for (let j = 0; j < nInGrp; j++) {
+        const [du, dv, dYaw] = OFF[j], sHere = clamp(s + du + ((grp + j) % 3 - 1) * 0.35, 6, LEN - 6), pH = at(sHere);
+        const lat = (baseLat + (inStreet ? dv * 0.45 : dv) + ((grp * 3 + j * 5) % 5) * 0.14) * sd, [x, z] = side(pH, 0, lat);
+        if (solid(x, z) || nearSlab(x, z) || nearPot(x, z) || nearest(x, z).d < 5.2) continue;
+        const pickChild = (j === nInGrp - 1 && (grp + (sd > 0 ? 1 : 0)) % 3 === 0);
+        const kit = pickChild ? KITS[12 + ((grp + j) % 4)] : KITS[(grp * 3 + j * 2 + (sd > 0 ? 5 : 0)) % 12];
+        const size = (kit.size || 1.08) * (0.96 + ((grp * 7 + j * 3) % 5) * 0.025);
+        const roadYaw = Math.atan2(-pH.dz * sd * -1, pH.dx * sd * -1) + Math.PI / 2, ry = roadYaw + dYaw;
+        const g = FIG.spawn(kit.name, { size, adult: !kit.child, tint: kit.tint });
+        const y = hAt(x, z); g.position.set(x, y, z); g.rotation.y = ry; FIG.pose(g, 0, 0);
+        const role = kit.child ? 'child' : ROLES[(grp + j * 3 + (sd > 0 ? 2 : 0)) % ROLES.length];
+        if (role === 'branch') { const br = new THREE.Mesh(new THREE.ConeGeometry(0.08, 0.45, 5), prop('#5a7a3a')); br.position.set(0, 0.18, 0.05); g.userData.aR.add(br); on(br); }
+        /* Give each figure a natural initial stance so even before animation they never stand stiff */
+        const ph = ((grp * 1.7 + j * 2.3) % 6.28);
+        if (role === 'wave' || role === 'point') { T(g, 'upperarmR', role === 'wave' ? -122 : -86, -12, -14); T(g, 'forearmR', -26); }
+        else if (role === 'branch') { T(g, 'upperarmR', -64, 0, -10); T(g, 'forearmR', -54); }
+        else if (role === 'talk') { T(g, 'upperarmR', -38, 0, -8); T(g, 'forearmR', -62); T(g, 'head', 0, 0, dYaw * -28); }
+        crowd.push({ g, x, y, z, ry, size, ph, role, child: !!kit.child, farCol: C(kit.far), wasNear: true, idx: crowd.length });
+      }
+    }
+  }
+  farDress = new THREE.InstancedMesh(dressGeo, lam({ map: tmpl.userData.mats.dress.map, color: '#ffffff' }), crowd.length);
+  farBody = new THREE.InstancedMesh(bodyGeo, lam({ vertexColors: true }), crowd.length);
+  const d = new THREE.Object3D();
+  crowd.forEach((f, i) => { d.position.set(f.x, f.y, f.z); d.rotation.set(0, f.ry, 0); d.scale.setScalar(0); d.updateMatrix(); farDress.setMatrixAt(i, d.matrix); farBody.setMatrixAt(i, d.matrix); farDress.setColorAt(i, f.farCol); });
+  for (const m of [farDress, farBody]) { m.castShadow = false; m.receiveShadow = true; m.frustumCulled = false; scene.add(m); }
+}
 
 /* ================= the procession on the move ================= */
 // walkers on foot, in the order of the frieze from its back to its head: elders, musicians, the youths with the water jars. They go at a walk and stop, as a procession does
@@ -374,7 +426,23 @@ function update(dt) {
       const p = at(h.s), [x, z] = side(p, 0, h.off); h.g.position.set(x, hAt(x, z), z); const hd = Math.atan2(p.dx * (0.5 + v) - p.dz * lat * 0.6, p.dz * (0.5 + v) + p.dx * lat * 0.6); let dy = hd - h.g.rotation.y; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); h.g.rotation.y += dy * Math.min(1, dt * 3);
       BE.pose(h.g, time * (sheep ? 9 : 5) + h.ph, Math.min(1.2, (Math.abs(lat) + v) * (sheep ? 0.9 : 0.8)), 0, sheep ? 0 : 0.5 + 0.5 * Math.sin(time * 0.8 + h.ph)); h.cool -= dt;
       const d = Math.hypot(x - me.x, z - me.z), R = sheep ? 0.75 : 1.25; if (state === 'play' && d < R) { if (alt > (sheep ? 0.45 : 1.3)) { if (!h.leapt && sheep) { h.leapt = true; SC.gain(20, 'Leapt the sheep!', 2); } } else if (h.cool <= 0 && Math.abs(me.speed) > 2) { h.cool = 3.5; knock(sheep ? 5 : 10, sheep ? 'Baa! Mind the sheep!' : 'Moo! Mind the heifer!'); } } }
-    // ---- a cheer from the crowd now and then
+    // ---- a cheer from the crowd now and then, and the onlookers turning and waving as she passes
+    { let dirty = false; const dummy = new THREE.Object3D();
+      for (const f of crowd) {
+        const d = Math.hypot(me.x - f.x, me.z - f.z), near = d < 115;
+        if (near !== f.wasNear) { f.wasNear = near; f.g.visible = near; dummy.position.set(f.x, f.y, f.z); dummy.rotation.set(0, f.ry, 0); dummy.scale.setScalar(near ? 0 : f.size); dummy.updateMatrix(); farDress.setMatrixAt(f.idx, dummy.matrix); farBody.setMatrixAt(f.idx, dummy.matrix); dirty = true; }
+        if (!near || d > 85) continue;
+        const a = time * 1.4 + f.ph;
+        if (f.child) { FIG.pose(f.g, time * 2.7 + f.ph, 0.22); T(f.g, 'spine', 3 * Math.sin(a * 1.3), 0, 7 * Math.sin(a * 0.8)); if (d < 16) { T(f.g, 'upperarmR', -132 - 22 * Math.sin(a * 2.6), -12, -14); T(f.g, 'forearmR', -26); } }
+        else if (f.role === 'wave') { T(f.g, 'upperarmR', -124 - 20 * Math.sin(a * 2.1), -12, -14); T(f.g, 'forearmR', -28 - 16 * Math.cos(a * 2.1)); T(f.g, 'spine', 2 * Math.sin(a * 0.7), 0, 4 * Math.sin(a * 0.5)); }
+        else if (f.role === 'point') { T(f.g, 'upperarmR', -88 - 8 * Math.sin(a), -10, -18); T(f.g, 'forearmR', -16); T(f.g, 'spine', 2 * Math.sin(a * 0.6)); }
+        else if (f.role === 'branch') { T(f.g, 'upperarmR', -66 - 16 * Math.sin(a * 1.7), 0, -10); T(f.g, 'forearmR', -54 - 12 * Math.cos(a * 1.7)); }
+        else if (f.role === 'talk') { T(f.g, 'upperarmR', -36 - 20 * Math.sin(a), 0, -8); T(f.g, 'forearmR', -60 - 18 * Math.sin(a * 1.6)); T(f.g, 'upperarmL', -18 - 10 * Math.cos(a * 0.9), 0, 6); }
+        let look = 0.22 * Math.sin(a * 0.55);
+        if (d < 18) { look = Math.atan2(me.x - f.x, me.z - f.z) - f.ry; look = clamp(Math.atan2(Math.sin(look), Math.cos(look)), -1.18, 1.18); }
+        const hd = f.g.userData.hd; hd.rotation.y += (look - hd.rotation.y) * Math.min(1, dt * 4.5);
+      }
+      if (dirty) { farDress.instanceMatrix.needsUpdate = true; farBody.instanceMatrix.needsUpdate = true; } }
     if (state === 'play' && time > cheerT && me.speed > 6) { cheerT = time + rnd(16, 26); warn(CHEER[Math.floor(rnd(0, CHEER.length))], 2.6); }
     if (time > warnT) $('warn').classList.remove('show');
 
