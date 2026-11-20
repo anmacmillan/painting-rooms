@@ -105,7 +105,7 @@ const G = { got: new Set(), cushion: false, wet: 1, relaid: 0, hits: 0, stage: 0
 const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
 const warn = (t, secs = 2.4) => { $('warn').textContent = t; $('warn').classList.add('show'); warnT = time + secs; };
 const plate = (title, line, quote) => { $('plate').innerHTML = (title ? `<i>${title}</i>` : '') + (line ? `<span>${line}</span>` : '') + (quote ? `<em>${quote}</em>` : ''); $('plate').classList.add('show'); };
-const blocked = (x, z) => { const k = kind(x, z); if (k === 0) return true; const n = nearest(x, z); if (n.d > RT.half(n.s) + 2.5) return true; return LIFE.blocked(x, z); };
+const blocked = (x, z) => { if (TOWN.wall(x, z)) return true; const n = nearest(x, z); if (n.d > RT.half(n.s) + 2.5) return true; return LIFE.blocked(x, z); };
 const PICKS = W.picks.map(p => ({ ...p, s: sOut(p.p) }));
 const SC = makeScore({ THREE, scene, key: 'pompeii', at, nearest: (x, z) => nearest(x, z), LEN, groundY: hAt, blocked, isHouse: (x, z) => kind(x, z) === 0, walkers: [], slops: false, washing: false, hurdles: [], ditches: [], paintings: 3, thing: 'sestertius', things: 'sesterces',
   avoid: [0, sOut(PL.dog.door), S_FAR, LEN - 4, ...PICKS.map(p => p.s), ...STONES.map(s => s.s)], half: 1.7, par: 215 });
@@ -154,7 +154,7 @@ function update(dt) {
     const top = 7.6 * (1 - 0.22 * sstep(0.05, 0.24, depth)) * (SC.powers && SC.powers.some && false ? 1 : 1);
     me.speed += (go * top - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.4)); let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
     if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;
-      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
+      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3, 1.52, -1.52]) { const c = Math.cos(a), sn = Math.sin(a), k = Math.max(0.28, c), tx = me.x + (mx * c - mz * sn) * k, tz = me.z + (mx * sn + mz * c) * k; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
       if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
     for (const o of TOWN.solids) { const d = Math.hypot(nx - o.x, nz - o.z); if (d < o.r && d > 0.001) { const px = o.x + (nx - o.x) / d * o.r, pz = o.z + (nz - o.z) / d * o.r; if (kind(px, pz) !== 0) { nx = px; nz = pz; } } }      /* she slides round a fountain */
     const f = hAt(nx, nz) + (kind(nx, nz) === 2 ? depth : depth * 0.5); me.x = nx; me.z = nz; const jump = (keys.has('Space') || held.jump) && state === 'play';
