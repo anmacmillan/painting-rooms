@@ -168,9 +168,11 @@ const roadHalf = s => s < 196 ? 5.2 : s < S_GATE - 20 ? 4.6 : s < S_GATE + 12 ? 
   roadTex.wrapS = roadTex.wrapT = THREE.RepeatWrapping;
   const rPos = [], rNor = [], rUv = [], rIdx = [], rSteps = Math.floor(LEN / 1.5), K = 6;
   for (let i = 0; i <= rSteps; i++) {
-    const s = Math.min(LEN - 0.05, i * 1.5), pt = at(s), hw = roadHalf(s) + 1.1;
+    const s = Math.min(LEN - 0.05, i * 1.5), pt = at(s), pA = at(Math.max(0, s - 6)), pB = at(Math.min(LEN - 0.05, s + 6));
+    const sdx = pA.dx + pt.dx + pB.dx, sdz = pA.dz + pt.dz + pB.dz, sL = Math.hypot(sdx, sdz) || 1, sp = { x: pt.x, z: pt.z, dx: sdx / sL, dz: sdz / sL };
+    const hw = (s > 470 && s < 535 ? 3.6 : roadHalf(s)) + 0.9;
     for (let j = 0; j <= K; j++) {
-      const u = j / K, v = (u - 0.5) * 2 * hw, [rx, rz] = side(pt, 0, v), ry = ground(rx, rz, true) + 0.032;
+      const u = j / K, v = (u - 0.5) * 2 * hw, [rx, rz] = side(sp, 0, v), ry = Math.max(ground(rx, rz, true), ground(rx, rz, false)) + 0.045;
       rPos.push(rx, ry, rz); rNor.push(0, 1, 0); rUv.push(u, s / 9);
     }
   }
@@ -349,7 +351,7 @@ function makeStage(o) {
     Object.assign(a, { H: a.H || H, obj, mats, slot, idleAt: idle, yaw: Math.atan2(-Math.cos(a.face * D2R), -Math.sin(a.face * D2R)), on: false, ph: rnd(0, 6) }); if (!a.me) { obj.rotation.y = a.yaw; H.position.set(idle[0], hAt(idle[0], idle[1]), idle[1]); } st.actors.push(a); }
   st.order = st.actors.slice().sort((p, q) => p.u - q.u); return st;
 }
-const petrify = (a, yes) => { if (a.on === yes) return; a.on = yes; for (const q of a.mats) { if (!q.map) q.m.color.copy(yes ? q.paint : q.col); else q.m.color.copy(q.col); q.m.needsUpdate = true; } };
+const petrify = (a, yes) => { if (a.on === yes) return; a.on = yes; for (const q of a.mats) { if (!q.map || a.beast) q.m.color.copy(yes ? q.paint : q.col); else q.m.color.copy(q.col); q.m.needsUpdate = true; } };
 const fade = (a, k) => { if (a.on) for (const q of a.mats) if (!q.map) q.m.color.copy(q.paint).lerp(MARBLE, k); };
 // poses. Every one is held still; t is time, for a little life before the stone
 const sit = (g, spread = 20) => { for (const S of 'LR') { T(g, 'thigh' + S, -66, S === 'L' ? spread : -spread, 0); T(g, 'shin' + S, 58); } };
@@ -358,15 +360,17 @@ const FE_N = [P.FE.nx, P.FE.nz], EM = P.eastMid;
 const STAGES = [
   /* 1. West frieze, block II (British Museum): two horsemen riding to the left, their horses up on their hind legs. The first rider leans back with a hand to his head, his cloak flying. */
   makeStage({ key: 'horsemen', s: S1, O: [103.5, 139], look: [-1, 0], Ws: 4.5, aspect: 1400 / 816, img: 'images/frieze.jpg', title: 'Two horsemen', line: 'West frieze of the Parthenon, block II · carved about 443–438 BC · British Museum', man: [-0.28, -2.2],
-    actors: [{ beast: 'horse', u: 0.35, face: 180, size: 0.95, rear: 0.8, coat: '#8a5a34', o: { coat: '#8a5a34' }, idle: [1.2, -3.2], rider: { name: 'rider', size: 0.98, paint: '#efe6d2', cloak: '#b63a28' }, rpose: (g, t) => { sit(g); T(g, 'spine', -16); T(g, 'head', -6, 0, 30); arms(g, 'R', -150, -30, -95); arms(g, 'L', -42, 0, -40); T(g, 'hair', 70); } },
-      { beast: 'horse', u: 0.80, face: 180, size: 0.95, rear: 0.9, coat: '#e6dccb', o: { coat: '#e9e2d6', mane: '#bcae98' }, idle: [2.6, -2.2], rider: { name: 'rider', size: 0.98, paint: '#efe6d2', cloak: '#2456a8' }, rpose: (g, t) => { sit(g); T(g, 'spine', 4); T(g, 'head', 6); arms(g, 'R', -46, 0, -52); arms(g, 'L', -46, 0, -52); T(g, 'hair', 30); } }] }),
-  /* 2. South frieze, blocks XLV-XLVI (British Museum): young men in mantles leading a heifer to the sacrifice; one lifts a hand to his head, one looks back over his shoulder. */
+    actors: [{ beast: 'horse', u: 0.33, face: 180, size: 0.98, rear: 0.82, toss: -0.18, coat: '#9a683e', o: { coat: '#9a683e' }, idle: [1.2, -3.2], rider: { name: 'rider', size: 1.0, paint: '#efe6d2', cloak: '#a83828' }, rpose: (g, t) => { sit(g); T(g, 'spine', -14, 0, -22); T(g, 'head', -4, 0, -34); arms(g, 'L', -148, 28, -98); arms(g, 'R', -38, 0, -48); T(g, 'hair', 74); } },
+      { beast: 'horse', u: 0.77, face: 180, size: 0.98, rear: 0.88, toss: 0.22, coat: '#e6dccb', o: { coat: '#ece3d2', mane: '#b8aa94' }, idle: [2.6, -2.2], rider: { name: 'rider', size: 1.0, paint: '#efe6d2', cloak: '#245292' }, rpose: (g, t) => { sit(g); T(g, 'spine', 6); T(g, 'head', 8); arms(g, 'R', -48, 0, -56); arms(g, 'L', -48, 0, -56); T(g, 'hair', 34); } }] }),
+  /* 2. South frieze, blocks XLV-XLVI (British Museum): young men in mantles leading heifers to the sacrifice; one lifts a hand to his head, one looks back over his shoulder. */
   makeStage({ key: 'cattle', s: S2, O: [176.2, 356], look: [-1, 0], Ws: 2.75, aspect: 1400 / 1057, img: 'images/cattle.jpg', title: 'Cattle led to the sacrifice', line: 'South frieze of the Parthenon, blocks XLV–XLVI · British Museum', man: [-0.42, -2.0],
-    actors: [{ beast: 'ox', u: 0.52, d: 0.5, face: 0, size: 0.9, coat: '#e9e0cc', toss: 0.6, idle: [0.3, -1.0] },
+    actors: [
+      { beast: 'ox', u: 0.12, d: 0.34, face: 0, size: 0.88, coat: '#e6ddd0', o: { coat: '#e6ddd0' }, toss: 0.72, idle: [-0.3, -2.8] },
+      { beast: 'ox', u: 0.66, d: 0.36, face: 0, size: 0.90, coat: '#efe7d8', o: { coat: '#efe7d8' }, toss: 0.22, idle: [0.5, -2.8] },
       { name: 'carrier', u: 0.04, face: 0, size: 1.16, paint: '#efe6d2', idle: [-0.5, -2.6], pose: g => { T(g, 'head', -4); arms(g, 'L', -30, 0, -60); } },
-      { name: 'carrier', u: 0.27, face: 70, size: 1.16, paint: '#d9a05a', idle: [-0.2, -3.6], pose: g => { T(g, 'head', 4, 0, 24); arms(g, 'R', -150, -30, -110); arms(g, 'L', -20, 0, -70); } },
-      { name: 'carrier', u: 0.55, face: 20, size: 1.16, paint: '#efe6d2', idle: [0.4, -2.4], pose: g => { T(g, 'spine', 6); T(g, 'head', 0, 0, 40); arms(g, 'L', -50, 0, -80); arms(g, 'R', -20, 0, -40); } },
-      { name: 'carrier', u: 0.78, face: 0, size: 1.16, paint: '#b63a28', idle: [0.9, -3.4], pose: g => { T(g, 'spine', 8); T(g, 'head', 8); arms(g, 'L', -36, 0, -70); } }] }),
+      { name: 'carrier', u: 0.28, face: 70, size: 1.16, paint: '#d49b4b', idle: [-0.2, -3.6], pose: g => { T(g, 'head', 4, 0, 24); arms(g, 'R', -150, -30, -110); arms(g, 'L', -20, 0, -70); } },
+      { name: 'carrier', u: 0.52, face: 20, size: 1.16, paint: '#efe6d2', idle: [0.4, -2.4], pose: g => { T(g, 'spine', 6); T(g, 'head', 0, 0, 40); arms(g, 'L', -50, 0, -80); arms(g, 'R', -20, 0, -40); } },
+      { name: 'carrier', u: 0.72, face: 0, size: 1.16, paint: '#a83828', idle: [0.9, -3.4], pose: g => { T(g, 'spine', 8); T(g, 'head', 8); arms(g, 'L', -36, 0, -70); } }] }),
   /* 3. East frieze, block VII (Louvre, "the plaque of the Ergastinai"): girls walking to the right in pairs, in the peplos, met by two men who marshal them. */
   makeStage({ key: 'girls', s: S3, O: [237.5, 429.5], look: [-0.7071, -0.7071], Ws: 4.3, aspect: 1400 / 656, img: 'images/girls.jpg', title: 'The girls at the head of the procession', line: 'East frieze of the Parthenon, block VII · Louvre, Paris', man: [-0.2, -2.2],
     actors: [{ name: 'kore_white', u: 0.05, face: 0, size: 1.1, paint: '#efe6d2', idle: [-0.4, -2.2], pose: g => { arms(g, 'R', -40, 0, -60); } }, { name: 'kore_red', u: 0.17, face: 0, size: 1.1, paint: '#b63a28', idle: [-0.3, -3.3], pose: g => { arms(g, 'L', -30, 0, -40); } },
