@@ -1,0 +1,102 @@
+{
+  "width": 2048,
+  "height": 1018,
+  "plates": {
+    "p0_backdrop": {
+      "u0": 0.0,
+      "v0": 0.0,
+      "u1": 1.0,
+      "v1": 1.0,
+      "w": 2048,
+      "h": 1018,
+      "col": "p0_backdrop_col.webp",
+      "m1": "p0_backdrop_m1.webp",
+      "m2": "p0_backdrop_m2.webp",
+      "opaque": true
+    },
+    "p1_floor": {
+      "u0": 0.0,
+      "v0": 0.6856581532416502,
+      "u1": 0.669921875,
+      "v1": 0.9990176817288802,
+      "w": 1372,
+      "h": 319,
+      "col": "p1_floor_col.webp",
+      "m1": "p1_floor_m1.webp",
+      "m2": "p1_floor_m2.webp",
+      "opaque": false
+    },
+    "p2_skeleton_body": {
+      "u0": 0.32958984375,
+      "v0": 0.0,
+      "u1": 1.0,
+      "v1": 0.843811394891945,
+      "w": 1373,
+      "h": 859,
+      "col": "p2_skeleton_body_col.webp",
+      "m1": "p2_skeleton_body_m1.webp",
+      "m2": "p2_skeleton_body_m2.webp",
+      "opaque": false
+    },
+    "p3_skeleton_skull": {
+      "u0": 0.3466796875,
+      "v0": 0.023575638506876228,
+      "u1": 0.537109375,
+      "v1": 0.5530451866404715,
+      "w": 390,
+      "h": 539,
+      "col": "p3_skeleton_skull_col.webp",
+      "m1": "p3_skeleton_skull_m1.webp",
+      "m2": "p3_skeleton_skull_m2.webp",
+      "opaque": false
+    },
+    "p4_takiyasha": {
+      "u0": 0.0,
+      "v0": 0.18762278978389,
+      "u1": 0.2333984375,
+      "v1": 0.7671905697445972,
+      "w": 478,
+      "h": 590,
+      "col": "p4_takiyasha_col.webp",
+      "m1": "p4_takiyasha_m1.webp",
+      "m2": "p4_takiyasha_m2.webp",
+      "opaque": false
+    },
+    "p5_warriors": {
+      "u0": 0.32958984375,
+      "v0": 0.42337917485265225,
+      "u1": 0.6689453125,
+      "v1": 0.9950884086444007,
+      "w": 695,
+      "h": 582,
+      "col": "p5_warriors_col.webp",
+      "m1": "p5_warriors_m1.webp",
+      "m2": "p5_warriors_m2.webp",
+      "opaque": false
+    },
+    "p6_blind_left": {
+      "u0": 0.10693359375,
+      "v0": 0.043222003929273084,
+      "u1": 0.33837890625,
+      "v1": 0.7858546168958742,
+      "w": 474,
+      "h": 756,
+      "col": "p6_blind_left_col.webp",
+      "m1": "p6_blind_left_m1.webp",
+      "m2": "p6_blind_left_m2.webp",
+      "opaque": false
+    },
+    "p7_blind_right": {
+      "u0": 0.66015625,
+      "v0": 0.706286836935167,
+      "u1": 1.0,
+      "v1": 1.0,
+      "w": 696,
+      "h": 299,
+      "col": "p7_blind_right_col.webp",
+      "m1": "p7_blind_right_m1.webp",
+      "m2": "p7_blind_right_m2.webp",
+      "opaque": false
+    }
+  }
+}
