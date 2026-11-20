@@ -406,7 +406,7 @@ function update(dt) {
 
     // the waypoint: as she comes up to the figure on the road, the view becomes The Scream, melts into the painting for a moment, and lets her go
     const dScr = Math.hypot(me.x - screamer.position.x, me.z - screamer.position.z);
-    if (state === 'play' && !seenScream && dScr < 3.6 && dread > 0.8) { state = 'scream'; seenScream = true; wpT = 0; me.speed = 0; $('melt').src = 'scream.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.whoosh(0.1); }
+    if (state === 'play' && !seenScream && ((dScr < 3.6 && dread > 0.8) || prog.s > S_SCREAM + 1.5)) { state = 'scream'; seenScream = true; wpT = 0; me.speed = 0; $('melt').src = 'scream.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.whoosh(0.1); }
     if (state === 'scream') {
       wpT += dt;
       if (wpT > 2.4 && wpT < 2.5) plate('The Scream', 'Edvard Munch, 1893 · National Museum, Oslo');
