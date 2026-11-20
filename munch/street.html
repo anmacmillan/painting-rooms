@@ -208,7 +208,7 @@ map.buildings.forEach((b, i) => {
   house(mx, mz, w, d, ang, i, false);
 });
 // the big white house and the great round tree that stand behind the girls in the painting
-house(12, -24, 15, 9, Math.atan2(-41, 68), 0, true);
+house(6, -21, 15, 9, Math.atan2(68, 32), 0, true);
 
 /* ================= trees, lamps, railing, pier, stones ================= */
 const blob = (() => { const g = new THREE.IcosahedronGeometry(1, 3), p = g.attributes.position; for (let i = 0; i < p.count; i++) { const v = new V3().fromBufferAttribute(p, i), k = 1 + 0.16 * Math.sin(v.x * 4.1 + v.y * 2.3) * Math.cos(v.z * 3.7) + 0.08 * Math.sin(v.y * 9.0); p.setXYZ(i, v.x * k, v.y * k * 0.92, v.z * k); } g.computeVertexNormals(); return g; })();
@@ -226,9 +226,10 @@ tree(27, -40, 1.7);
   // posts are set out every 2.4 m at 8 m from the middle of the road; the fence is drawn post to post, so that it bends with the road and follows the ground,
   // and a run of fewer than five posts (left between a house, a corner and the shore) is not drawn at all
   for (const sd of [-1, 1]) { const runs = []; let run = null;
-    for (let q = 0; q < S_PIER - 5; q += 2.4) { const p = at(q), x = p.x - p.dz * 8 * sd, z = p.z + p.dx * 8 * sd, y = ground(x, z);
+    for (let q = 0; q < S_PIER - 9.5; q += 2.4) { const p = at(q), x = p.x - p.dz * 8 * sd, z = p.z + p.dx * 8 * sd, y = ground(x, z);
       if (y < 0.15 || inHouse(x, z) || nearest(x, z).d < 7.4) { run = null; continue; }
       const l = run && run[run.length - 1], gap = l ? Math.hypot(x - l[0], z - l[2]) : 0; if (l && gap < 1.2) continue; if (!l || gap > 3.8) runs.push(run = []); run.push([x, y, z]); }
+    for (const [x, z] of sd > 0 ? [[32.2, 13.8], [34.1, 15.3], [36.4, 16.1], [38.8, 16.0], [41.1, 15.1], [43.1, 13.7], [44.6, 11.8], [45.5, 9.5], [45.8, 7.1], [45.7, 4.4]] : [[39.0, -3.8], [38.7, -1.5], [38.4, 0.7]]) runs[runs.length - 1].push([x, ground(x, z), z]);
     for (const r of runs) { if (r.length < 5) continue;
       for (let i = 0; i < r.length - 1; i++) { const a = r[i], b = r[i + 1], dx = b[0] - a[0], dy = b[1] - a[1], dz = b[2] - a[2], L = Math.hypot(dx, dz), ry = Math.atan2(-dz, dx), rz = Math.atan2(dy, L), mx = (a[0] + b[0]) / 2, my = (a[1] + b[1]) / 2, mz = (a[2] + b[2]) / 2;
         if (inHouse(mx, mz)) continue;
@@ -365,7 +366,7 @@ function update(dt) {
     me.speed += (go * top - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2));
     let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
     if (blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;      // slide along whatever is in the way
-      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
+      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3, 1.5, -1.5]) { const c = Math.cos(a), sn = Math.sin(a), k = Math.max(0.25, c), tx = me.x + (mx * c - mz * sn) * k, tz = me.z + (mx * sn + mz * c) * k; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
       if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
     let f = floorAt(nx, nz) ?? me.y;
     const ox = me.x, oz = me.z; me.x = nx; me.z = nz;
@@ -394,8 +395,8 @@ function update(dt) {
       else if (sisV < 0.6) { faceTo(g, me.x, me.z, dt * 5); pose(g, time * 9, 0.15); g.userData.aR.rotation.z = 2.4 + Math.sin(time * 9) * 0.4; }      // waiting: turn and wave
       else { g.rotation.y = Math.atan2(p.dx, p.dz); pose(g, sisPh + i, sisV / 6.5); }
     });
-    if (state === 'play' && sisS >= sEnd && floorD > 0 && time > feelNag && Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z) > 4.5) { feelNag = time + 7; say(sisA, 'Come and stand with us! It is quiet here.', 3.5); }
-    if (state === 'play' && sisS >= sEnd && floorD <= 0 && dread < 0.2 && Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z) < 3.2) { state = 'tableau'; endT = 0; SND.bell(4, 0.08); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); bubble.classList.remove('show'); }
+    if (state === 'play' && sisS >= sEnd && floorD > 0 && time > feelNag) { const dA = Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z); if (dA > 4.5) { feelNag = time + 7; say(sisA, 'Come and stand with us! It is quiet here.', 3.5); } else if (Math.abs(me.speed) >= 0.65) { feelNag = time + 5; say(sisA, 'Be still with us by the rail! Look out at the water.', 3.5); } }
+    if (state === 'play' && sisS >= sEnd && floorD <= 0 && dread < 0.2 && Math.min(Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z), Math.hypot(me.x - sisB.position.x, me.z - sisB.position.z)) < 4.5) { state = 'tableau'; endT = 0; SND.bell(4, 0.08); [2, 4, 5, 7, 9, 11].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); bubble.classList.remove('show'); }
     if (state === 'tableau') {            // she takes her place at the rail, and the picture composes itself
       endT += dt; const p = at(sEnd + 0.1), tx = p.x - p.dz * 2.05, tz = p.z + p.dx * 2.05; me.x += (tx - me.x) * dt * 2; me.z += (tz - me.z) * dt * 2; me.speed = 0; me.y = floorAt(me.x, me.z) ?? me.y; me.yaw += (Math.atan2(-p.dz, -p.dx) - me.yaw) * dt * 2;
       meG.rotation.y = Math.PI - me.yaw; pose(meG, 0, 0); meG.userData.rig.rotation.x = 0.2;
@@ -404,20 +405,23 @@ function update(dt) {
     }
 
     // the waypoint: as she comes up to the figure on the road, the view becomes The Scream, melts into the painting for a moment, and lets her go
-    if (state === 'play' && !seenScream && prog.s > S_SCREAM - 14 && prog.s < S_SCREAM + 8 && dread > 0.8) { state = 'scream'; seenScream = true; wpT = 0; me.speed = 0; $('melt').src = 'scream.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.whoosh(0.1); }
+    const dScr = Math.hypot(me.x - screamer.position.x, me.z - screamer.position.z);
+    if (state === 'play' && !seenScream && ((dScr < 3.6 && dread > 0.8) || prog.s > S_SCREAM + 1.5)) { state = 'scream'; seenScream = true; wpT = 0; me.speed = 0; $('melt').src = 'scream.jpg'; $('melt').classList.add('quick'); document.body.classList.add('quick'); bubble.classList.remove('show'); SND.whoosh(0.1); }
     if (state === 'scream') {
       wpT += dt;
       if (wpT > 2.4 && wpT < 2.5) plate('The Scream', 'Edvard Munch, 1893 · National Museum, Oslo');
       if (wpT > 3.4 && wpT < 7.0) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
       if (wpT > 7.0) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
-      if (wpT > 9.2) { state = 'play'; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').src = 'paintings/girls_bridge.jpg'; say(sisA, 'Don\'t look at him! Run!', 3); hop = time + 6; floorD = 0.5; SC.keep('dread', { title: 'Dread: the sky screamed because you did', emoji: '😱' }); }
+      if (wpT > 9.2) { state = 'play'; $('melt').classList.remove('quick'); document.body.classList.remove('quick'); $('melt').src = 'paintings/girls_bridge.jpg'; say(sisA, 'Don\'t look at him! Run!', 3); hop = time + 6; floorD = 0.75; SC.keep('dread', { title: 'Dread: the sky screamed because you did', emoji: '😱' }); }
     }
     // dread: near the figure on the road and in the thick of the crowd; it lifts by her sisters
-    let want = sstep(48, 5, Math.hypot(me.x - screamer.position.x, me.z - screamer.position.z)), crowdN = 0;
-    for (const w of walkers) if (Math.hypot(me.x - w.g.position.x, me.z - w.g.position.z) < 6) crowdN++;
-    want = Math.max(want, Math.min(0.5, crowdN * 0.12)) * (1 - sstep(26, 8, Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z))); if (state === 'scream') want = 1;
-    if (!seenScream && state === 'play' && prog.s > S_SCREAM - 14) want = Math.max(want, 0.95);                                                              /* by the figure there is no comfort, sisters or no */
-    if (floorD > 0 && state === 'play') { const dSis = Math.min(Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z), Math.hypot(me.x - sisB.position.x, me.z - sisB.position.z)); if (dSis < 4.5 && sisS >= LEN - 1.5) { floorD = Math.max(0, floorD - dt * 0.2); if (floorD === 0) { SC.keep('calm', { title: 'Calm: beside your sisters the lines lay still', emoji: '🌙' }); SC.gain(20, 'Calm', 0); SND.bell(9, 0.07); } } want = Math.max(want, floorD * (sisS >= LEN - 1.5 ? 1 : sstep(4, 16, dSis))); }      /* the fear she carries: close to her sisters the land steadies, behind them it bends again, and she puts it down only beside them at the rail */
+    let want = sstep(36, 3.2, dScr), crowdN = 0, closeW = false;
+    for (const w of walkers) { const dw = Math.hypot(me.x - w.g.position.x, me.z - w.g.position.z); if (dw < 6) crowdN++; if (dw < 2.1) closeW = true; }
+    want = Math.max(want, Math.min(0.5, crowdN * 0.12) * (1 - sstep(26, 8, Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z)))); if (state === 'scream') want = 1;
+    if (floorD > 0 && state === 'play') { const dSis = Math.min(Math.hypot(me.x - sisA.position.x, me.z - sisA.position.z), Math.hypot(me.x - sisB.position.x, me.z - sisB.position.z)), still = Math.abs(me.speed) < 0.65 && !me.air;
+      if (closeW && dSis > 5) floorD = Math.min(0.85, floorD + dt * 0.25); else if (dSis < 6.5 && sisS < sEnd) floorD = Math.max(0.28, floorD - dt * 0.14);
+      if (dSis < 4.5 && sisS >= sEnd && still) { const p = at(sEnd); faceTo(meG, me.x - p.dz * 5, me.z + p.dx * 5, dt * 3); me.yaw = Math.PI - meG.rotation.y; floorD = Math.max(0, floorD - dt * 0.24); if (floorD === 0) { SC.keep('calm', { title: 'Calm: beside your sisters the lines lay still', emoji: '🌙' }); SC.gain(20, 'Calm', 0); SND.bell(9, 0.07); } }
+      want = Math.max(want, floorD * (sisS >= sEnd ? 1 : sstep(3.5, 16, dSis))); }      /* the fear she carries: close to her sisters the land steadies, the crowd stirs it, and she puts it down by standing still with them at the rail */
     dread += (want - dread) * dt * 1.4;
 
     // camera
@@ -454,13 +458,13 @@ function update(dt) {
   if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.3; v.project(camera); bubble.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; bubble.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px'; const cp = camera.position, bp = bubbleG.position; let hid = v.z > 1; for (let k = 0.12; k < 0.9 && !hid; k += 0.07) hid = inHouse(cp.x + (bp.x - cp.x) * k, cp.z + (bp.z - cp.z) * k); bubble.classList.toggle('show', !hid); } }
 
   // the hour
-  const n = state === 'title' ? 0 : night; uni.uNight.value = n; uni.uDread.value = dread; post.uniforms.uDread.value = dread;
+  const n = state === 'title' ? 0 : night * (1 - 0.55 * dread); uni.uNight.value = n; uni.uDread.value = dread; post.uniforms.uDread.value = dread;
   hemi.color.copy(C('#ffb48a')).lerp(C('#6f8fd8'), n); hemi.groundColor.copy(C('#5a4636')).lerp(C('#16203a'), n); hemi.intensity = mix(1.5, 1.05, n);
   sunL.color.copy(C('#ff9a5a')).lerp(C('#bcd0ff'), n); sunL.intensity = mix(1.5, 0.55, n); sunL.position.set(camera.position.x + mix(-300, 300, n), camera.position.y + mix(120, 160, n), camera.position.z + mix(60, -60, n)); sunL.target.position.copy(camera.position);
   scene.fog.color.copy(C('#a8674a')).lerp(C('#16264c'), n); scene.fog.near = mix(120, 40, n); scene.fog.far = mix(1500, 520, n);
   for (const m of litWindows) m.color.setScalar(mix(0.55, 1.25, n)); for (const l of lamps) { l.glow.material.opacity = 0.15 + 0.85 * n; }
   const near = lamps.map(l => [Math.hypot(l.x - me.x, l.z - me.z), l]).sort((a, b) => a[0] - b[0]); lampLights.forEach((L, i) => { if (near[i]) { L.position.set(near[i][1].x, near[i][1].y - 0.4, near[i][1].z); L.intensity = 60 * n; } else L.intensity = 0; });
-  { let g = null; if (state === 'play') g = !seenScream ? (goalS < S_SCREAM - 45 ? 'Run after your sisters, down the road' : 'The sky is as frightened as you are. Go right up to the figure on the road, if you dare') : floorD > 0 ? (sisS >= LEN - 1.5 ? 'Stand close beside your sisters at the rail, until the world lies still' : 'You have brought the fear with you: the road bends and the colours burn. Catch your sisters and keep close to steady it') : 'Calm now, and the land is calm. To the rail with your sisters';
+  { let g = null; if (state === 'play') g = !seenScream ? (goalS < S_SCREAM - 45 ? 'Run after your sisters, down the road' : 'The sky is as frightened as you are. Go right up to the figure on the road, if you dare') : floorD > 0 ? (sisS >= LEN - 1.5 ? 'Stop running and stand still beside your sisters at the rail, until the world lies still' : 'You have brought the fear with you: the road bends and the colours burn. Catch your sisters and keep close to steady it') : 'Calm now, and the land is calm. To the rail with your sisters';
     const e = $('goal'); e.style.display = g ? 'block' : 'none'; if (g && e.dataset.g !== g) { e.dataset.g = g; e.textContent = '➜ ' + g; } }
   guide.update(me, at(sisS), state === 'play');
   SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(dread * 0.9 + Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
