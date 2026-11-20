@@ -1,6 +1,7 @@
 // Points, things to pick up along the road, ditches to leap, a clock, and the way on to the next level. Shared by every street.
 // The paintings are the main score: each tableau she reaches is worth far more than anything on the ground.
 import { getName, setName, postScore, topScores } from './board.js';
+import './offline.js';      /* offline play: stores this level the first time it is opened */
 export const LEVELS = [
   { key: 'phidias', at: [23.73, 37.97], href: 'phidias/street.html', name: 'Athens, 438 BC', place: 'Athens', year: '438 BC', title: 'The Procession', by: 'Phidias', img: 'phidias/images/frieze.jpg', paintings: 4, coin: 'owls' },
   { key: 'pompeii', at: [14.489, 40.750], href: 'pompeii/street.html', name: 'Pompeii, AD 79', place: 'Pompeii', year: 'AD 79', title: 'While the Plaster Is Wet', by: 'the painters of Pompeii', img: 'pompeii/images/wall.jpg', paintings: 3, coin: 'sesterces' },

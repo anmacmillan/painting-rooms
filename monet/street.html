@@ -36,7 +36,7 @@
   .glint::after { content:''; position:absolute; inset:-16px; } @keyframes glint { from { transform:scale(.78); } to { transform:scale(1.16); } }
   .daub { position:absolute; height:var(--h); width:var(--w); margin:calc(var(--h) / -2) 0 0 calc(var(--w) / -2); border-radius:2px 3px 3px 2px; opacity:.86; box-shadow:var(--dx) var(--h) 0 0 var(--c2), calc(var(--dx) * -1.4) calc(var(--h) * -1) 0 0 var(--c3); animation:daub .18s ease-out; } @keyframes daub { from { opacity:0; } }
 </style>
-<script type="importmap">{ "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js", "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/" } }</script>
+<script type="importmap">{ "imports": { "three": "../vendor/three@0.160.0/build/three.module.js", "three/addons/": "../vendor/three@0.160.0/examples/jsm/" } }</script>
 </head>
 <body>
 <canvas id="cv"></canvas>

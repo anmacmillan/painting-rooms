@@ -6,9 +6,20 @@ export const getName = () => { try { return localStorage.getItem(KEY) || ''; } c
 export const setName = n => { n = String(n).replace(/[^\p{L}\p{N}_-]/gu, '').slice(0, 16); try { localStorage.setItem(KEY, n); } catch (e) { /* private window */ } return n; };
 const slug = n => n.toLowerCase().replace(/[^a-z0-9]/g, '').slice(0, 16) || 'player';
 const get = async path => (await fetch(`${DB}/${path}.json`, { cache: 'no-store' })).json();
-export async function postScore(game, points, secs) {
+async function send(game, points, secs) {
   const n = getName(); if (!n) return null; const path = `scores/${game}/${slug(n)}`, was = await get(path); if (was && was.p >= points) return was;
   const rec = { n, p: points, s: secs, t: Date.now() }; await fetch(`${DB}/${path}.json`, { method: 'PUT', body: JSON.stringify(rec) }); return rec;
 }
 export async function topScores(game, k = 5) { const all = (await get(`scores/${game}`)) || {}; return Object.values(all).filter(r => r && typeof r.n === 'string' && typeof r.p === 'number').sort((a, b) => b.p - a.p).slice(0, k); }
 export async function allScores() { return (await get('scores')) || {}; }
+
+// A score made with no network is kept on the device and sent the next time a page opens with one.
+const PEND = 'arcade.pending';
+const pend = () => { try { return JSON.parse(localStorage.getItem(PEND) || '[]'); } catch (e) { return []; } };
+const keep = a => { try { localStorage.setItem(PEND, JSON.stringify(a.slice(-40))); } catch (e) { /* private window */ } };
+export async function postScore(game, points, secs) {
+  try { return await send(game, points, secs); } catch (e) { if (getName()) keep([...pend(), { game, points, secs }]); throw e; }
+}
+export async function flush() { const q = pend(); if (!q.length || !getName()) return; const left = []; for (const r of q) { try { await send(r.game, r.points, r.secs); } catch (e) { left.push(r); } } keep(left); }
+if (typeof navigator !== 'undefined' && navigator.onLine !== false) flush().catch(() => {});
+if (typeof window !== 'undefined') window.addEventListener('online', () => flush().catch(() => {}));

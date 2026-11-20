@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Painting Rooms: a journey through time</title>
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#1b1a17">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Painting Rooms">
+<link rel="apple-touch-icon" href="common/icon-180.png">
 <style>
   :root { --paper:#f4efe2; --gold:#f2c865; --ink:#23262c; font-size:clamp(14px, 1.05vw, 30px); }
   * { box-sizing:border-box; }
@@ -48,6 +54,18 @@
   <p class="ui how">Tap a city or a picture and she walks there. Drag the map to look about. Arrow keys walk the road; Enter steps in.</p>
   <div class="ui away" id="card"><span class="th"></span><span><b></b><i></i><span class="st"></span></span><button id="enter"></button></div>
   <div class="ui" id="stops"></div>
+  <button class="ui" id="keep" hidden style="position:fixed; right:1rem; top:1rem; z-index:6; font:inherit; font-size:.85rem; padding:.45em .9em; border-radius:2em; border:1px solid rgba(242,200,101,.6); background:rgba(27,26,23,.82); color:#f4efe2; cursor:pointer"></button>
+<script type="module">
+  /* offline play: every level opened is stored; this button stores them all, for a journey with no network */
+  import { ready, onOffline, saveLevel, state } from './common/offline.js';
+  const b = document.getElementById('keep'); let saved = new Set(), sizes = {}, busy = false, queue = [];
+  const mb = ks => Math.round(ks.reduce((a, k) => a + (sizes[k] || 0), 0) / 1048576);
+  const paint = (t) => { const all = Object.keys(sizes), left = all.filter(k => !saved.has(k)); b.hidden = !all.length; b.disabled = busy || !left.length; b.textContent = t || (left.length ? `Keep all ${all.length} rooms for offline (${mb(left)} MB)` : 'All rooms kept: plays with no network'); document.querySelectorAll('[data-key]').forEach(e => e.classList.toggle('kept', saved.has(e.dataset.key))); };
+  const next = () => { const k = queue.shift(); if (!k) { busy = false; state(); return; } saveLevel(k); };
+  onOffline(m => { if (m.offline === 'state') { saved = new Set(m.saved); sizes = m.sizes || {}; paint(); } if (m.offline === 'progress' && busy) paint(`Keeping ${m.key}: ${Math.round(100 * m.done / m.of)}% · ${queue.length} to go`); if (m.offline === 'saved') { if (m.ok) saved.add(m.key); if (busy) next(); else paint(); } });
+  b.addEventListener('click', () => { if (busy) return; queue = Object.keys(sizes).filter(k => !saved.has(k)); busy = true; next(); });
+  ready.then(r => { if (r) state(); });
+</script>
 <script type="module">
   import { LEVELS, loadScores } from './common/score.js';
   const all = loadScores(), NS = 'http://www.w3.org/2000/svg', el = (t, a = {}, txt) => { const e = document.createElementNS(NS, t); for (const k in a) e.setAttribute(k, a[k]); if (txt != null) e.textContent = txt; return e; };
