@@ -1,0 +1,143 @@
+{
+  "width": 1600,
+  "height": 1076,
+  "plates": [
+    {
+      "id": "p0_sky",
+      "file": "layers/p0_sky.webp",
+      "z": -4.2,
+      "box": [
+        0,
+        0,
+        1600,
+        1076
+      ],
+      "u0": 0.0,
+      "v0": 0.0,
+      "u1": 1.0,
+      "v1": 1.0,
+      "desc": "Warm washi sky, clouds, smoky horizon & title cartouche",
+      "kb": 265.1
+    },
+    {
+      "id": "p1_fuji",
+      "file": "layers/p1_fuji.webp",
+      "z": -3.4,
+      "box": [
+        836,
+        690,
+        1149,
+        854
+      ],
+      "u0": 0.5225,
+      "v0": 0.6412639405204461,
+      "u1": 0.718125,
+      "v1": 0.7936802973977695,
+      "desc": "Snow-capped Mount Fuji on the low horizon",
+      "kb": 8.4
+    },
+    {
+      "id": "p2a_far_wave",
+      "file": "layers/p2a_far_wave.webp",
+      "z": -1.85,
+      "box": [
+        773,
+        400,
+        1600,
+        1002
+      ],
+      "u0": 0.483125,
+      "v0": 0.37174721189591076,
+      "u1": 1.0,
+      "v1": 0.9312267657992565,
+      "desc": "Far-right rising swell behind the sister boat",
+      "kb": 106.9
+    },
+    {
+      "id": "p2b_mid_boat",
+      "file": "layers/p2b_mid_boat.webp",
+      "z": -1.45,
+      "box": [
+        895,
+        542,
+        1472,
+        826
+      ],
+      "u0": 0.559375,
+      "v0": 0.5037174721189591,
+      "u1": 0.92,
+      "v1": 0.7676579925650557,
+      "desc": "Mid-distance oshiokuri-bune rowing boat",
+      "kb": 21.1
+    },
+    {
+      "id": "p3_great_wave",
+      "file": "layers/p3_great_wave.webp",
+      "z": -0.55,
+      "box": [
+        0,
+        90,
+        951,
+        910
+      ],
+      "u0": 0.0,
+      "v0": 0.08364312267657993,
+      "u1": 0.594375,
+      "v1": 0.845724907063197,
+      "desc": "The Great Wave, foam claws & left plunging boat",
+      "kb": 179.4
+    },
+    {
+      "id": "p4_mid_trough",
+      "file": "layers/p4_mid_trough.webp",
+      "z": 0.15,
+      "box": [
+        435,
+        594,
+        1600,
+        1076
+      ],
+      "u0": 0.271875,
+      "v0": 0.5520446096654275,
+      "u1": 1.0,
+      "v1": 1.0,
+      "desc": "Sweeping Prussian-blue trough wave",
+      "kb": 127.6
+    },
+    {
+      "id": "p5_hero_boat",
+      "file": "layers/p5_hero_boat.webp",
+      "z": 0.55,
+      "box": [
+        651,
+        803,
+        1318,
+        1036
+      ],
+      "u0": 0.406875,
+      "v0": 0.7462825278810409,
+      "u1": 0.82375,
+      "v1": 0.9628252788104089,
+      "desc": "Foreground oshiokuri-bune rowing boat",
+      "kb": 29.8
+    },
+    {
+      "id": "p6_fore_wave",
+      "file": "layers/p6_fore_wave.webp",
+      "z": 1.05,
+      "box": [
+        0,
+        594,
+        1600,
+        1076
+      ],
+      "u0": 0.0,
+      "v0": 0.5520446096654275,
+      "u1": 1.0,
+      "v1": 1.0,
+      "desc": "Foreground snow-echo wave & nearest crest",
+      "kb": 121.3
+    }
+  ],
+  "flat_composite_mae_rgb": 1.565
+}
