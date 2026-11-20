@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <title>The Procession: Athens, the Great Panathenaia, about 438 BC</title>
+<link rel="icon" href="data:,">
 <link rel="stylesheet" href="../common/world.css">
 <style>
   :root { --go:#2456a8; } html, body { background:#1c2a44; } #title { background:#16203a; } #title > img, #end > img { background:#16203a; } #end { background:#1c2740; } #end > img { max-height:40vh; border-color:#d9cdb4; }
@@ -73,7 +74,7 @@ const corr = s => s < 196 ? 15 : s < S_GATE - 40 ? 8.5 : s < S_GATE + 14 ? 7.5 :
    Along the Way the ground is smoothed to the Way's own profile, so that the road does not tilt sideways. BASE is the height of the Agora floor above the sea. */
 const BASE = 62, dem = map.dem, inPoly = (p, x, z) => { let c = false; for (let i = 0, j = p.length - 1; i < p.length; j = i++) { const a = p[i], b = p[j]; if ((a[1] > z) !== (b[1] > z) && x < a[0] + (z - a[1]) / (b[1] - a[1]) * (b[0] - a[0])) c = !c; } return c; };
 const hDem = (x, z) => { const fx = clamp((x - dem.x0) / dem.step, 0, dem.nx - 1.001), fz = clamp((z - dem.z0) / dem.step, 0, dem.nz - 1.001), i = Math.floor(fx), j = Math.floor(fz), tx = fx - i, tz = fz - j, g = (i, j) => dem.h[j * dem.nx + i]; return mix(mix(g(i, j), g(i + 1, j), tx), mix(g(i, j + 1), g(i + 1, j + 1), tx), tz) - BASE; };
-const WALL = map.walls.map(w => w.p).sort((a, b) => b.length - a.length)[0], inAcro = (x, z) => x > 214 && inPoly(WALL, x, z), plateau = x => 68.5 + 17 * sstep(214, 300, x);
+const WALL = map.walls.map(w => w.p).sort((a, b) => b.length - a.length)[0], ACRO = [...WALL.slice(0, 46), ...WALL.slice(203)], inAcro = (x, z) => x > 214 && inPoly(ACRO, x, z), plateau = x => 65.6 + 19.9 * sstep(214, 310, x);
 const hBase = (x, z) => inAcro(x, z) ? plateau(x) : hDem(x, z);
 const prof = []; { const rawp = []; for (let s = 0; s <= LEN + 2; s += 2) { const p = at(s); rawp.push(hBase(p.x, p.z)); } for (let i = 0; i < rawp.length; i++) { let a = 0, n = 0; for (let k = -6; k <= 6; k++) { const v = rawp[clamp(i + k, 0, rawp.length - 1)]; a += v; n++; } prof.push(a / n); } }
 const rYs = s => { const f = clamp(s / 2, 0, prof.length - 1.001), i = Math.floor(f); return mix(prof[i], prof[i + 1], f - i); };
@@ -82,22 +83,63 @@ const STEP0 = S_GATE - 13, STEPN = 5, STEPL = 2.2, rY = s => { if (s <= STEP0 ||
 const ground = (x, z, stepped) => { const n = nearest(x, z), t = sstep(corr(n.s) * 0.75, corr(n.s) * 0.75 + 14, n.d); return mix(stepped ? rY(n.s) : rYs(n.s), hBase(x, z), t); };
 const hAt = (x, z) => ground(x, z, true);
 
-/* ================= renderer, and the rule of this world: marble in hard light =================
-   One sun, low in the east-south-east of a summer morning, with real cast shadows; the shadows are filled only by the blue of the sky. Nothing is filtered: edges stay sharp. */
-let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: true }); } catch (e) { $('err').style.display = 'flex'; throw e; }
+/* ================= renderer, oil-paint filter (Munch standard), and warm Attic morning light ================= */
+let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
 const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR); renderer.shadowMap.enabled = true; renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xcfe0f2, 260, 1500);
+const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xd8e2ec, 240, 1450);
 const camera = new THREE.PerspectiveCamera(58, 1, 0.2, 4000);
-const LIGHT = { hemi: 1.55, sun: 3.3 }, SUN = new V3(-0.70, -0.62, -0.36).normalize();
-const hemi = new THREE.HemisphereLight(C('#8fb8ff'), C('#d9c49a'), LIGHT.hemi), sun = new THREE.DirectionalLight(C('#fff1d6'), LIGHT.sun); scene.add(hemi, sun, sun.target);
-sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); { const c = sun.shadow.camera; c.left = c.bottom = -48; c.right = c.top = 48; c.near = 10; c.far = 420; } sun.shadow.bias = -0.0006; sun.shadow.normalBias = 0.06;
+const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
+const post = new THREE.ShaderMaterial({ uniforms: { tScene: { value: target.texture }, uPx: { value: new THREE.Vector2() }, uTime: { value: 0 } },
+  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+  fragmentShader: `uniform sampler2D tScene; uniform vec2 uPx; uniform float uTime; varying vec2 vUv;
+    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
+    void main(){
+      vec2 uv = vUv + vec2(sin(vUv.y * 36.0 + uTime * 0.45), cos(vUv.x * 29.0 - uTime * 0.4)) * 0.00075;
+      vec3 best = vec3(0.0); float bestVar = 1e9;
+      for (int q = 0; q < 4; q++) {
+        vec2 dir = vec2(q == 0 || q == 3 ? -1.0 : 1.0, q < 2 ? -1.0 : 1.0); vec3 m = vec3(0.0), m2 = vec3(0.0);
+        for (int j = 0; j < 4; j++) for (int i = 0; i < 4; i++) { vec3 c = texture2D(tScene, uv + dir * vec2(float(i), float(j)) * uPx * 0.95).rgb; m += c; m2 += c * c; }
+        m /= 16.0; m2 = abs(m2 / 16.0 - m * m); float v = m2.r + m2.g + m2.b; if (v < bestVar) { bestVar = v; best = m; }
+      }
+      float grain = hash(floor(vUv / uPx / 2.0)) * 0.044 - 0.022, weave = sin(vUv.x / uPx.x * 1.6) * sin(vUv.y / uPx.y * 1.6) * 0.011;
+      vec3 col = best * (1.0 + grain + weave);
+      float lum = dot(col, vec3(0.3, 0.59, 0.11)); col = mix(vec3(lum), col, 1.12) * vec3(1.02, 1.0, 0.96);
+      col *= 1.0 - 0.30 * pow(length(vUv - 0.5) * 1.22, 2.6);
+      gl_FragColor = vec4(col, 1.0);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`, depthTest: false, depthWrite: false });
+const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
+const LIGHT = { hemi: 1.18, sun: 2.95 }, SUN = new V3(-0.70, -0.56, -0.44).normalize();
+const hemi = new THREE.HemisphereLight(C('#96bef2'), C('#b58d5e'), LIGHT.hemi), sun = new THREE.DirectionalLight(C('#ffe7bc'), LIGHT.sun); scene.add(hemi, sun, sun.target);
+sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); { const c = sun.shadow.camera; c.left = c.bottom = -60; c.right = c.top = 60; c.near = 10; c.far = 420; } sun.shadow.bias = -0.0005; sun.shadow.normalBias = 0.05;
 const aimSun = (x, y, z) => { sun.target.position.set(x, y, z); sun.position.set(x - SUN.x * 200, y - SUN.y * 200, z - SUN.z * 200); };
-const sky = new THREE.Mesh(new THREE.SphereGeometry(3000, 32, 16), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: { uSun: { value: SUN.clone().negate() } },
+const skyUni = { uSun: { value: SUN.clone().negate() }, uTime: { value: 0 } };
+const sky = new THREE.Mesh(new THREE.SphereGeometry(3000, 40, 20), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: skyUni,
   vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-  fragmentShader: `uniform vec3 uSun; varying vec3 vDir; void main(){ vec3 d = normalize(vDir); float h = clamp(d.y, 0.0, 1.0), s = max(0.0, dot(d, uSun));
-    vec3 col = mix(vec3(0.80, 0.88, 0.96), vec3(0.16, 0.38, 0.78), pow(h, 0.5)); col = mix(col, vec3(0.86, 0.84, 0.74), smoothstep(0.0, -0.08, d.y)); col += vec3(1.0, 0.9, 0.7) * (pow(s, 240.0) * 1.5 + pow(s, 12.0) * 0.14);
-    gl_FragColor = vec4(col, 1.0);
-    #include <colorspace_fragment>
+  fragmentShader: `uniform vec3 uSun; uniform float uTime; varying vec3 vDir;
+    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
+    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y); }
+    float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { v += a * noise(p); p = p * 2.04 + vec2(3.7, 5.1); a *= 0.5; } return v; }
+    void main(){ vec3 d = normalize(vDir); float h = clamp(d.y, 0.0, 1.0), s = max(0.0, dot(d, uSun));
+      vec3 hor = mix(vec3(0.86, 0.87, 0.88), vec3(0.95, 0.86, 0.72), pow(s, 2.0) * 0.65);
+      vec3 zen = vec3(0.14, 0.36, 0.74), mid = vec3(0.42, 0.66, 0.90);
+      vec3 col = mix(hor, mid, smoothstep(0.0, 0.28, h)); col = mix(col, zen, smoothstep(0.22, 0.88, h));
+      /* Painterly drifting Mediterranean morning clouds lit from the east */
+      vec2 cp = d.xz / (max(d.y, 0.0) + 0.20) * 1.15 + vec2(uTime * 0.012, -uTime * 0.005);
+      float c = fbm(cp), cs = fbm(cp + uSun.xz * 0.14), wisp = fbm(cp * 2.3 - vec2(uTime * 0.018, 0.0));
+      float cover = smoothstep(0.47, 0.73, c + 0.15 * wisp) * smoothstep(-0.01, 0.12, d.y) * (1.0 - 0.35 * smoothstep(0.55, 0.95, h));
+      float lit = clamp(0.52 + (c - cs) * 4.6 + 0.25 * s, 0.0, 1.0);
+      vec3 clShadow = mix(vec3(0.60, 0.68, 0.82), vec3(0.78, 0.74, 0.72), pow(s, 3.0));
+      vec3 clLit = mix(vec3(0.98, 0.96, 0.90), vec3(1.0, 0.93, 0.78), pow(s, 2.0));
+      col = mix(col, mix(clShadow, clLit, lit), cover * 0.88);
+      /* High thin cirrus streaks */
+      float cir = smoothstep(0.58, 0.78, fbm(vec2(atan(d.z, d.x) * 3.2 + uTime * 0.008, h * 9.0))) * smoothstep(0.15, 0.45, h) * (1.0 - cover);
+      col = mix(col, vec3(0.98, 0.95, 0.88), cir * 0.32);
+      col = mix(col, vec3(0.84, 0.80, 0.70), smoothstep(0.0, -0.08, d.y));
+      col += vec3(1.0, 0.90, 0.68) * (pow(s, 180.0) * 1.35 + pow(s, 10.0) * 0.18 * (1.0 - 0.5 * cover));
+      gl_FragColor = vec4(col, 1.0);
+      #include <colorspace_fragment>
     }` }));
 sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
 
@@ -109,16 +151,60 @@ const FR = makeFronts({ THREE, scene, T: { marble: tMarble, plaster: tPlaster, t
 const shadowM = basic({ color: 0, transparent: true, opacity: 0, depthWrite: false }), prop = (c, paint) => { const m = lam({ color: c }); m.userData.paint = paint || c; return m; };
 const on = (o, cast = true, recv = true) => { o.traverse(m => { if (m.isMesh) { m.castShadow = cast; m.receiveShadow = recv; } }); return o; };
 
-/* ---- the ground itself: beaten earth in the town, bare grey rock on the slopes of the Acropolis, the Way a paler band of packed gravel ---- */
-{ const X0 = -200, Z0 = -130, N = 160, ST = 5, g = new THREE.PlaneGeometry(N * ST, N * ST, N, N), p = g.attributes.position, col = [], uv = g.attributes.uv, cE = C('#ead9b6'), cR = C('#b4b0a8'), cW = C('#fbf3dc'), cG = C('#8a9a5a'), c = new THREE.Color();
-  for (let i = 0; i < p.count; i++) { const x = X0 + N * ST / 2 + p.getX(i), z = Z0 + N * ST / 2 - p.getY(i), n = nearest(x, z), y = ground(x, z, false), e = 4, sl = Math.hypot(hBase(x + e, z) - hBase(x - e, z), hBase(x, z + e) - hBase(x, z - e)) / (2 * e);
-    p.setXYZ(i, x, y - (n.d < corr(n.s) + 3 ? 0 : 0.02), z); uv.setXY(i, x / 7, z / 7);
-    c.copy(cE).lerp(cR, Math.max(sstep(0.12, 0.34, sl) * (z > 250 ? 1 : 0.4), sstep(300, 400, z) * 0.75)); if (z > 300 && !inAcro(x, z)) c.lerp(cG, 0.25 * (1 - sstep(0.1, 0.5, sl)) * (0.5 + 0.5 * Math.sin(x * 0.13) * Math.cos(z * 0.11))); if (inAcro(x, z)) c.copy(cR).lerp(cE, 0.35);
-    c.lerp(cW, (1 - sstep(corr(n.s) * 0.5, corr(n.s) * 0.9, n.d)) * 0.8); col.push(c.r, c.g, c.b); }
+/* ---- the ground itself: distinct packed-gravel Panathenaic Way with kerb stones and terracotta verges, olive-green slopes, and grey limestone on the Acropolis ---- */
+const roadHalf = s => s < 196 ? 5.2 : s < S_GATE - 20 ? 4.6 : s < S_GATE + 12 ? 4.8 : 5.2;
+{ const X0 = -200, Z0 = -130, N = 200, ST = 4, g = new THREE.PlaneGeometry(N * ST, N * ST, N, N), p = g.attributes.position, col = [], uv = g.attributes.uv;
+  const cE = C('#d4be96'), cVerge = C('#b07c4e'), cGrass = C('#6e8248'), cOlive = C('#556838'), cRock = C('#9a9892'), cRockDark = C('#74726e'), cWay = C('#f4ead0'), cAcro = C('#cfc6b2'), c = new THREE.Color(), cTmp = new THREE.Color();
+  for (let i = 0; i < p.count; i++) { const x = X0 + N * ST / 2 + p.getX(i), z = Z0 + N * ST / 2 - p.getY(i), n = nearest(x, z), y = ground(x, z, false), e = 3.5, sl = Math.hypot(hBase(x + e, z) - hBase(x - e, z), hBase(x, z + e) - hBase(x, z - e)) / (2 * e);
+    p.setXYZ(i, x, y - (n.d < corr(n.s) + 3 ? 0 : 0.02), z); uv.setXY(i, x / 8, z / 8);
+    const rw = roadHalf(n.s), patch = 0.5 + 0.5 * Math.sin(x * 0.045 + z * 0.035 + Math.sin(z * 0.025) * 1.4), patch2 = 0.5 + 0.5 * Math.cos(x * 0.03 - z * 0.05 + Math.sin(x * 0.04) * 1.2);
+    c.copy(cE).lerp(cGrass, (0.38 + 0.35 * patch) * sstep(rw + 2.5, rw + 14.0, n.d));
+    c.lerp(cOlive, 0.30 * patch2 * sstep(rw + 6.0, rw + 22.0, n.d));
+    /* The Acropolis rock and steep crags: grey-buff Attic limestone, graded by slope and elevation without periodic stripes */
+    const rockK = Math.max(sstep(0.16, 0.38, sl), sstep(24, 52, y) * sstep(310, 395, z));
+    if (!inAcro(x, z)) { cTmp.copy(cRock).lerp(cRockDark, sstep(0.22, 0.48, sl) * 0.65 + 0.25 * patch2); c.lerp(cTmp, rockK * 0.88); }
+    else c.copy(cAcro).lerp(cRock, 0.25 * patch);
+    /* Distinct warm terracotta-ochre verges bordering the road, and pale packed gravel on the road itself */
+    const vK = sstep(rw - 0.4, rw + 0.8, n.d) * (1 - sstep(rw + 1.4, rw + 4.8, n.d));
+    c.lerp(cVerge, vK * 0.72);
+    c.lerp(cWay, (1 - sstep(rw - 0.6, rw + 0.6, n.d)) * 0.92);
+    col.push(c.r, c.g, c.b); }
   g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.computeVertexNormals(); const m = new THREE.Mesh(g, lam({ map: tEarth, vertexColors: true })); m.receiveShadow = true; scene.add(m);
-  const far = new THREE.Mesh(new THREE.CircleGeometry(3000, 40), lam({ color: '#c9bd94' })); far.rotation.x = -Math.PI / 2; far.position.set(150, -6, 250); scene.add(far);
-  // far hills, for a skyline: outlines only
-  const hillM = basic({ color: '#9fb0c4' }); for (const [a, d, w, h] of [[0.4, 1900, 900, 300], [1.3, 2300, 1500, 420], [2.2, 2100, 1100, 260], [3.5, 2400, 1700, 180], [4.6, 2200, 1300, 330], [5.6, 2000, 1000, 240]]) { const hl = new THREE.Mesh(new THREE.SphereGeometry(1, 20, 10, 0, Math.PI * 2, 0, Math.PI / 2), hillM); hl.scale.set(w, h, w * 0.5); hl.position.set(150 + Math.sin(a) * d, -10, 250 + Math.cos(a) * d); hl.rotation.y = a; scene.add(hl); } }
+  /* Draped 3D ribbon for the Panathenaic Way: packed limestone gravel with wheel ruts, stone drain kerbs, and beaten-earth verges */
+  const roadTex = FR.canvasTex(512, 512, (ctx, w, h) => {
+    ctx.fillStyle = '#b38052'; ctx.fillRect(0, 0, w, h); /* outer terracotta-ochre verge */
+    ctx.fillStyle = '#efe3c6'; ctx.fillRect(46, 0, w - 92, h); /* packed limestone gravel surface */
+    let sd = 91; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+    const gPal = ['#f7eed6', '#e2d2ae', '#d8c59c', '#fbf4e2', '#cbb78e'];
+    for (let i = 0; i < 900; i++) { ctx.fillStyle = gPal[i % gPal.length]; const x = 50 + r() * (w - 100), y = r() * h, mw = 8 + r() * 18, mh = 18 + r() * 44; ctx.fillRect(x, y, mw, mh); }
+    /* Twin wheel ruts and foot-worn tracks along the road */
+    for (const rx of [w * 0.36, w * 0.64]) { ctx.fillStyle = 'rgba(145, 115, 78, 0.34)'; ctx.fillRect(rx - 12, 0, 24, h); ctx.fillStyle = 'rgba(255, 248, 232, 0.35)'; ctx.fillRect(rx + 12, 0, 8, h); }
+    /* Stone kerb / drain blocks bordering the gravel road */
+    for (const kx of [34, w - 50]) {
+      ctx.fillStyle = '#c8bea8'; ctx.fillRect(kx, 0, 16, h);
+      ctx.fillStyle = '#7e664a'; for (let y = 0; y < h; y += 64) ctx.fillRect(kx, y, 16, 4);
+      ctx.fillStyle = 'rgba(90, 62, 36, 0.45)'; ctx.fillRect(kx - 4, 0, 4, h); ctx.fillRect(kx + 16, 0, 4, h);
+    }
+    /* Brushes on the outer earth verges */
+    for (let i = 0; i < 240; i++) { ctx.fillStyle = i % 2 ? '#9c6a3e' : '#c69464'; const sideX = (i % 2 ? r() * 30 : w - 34 + r() * 30); ctx.fillRect(sideX, r() * h, 6 + r() * 10, 16 + r() * 34); }
+  });
+  roadTex.wrapS = roadTex.wrapT = THREE.RepeatWrapping;
+  const rPos = [], rNor = [], rUv = [], rIdx = [], rSteps = Math.floor(LEN / 1.5), K = 6;
+  for (let i = 0; i <= rSteps; i++) {
+    const s = Math.min(LEN - 0.05, i * 1.5), pt = at(s), hw = roadHalf(s) + 1.1;
+    for (let j = 0; j <= K; j++) {
+      const u = j / K, v = (u - 0.5) * 2 * hw, [rx, rz] = side(pt, 0, v), ry = ground(rx, rz, true) + 0.032;
+      rPos.push(rx, ry, rz); rNor.push(0, 1, 0); rUv.push(u, s / 9);
+    }
+  }
+  for (let i = 0; i < rSteps; i++) for (let j = 0; j < K; j++) { const a = i * (K + 1) + j, b = a + 1, c1 = a + K + 1, d1 = c1 + 1; rIdx.push(a, c1, b, b, c1, d1); }
+  const rGeo = new THREE.BufferGeometry(); rGeo.setAttribute('position', new THREE.Float32BufferAttribute(rPos, 3)); rGeo.setAttribute('normal', new THREE.Float32BufferAttribute(rNor, 3)); rGeo.setAttribute('uv', new THREE.Float32BufferAttribute(rUv, 2)); rGeo.setIndex(rIdx); rGeo.computeVertexNormals();
+  const rMesh = new THREE.Mesh(rGeo, lam({ map: roadTex, polygonOffset: true, polygonOffsetFactor: -1 })); rMesh.receiveShadow = true; scene.add(rMesh);
+
+  const far = new THREE.Mesh(new THREE.CircleGeometry(3000, 40), lam({ color: '#b8ae88' })); far.rotation.x = -Math.PI / 2; far.position.set(150, -6, 250); scene.add(far);
+  /* Distant mountains of Attica (Hymettos, Pentelikon, Parnes, Aigaleos) in morning haze */
+  for (const [a, d, w, h, col] of [[0.35, 1850, 950, 320, '#8ea2bc'], [0.85, 2100, 1200, 260, '#9ab0c8'], [1.35, 2250, 1550, 440, '#8498b4'], [2.15, 2050, 1150, 280, '#96aac2'], [2.9, 1950, 900, 210, '#a2b4ca'], [3.55, 2350, 1700, 220, '#8e9fb8'], [4.55, 2150, 1350, 350, '#8396b2'], [5.55, 1950, 1050, 260, '#94a8c0']]) {
+    const hl = new THREE.Mesh(new THREE.ConeGeometry(w * 0.75, h * 1.4, 9), basic({ color: col })); hl.scale.set(1, 1, 0.55); hl.position.set(150 + Math.sin(a) * d, h * 0.55 - 18, 250 + Math.cos(a) * d); hl.rotation.y = a + 0.3; scene.add(hl); } }
 
 /* ================= pictures drawn for the walls: the metopes and the frieze as they sit on the building (drawn small, not copied from the stones) ================= */
 const pics = { metope: [0, 1, 2, 3].map(k => FR.canvasTex(128, 128, (g, w) => { g.fillStyle = '#f3ecdc'; g.fillRect(0, 0, w, w); let sd = 7 + k * 13; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647; g.fillStyle = '#c9906a'; g.strokeStyle = '#8a5a3a'; g.lineWidth = 3;
@@ -152,10 +238,10 @@ const START = at(S_START), feet = [];      // footprints that she cannot enter
 { const b = B('Eleusinion'); FR.enclosure(b.p, (x, z) => hDem(x, z), { H: 3.0 }); feet.push(b.p); const t = [[193, 240], [203, 243], [198, 262], [188, 259]]; FR.hall(t, hAt(196, 250), [196, 300], { H: 6, wall: M.marbleWarm, door: 1.3, doorH: 3.4, pitch: 0.24 }); }
 // --- the Acropolis: the walls on their line, the gate, the Parthenon, the bronze Athena, the wreck of the old temple, the altar
 const P = FR.parthenon([B('Parthenon').p[1], B('Parthenon').p[0], B('Parthenon').p[3], B('Parthenon').p[2]], plateau(340), pics);
-{ const closed = [...WALL, WALL[0]]; FR.wall(closed, (x, z) => plateau(x), (x, z) => Math.min(hDem(x, z), plateau(x) - 3), (x, z) => nearest(x, z).d < 11 || x < 214);
+{ const closed = [...ACRO, ACRO[0]]; FR.wall(closed, (x, z) => plateau(x), (x, z) => Math.min(hDem(x, z), plateau(x) - 3), (x, z) => nearest(x, z).d < 11 || x < 214, M.poros, true);
   // from the gate the wall runs on to north and south across the west end (its line here is this level's: the real west end was rebuilt with the Propylaia)
   const pg = at(S_GATE), ga = Math.atan2(-pg.dx, -pg.dz), gy = rY(S_GATE) ; FR.gate(pg.x, pg.z, ga, gy, 17);
-  for (const sd of [-1, 1]) { const a = side(pg, -3, sd * 8.5), b = side(pg, -3, sd * 34); FR.wall([a, b], (x, z) => gy + 3.5, (x, z) => hDem(x, z) - 2, () => false); FR.solids.push({ F: FR.front(a[0], a[1], b[0], b[1]), u0: 0, u1: 26, w0: -1, w1: 1 }); }
+  for (const sd of [-1, 1]) { const a = side(pg, -3, sd * 8.5), b = side(pg, -3, sd * 34); FR.wall([a, b], (x, z) => gy + 3.5, (x, z) => hDem(x, z) - 2, () => false, M.poros, true); FR.solids.push({ F: FR.front(a[0], a[1], b[0], b[1]), u0: 0, u1: 26, w0: -1, w1: 1 }); }
   // the five steps below it
   for (let i = 0; i < STEPN; i++) { const s = STEP0 + i * STEPL, p = at(s + STEPL / 2), F = FR.frontAt(p.x - p.dx * STEPL / 2, p.z - p.dz * STEPL / 2, Math.atan2(-p.dx, -p.dz), 17, 0), y = rY(s + 0.1); FR.box(M.marbleWarm, F, 0, 17, y - 2.5, y, -STEPL - 0.02, 0); }
   FR.bronzeAthena(262, 424, Math.atan2(-0.95, 0.3), hAt(262, 424));
@@ -167,12 +253,66 @@ const P = FR.parthenon([B('Parthenon').p[1], B('Parthenon').p[0], B('Parthenon')
   for (const [x, z, w, h, d, a] of [[288, 462, 2.6, 1.1, 1.4, 0.3], [284, 469, 1.8, 1.5, 1.5, 1.1], [291, 472, 3.2, 0.8, 1.2, -0.4], [279, 461, 1.4, 1.0, 1.4, 0.7]]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M.marble); m.position.set(x, hAt(x, z) + h * 0.42, z); m.rotation.y = a; on(m); scene.add(m); FR.rounds.push({ x, z, r: w * 0.6 }); } }
 const PAR = FR.parthenos(P.inside[0], P.inside[1], Math.atan2(P.FE.nx, P.FE.nz), P.cellaY, 1.0);
 const cellaL = new THREE.PointLight(C('#ffd890'), 900, 60, 1.4); cellaL.position.set(...FR.front(0, 0, 1, 0).P(0, 0), 0); { const [x, z] = P.FN.P(P.UE + 9, -P.mid); cellaL.position.set(x, P.cellaY + 7, z); } scene.add(cellaL);
-// plane trees in the square. Plutarch (Cimon 13) says Cimon planted the Agora with planes: not checked for this level, so the trees are marked unverified
-{ const leaf = [lam({ color: '#5f8a4a' }), lam({ color: '#6f9a52' }), lam({ color: '#4f7a48' })], trunk = lam({ color: '#8a7a66' });
-  for (const [x, z, h] of [[22, 34, 9], [-4, 58, 10], [26, 128, 9], [64, 152, 8], [8, 96, 10], [96, 30, 9], [104, 60, 8], [-20, 20, 9]]) { const y = hAt(x, z), tr = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.36, h * 0.6, 8), trunk); tr.position.set(x, y + h * 0.3, z); on(tr); scene.add(tr); FR.rounds.push({ x, z, r: 0.7 });
-    for (let i = 0; i < 7; i++) { const bl = new THREE.Mesh(new THREE.IcosahedronGeometry(2.0 + (i % 3) * 0.6, 1), leaf[i % 3]); bl.position.set(x + Math.cos(i * 2.2) * 2.0, y + h * 0.62 + (i % 3) * 1.3, z + Math.sin(i * 2.2) * 2.0); bl.scale.y = 0.7; on(bl); scene.add(bl); } } }
-FR.flush();
+/* Herms at the north-west entrance to the Agora ("the Herms", FINDINGS.md section F), boundary stones (horoi) along the Way, and inscribed stelae by the sanctuaries and on the Acropolis */
+for (const [s, sd, du] of [[12, -1, 0], [16, 1, 0], [28, -1, 0], [34, 1, 0], [248, -1, 0]]) { const p = at(s), [x, z] = side(p, du, (roadHalf(s) + 1.55) * sd); FR.herm(x, z, Math.atan2(-p.dz * sd * -1, p.dx * sd * -1) + Math.PI / 2, hAt(x, z)); }
+for (const [s, sd] of [[22, 1], [66, -1], [116, 1], [168, -1]]) { const p = at(s), [x, z] = side(p, 0, (roadHalf(s) + 1.25) * sd); FR.horos(x, z, Math.atan2(-p.dz * sd * -1, p.dx * sd * -1) + Math.PI / 2, hAt(x, z)); }
+for (const [i, [x, z, a]] of [[26, 76, 1.2], [174, 232, -1.6], [173, 272, -1.5], [248, 431, 0.2], [272, 433, 0.15], [306, 434, 0.22], [352, 424, 0.25], [382, 421, 0.1]].entries()) FR.stele(x, z, a, hAt(x, z), i);
 const inFoot = (x, z) => feet.some(p => inPoly(p, x, z));
+/* Trees, Mediterranean scrub, and limestone crags: plane trees in the Agora (Plutarch, Cimon 13, unverified), gnarly olives, tall cypresses, low maquis scrub, and limestone outcrops */
+{ const planeL = [lam({ color: '#5f8a48' }), lam({ color: '#729c54' }), lam({ color: '#4d763e' })], oliveL = [lam({ color: '#6e8458' }), lam({ color: '#869a6e' }), lam({ color: '#586c44' })];
+  const cypL = [lam({ color: '#2b4a30' }), lam({ color: '#35583a' }), lam({ color: '#213a25' })], scrubL = [lam({ color: '#647842' }), lam({ color: '#7c8c50' }), lam({ color: '#526436' }), lam({ color: '#887c46' })];
+  const trunkM = lam({ color: '#7a6a56' }), oliveTrM = lam({ color: '#6a5c4a' });
+  const plane = (x, z, h) => { const y = hAt(x, z), tr = new THREE.Mesh(new THREE.CylinderGeometry(0.22, 0.38, h * 0.58, 8), trunkM); tr.position.set(x, y + h * 0.29, z); on(tr); scene.add(tr); FR.rounds.push({ x, z, r: 0.7 });
+    for (let i = 0; i < 7; i++) { const bl = new THREE.Mesh(new THREE.IcosahedronGeometry(2.0 + (i % 3) * 0.55, 1), planeL[i % 3]); bl.position.set(x + Math.cos(i * 2.2) * 2.0, y + h * 0.62 + (i % 3) * 1.25, z + Math.sin(i * 2.2) * 2.0); bl.scale.y = 0.72; on(bl); scene.add(bl); } };
+  const olive = (x, z, sc = 1) => { const y = hAt(x, z), h = 5.4 * sc, g = new THREE.Group();
+    const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.18 * sc, 0.34 * sc, h * 0.46, 7), oliveTrM); tr.position.y = h * 0.22; tr.rotation.z = 0.12; g.add(tr);
+    for (const [bx, bz, ang] of [[-0.45, -0.25, 0.48], [0.5, 0.2, -0.45], [0.05, -0.45, 0.38]]) {
+      const br = new THREE.Mesh(new THREE.CylinderGeometry(0.1 * sc, 0.16 * sc, h * 0.38, 6), oliveTrM); br.position.set(bx * sc, h * 0.46, bz * sc); br.rotation.set(ang * bz, 0, -ang * bx * 1.5); g.add(br); }
+    for (let i = 0; i < 7; i++) { const r = (1.35 + (i % 3) * 0.38) * sc, cr = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), oliveL[i % 3]);
+      cr.position.set(Math.cos(i * 2.1) * 1.35 * sc, h * 0.62 + (i % 3) * 0.65 * sc, Math.sin(i * 2.1) * 1.35 * sc); cr.scale.set(1.15, 0.64, 1.1); g.add(cr); }
+    g.position.set(x, y, z); on(g); scene.add(g); FR.rounds.push({ x, z, r: 0.65 * sc }); };
+  const cypress = (x, z, sc = 1) => { const y = hAt(x, z), h = 10.5 * sc, g = new THREE.Group();
+    const tr = new THREE.Mesh(new THREE.CylinderGeometry(0.14 * sc, 0.24 * sc, h * 0.24, 7), oliveTrM); tr.position.y = h * 0.12; g.add(tr);
+    for (let i = 0; i < 4; i++) { const kh = h * (0.55 - i * 0.08), kr = (1.05 - i * 0.18) * sc, cn = new THREE.Mesh(new THREE.ConeGeometry(kr, kh, 9), cypL[i % 3]);
+      cn.position.y = h * (0.36 + i * 0.16); g.add(cn); }
+    g.position.set(x, y, z); on(g); scene.add(g); FR.rounds.push({ x, z, r: 0.6 * sc }); };
+  const scrub = (x, z, sc = 1, k = 0) => { const y = hAt(x, z), g = new THREE.Group();
+    for (let i = 0; i < 3; i++) { const r = (0.55 + (i % 2) * 0.28) * sc, b = new THREE.Mesh(new THREE.IcosahedronGeometry(r, 1), scrubL[(k + i) % 4]);
+      b.position.set((i - 1) * 0.48 * sc, r * 0.46, ((i * 3) % 2 - 0.5) * 0.36 * sc); b.scale.set(1.15, 0.62, 1.05); g.add(b); }
+    g.position.set(x, y, z); on(g); scene.add(g); };
+  const crag = (x, z, rx, ry, rz, a = 0) => { const y = hDem(x, z), m = new THREE.Mesh(new THREE.DodecahedronGeometry(1, 0), M.rock);
+    m.scale.set(rx, ry, rz); m.position.set(x, y - 0.3, z); m.rotation.set(0.2 * Math.sin(a), a, 0.15 * Math.cos(a)); on(m); scene.add(m); };
+
+  for (const [x, z, h] of [[22, 34, 9], [-4, 58, 10], [26, 128, 9], [64, 152, 8], [8, 96, 10], [96, 30, 9], [104, 60, 8], [-20, 20, 9]]) plane(x, z, h);
+  for (const [x, z, sc] of [
+    [35, 14, 0.95], [74, 24, 1.05], [88, 52, 0.9], [122, 82, 1.0], [92, 118, 1.1], [154, 148, 0.95], [116, 168, 1.05], [174, 184, 1.0],
+    [136, 206, 0.95], [148, 246, 1.08], [208, 232, 1.0], [212, 276, 1.1], [156, 294, 0.95], [154, 336, 1.05], [206, 326, 1.0], [204, 362, 1.12],
+    [156, 378, 1.0], [202, 392, 0.95], [146, 408, 1.05], [186, 418, 0.92], [128, 434, 1.08], [134, 462, 1.0], [166, 472, 0.96], [224, 412, 0.88],
+    [326, 422, 0.92] /* Athena's sacred olive beside the Old Temple on the Acropolis */
+  ]) olive(x, z, sc);
+  for (const [x, z, sc] of [
+    [40, -14, 1.0], [124, 14, 1.1], [158, 62, 0.95], [162, 108, 1.05], [76, 174, 1.0], [184, 212, 1.08], [208, 252, 1.12], [150, 272, 0.96],
+    [206, 304, 1.05], [154, 356, 1.02], [204, 376, 1.1], [192, 406, 0.95], [140, 422, 1.05], [126, 448, 1.1], [182, 474, 1.0], [216, 478, 0.95]
+  ]) cypress(x, z, sc);
+  /* Roadside and hillside scrub and limestone boulders along the walk */
+  for (let s = 14, k = 0; s < LEN - 30; s += 11, k++) {
+    if (s > 208 && s < 350) continue;
+    for (const sd of [-1, 1]) {
+      if ((k + (sd > 0 ? 1 : 0)) % 2 === 0) continue;
+      const p = at(s), d = roadHalf(s) + 2.4 + ((k * 5) % 6) * 1.4, [x, z] = side(p, ((k * 3) % 5 - 2) * 0.6, d * sd);
+      if (inFoot(x, z) || FR.blocked(x, z) || inAcro(x, z)) continue;
+      scrub(x, z, 0.85 + (k % 4) * 0.22, k);
+      if (s > 280 && k % 2 === 0) crag(x + sd * 1.4, z + 0.8, 1.4 + (k % 3) * 0.6, 0.9 + (k % 2) * 0.5, 1.2 + (k % 3) * 0.5, k * 1.1);
+    }
+  }
+  /* Prominent limestone rock crags along the north and west slopes of the Acropolis below the walls */
+  for (const [x, z, rx, ry, rz, a] of [
+    [200, 392, 4.2, 2.6, 3.4, 0.4], [220, 384, 5.2, 3.2, 3.8, 1.1], [244, 378, 5.8, 3.5, 4.0, 0.7], [268, 372, 6.2, 3.8, 4.2, 1.8],
+    [294, 366, 6.6, 4.0, 4.4, 2.3], [322, 366, 6.0, 3.6, 4.2, 0.9], [352, 370, 6.4, 3.8, 4.4, 1.5], [382, 380, 5.6, 3.4, 4.0, 2.1],
+    [180, 426, 3.4, 2.2, 2.8, 0.6], [178, 466, 4.4, 2.8, 3.4, 1.4], [202, 476, 5.0, 3.2, 3.8, 2.0], [232, 486, 5.6, 3.4, 4.0, 0.8]
+  ]) crag(x, z, rx, ry, rz, a);
+}
+FR.flush();
 const solid = (x, z) => FR.blocked(x, z) || inFoot(x, z);
 let progS = S_START;
 const blocked = (x, z) => { const n = nearest(x, z, progS); return n.d > corr(n.s) || solid(x, z); };
@@ -488,10 +628,11 @@ function update(dt) {
   SND.update(0.3 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
 }
 function draw() {
-  const w = innerWidth, h = innerHeight;
-  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  const w = innerWidth, h = innerHeight, pw = Math.round(w * PR), ph = Math.round(h * PR);
+  if (renderer.domElement.width !== pw || renderer.domElement.height !== ph) { renderer.setSize(w, h, false); target.setSize(pw, ph); post.uniforms.uPx.value.set(1 / pw, 1 / ph); camera.aspect = w / h; camera.updateProjectionMatrix(); }
+  skyUni.uTime.value = post.uniforms.uTime.value = time;
   if (camHold) camHold();
-  renderer.render(scene, camera);
+  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); renderer.render(postScene, postCam);
 }
 let camHold = null;      // a test hook: a still camera for looking at a building
 let last = 0; function loop(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(loop); }

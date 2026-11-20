@@ -153,8 +153,18 @@ export function makeFronts({ THREE, scene, T }) {
     g.position.set(x, y, z); g.rotation.y = ang; scene.add(g); rounds.push({ x, z, r: 3.9 }); return g; }
   /* ---------- an altar: a long block on steps ---------- */
   function altar(x, z, ang, y, W = 9, D = 3.4, H = 1.5) { const F = frontAt(x, z, ang, W, y); for (let i = 0; i < 2; i++) box(M.poros, F, -0.6 * (2 - i), W + 0.6 * (2 - i), -2, 0.25 * (i + 1), -D - 0.6 * (2 - i), 0.6 * (2 - i)); box(M.marbleWarm, F, 0, W, 0.5, 0.5 + H, -D, 0); box(M.marbleWarm, F, -0.15, W + 0.15, 0.5 + H, 0.5 + H + 0.2, -D - 0.15, 0.15); solid(F, -1.2, W + 1.2, -D - 1.2, 1.2); return F; }
-  /* ---------- a herm: a square pillar with a head ---------- */
-  function herm(x, z, ang, y) { const F = frontAt(x, z, ang, 0.34, y); box(M.marbleWarm, F, 0, 0.34, 0, 1.55, -0.3, 0); box(M.marbleWarm, F, -0.1, 0.44, 0, 0.14, -0.4, 0.1); const h = new THREE.Mesh(new THREE.SphereGeometry(0.17, 10, 8), M.marbleWarm); h.position.set(F.P(0.17, -0.15)[0], y + 1.7, F.P(0.17, -0.15)[1]); h.castShadow = true; scene.add(h); rounds.push({ x, z, r: 0.5 }); }
+  /* ---------- a herm: a square marble pillar on a stepped base, with side bosses and a bearded head ---------- */
+  function herm(x, z, ang, y) { const F = frontAt(x, z, ang, 0.36, y); box(M.poros, F, -0.18, 0.54, -0.6, 0.16, -0.48, 0.18); box(M.marbleWarm, F, -0.08, 0.44, 0.16, 0.30, -0.38, 0.08);
+    box(M.marbleWarm, F, 0, 0.36, 0.30, 1.62, -0.32, 0); box(M.marble, F, -0.09, 0.45, 1.24, 1.38, -0.22, -0.10);
+    const [hx, hz] = F.P(0.18, -0.16), h = new THREE.Mesh(new THREE.SphereGeometry(0.17, 12, 10), M.marbleWarm), bd = new THREE.Mesh(new THREE.ConeGeometry(0.11, 0.22, 8), M.marble);
+    h.position.set(hx, y + 1.78, hz); bd.position.set(hx + F.nx * 0.07, y + 1.64, hz + F.nz * 0.07); bd.rotation.x = Math.PI; h.castShadow = bd.castShadow = true; scene.add(h, bd); rounds.push({ x, z, r: 0.55 }); }
+  /* ---------- a stele: an upright marble slab on steps, crowned with a small pediment and painted band ---------- */
+  function stele(x, z, ang, y, k = 0) { const W = 0.64 + (k % 3) * 0.1, H = 1.85 + (k % 3) * 0.28, F = frontAt(x, z, ang, W, y), cM = k % 2 ? M.red : M.blue;
+    box(M.poros, F, -0.22, W + 0.22, -0.7, 0.18, -0.46, 0.22); box(M.marbleWarm, F, -0.1, W + 0.1, 0.18, 0.34, -0.34, 0.1);
+    box(M.marble, F, 0, W, 0.34, 0.34 + H, -0.22, 0); box(cM, F, 0.05, W - 0.05, 0.34 + H - 0.22, 0.34 + H - 0.08, -0.23, 0.015);
+    ext(M.marbleWarm, F, [[-0.06, 0.34 + H], [W + 0.06, 0.34 + H], [W / 2, 0.34 + H + 0.28]], -0.26, 0.04); rounds.push({ x, z, r: 0.6 }); }
+  /* ---------- a boundary stone (horos) of the Agora ---------- */
+  function horos(x, z, ang, y) { const F = frontAt(x, z, ang, 0.42, y); box(M.poros, F, -0.1, 0.52, -0.5, 0.12, -0.34, 0.1); box(M.marbleWarm, F, 0, 0.42, 0.12, 1.08, -0.22, 0); box(M.red, F, 0.04, 0.38, 0.88, 0.94, -0.23, 0.01); rounds.push({ x, z, r: 0.45 }); }
   /* ---------- two bronze men on one base, striding: the Tyrant-slayers (their attitudes are roughly those of the Roman copies; their place here is approximate) ---------- */
   function tyrannicides(x, z, ang, y) { const g = new THREE.Group(), add = (geo, px, py, pz, rx = 0, rz = 0, m = M.bronze) => { const o = new THREE.Mesh(geo, m); o.position.set(px, py, pz); o.rotation.set(rx, 0, rz); o.castShadow = true; g.add(o); return o; };
     add(new THREE.BoxGeometry(2.6, 1.3, 1.5), 0, 0.65, 0, 0, 0, M.marbleWarm);
@@ -163,12 +173,16 @@ export function makeFronts({ THREE, scene, T }) {
     g.position.set(x, y, z); g.rotation.y = ang; scene.add(g); rounds.push({ x, z, r: 1.7 }); }
   /* ---------- the gate of the Acropolis before the Propylaia (the Old Propylon). Of the real one little is left and its plan is argued over: this is a plain gatehouse,
        a passage between two solid wings behind four columns, under a low roof. F: a front across the way, looking down the ramp; the passage is at its middle ---------- */
-  function gate(x, z, ang, y, W = 17, pass = 2.9) { const F = frontAt(x, z, ang, W, y), D = 7.5, H = 6.2, m = W / 2;
+  function gate(x, z, ang, y, W = 17, pass = 3.2) { const F = frontAt(x, z, ang, W, y), D = 5.2, H = 7.4, m = W / 2;
     box(M.marbleWarm, F, -0.5, W + 0.5, -4, 0.3, -D - 0.5, 1.6); for (const [a, b] of [[0, m - pass], [m + pass, W]]) { box(M.poros, F, a, b, 0.3, H, -D, -1.4); solid(F, a, b, -D, -1.4); }
     for (const u of [m - pass - 2.6, m - pass + 0.1, m + pass - 0.1, m + pass + 2.6]) { const [cx, cz] = F.P(u, -0.5); column(cx, cz, y + 0.3, H - 0.3, 0.44, M.marbleWarm); }
     box(M.marbleWarm, F, 0, W, H, H + 0.6, -D, 0); box(M.blue, F, 0, W, H + 0.6, H + 1.0, -D + 0.05, -0.05); box(M.red, F, -0.1, W + 0.1, H + 1.0, H + 1.1, -D - 0.1, 0.1);
     ext(M.marbleWarm, F, [[0, H + 1.1], [W, H + 1.1], [m, H + 2.9]], -0.5, -0.1); ext(M.blue, F, [[1.2, H + 1.2], [W - 1.2, H + 1.2], [m, H + 2.6]], -0.1, -0.05); roof(F, D, H + 1.1, 1.8, 0.4); return F; }
-  /* ---------- the citadel wall along a line of points: its top a little above the ground inside, its foot wherever the rock is outside ---------- */
-  function wall(p, top, foot, skip, mat = M.poros) { for (let i = 0; i < p.length - 1; i++) { const a = p[i], b = p[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L < 0.4 || skip((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)) continue; const F = front(a[0], a[1], b[0], b[1], 0), t = Math.max(top(a[0], a[1]), top(b[0], b[1])) + 1.3, f = Math.min(foot(a[0], a[1]), foot(b[0], b[1])) - 1.5; box(mat, F, -0.3, L + 0.3, f, t, -0.7, 0.7); } }
-  return { M, front, frontAt, ext, box, sheet, panel, column, flush, blocked, solids, rounds, obb, sides, canvasTex, stoa, hall, enclosure, tholos, house, parthenon, parthenos, bronzeAthena, altar, herm, tyrannicides, gate, wall };
+  /* ---------- the citadel wall along a line of points: its top a little above the ground inside, its foot set on limestone cliff crags outside ---------- */
+  function wall(p, top, foot, skip, mat = M.poros, cliff = false) { for (let i = 0; i < p.length - 1; i++) { const a = p[i], b = p[i + 1], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L < 0.4 || skip((a[0] + b[0]) / 2, (a[1] + b[1]) / 2)) continue; const F = front(a[0], a[1], b[0], b[1], 0), t = Math.max(top(a[0], a[1]), top(b[0], b[1])) + 1.6, f = Math.min(foot(a[0], a[1]), foot(b[0], b[1])) - 1.5;
+      box(mat, F, -0.35, L + 0.35, f, t, -0.75, 0.75); box(M.marbleWarm, F, -0.4, L + 0.4, t, t + 0.24, -0.85, 0.85);
+      if (cliff) { const cf = f - 13 - (i % 3) * 3.0, ct = Math.min(t - 1.2, f + 2.2 + (i % 2) * 0.9), wOut = 3.2 + (i % 4) * 1.1;
+        box(M.rock, F, -0.8, L + 0.8, cf, ct, -0.5, wOut);
+        if (L > 3.0) box(M.rock, F, L * 0.12, L * 0.88, cf - 5, ct - 1.6, 0.2, wOut + 2.6); } } }
+  return { M, front, frontAt, ext, box, sheet, panel, column, flush, blocked, solids, rounds, obb, sides, canvasTex, stoa, hall, enclosure, tholos, house, parthenon, parthenos, bronzeAthena, altar, herm, stele, horos, tyrannicides, gate, wall };
 }
