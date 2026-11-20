@@ -44,47 +44,52 @@ export function makeRelief(THREE, o = {}) {
 
     void main(){
       vec2 res = 1.0 / uPx;
-      vec2 e1 = uPx * 1.3, e2 = uPx * 2.8, e3 = uPx * 4.5;
+      vec2 e1 = uPx * 1.3, e2 = uPx * 2.8;
       float dc = texture2D(tDepth, vUv).x;
       float far = smoothstep(0.99985, 0.99998, dc);
 
-      vec3 pc = viewPos(vUv);
-      vec3 pl = viewPos(vUv - vec2(e1.x, 0.0)), pr = viewPos(vUv + vec2(e1.x, 0.0));
-      vec3 pd = viewPos(vUv - vec2(0.0, e1.y)), pu = viewPos(vUv + vec2(0.0, e1.y));
-      float dist = max(-pc.z, 0.1);
+      /* Reconstruct view-space Z directly from the projection matrix (no mat4 multiply needed for neighbor taps!) */
+      float p22 = uInvProj[2][2], p23 = uInvProj[2][3], p32 = uInvProj[3][2], p33 = uInvProj[3][3];
+      float zOf = -(p22 * (dc * 2.0 - 1.0) + p23) / (p32 * (dc * 2.0 - 1.0) + p33);
+      float dist = max(zOf, 0.1);
       float distFade = 1.0 - smoothstep(150.0, 420.0, dist) * 0.75;
 
-      /* Depth silhouette detection: only true depth jumps between distinct overlapping objects (ignores polygon facets on a single surface) */
-      float dL = max(-pl.z, 0.1), dR = max(-pr.z, 0.1), dD = max(-pd.z, 0.1), dU = max(-pu.z, 0.1);
+      float dl = texture2D(tDepth, vUv - vec2(e1.x, 0.0)).x, dr = texture2D(tDepth, vUv + vec2(e1.x, 0.0)).x;
+      float dd = texture2D(tDepth, vUv - vec2(0.0, e1.y)).x, du = texture2D(tDepth, vUv + vec2(0.0, e1.y)).x;
+      float dL = max(-(p22 * (dl * 2.0 - 1.0) + p23) / (p32 * (dl * 2.0 - 1.0) + p33), 0.1);
+      float dR = max(-(p22 * (dr * 2.0 - 1.0) + p23) / (p32 * (dr * 2.0 - 1.0) + p33), 0.1);
+      float dD = max(-(p22 * (dd * 2.0 - 1.0) + p23) / (p32 * (dd * 2.0 - 1.0) + p33), 0.1);
+      float dU = max(-(p22 * (du * 2.0 - 1.0) + p23) / (p32 * (du * 2.0 - 1.0) + p33), 0.1);
+
+      /* Depth silhouette detection: only true depth jumps between distinct overlapping objects */
       float jumpL = (dL - dist) / dist, jumpR = (dR - dist) / dist, jumpD = (dD - dist) / dist, jumpU = (dU - dist) / dist;
-      float maxJumpOut = max(max(jumpL, jumpR), max(jumpD, jumpU)); /* positive when vUv is on the foreground object right inside its silhouette edge */
+      float maxJumpOut = max(max(jumpL, jumpR), max(jumpD, jumpU));
 
       /* Raking relief light direction (from upper-left / east across the carved slab) */
       vec2 rakeDir = normalize(vec2(-0.76, 0.65));
-      float dLit1 = max(-viewPos(vUv + rakeDir * e2).z, 0.1);
-      float dLit2 = max(-viewPos(vUv + rakeDir * e3).z, 0.1);
-      float dShad1 = max(-viewPos(vUv - rakeDir * e2).z, 0.1);
+      float dlt1 = texture2D(tDepth, vUv + rakeDir * e2).x, dsh1 = texture2D(tDepth, vUv - rakeDir * e2).x;
+      float dLit1 = max(-(p22 * (dlt1 * 2.0 - 1.0) + p23) / (p32 * (dlt1 * 2.0 - 1.0) + p33), 0.1);
+      float dShad1 = max(-(p22 * (dsh1 * 2.0 - 1.0) + p23) / (p32 * (dsh1 * 2.0 - 1.0) + p33), 0.1);
 
       /* Undercut relief shadow: where the current pixel lies on a background surface just behind a closer foreground form */
-      float under1 = smoothstep(0.035, 0.18, (dist - dLit1) / dist) * 0.65 + smoothstep(0.04, 0.22, (dist - dLit2) / dist) * 0.35;
+      float under1 = smoothstep(0.035, 0.18, (dist - dLit1) / dist);
       float underAll = smoothstep(0.04, 0.20, (dist - min(min(dL, dR), min(dD, dU))) / dist);
       float undercut = clamp(under1 * 0.8 + underAll * 0.55, 0.0, 1.0) * distFade;
 
-      /* Subtle chiselled marble bevel on the lit outer edge of a foreground form (only at real depth jumps > 5%, never on internal polygon facets) */
+      /* Subtle chiselled marble bevel on the lit outer edge of a foreground form */
       float litEdge = smoothstep(0.055, 0.22, maxJumpOut) * smoothstep(-0.02, 0.08, (dShad1 - dLit1) / dist);
       float fgBevel = litEdge * distFade * (1.0 - far);
 
-      /* Reconstructed 3D surface normal and world position */
-      vec3 dx = abs(pr.z - pc.z) < abs(pc.z - pl.z) ? pr - pc : pc - pl;
-      vec3 dy = abs(pu.z - pc.z) < abs(pc.z - pd.z) ? pu - pc : pc - pd;
-      vec3 nv = normalize(cross(dx, dy));
+      /* Reconstructed 3D surface normal and world position (only ONE viewPos call!) */
+      vec3 pc = viewPos(vUv);
+      vec3 nv = normalize(vec3((dR - dL) / (2.0 * e1.x * dist), (dU - dD) / (2.0 * e1.y * dist), 1.0));
       vec3 p = (uInvView * vec4(pc, 1.0)).xyz;
 
-      /* Sample scene colour in sRGB and compute local raking relief derivative (models carved drapery flutes, hair locks, ashlar joints) */
+      /* Sample scene colour in sRGB (using fast sqrt approximation for neighbor taps) */
       vec3 sc = toSrgb(texture2D(tScene, vUv).rgb);
-      vec3 scLit = toSrgb(texture2D(tScene, vUv + rakeDir * e1 * 1.2).rgb);
-      vec3 scShad = toSrgb(texture2D(tScene, vUv - rakeDir * e1 * 1.2).rgb);
-      vec3 scAvg = (sc * 2.0 + toSrgb(texture2D(tScene, vUv + vec2(e1.x, -e1.y)).rgb) + toSrgb(texture2D(tScene, vUv - vec2(e1.x, -e1.y)).rgb)) * 0.25;
+      vec3 scLit = sqrt(max(texture2D(tScene, vUv + rakeDir * e1 * 1.2).rgb, vec3(0.0)));
+      vec3 scShad = sqrt(max(texture2D(tScene, vUv - rakeDir * e1 * 1.2).rgb, vec3(0.0)));
+      vec3 scAvg = (sc * 2.0 + scLit + scShad) * 0.25;
 
       float lum = dot(sc, vec3(0.299, 0.587, 0.114));
       float lumLit = dot(scLit, vec3(0.299, 0.587, 0.114));

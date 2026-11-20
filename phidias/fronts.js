@@ -71,9 +71,15 @@ export function makeFronts({ THREE, scene, T }) {
     solid(F, 0, F.W, -D, -D + 0.7); solid(F, 0, 0.6, -D, -0.4); solid(F, F.W - 0.6, F.W, -D, -0.4); return F; }
   /* ---------- a closed hall with a door (a council house, a fountain house, a plain house) ---------- */
   function hall(p, g, look, o = {}) { const B = obb(p), S = sides(B.corners, g), F = facing(S, look[0], look[1]), H = o.H || 5, wall = o.wall || M.poros, long = S.find(f => f.W >= Math.max(B.L, B.Wd) - 0.01), D = Math.min(B.L, B.Wd);
-    for (const f of S) { box(wall, f, 0, f.W, 0, H, -0.5, 0); if (o.socle) box(M.rock, f, 0, f.W, 0, 0.6, 0, 0.06); solid(f, 0, f.W, -0.6, 0.1); }
-    box(o.doorM || M.door, F, F.W / 2 - (o.door || 1.1), F.W / 2 + (o.door || 1.1), 0, o.doorH || 2.8, 0, 0.06); box(M.marbleWarm, F, F.W / 2 - (o.door || 1.1) - 0.2, F.W / 2 + (o.door || 1.1) + 0.2, o.doorH || 2.8, (o.doorH || 2.8) + 0.3, 0, 0.12);
-    if (o.windows) for (const f of S) for (let u = 2; u < f.W - 1.5; u += 3.4) box(M.dark, f, u, u + 0.5, H - 1.3, H - 0.7, 0, 0.03);
+    for (const f of S) { box(wall, f, 0, f.W, 0, H, -0.5, 0); box(M.rock, f, -0.05, f.W + 0.05, 0, 0.62, -0.52, 0.07); box(M.marbleWarm, f, -0.06, f.W + 0.06, H - 0.22, H, -0.52, 0.06); solid(f, 0, f.W, -0.6, 0.1); }
+    const dw = o.door || 1.1, dh = o.doorH || 2.8, dm = F.W / 2;
+    box(M.marbleWarm, F, dm - dw - 0.35, dm + dw + 0.35, -0.4, 0.18, -0.1, 0.28);
+    box(M.marbleWarm, F, dm - dw - 0.22, dm - dw, 0.18, dh, 0, 0.14); box(M.marbleWarm, F, dm + dw, dm + dw + 0.22, 0.18, dh, 0, 0.14);
+    box(o.doorM || M.door, F, dm - dw, dm + dw, 0.18, dh, 0, 0.06);
+    box(M.marbleWarm, F, dm - dw - 0.32, dm + dw + 0.32, dh, dh + 0.32, 0, 0.18);
+    if (o.windows) for (const f of S) for (let u = 2; u < f.W - 1.5; u += 3.4) {
+      box(M.marbleWarm, f, u - 0.08, u + 0.58, H - 1.38, H - 1.28, 0, 0.08); box(M.wood, f, u - 0.08, u + 0.58, H - 0.70, H - 0.60, 0, 0.08);
+      box(M.dark, f, u, u + 0.5, H - 1.28, H - 0.70, 0, 0.03); box(M.wood, f, u + 0.22, u + 0.28, H - 1.28, H - 0.70, 0, 0.05); }
     roof(long, D, H, D * (o.pitch || 0.2)); return F; }
   /* ---------- a walled enclosure open to the sky (the Aiakeion, a precinct) ---------- */
   function enclosure(p, g, o = {}) { const H = o.H || 3, gy = typeof g === 'function' ? g : () => g; for (let i = 0; i < p.length; i++) { const a = p[i], b = p[(i + 1) % p.length], L = Math.hypot(b[0] - a[0], b[1] - a[1]); if (L < 0.5) continue; const n = Math.max(1, Math.round(L / 5));      // on a slope the wall steps down with the ground
@@ -81,10 +87,46 @@ export function makeFronts({ THREE, scene, T }) {
   /* ---------- the Tholos: a round house under a conical roof ---------- */
   function tholos(p, g) { let cx = 0, cz = 0; for (const q of p) { cx += q[0] / p.length; cz += q[1] / p.length; } const R = Math.hypot(p[0][0] - cx, p[0][1] - cz), wall = new THREE.Mesh(new THREE.CylinderGeometry(R, R, 6.6, 40), M.poros), rf = new THREE.Mesh(new THREE.ConeGeometry(R + 0.6, 4.2, 40), M.tile);
     wall.position.set(cx, g + 3.3 - 0.5, cz); rf.position.set(cx, g + 6.1 + 2.1, cz); for (const m of [wall, rf]) { m.castShadow = m.receiveShadow = true; scene.add(m); } rounds.push({ x: cx, z: cz, r: R + 0.3 }); }
-  /* ---------- a plain Athenian house: rubble footing, mud brick under lime wash, a tiled roof, small high windows. Conjectural, wherever it stands ---------- */
-  function house(x, z, ang, W, D, g, k = 0) { const F = frontAt(x, z, ang, W, g), H = 3.3 + (k % 3) * 0.35, wall = k % 2 ? M.plaster : M.brick, c = [F.P(0, 0), F.P(W, 0), F.P(W, -D), F.P(0, -D)];
-    for (const f of sides(c, g)) { box(wall, f, 0, f.W, -2.5, H, -0.4, 0); box(M.rock, f, 0, f.W, -2.5, 0.55, 0, 0.07); for (let u = 1.6; u < f.W - 1; u += 3.1) box(M.dark, f, u, u + 0.45, H - 1.2, H - 0.7, 0, 0.03); solid(f, 0, f.W, -0.5, 0.1); }
-    box(M.door, F, W * 0.3, W * 0.3 + 1.1, 0, 2.1, 0, 0.09); roof(F, D, H, D * 0.16, 0.45); }
+  /* ---------- an Athenian house: stone socle and string-course, plastered or ochre walls, cornice band and rafters, framed shuttered windows, recessed prothyron doorway and stone bench ---------- */
+  function house(x, z, ang, W, D, g, k = 0) { const F = frontAt(x, z, ang, W, g), H = 3.4 + (k % 3) * 0.38, wall = [M.plaster, M.brick, M.poros, M.marbleWarm][k % 4], c = [F.P(0, 0), F.P(W, 0), F.P(W, -D), F.P(0, -D)];
+    const bandM = k % 3 === 0 ? M.red : k % 3 === 1 ? M.marbleWarm : M.poros, shutM = k % 2 ? M.wood : M.woodDark;
+    for (const f of sides(c, g)) {
+      box(wall, f, 0, f.W, -2.5, H, -0.4, 0);
+      /* Stone rubble footing and dressed string-course */
+      box(M.rock, f, -0.04, f.W + 0.04, -2.5, 0.58, -0.42, 0.08);
+      box(M.poros, f, -0.06, f.W + 0.06, 0.58, 0.70, -0.43, 0.10);
+      /* Upper cornice band and projecting wooden rafter ends under the eaves */
+      box(bandM, f, -0.04, f.W + 0.04, H - 0.22, H - 0.06, -0.42, 0.06);
+      for (let ru = 0.6; ru < f.W - 0.4; ru += 1.4) box(M.woodDark, f, ru, ru + 0.14, H - 0.10, H + 0.02, 0, 0.28);
+      /* Framed windows with stone sill, timber lintel, mullion, and open wooden shutters */
+      const wy0 = H - 1.32, wy1 = H - 0.66;
+      for (let u = 1.7; u < f.W - 1.4; u += 3.2) {
+        if (f === F && u > W * 0.24 - 0.6 && u < W * 0.24 + 2.1) continue;
+        box(M.poros, f, u - 0.10, u + 0.62, wy0 - 0.09, wy0, 0, 0.10); /* stone sill */
+        box(M.woodDark, f, u - 0.12, u + 0.64, wy1, wy1 + 0.10, 0, 0.10); /* timber lintel */
+        box(M.wood, f, u - 0.07, u, wy0, wy1, 0, 0.07); box(M.wood, f, u + 0.52, u + 0.59, wy0, wy1, 0, 0.07); /* jambs */
+        box(M.dark, f, u, u + 0.52, wy0, wy1, 0, 0.025);
+        box(M.wood, f, u + 0.23, u + 0.29, wy0, wy1, 0, 0.055); /* central mullion */
+        box(shutM, f, u - 0.30, u - 0.07, wy0 + 0.02, wy1 - 0.02, 0, 0.065); /* left open shutter */
+        box(shutM, f, u + 0.59, u + 0.82, wy0 + 0.02, wy1 - 0.02, 0, 0.065); /* right open shutter */
+      }
+      solid(f, 0, f.W, -0.5, 0.15);
+    }
+    /* Doorway (prothyron): stepped stone threshold, stone jambs, panelled double door leaves, lintel and timber hood */
+    const du0 = W * 0.28, du1 = du0 + 1.24, dm = (du0 + du1) / 2, dh = 2.25;
+    box(M.marbleWarm, F, du0 - 0.28, du1 + 0.28, -0.4, 0.16, -0.05, 0.28); /* threshold step */
+    box(M.poros, F, du0 - 0.18, du0, 0.16, dh, 0, 0.15); box(M.poros, F, du1, du1 + 0.18, 0.16, dh, 0, 0.15); /* stone jambs */
+    box(M.door, F, du0, du1, 0.16, dh, 0, 0.07); /* door leaves */
+    box(M.woodDark, F, dm - 0.04, dm + 0.04, 0.16, dh, 0, 0.095); /* centre seam */
+    for (const ry of [0.45, 1.15, 1.85]) box(M.woodDark, F, du0 + 0.06, du1 - 0.06, ry, ry + 0.09, 0, 0.09); /* cross rails */
+    box(M.woodDark, F, du0 - 0.26, du1 + 0.26, dh, dh + 0.18, 0, 0.20); /* timber lintel */
+    box(M.marbleWarm, F, du0 - 0.32, du1 + 0.32, dh + 0.18, dh + 0.30, 0, 0.34); /* projecting hood cornice */
+    /* Roadside stone bench beside the doorway */
+    if (k % 2 === 0 && du1 + 2.6 < W - 0.5) {
+      box(M.poros, F, du1 + 0.55, du1 + 2.35, -0.3, 0.46, 0, 0.45);
+      box(M.marbleWarm, F, du1 + 0.50, du1 + 2.40, 0.46, 0.55, 0, 0.50);
+    }
+    roof(F, D, H, D * 0.17, 0.48); }
 
   /* ---------- the Parthenon. c: its four corners on the ground (the lowest step), from OpenStreetMap, as [NW, NE, SE, SW]; g: the ground the steps stand on ---------- */
   function parthenon(c, g, pics) {
