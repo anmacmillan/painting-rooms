@@ -158,13 +158,13 @@ const P = FR.parthenon([B('Parthenon').p[1], B('Parthenon').p[0], B('Parthenon')
   for (const sd of [-1, 1]) { const a = side(pg, -3, sd * 8.5), b = side(pg, -3, sd * 34); FR.wall([a, b], (x, z) => gy + 3.5, (x, z) => hDem(x, z) - 2, () => false); FR.solids.push({ F: FR.front(a[0], a[1], b[0], b[1]), u0: 0, u1: 26, w0: -1, w1: 1 }); }
   // the five steps below it
   for (let i = 0; i < STEPN; i++) { const s = STEP0 + i * STEPL, p = at(s + STEPL / 2), F = FR.frontAt(p.x - p.dx * STEPL / 2, p.z - p.dz * STEPL / 2, Math.atan2(-p.dx, -p.dz), 17, 0), y = rY(s + 0.1); FR.box(M.marbleWarm, F, 0, 17, y - 2.5, y, -STEPL - 0.02, 0); }
-  FR.bronzeAthena(262, 424, Math.atan2(-0.95, 0.3), plateau(262));
+  FR.bronzeAthena(262, 424, Math.atan2(-0.95, 0.3), hAt(262, 424));
   // the old temple of Athena, burnt by the Persians in 480: its platform, some drums, and (a guess) the walls of its back rooms left standing without a roof
-  { const F = FR.frontAt(338, 428, Math.atan2(0.229, 0.974), 43, plateau(338)); FR.box(M.poros, F, 0, 43, -3, 0.7, -21, 0); for (let i = 0; i < 9; i++) { const [x, z] = F.P(2 + i * 4.9, -1.2 - (i % 3) * 0.3), h = 0.6 + ((i * 7) % 5) * 0.45; const d = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.66, h, 14), M.poros); d.position.set(x, plateau(338) + 0.7 + h / 2, z); on(d); scene.add(d); }
+  { const oy = hAt(338, 428), F = FR.frontAt(338, 428, Math.atan2(0.229, 0.974), 43, oy); FR.box(M.poros, F, 0, 43, -3, 0.7, -21, 0); for (let i = 0; i < 9; i++) { const [x, z] = F.P(2 + i * 4.9, -1.2 - (i % 3) * 0.3), h = 0.6 + ((i * 7) % 5) * 0.45; const d = new THREE.Mesh(new THREE.CylinderGeometry(0.6, 0.66, h, 14), M.poros); d.position.set(x, oy + 0.7 + h / 2, z); on(d); scene.add(d); }
     FR.box(M.poros, F, 30, 30.6, 0.7, 5.2, -17, -4); FR.box(M.poros, F, 30, 42, 0.7, 4.6, -17, -16.4); FR.box(M.poros, F, 41.4, 42, 0.7, 5.0, -17, -4); FR.solids.push({ F, u0: 0, u1: 43, w0: -21, w1: 0 }); }
-  FR.altar(402, 416, Math.atan2(-0.97, 0.22), plateau(400), 12, 4.4, 1.9);
+  FR.altar(402, 416, Math.atan2(-0.97, 0.22), hAt(402, 416), 12, 4.4, 1.9);
   // marble waiting in the yard west of the temple: the pediments are still to be carved
-  for (const [x, z, w, h, d, a] of [[288, 462, 2.6, 1.1, 1.4, 0.3], [284, 469, 1.8, 1.5, 1.5, 1.1], [291, 472, 3.2, 0.8, 1.2, -0.4], [279, 461, 1.4, 1.0, 1.4, 0.7]]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M.marble); m.position.set(x, plateau(x) + h / 2, z); m.rotation.y = a; on(m); scene.add(m); FR.rounds.push({ x, z, r: w * 0.6 }); } }
+  for (const [x, z, w, h, d, a] of [[288, 462, 2.6, 1.1, 1.4, 0.3], [284, 469, 1.8, 1.5, 1.5, 1.1], [291, 472, 3.2, 0.8, 1.2, -0.4], [279, 461, 1.4, 1.0, 1.4, 0.7]]) { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M.marble); m.position.set(x, hAt(x, z) + h * 0.42, z); m.rotation.y = a; on(m); scene.add(m); FR.rounds.push({ x, z, r: w * 0.6 }); } }
 const PAR = FR.parthenos(P.inside[0], P.inside[1], Math.atan2(P.FE.nx, P.FE.nz), P.cellaY, 1.0);
 const cellaL = new THREE.PointLight(C('#ffd890'), 900, 60, 1.4); cellaL.position.set(...FR.front(0, 0, 1, 0).P(0, 0), 0); { const [x, z] = P.FN.P(P.UE + 9, -P.mid); cellaL.position.set(x, P.cellaY + 7, z); } scene.add(cellaL);
 // plane trees in the square. Plutarch (Cimon 13) says Cimon planted the Agora with planes: not checked for this level, so the trees are marked unverified
