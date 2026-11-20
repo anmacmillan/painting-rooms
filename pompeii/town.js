@@ -6,8 +6,9 @@
 export function makeTown({ THREE, scene, map, T, plane, box, classOf, noBay }) {
   const lam = o => new THREE.MeshLambertMaterial(o), h0 = (x, z) => plane.a * x + plane.b * z, KERB = 0.26;
   const rep = (t, n) => { const c = t.clone(); c.needsUpdate = true; c.wrapS = c.wrapT = THREE.RepeatWrapping; return c; };
-  const M = { white: lam({ map: T.white }), red: lam({ map: T.red }), ochre: lam({ map: T.ochre }), rubble: lam({ map: T.rubble }), dark: lam({ color: '#1b1410' }), inner: lam({ color: '#4a3a2c' }), wood: lam({ map: T.wood }),
-    tile: lam({ map: T.tile }), basalt: lam({ map: T.basalt }), walk: lam({ map: T.walk }), kerb: lam({ color: '#77757a' }), stone: lam({ color: '#8a888c' }), lava: lam({ color: '#5c5c62' }), counter: lam({ color: '#c9bfae' }), black: lam({ color: '#0d0a08' }), sill: lam({ color: '#b8ae9a' }) };
+  const M = { white: lam({ map: T.white }), red: lam({ map: T.red }), ochre: lam({ map: T.ochre }), black_panel: lam({ map: T.black_panel }), dado: lam({ map: T.dado }), rubble: lam({ map: T.rubble }), dark: lam({ color: '#3b2b20' }), inner: lam({ color: '#6b4f3a' }), wood: lam({ map: T.wood }),
+    tile: lam({ map: T.tile }), basalt: lam({ map: T.basalt }), walk: lam({ map: T.walk }), doorfloor: lam({ map: T.walk }), kerb: lam({ color: '#a89a84' }), stone: lam({ color: '#b5a790' }), lava: lam({ color: '#6e655c' }), counter: lam({ color: '#dcccb0' }), black: lam({ color: '#261d18' }), sill: lam({ color: '#cfc0a4' }),
+    garland: lam({ color: '#5b784e' }), ribbon: lam({ color: '#b5392a' }), gold: lam({ color: '#d8a640' }), leaf: lam({ color: '#4d6b45' }), amphora: lam({ color: '#be6a42' }) };
   /* ---- a batcher: every quad of one material goes into one mesh ---- */
   const bat = {}, meshes = {}; const B = k => bat[k] || (bat[k] = { p: [], u: [], n: [], i: [] });
   function quad(k, a, b, c, d, hint, us = 1, vs = 1, u0 = 0, v0 = 0) {      /* a b c d in order round the face; hint: a direction the face should look towards */
@@ -55,23 +56,37 @@ export function makeTown({ THREE, scene, map, T, plane, box, classOf, noBay }) {
   let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647, pick = a => a[Math.floor(rnd() * a.length)];
   const bays = [], notices = [];
   function bay(F, w, o = {}) {
-    const two = o.two ?? rnd() < 0.62, H = o.H || (two ? 6.4 + rnd() * 1.4 : 4.0 + rnd() * 0.7), kindB = o.kind || (rnd() < 0.52 ? 'shop' : rnd() < 0.5 ? 'door' : 'wall'), dado = o.dado || (rnd() < 0.72 ? 'red' : rnd() < 0.5 ? 'ochre' : 'rubble'), up = o.up || (rnd() < 0.86 ? 'white' : 'rubble'), dH = dado === 'rubble' ? 0 : 1.25 + (rnd() < 0.3 ? 0.5 : 0);
-    const wall = (u0, u1, y0, y1) => { if (y0 < dH) face(dado, F, u0, u1, y0, Math.min(dH, y1)); if (y1 > dH) face(up, F, u0, u1, Math.max(dH, y0), y1); };
+    const two = o.two ?? rnd() < 0.65, H = o.H || (two ? 6.2 + rnd() * 1.3 : 4.2 + rnd() * 0.7), kindB = o.kind || (rnd() < 0.54 ? 'shop' : rnd() < 0.52 ? 'door' : 'wall');
+    const dado = o.dado || 'dado', midCol = o.mid || (rnd() < 0.44 ? 'red' : rnd() < 0.76 ? 'ochre' : 'black_panel'), up = o.up || 'white';
+    const dH = 1.15, mH = Math.min(H - 0.5, 3.65);
+    /* Three-zone Roman wall painting elevation: dado (-0.35..dH, extended underground so slopes never show white cracks),
+       bold flat red/ochre/black Fourth-Style panel (dH..mH), warm cream plaster upper register with painted columns (mH..H) */
+    const wall = (u0, u1, y0, y1) => {
+      const yb = y0 === 0 ? -0.35 : y0;
+      if (yb < dH) face(dado, F, u0, u1, yb, Math.min(dH, y1));
+      if (y1 > dH && y0 < mH) face(midCol, F, u0, u1, Math.max(dH, y0), Math.min(mH, y1));
+      if (y1 > mH) face(up, F, u0, u1, Math.max(mH, y0), y1);
+    };
     let a = 0, b = 0, oh = 0, maxB = 10.5; if (F.s) for (const u of [0, w]) for (let d = 1.5; d < maxB; d += 0.5) { const q = F.P(u, 0, -d); if (others(q[0], q[2], F.s, 'f')) { maxB = d - 0.5; break; } }
     const D = Math.min(3.4, maxB), d1 = Math.min(5.5, maxB), d2 = Math.min(10.5, maxB);
     if (kindB === 'shop' && w > 3.2) { const ow = Math.min(w - 0.9, o.ow || 2.5 + rnd() * 1.1); a = (w - ow) / 2; b = a + ow; oh = 2.9; }
     else if (kindB === 'door' && w > 2.2) { const ow = o.ow || 1.35 + rnd() * 0.35; a = o.at != null ? o.at : 0.5 + rnd() * (w - ow - 1.0); b = a + ow; oh = o.oh || 2.6 + rnd() * 0.5; }
-    if (oh) { wall(0, a, 0, H); wall(b, w, 0, H); wall(a, b, oh, H); side('white', F, a, 0, oh, 0, -0.45, 1); side('white', F, b, 0, oh, 0, -0.45, -1); flat('sill', F, a, b, oh, 0, -0.45, -1); flat('sill', F, a, b, 0.012, 0.06, -0.5, 1);
-      if (kindB === 'shop' || o.open) { face('inner', F, a - 0.6, b + 0.6, 0, oh + 0.3, -D); side('inner', F, a - 0.6, 0, oh + 0.3, -0.45, -D, 1); side('inner', F, b + 0.6, 0, oh + 0.3, -0.45, -D, -1); flat('dark', F, a - 0.6, b + 0.6, oh + 0.02, -0.45, -D, -1); flat('walk', F, a - 0.6, b + 0.6, 0.01, -0.45, -D, 1); }
-      else { const dm = pick(['wood', 'wood', 'red']); face(dm, F, a, b, 0, oh, -0.3); for (const x of [0.25, 0.5, 0.75]) face('black', F, a + (b - a) * x - 0.015, a + (b - a) * x + 0.015, 0, oh, -0.295); for (const [x, y] of [[0.36, 1.2], [0.64, 1.2]]) face('counter', F, a + (b - a) * x - 0.05, a + (b - a) * x + 0.05, y, y + 0.1, -0.28); }
-      if (kindB === 'shop' && o.counter !== false && rnd() < 0.7) { const cl = (b - a) * (0.5 + rnd() * 0.2), left = rnd() < 0.5, c0 = left ? a + 0.05 : b - 0.05 - cl; block('counter', F, c0, c0 + cl, 0, 0.92, -0.75, -0.12, 'sill'); block('counter', F, left ? c0 : c0 + cl - 0.6, left ? c0 + 0.6 : c0 + cl, 0, 0.92, -Math.min(2.0, D), -0.75, 'sill'); for (let q = 0.4; q < cl - 0.3; q += 0.62) flat('black', F, c0 + q - 0.16, c0 + q + 0.16, 0.925, -0.6, -0.28, 1); F.counters = (F.counters || []).concat([[c0, c0 + cl]]); } }
+    if (oh) { wall(0, a, 0, H); wall(b, w, 0, H); wall(a, b, oh, H); side('sill', F, a, 0, oh, 0, -0.45, 1); side('sill', F, b, 0, oh, 0, -0.45, -1); flat('sill', F, a, b, oh, 0, -0.45, -1); flat('sill', F, a, b, 0.012, 0.06, -0.5, 1);
+      /* Painted architectural gold pilasters framing the doorway */
+      face('gold', F, Math.max(0, a - 0.14), a, 0, oh + 0.14, 0.015); face('gold', F, b, Math.min(w, b + 0.14), 0, oh + 0.14, 0.015); face('gold', F, Math.max(0, a - 0.16), Math.min(w, b + 0.16), oh, oh + 0.16, 0.02);
+      if (kindB === 'shop' || o.open) { face('inner', F, a - 0.6, b + 0.6, 0, oh + 0.3, -D); side('inner', F, a - 0.6, 0, oh + 0.3, -0.45, -D, 1); side('inner', F, b + 0.6, 0, oh + 0.3, -0.45, -D, -1); flat('wood', F, a - 0.6, b + 0.6, oh + 0.02, -0.45, -D, -1); flat('doorfloor', F, a - 0.6, b + 0.6, 0.01, -0.45, -D, 1); }
+      else { const dm = pick(['wood', 'wood', 'red']); face(dm, F, a, b, 0, oh, -0.3); for (const x of [0.25, 0.5, 0.75]) face('black', F, a + (b - a) * x - 0.015, a + (b - a) * x + 0.015, 0, oh, -0.295); for (const [x, y] of [[0.36, 1.2], [0.64, 1.2]]) face('gold', F, a + (b - a) * x - 0.05, a + (b - a) * x + 0.05, y, y + 0.1, -0.28); }
+      if (kindB === 'shop' && o.counter !== false && rnd() < 0.72) { const cl = (b - a) * (0.5 + rnd() * 0.2), left = rnd() < 0.5, c0 = left ? a + 0.05 : b - 0.05 - cl; block('counter', F, c0, c0 + cl, 0, 0.92, -0.75, -0.12, 'sill'); block('counter', F, left ? c0 : c0 + cl - 0.6, left ? c0 + 0.6 : c0 + cl, 0, 0.92, -Math.min(2.0, D), -0.75, 'sill'); for (let q = 0.4; q < cl - 0.3; q += 0.62) flat('black', F, c0 + q - 0.16, c0 + q + 0.16, 0.925, -0.6, -0.28, 1); F.counters = (F.counters || []).concat([[c0, c0 + cl]]); } }
     else wall(0, w, 0, H);
-    if (two) for (let u = 0.9 + rnd() * 0.5; u < w - 0.9; u += 1.8 + rnd() * 1.2) { const y = 4.1 + rnd() * 0.3; face('black', F, u, u + 0.55, y, y + 0.8, 0.012); face('sill', F, u - 0.08, u + 0.63, y - 0.08, y, 0.03); }
-    /* a pent roof over the pavement on many fronts, and the roof itself: tiles sloping up and back from the front wall */
-    const pent = o.pent ?? (F.pentOK && rnd() < 0.55); if (pent) { const y = Math.min(H - 0.5, 3.35), pw = Math.min(1.25, F.pentW || 1.25); quad('tile', F.P(0, y - 0.38, pw), F.P(w, y - 0.38, pw), F.P(w, y, 0), F.P(0, y, 0), [0, 1, 0], w / 2.6, 0.5); quad('dark', F.P(0, y - 0.42, pw), F.P(w, y - 0.42, pw), F.P(w, y - 0.04, 0), F.P(0, y - 0.04, 0), [0, -1, 0]); for (let u = 0.15; u < w; u += 1.3) face('wood', F, u, u + 0.09, y - 0.42, y - 0.33, pw); }
+    if (two) for (let u = 0.9 + rnd() * 0.5; u < w - 0.9; u += 1.8 + rnd() * 1.2) { const y = 4.2 + rnd() * 0.3; face('dark', F, u, u + 0.55, y, y + 0.8, 0.012); face('gold', F, u - 0.08, u + 0.63, y - 0.08, y, 0.03); face('ribbon', F, u - 0.06, u + 0.61, y + 0.8, y + 0.88, 0.025); }
+    /* Pent roof over the pavement: terracotta tiles above, warm painted timber soffit below (no black triangles!) */
+    const pent = o.pent ?? (F.pentOK && rnd() < 0.48); if (pent) { const y = Math.min(H - 0.5, 3.45), pw = Math.min(1.15, F.pentW || 1.15); quad('tile', F.P(0, y - 0.34, pw), F.P(w, y - 0.34, pw), F.P(w, y, 0), F.P(0, y, 0), [0, 1, 0], w / 2.6, 0.5); quad('wood', F.P(0, y - 0.38, pw), F.P(w, y - 0.38, pw), F.P(w, y - 0.04, 0), F.P(0, y - 0.04, 0), [0, -1, 0], w / 2.2, 0.5); for (let u = 0.15; u < w; u += 1.3) face('gold', F, u, u + 0.09, y - 0.38, y - 0.29, pw); }
+    /* Painted olive-and-ribbon garland festoon hanging over select openings (echoing bacchus.jpg & wall.jpg) */
+    if (oh && (o.garland || rnd() < 0.28)) { const gy = oh + 0.08, segs = 6; for (let i = 0; i < segs; i++) { const t0 = i / segs, t1 = (i + 1) / segs, u0 = a + (b - a) * t0, u1 = a + (b - a) * t1, sag0 = 0.36 * 4 * t0 * (1 - t0), sag1 = 0.36 * 4 * t1 * (1 - t1); quad('garland', F.P(u0, gy - sag0 - 0.11, 0.08), F.P(u1, gy - sag1 - 0.11, 0.08), F.P(u1, gy - sag1 + 0.04, 0.08), F.P(u0, gy - sag0 + 0.04, 0.08), F.n, 0.3, 0.3); }
+      face('ribbon', F, a - 0.04, a + 0.06, gy - 0.65, gy + 0.05, 0.09); face('ribbon', F, b - 0.06, b + 0.04, gy - 0.65, gy + 0.05, 0.09); }
     quad('tile', F.P(0, H - 0.05, 0.35), F.P(w, H - 0.05, 0.35), F.P(w, H + 1.5, -d1), F.P(0, H + 1.5, -d1), [0, 1, 0], w / 2.6, 2.2); quad('white', F.P(0, H, 0), F.P(0, H + 1.5, -d1), F.P(0, 0, -d1), F.P(0, 0, 0), [-F.t[0], 0, -F.t[1]], 2, 2.4); quad('white', F.P(w, H, 0), F.P(w, H + 1.5, -d1), F.P(w, 0, -d1), F.P(w, 0, 0), [F.t[0], 0, F.t[1]], 2, 2.4);
     if (d2 > d1 + 0.2) { quad('tile', F.P(0, H + 1.5, -d1), F.P(w, H + 1.5, -d1), F.P(w, H + 0.2, -d2), F.P(0, H + 0.2, -d2), [0, 1, 0], w / 2.6, 2.2); face('white', F, 0, w, 0, H + 0.2, -d2, -1); quad('white', F.P(0, H + 1.5, -d1), F.P(0, H + 0.2, -d2), F.P(0, 0, -d2), F.P(0, 0, -d1), [-F.t[0], 0, -F.t[1]], 2, 2.4); quad('white', F.P(w, H + 1.5, -d1), F.P(w, H + 0.2, -d2), F.P(w, 0, -d2), F.P(w, 0, -d1), [F.t[0], 0, F.t[1]], 2, 2.4); } else face('white', F, 0, w, 0, H + 1.5, -d1, -1);
-    const rec = { F, w, H, a, b, oh, kind: oh ? kindB : 'wall', dH, mid: F.P(w / 2, 0, 0), free: [] }; if (a > 1.5) rec.free.push([0.15, a - 0.15]); if (w - b > 1.5 && oh) rec.free.push([b + 0.15, w - 0.15]); if (!oh) rec.free.push([0.2, w - 0.2]); bays.push(rec); return rec;
+    const rec = { F, w, H, a, b, oh, kind: oh ? kindB : 'wall', dH, mid: F.P(w / 2, 0, 0), free: [], pent }; if (a > 1.5) rec.free.push([0.15, a - 0.15]); if (w - b > 1.5 && oh) rec.free.push([b + 0.15, w - 0.15]); if (!oh) rec.free.push([0.2, w - 0.2]); bays.push(rec); return rec;
   }
   for (const s of streets) for (const sg of [-1, 1]) { let run = null; const runs = [], step = 0.5;
     for (let d = 0; d <= s.L + 0.01; d += step) { const p = s.at(Math.min(d, s.L - 0.01)), x = p.x - p.dz * sg * s.f, z = p.z + p.dx * sg * s.f, free = !others(x, z, s, 'f') && inBox([x, z]) && !(noBay && noBay(x, z)), seg = s.cum.findIndex(c => c > d);
@@ -85,7 +100,20 @@ export function makeTown({ THREE, scene, map, T, plane, box, classOf, noBay }) {
   const solids = [];      /* round things she cannot walk through: { x, z, r } */
   function fountain(x, z, ang) { const y = hAt(x, z), g = new THREE.Group(), slab = (w, h, d, px, py, pz) => { const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), M.lava); m.position.set(px, py, pz); m.castShadow = m.receiveShadow = true; g.add(m); return m; };
     slab(1.7, 0.85, 0.16, 0, 0.42, 0.62); slab(1.7, 0.85, 0.16, 0, 0.42, -0.62); slab(0.16, 0.85, 1.4, 0.77, 0.42, 0); slab(0.16, 0.85, 1.4, -0.77, 0.42, 0); slab(0.5, 1.35, 0.3, 0, 0.67, -0.78);
-    const water = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.04, 1.1), new THREE.MeshLambertMaterial({ color: '#4f8aa0', emissive: '#16303a' })); water.position.y = 0.68; g.add(water); const jet = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.035, 0.5, 6), new THREE.MeshBasicMaterial({ color: '#bfe2ee' })); jet.position.set(0, 0.95, -0.5); jet.rotation.x = -0.5; g.add(jet);
+    const water = new THREE.Mesh(new THREE.BoxGeometry(1.4, 0.04, 1.1), new THREE.MeshLambertMaterial({ color: '#5c94a8', emissive: '#1e3c46' })); water.position.y = 0.68; g.add(water); const jet = new THREE.Mesh(new THREE.CylinderGeometry(0.025, 0.035, 0.5, 6), new THREE.MeshBasicMaterial({ color: '#cfe6ec' })); jet.position.set(0, 0.95, -0.5); jet.rotation.x = -0.5; g.add(jet);
     const headM = new THREE.Mesh(new THREE.SphereGeometry(0.13, 10, 8), M.stone); headM.position.set(0, 1.15, -0.64); headM.scale.z = 0.6; g.add(headM); g.position.set(x, y, z); g.rotation.y = ang; scene.add(g); solids.push({ x, z, r: 1.05 }); return { g, water, jet }; }
-  return { M, quad, frame, face, side, flat, block, bay, flush, streets, kind, wall, stamp, hAt, h0, KERB, bays, steppingStones, fountain, solids, dStreet, rnd: () => rnd() };
+  function gardenTops(nearFn) {
+    /* Occasional olive & cypress crowns peeking over courtyard walls (echoing golden_bracelet_garden.jpg) */
+    const cyG = new THREE.ConeGeometry(0.65, 2.9, 7), olG = new THREE.IcosahedronGeometry(0.85, 1), cyM = lam({ color: '#45613e' }), olM = lam({ color: '#6b8554' });
+    let k = 0;
+    for (const b of bays) {
+      if (b.H > 5.4 || nearFn(b.mid[0], b.mid[2]) > 14) continue;
+      if ((k++ % 3) !== 0) continue;
+      const [x, , z] = b.F.P(b.w * 0.5, 0, -2.4), y = h0(x, z) + b.H + 0.2;
+      const tree = new THREE.Mesh(k % 2 ? cyG : olG, k % 2 ? cyM : olM);
+      tree.position.set(x, y + (k % 2 ? 1.1 : 0.6), z); tree.scale.setScalar(0.85 + (k % 3) * 0.18);
+      scene.add(tree);
+    }
+  }
+  return { M, quad, frame, face, side, flat, block, bay, flush, streets, kind, wall, stamp, hAt, h0, KERB, bays, steppingStones, fountain, gardenTops, solids, dStreet, rnd: () => rnd() };
 }
