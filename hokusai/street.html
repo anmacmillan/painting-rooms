@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Under the Wave off Kanagawa: Hokusai in Layered Sea</title>
+<title>Under the Wave off Kanagawa: Hokusai</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="../common/world.css">
 <style>
@@ -18,13 +18,13 @@
   html, body { background: #12263e; color: var(--washi); }
   canvas#cv { touch-action: none; }
 
-  /* Title screen: woodblock broadsheet paired with Kuniyoshi */
+  /* Title screen: woodblock broadsheet */
   #title {
     background: var(--washi);
     color: var(--ink);
     justify-content: flex-end;
     padding: 0;
-    transition: opacity 0.6s ease;
+    transition: opacity 0.65s ease;
   }
   #title > img {
     position: absolute;
@@ -58,7 +58,7 @@
     opacity: 1;
     font-style: normal;
     font-size: clamp(14px, 1.85vw, 18px);
-    max-width: min(760px, 92vw);
+    max-width: min(740px, 92vw);
     margin: 0.15em auto 0.25em;
     line-height: 1.38;
   }
@@ -82,217 +82,61 @@
   }
   #start:disabled { opacity: 0.6; cursor: wait; }
 
-  /* Top-left woodblock voyage seals (4 swells, paired with Kuniyoshi's rack) */
-  #rack {
-    position: fixed;
-    top: max(14px, env(safe-area-inset-top));
-    left: max(14px, env(safe-area-inset-left));
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    padding: 7px 11px;
-    background: rgba(242, 228, 196, 0.93);
-    border: 2px solid var(--ink);
-    border-radius: 6px;
-    box-shadow: 3px 3px 0 rgba(20, 49, 84, 0.5);
-    color: var(--ink);
-    transition: opacity 0.6s;
-  }
-  #rack.hidden { opacity: 0; pointer-events: none; }
-  .waveChip {
-    position: relative;
-    width: 38px;
-    height: 38px;
-    border: 1.8px solid var(--ink);
-    border-radius: 3px;
-    background: #f6ecd5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    line-height: 1;
-    color: var(--ink);
-    transition: transform 0.35s cubic-bezier(0.2, 1.5, 0.4, 1), background 0.35s, color 0.35s;
-  }
-  .waveChip small {
-    font-size: 7.5px;
-    letter-spacing: 0.04em;
-    margin-top: 2px;
-    text-transform: uppercase;
-    font-family: system-ui, -apple-system, sans-serif;
-    font-weight: 700;
-  }
-  .waveChip.done {
-    background: var(--prussian);
-    color: var(--washi);
-    transform: scale(1.05);
-  }
-  .waveChip.active {
-    outline: 2.5px solid var(--vermilion);
-    outline-offset: 2px;
-  }
-  .waveChip.done::after {
-    content: "";
-    position: absolute;
-    top: -4px;
-    right: -4px;
-    width: 9px;
-    height: 9px;
-    border-radius: 50%;
-    background: var(--vermilion);
-    border: 1.2px solid var(--ink);
-  }
-  #countTag {
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--ink);
-    padding: 0 3px 0 4px;
-    white-space: nowrap;
-  }
-
   /* Sound toggle */
   #bMute {
-    background: rgba(242, 228, 196, 0.93);
+    background: rgba(242, 228, 196, 0.92);
     border: 2px solid var(--ink);
     box-shadow: 2px 2px 0 rgba(20, 49, 84, 0.45);
     color: var(--ink);
     z-index: 12;
   }
 
-  /* Always-visible plain next-step bar (#goal) */
-  #goal {
+  /* Single quiet start hint — fades out after 4 s, nothing after */
+  #hint {
     position: fixed;
     left: 50%;
-    bottom: max(16px, env(safe-area-inset-bottom));
+    bottom: max(22px, env(safe-area-inset-bottom));
     transform: translateX(-50%);
-    max-width: min(740px, calc(100vw - 124px));
-    padding: 8px 18px;
-    background: rgba(242, 228, 196, 0.95);
+    padding: 8px 20px;
+    background: rgba(242, 228, 196, 0.92);
     color: var(--ink);
     border: 2px solid var(--ink);
     border-radius: 999px;
-    box-shadow: 3px 3px 0 rgba(20, 49, 84, 0.5);
-    font-size: clamp(13px, 1.8vw, 17px);
-    font-weight: 600;
-    text-align: center;
-    pointer-events: none;
-    z-index: 11;
-    transition: opacity 0.45s;
-  }
-  #goal.hidden { opacity: 0; }
-
-  /* Quiet upper woodblock caption slip */
-  #cue {
-    position: fixed;
-    left: 50%;
-    top: max(68px, calc(env(safe-area-inset-top) + 56px));
-    transform: translateX(-50%);
-    max-width: min(680px, 88vw);
-    padding: 6px 16px;
-    background: rgba(242, 228, 196, 0.91);
-    color: var(--ink);
-    border: 1.8px solid var(--ink);
-    border-radius: 4px;
-    box-shadow: 3px 3px 0 rgba(20, 49, 84, 0.42);
-    font-size: clamp(13px, 1.7vw, 16px);
+    box-shadow: 3px 3px 0 rgba(20, 49, 84, 0.45);
+    font-size: clamp(14px, 1.9vw, 18px);
     font-style: italic;
-    text-align: center;
+    letter-spacing: 0.015em;
     pointer-events: none;
     z-index: 10;
     opacity: 0;
-    transition: opacity 0.55s;
+    transition: opacity 0.8s ease;
   }
-  #cue.show { opacity: 1; }
+  #hint.show { opacity: 1; }
 
-  /* Perspective framing meter (appears only while tucking low to frame Fuji) */
-  #frameBox {
+  /* Subtle horizontal thumb-drag bar (visible only while dragging) */
+  #dragTrack {
     position: fixed;
-    right: max(18px, env(safe-area-inset-right));
-    top: max(66px, calc(env(safe-area-inset-top) + 54px));
-    z-index: 11;
-    width: 176px;
-    padding: 8px 10px 9px;
-    background: rgba(242, 228, 196, 0.94);
-    color: var(--ink);
-    border: 2px solid var(--ink);
-    border-radius: 6px;
-    box-shadow: 3px 3px 0 rgba(20, 49, 84, 0.48);
-    text-align: center;
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
-    transition: opacity 0.4s, transform 0.4s;
-  }
-  #frameBox.show { opacity: 1; transform: none; }
-  #frameBox .fLbl {
-    font-family: system-ui, -apple-system, sans-serif;
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    margin-bottom: 5px;
-  }
-  #frameBar {
-    width: 100%;
-    height: 10px;
-    background: #e5d6b5;
-    border: 1.5px solid var(--ink);
+    display: none;
+    width: 112px;
+    height: 16px;
+    margin-left: -56px;
+    margin-top: -8px;
     border-radius: 999px;
-    overflow: hidden;
-  }
-  #frameFill {
-    width: 0%;
-    height: 100%;
-    background: linear-gradient(90deg, var(--prussian), var(--vermilion));
-    transition: width 0.08s linear;
-  }
-
-  /* Hold Low / Crouch touch & mouse button (paired with Kuniyoshi's #bJump) */
-  #bLow {
-    position: fixed;
-    right: max(18px, env(safe-area-inset-right));
-    bottom: max(20px, env(safe-area-inset-bottom));
-    z-index: 12;
-    width: 82px;
-    height: 82px;
-    border-radius: 50%;
-    border: 2.5px solid var(--ink);
-    background: rgba(242, 228, 196, 0.92);
-    color: var(--ink);
-    font: inherit;
-    font-size: 13px;
-    font-weight: 700;
-    line-height: 1.15;
-    box-shadow: 3px 3px 0 rgba(20, 49, 84, 0.55);
-    cursor: pointer;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: opacity 0.4s, transform 0.1s, background 0.15s;
-  }
-  #bLow.hidden { opacity: 0; pointer-events: none; }
-  #bLow.down { background: var(--prussian); color: var(--washi); transform: scale(0.93); }
-  #bLow.pulse {
-    animation: lowPulse 1.1s ease-in-out infinite;
-    border-color: var(--vermilion);
-  }
-  @keyframes lowPulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(196, 71, 39, 0.65), 3px 3px 0 rgba(20, 49, 84, 0.55); }
-    50% { box-shadow: 0 0 0 11px rgba(196, 71, 39, 0), 3px 3px 0 rgba(20, 49, 84, 0.55); }
-  }
-
-  /* Touch joystick indicator */
-  #stick {
     border: 2px solid rgba(20, 49, 84, 0.55);
-    background: rgba(242, 228, 196, 0.28);
+    background: rgba(242, 228, 196, 0.38);
+    pointer-events: none;
+    z-index: 9;
   }
-  #stick i {
-    background: rgba(196, 71, 39, 0.78);
-    border: 1.5px solid var(--ink);
+  #dragTrack i {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    border-radius: 50%;
+    background: rgba(196, 71, 39, 0.84);
+    border: 2px solid var(--ink);
   }
 
   /* Final dissolve into the real Metropolitan Museum print */
@@ -378,38 +222,14 @@
     border-radius: 999px;
     padding: 0.5em 1.4em;
   }
-
-  @media (max-width: 680px) {
-    #rack { gap: 4px; padding: 5px 7px; }
-    .waveChip { width: 32px; height: 34px; font-size: 12px; }
-    .waveChip small { font-size: 6.5px; }
-    #bLow { width: 72px; height: 72px; font-size: 12px; }
-    #goal { bottom: max(12px, env(safe-area-inset-bottom)); font-size: 13px; padding: 6px 12px; }
-  }
 </style>
 <script type="importmap">{ "imports": { "three": "../vendor/three@0.160.0/build/three.module.js" } }</script>
 </head>
 <body>
 <canvas id="cv"></canvas>
-<div id="stick"><i></i></div>
+<div id="dragTrack"><i></i></div>
+<div id="hint">Steer. The sea will carry you.</div>
 
-<!-- 4-swell voyage seals -->
-<div id="rack" class="hidden" aria-label="Swells crossed">
-  <div class="waveChip active" data-s="0">凪<small>Bay</small></div>
-  <div class="waveChip" data-s="1">波<small>Trough</small></div>
-  <div class="waveChip" data-s="2">潮<small>Cross</small></div>
-  <div class="waveChip" data-s="3">大<small>Wave</small></div>
-  <span id="countTag">1 of 4</span>
-</div>
-
-<div id="cue"></div>
-<div id="frameBox" aria-live="polite">
-  <div class="fLbl" id="frameLbl">Eye on the water</div>
-  <div id="frameBar"><div id="frameFill"></div></div>
-</div>
-<div id="goal" class="hidden" aria-live="polite"></div>
-
-<button id="bLow" class="hidden" type="button" aria-label="Hold Low">Hold<br>Low</button>
 <button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
 
 <div id="melt"><img id="meltImg" src="images/great_wave.jpg" alt="Under the Wave off Kanagawa, by Katsushika Hokusai"></div>
@@ -419,7 +239,7 @@
   <img src="images/great_wave.jpg" alt="Under the Wave off Kanagawa, woodblock print by Katsushika Hokusai, about 1830–32">
   <div class="words">
     <h1>Under the Wave off Kanagawa</h1>
-    <p class="story">You steer a fast Edo rowing boat across the bay off Kanagawa — ride the swells and tuck low under the Great Wave to frame Mount Fuji in its hollow.</p>
+    <p class="story">The sea off Kanagawa is rising — ride the swells toward Mount Fuji and let the Great Wave carry you home.</p>
     <p class="sub">Katsushika Hokusai · <i>Thirty-six Views of Mount Fuji</i>, about 1830–32</p>
     <button class="go" id="start" disabled>Launching boat…</button>
   </div>
@@ -429,12 +249,12 @@
   <img src="images/great_wave.jpg" alt="Under the Wave off Kanagawa, by Katsushika Hokusai">
   <h2>Under the Wave off Kanagawa (The Great Wave)</h2>
   <p>Katsushika Hokusai designed this woodblock print in Edo around 1830–32, when he was seventy years old, to open his series <i>Thirty-six Views of Mount Fuji</i> (which proved so popular he added ten more views). This impression hangs in the Metropolitan Museum of Art in New York (JP1847).</p>
-  <p><b>Why Mount Fuji looks so small:</b> Hokusai studied European perspective from Dutch prints imported through Nagasaki and dropped the viewer right down onto the water. Because you look up from a low boat, a storm wave close to the prow towers over Japan’s highest volcano far away on the horizon — and even the small foreground wave echoes Fuji’s snowy peak.</p>
-  <p><b>A storm wave, not a tsunami:</b> The three narrow wooden boats (<i>oshiokuri-bune</i>) are fast Edo cargo and fishing boats being sculled across the bay. Oceanographers conclude the breaking crest is an unusually large open-sea storm or rogue wave rather than a tsunami, which stays low in deep water.</p>
-  <p><b>The new blue:</b> The rich blues — including the print’s carved blue outlines — come from Prussian blue (“Berlin blue”), a synthetic dye invented in Germany that had just reached Japan in affordable quantities and resisted fading far better than older blues. The layered open bay and voyage are the game’s own; the Great Wave, boats and Fuji come straight from Hokusai’s print.</p>
+  <p><b>Why Mount Fuji looks so small:</b> Hokusai studied European perspective from Dutch prints imported through Nagasaki and dropped the viewer right down onto the water. In every trough, a swell close to the boat hides Japan’s highest volcano on the far horizon — and on every crest Fuji reappears, small and still, echoed by the snowy peak of the foreground wave.</p>
+  <p><b>A storm wave, not a tsunami:</b> The three narrow wooden boats (<i>oshiokuri-bune</i>) are fast Edo cargo and fishing boats crossing Edo Bay. Oceanographers conclude the breaking crest is an unusually large open-sea storm or rogue wave rather than a tsunami, which stays low in deep water.</p>
+  <p><b>The new blue:</b> The rich blues — including the print’s carved blue outlines — come from Prussian blue (“Berlin blue”), a synthetic dye invented in Germany that had just reached Japan in affordable quantities and resisted fading far better than older blues. The layered open bay ride is the game’s own; the Great Wave, boats and Fuji at the end come straight from Hokusai’s print.</p>
   <p class="small">Picture: Katsushika Hokusai (1760–1849), public domain / CC0, Metropolitan Museum of Art (JP1847) via Wikimedia Commons. Facts verified from the Met, V&amp;A, Art Institute of Chicago, Rijksmuseum, BBC/British Museum and Royal Society oceanography papers.</p>
   <div class="endActions">
-    <button class="go" id="again" type="button">Row the bay again</button>
+    <button class="go" id="again" type="button">Ride the bay again</button>
     <a class="backBtn" href="../index.html">Back to the map</a>
   </div>
 </div>
@@ -445,13 +265,16 @@
 <script type="module">
 import * as THREE from 'three';
 import {
-  STAGE_INFO,
+  RIDE_LENGTH,
+  rideProgress,
   swellAmpAt,
   seaHeight,
   seaSlope,
   makeSprayTexture,
-  makeGateRingTexture,
+  makeChimeDropTexture,
+  makeWakeRibbonTexture,
   makeSeaRibbonMaterial,
+  makeGreatWaveHorizonMaterial,
   makeWashiSkyMaterial,
   makePrintPlateMaterial,
   makePlayerBoat,
@@ -482,14 +305,14 @@ renderer.setClearColor(0x12263e, 1);
 const scene = new THREE.Scene();
 const PW = 8.0, PH = 8.0 * (1076 / 1600);
 const CAM_D = 7.4;
-const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 160);
+const camera = new THREE.PerspectiveCamera(42, 1, 0.1, 180);
 let restCamD = CAM_D;
 
 function resize() {
   const w = window.innerWidth, h = window.innerHeight;
   renderer.setSize(w, h, false);
   camera.aspect = w / h;
-  const vFovRad = camera.fov * Math.PI / 180;
+  const vFovRad = 42 * Math.PI / 180;
   const distH = (PH * 0.53) / Math.tan(vFovRad / 2);
   const distW = (PW * 0.52) / (Math.tan(vFovRad / 2) * camera.aspect);
   restCamD = Math.max(CAM_D, distH, distW);
@@ -503,18 +326,19 @@ const shared = {
   uTime:        { value: 0 },
   uStorm:       { value: 0 },
   uBayFade:     { value: 1 },
+  uWaveGrow:    { value: 0.08 },
   uPrintFade:   { value: 0 },
   uDepthScale:  { value: 1 },
   uPrintMotion: { value: 1 },
 };
 
-/* Two Seamlessly Linked Worlds: (A) Layered Open Bay + (B) Sliced Met Print */
+/* Two Seamlessly Linked Worlds: (A) Layered Woodblock Bay + (B) Sliced Met Print */
 const bayGroup = new THREE.Group();
 const printGroup = new THREE.Group();
 printGroup.visible = false;
 scene.add(bayGroup, printGroup);
 
-/* Safety warm washi paper sheet far behind printGroup so extreme parallax never shows dark navy bars */
+/* Warm washi paper backing behind printGroup so extreme parallax never exposes dark margins */
 const printPaperBacking = new THREE.Mesh(
   new THREE.PlaneGeometry(36, 24),
   new THREE.MeshBasicMaterial({ color: 0xf0e1be, depthWrite: false })
@@ -523,20 +347,28 @@ printPaperBacking.position.set(0, 0, -6.5);
 printPaperBacking.renderOrder = 1;
 printGroup.add(printPaperBacking);
 
-/* A1. Warm Washi Paper Sky Backdrop (tracks boat z smoothly) */
+/* A1. Warm Washi Paper Sky Backdrop */
 const skyMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(140, 56),
+  new THREE.PlaneGeometry(160, 62),
   makeWashiSkyMaterial(shared)
 );
-skyMesh.position.set(0, 10.5, -56);
-skyMesh.renderOrder = -10;
+skyMesh.position.set(0, 11.0, -62);
+skyMesh.renderOrder = -12;
 bayGroup.add(skyMesh);
 
-/* A2. 14 Receding Layered Woodblock Wave Curtains (pure Hokusai flat Prussian blue & claw foam) */
-const RIBBON_COUNT = 14;
-const RIBBON_STEP = 3.25;
+/* A2. Seamless Full-Width Panoramic Growing Great Wave Arch (same Prussian-blue bands, NO cutout edge!) */
+const greatWaveHorizon = new THREE.Mesh(
+  new THREE.PlaneGeometry(112, 28, 1, 1),
+  makeGreatWaveHorizonMaterial(shared)
+);
+greatWaveHorizon.renderOrder = -2;
+bayGroup.add(greatWaveHorizon);
+
+/* A3. 18 Receding Layered Woodblock Sea Curtains (tight near boat for looming troughs, wide to horizon) */
+const RIBBON_COUNT = 18;
+const RIBBON_STEP = 2.65;
 const ribbons = [];
-const ribbonGeo = new THREE.PlaneGeometry(46, 4.4, 96, 6);
+const ribbonGeo = new THREE.PlaneGeometry(66, 5.2, 84, 4);
 for (let i = 0; i < RIBBON_COUNT; i++) {
   const depthBand = i / (RIBBON_COUNT - 1);
   const mat = makeSeaRibbonMaterial(shared, depthBand, (i * 0.371) % 1.0);
@@ -546,46 +378,89 @@ for (let i = 0; i < RIBBON_COUNT; i++) {
   ribbons.push({ mesh, mat, idx: i });
 }
 
-/* A3. Player's Interactive Oshiokuri-bune Boat */
+/* A4. Player's Interactive Oshiokuri-bune Boat */
 const playerBoat = makePlayerBoat();
-playerBoat.root.renderOrder = 18;
+playerBoat.root.renderOrder = 24;
 bayGroup.add(playerBoat.root);
 
-/* A4. Floating Woodblock Gate Ring & Wake Guide Puffs (always shows the exact way!) */
-const gateRingTex = makeGateRingTexture();
+/* A5. Live Woodblock Bow & Carve Spray Particle Pool (bursts on crests, hard carves & spray rings!) */
 const sprayTex = makeSprayTexture();
-const gateMesh = new THREE.Mesh(
-  new THREE.PlaneGeometry(3.5, 3.5),
-  new THREE.MeshBasicMaterial({ map: gateRingTex, transparent: true, opacity: 0.94, depthWrite: false, side: THREE.DoubleSide })
-);
-gateMesh.rotation.x = -Math.PI / 2;
-gateMesh.renderOrder = 16;
-bayGroup.add(gateMesh);
+const chimeDropTex = makeChimeDropTexture();
+const wakeRibbonTex = makeWakeRibbonTexture();
 
-/* Floating vertical woodblock sight-banner buoy on the ring so it's unmistakable over tall swells */
-const buoyMat = new THREE.MeshBasicMaterial({ map: sprayTex, transparent: true, opacity: 0.92, depthWrite: false });
-const buoyPuffs = [];
-for (let i = 0; i < 6; i++) {
-  const s = new THREE.Sprite(buoyMat.clone());
-  const sc = 0.28 + (i % 3) * 0.10;
-  s.scale.set(sc, sc, 1);
-  s.renderOrder = 19;
-  bayGroup.add(s);
-  buoyPuffs.push({ s, idx: i });
+const SPRAY_POOL = 54;
+const burstDrops = [];
+for (let i = 0; i < SPRAY_POOL; i++) {
+  const mat = new THREE.SpriteMaterial({ map: sprayTex, transparent: true, opacity: 0, depthWrite: false });
+  const sp = new THREE.Sprite(mat);
+  sp.visible = false;
+  sp.renderOrder = 28;
+  bayGroup.add(sp);
+  burstDrops.push({ sp, mat, x: 0, y: 0, z: 0, vx: 0, vy: 0, vz: 0, life: 0, maxLife: 1, sc: 0.25 });
+}
+let burstCursor = 0;
+function spawnSpray(x, y, z, vx, vy, vz, sc = 0.24, life = 0.72) {
+  const d = burstDrops[burstCursor++ % SPRAY_POOL];
+  d.x = x; d.y = y; d.z = z;
+  d.vx = vx; d.vy = vy; d.vz = vz;
+  d.life = life; d.maxLife = life; d.sc = sc;
+  d.sp.visible = true;
+  d.sp.scale.set(sc, sc, 1);
+  d.sp.position.set(x, y, z);
+  d.mat.opacity = 0.92;
 }
 
-/* Trail of drifting white foam puffs from player toward the sister boat & gate */
-const trailPuffs = [];
-for (let i = 0; i < 10; i++) {
-  const m = new THREE.MeshBasicMaterial({ map: sprayTex, transparent: true, opacity: 0.65, depthWrite: false, side: THREE.DoubleSide });
-  const p = new THREE.Mesh(new THREE.PlaneGeometry(0.45, 0.45), m);
-  p.rotation.x = -Math.PI / 2;
-  p.renderOrder = 15;
-  bayGroup.add(p);
-  trailPuffs.push({ mesh: p, mat: m, f: (i + 1) / 11 });
+/* A6. Optional Joyful Slalom Lines of Ringing Woodblock Spray Drops (missing costs nothing!) */
+const chimeDrops = [];
+const LINE_SPECS = [
+  { z0: -20,  x0:  0.8, amp:  2.2, dir:  1 },
+  { z0: -54,  x0: -1.5, amp:  2.5, dir: -1 },
+  { z0: -90,  x0:  1.6, amp:  2.8, dir:  1 },
+  { z0: -128, x0: -2.0, amp:  2.7, dir: -1 },
+  { z0: -166, x0:  1.8, amp:  2.8, dir:  1 },
+  { z0: -204, x0: -1.8, amp:  2.9, dir: -1 },
+  { z0: -242, x0:  1.6, amp:  2.7, dir:  1 },
+  { z0: -280, x0: -1.7, amp:  2.8, dir: -1 },
+  { z0: -318, x0:  1.5, amp:  2.5, dir:  1 },
+  { z0: -356, x0: -1.4, amp:  2.4, dir: -1 },
+  { z0: -392, x0:  0.9, amp:  2.0, dir:  1 },
+];
+LINE_SPECS.forEach((ln, li) => {
+  for (let j = 0; j < 5; j++) {
+    const f = j / 4;
+    const dz = j * 4.4;
+    const x = clamp(ln.x0 + Math.sin(f * Math.PI) * ln.amp * ln.dir, -5.6, 5.6);
+    const z = ln.z0 - dz;
+    const mat = new THREE.SpriteMaterial({ map: chimeDropTex, transparent: true, opacity: 0.94, depthWrite: false });
+    const sp = new THREE.Sprite(mat);
+    sp.scale.set(0.76, 0.76, 1);
+    sp.renderOrder = 25;
+    bayGroup.add(sp);
+    chimeDrops.push({ sp, mat, x, z, noteIdx: j, lineIdx: li, rung: false, popT: 0 });
+  }
+});
+
+/* A7. Two Sister Oshiokuri-bune Boats & Their Pull-Along Woodblock Foam Wake Ribbons */
+const WAKE_SEGS = 18;
+function makeSisterWakeMesh() {
+  const geo = new THREE.PlaneGeometry(2.3, 16.0, 2, WAKE_SEGS);
+  geo.rotateX(-Math.PI / 2);
+  const mat = new THREE.MeshBasicMaterial({
+    map: wakeRibbonTex, transparent: true, opacity: 0.80, side: THREE.DoubleSide, depthWrite: false,
+  });
+  const mesh = new THREE.Mesh(geo, mat);
+  mesh.renderOrder = 21;
+  mesh.frustumCulled = false;
+  bayGroup.add(mesh);
+  return { mesh, geo, mat };
 }
 
-/* Snow-like woodblock spray droplets drifting over the Great Wave sanctuary */
+const sisters = [
+  { id: 0, baseLead: 18.0, phase: 0.4, ampX: 2.9, offX: -2.8, freq: 0.034, mesh: null, wake: makeSisterWakeMesh(), curX: -3, curZ: -18 },
+  { id: 1, baseLead: 28.0, phase: 3.1, ampX: 2.9, offX:  2.9, freq: 0.029, mesh: null, wake: makeSisterWakeMesh(), curX:  3, curZ: -28 },
+];
+
+/* Ambient snow-like woodblock spray droplets inside the 8-plate print finale */
 const sprayGroup = new THREE.Group();
 const sprayDrops = [];
 for (let i = 0; i < 38; i++) {
@@ -616,10 +491,7 @@ const loadTex = url => new Promise((res, rej) => {
 const plateMeshes = {};
 const plateMats = {};
 let bayFujiMesh = null;
-let bayWavePreview = null;
-let sisterBoatMesh = null;
 let printBoatMesh = null;
-let printGateMesh = null;
 let ready = false;
 
 async function loadAllAssets() {
@@ -645,47 +517,37 @@ async function loadAllAssets() {
     plateMats[p.id] = mat;
   });
 
-  /* Mount Hokusai's real Mount Fuji cutout on the distant horizon of the open bay */
+  /* Hokusai's real Mount Fuji cutout on the far horizon (behind the growing wave arch & ribbons!) */
   const fujiTex = plateTexes[manifest.plates.findIndex(p => p.id === 'p1_fuji')];
   bayFujiMesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(11.5, 6.2),
+    new THREE.PlaneGeometry(12.6, 6.7),
     new THREE.MeshBasicMaterial({ map: fujiTex, transparent: true, depthWrite: false })
   );
-  bayFujiMesh.renderOrder = -4;
+  bayFujiMesh.renderOrder = -6;
   bayGroup.add(bayFujiMesh);
 
-  /* Mount Hokusai's real Great Wave cutout emerging far ahead on the left as you approach Stage 3 */
-  const waveTex = plateTexes[manifest.plates.findIndex(p => p.id === 'p3_great_wave')];
-  bayWavePreview = new THREE.Mesh(
-    new THREE.PlaneGeometry(24, 18.5),
-    new THREE.MeshBasicMaterial({ map: waveTex, transparent: true, opacity: 0.0, depthWrite: false })
-  );
-  bayWavePreview.renderOrder = -2;
-  bayGroup.add(bayWavePreview);
-
-  /* Sister lead boat (real cutout from Met JP1847) gliding ahead across Edo Bay */
-  sisterBoatMesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(3.5, 0.92),
+  /* Mount both sister oshiokuri-bune cutouts from Met JP1847 onto the open bay */
+  sisters[0].mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(4.0, 1.06),
     new THREE.MeshBasicMaterial({ map: sisterTex, transparent: true, depthWrite: false, side: THREE.DoubleSide })
   );
-  sisterBoatMesh.renderOrder = 17;
-  bayGroup.add(sisterBoatMesh);
+  sisters[0].mesh.renderOrder = 22;
+  bayGroup.add(sisters[0].mesh);
 
-  /* Live steerable hero boat inside the Great Wave diorama (real Hokusai boat cutout!) */
+  sisters[1].mesh = new THREE.Mesh(
+    new THREE.PlaneGeometry(4.2, 1.12),
+    new THREE.MeshBasicMaterial({ map: heroTex, transparent: true, depthWrite: false, side: THREE.DoubleSide })
+  );
+  sisters[1].mesh.renderOrder = 22;
+  bayGroup.add(sisters[1].mesh);
+
+  /* Live boat inside the Great Wave diorama that tucks right into p5_hero_boat's slot */
   printBoatMesh = new THREE.Mesh(
     new THREE.PlaneGeometry(2.65, 0.74),
     new THREE.MeshBasicMaterial({ map: heroTex, transparent: true, opacity: 1.0, depthWrite: false, side: THREE.DoubleSide })
   );
-  printBoatMesh.renderOrder = 16; /* sits right at p5_hero_boat depth, behind p6_fore_wave */
+  printBoatMesh.renderOrder = 16;
   printGroup.add(printBoatMesh);
-
-  /* Glowing woodblock target ring inside the Great Wave hollow & calm finale */
-  printGateMesh = new THREE.Mesh(
-    new THREE.PlaneGeometry(1.15, 0.58),
-    new THREE.MeshBasicMaterial({ map: gateRingTex, transparent: true, opacity: 0.92, depthWrite: false, side: THREE.DoubleSide })
-  );
-  printGateMesh.renderOrder = 22;
-  printGroup.add(printGateMesh);
 
   ready = true;
   $('start').disabled = false;
@@ -696,70 +558,59 @@ loadAllAssets().catch(e => {
   $('start').textContent = 'Load failed — reload';
 });
 
-/* ================= Controls: Keyboard + Touch Joystick + Hold Low Button ================= */
+/* ================= Controls: Steer Left & Right Only (Keys or One-Thumb Drag) ================= */
 const keys = new Set();
-let joyX = 0, joyY = 0, joyId = null, joyOx = 0, joyOy = 0;
-let btnLowDown = false;
+let dragSteer = 0, dragId = null, dragOx = 0;
 
 window.addEventListener('keydown', e => {
   const k = e.code;
-  if (['ArrowUp','ArrowDown','ArrowLeft','ArrowRight','Space'].includes(k)) e.preventDefault();
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(k)) e.preventDefault();
   keys.add(k);
   if (state === 'title' && (k === 'Enter' || k === 'Space') && ready) startPlay();
 });
 window.addEventListener('keyup', e => keys.delete(e.code));
 
 const cv = $('cv');
-const stick = $('stick');
-const stickKnob = stick.querySelector('i');
+const dragTrack = $('dragTrack');
+const dragKnob = dragTrack.querySelector('i');
 
 cv.addEventListener('pointerdown', e => {
-  if (state !== 'play' && state !== 'wave' && state !== 'calm') return;
-  if (joyId !== null) return;
+  if (state !== 'ride' && state !== 'approach') return;
+  if (dragId !== null) return;
   SEA.unlock();
-  joyId = e.pointerId;
-  joyOx = e.clientX; joyOy = e.clientY;
-  joyX = 0; joyY = 0;
-  stick.style.display = 'block';
-  stick.style.left = joyOx + 'px';
-  stick.style.top = joyOy + 'px';
-  stickKnob.style.transform = 'translate(0px, 0px)';
+  dragId = e.pointerId;
+  dragOx = e.clientX;
+  dragSteer = 0;
+  dragTrack.style.display = 'block';
+  dragTrack.style.left = dragOx + 'px';
+  dragTrack.style.top = e.clientY + 'px';
+  dragKnob.style.transform = 'translate(0px, 0px)';
   cv.setPointerCapture(e.pointerId);
 });
 cv.addEventListener('pointermove', e => {
-  if (e.pointerId !== joyId) return;
-  const dx = e.clientX - joyOx, dy = e.clientY - joyOy;
-  const maxR = 52;
-  const len = Math.hypot(dx, dy);
-  const k = len > maxR ? maxR / len : 1;
-  joyX = clamp((dx * k) / maxR, -1, 1);
-  joyY = clamp((-dy * k) / maxR, -1, 1);
-  stickKnob.style.transform = `translate(${dx * k}px, ${dy * k}px)`;
+  if (e.pointerId !== dragId) return;
+  const maxR = 54;
+  let dx = e.clientX - dragOx;
+  /* Gently slide anchor if thumb drags past maxR so reversing direction is instant */
+  if (dx > maxR) { dragOx = e.clientX - maxR; dx = maxR; dragTrack.style.left = dragOx + 'px'; }
+  else if (dx < -maxR) { dragOx = e.clientX + maxR; dx = -maxR; dragTrack.style.left = dragOx + 'px'; }
+  dragSteer = clamp(dx / maxR, -1, 1);
+  dragKnob.style.transform = `translate(${dx}px, 0px)`;
 });
-const endJoy = e => {
-  if (e.pointerId !== joyId) return;
-  joyId = null; joyX = 0; joyY = 0;
-  stick.style.display = 'none';
+const endDrag = e => {
+  if (e.pointerId !== dragId) return;
+  dragId = null;
+  dragSteer = 0;
+  dragTrack.style.display = 'none';
 };
-cv.addEventListener('pointerup', endJoy);
-cv.addEventListener('pointercancel', endJoy);
+cv.addEventListener('pointerup', endDrag);
+cv.addEventListener('pointercancel', endDrag);
 
-const bLow = $('bLow');
-const setLowBtn = v => { btnLowDown = v; bLow.classList.toggle('down', v); };
-bLow.addEventListener('pointerdown', e => { e.stopPropagation(); SEA.unlock(); setLowBtn(true); });
-bLow.addEventListener('pointerup', () => setLowBtn(false));
-bLow.addEventListener('pointerleave', () => setLowBtn(false));
-bLow.addEventListener('pointercancel', () => setLowBtn(false));
-
-function readInput() {
-  let steer = joyX;
-  let thrust = joyY;
-  if (keys.has('ArrowLeft')  || keys.has('KeyA') || keys.has('KeyQ')) steer -= 1;
-  if (keys.has('ArrowRight') || keys.has('KeyD')) steer += 1;
-  if (keys.has('ArrowUp')    || keys.has('KeyW') || keys.has('KeyZ')) thrust += 1;
-  if (keys.has('ArrowDown')  || keys.has('KeyS')) thrust -= 0.7;
-  const low = btnLowDown || keys.has('Space') || keys.has('ShiftLeft') || keys.has('ShiftRight');
-  return { steer: clamp(steer, -1, 1), thrust: clamp(thrust, -0.6, 1), low };
+function readSteer() {
+  let s = dragSteer;
+  if (keys.has('ArrowLeft')  || keys.has('KeyA') || keys.has('KeyQ')) s -= 1;
+  if (keys.has('ArrowRight') || keys.has('KeyD')) s += 1;
+  return clamp(s, -1, 1);
 }
 
 /* Mute toggle */
@@ -771,73 +622,170 @@ $('bMute').addEventListener('click', () => {
   if (SND && SND.mute) SND.mute(muted);
 });
 
-/* ================= Game State & Voyage Gates ================= */
-let state = 'title'; /* title | play | wave | calm | finale | end */
-let stage = 0;       /* 0..3 */
+/* ================= Game State ================= */
+let state = 'title'; /* title | ride | approach | finale | end */
 let simTime = 0;
-let stageTime = 0;
+let rideTime = 0;
+let approachT = 0;
 let finaleT = 0;
-
-const BAY_GATES = [
-  { x:  1.4, z: -56,  needsLow: false },
-  { x: -2.4, z: -118, needsLow: true  },
-  { x:  2.2, z: -182, needsLow: false },
-];
-
-const boat = {
-  x: 0, z: 0, vx: 0, vz: 0, speed: 0, yaw: 0, roll: 0, pitch: 0,
-  oarPhase: 0, lastOarSin: 0, crouch: 0, holdProgress: 0,
-  glideBoost: 0,
-};
-let waveBoatX = 2.4;
-let waveBoatVx = 0;
-let waveTrans = 0;
-let eyeDrop = 0;
-let cueTimer = 0;
+let hintTimer = 0;
 let fpsAcc = 0, fpsFrames = 0, lastFps = 60;
 
-/* UI helpers */
-const chips = [...document.querySelectorAll('.waveChip')];
-function updateRack() {
-  chips.forEach((el, i) => {
-    el.classList.toggle('done', i < stage);
-    el.classList.toggle('active', i === stage && state !== 'finale' && state !== 'end');
-  });
-  const cur = Math.min(stage + 1, 4);
-  $('countTag').textContent = state === 'calm' || state === 'finale' ? '4 of 4' : `${cur} of 4`;
+const boat = {
+  x: 0, z: 0, vx: 0, vz: -4.8, speed: 4.8,
+  yaw: 0, roll: 0, pitch: 0,
+  oarPhase: 0, airLift: 0, airVy: 0, prevSlopeDz: 0, crestCooldown: 0,
+  surfBoost: 0, draftBoost: 0, chimeBoost: 0,
+  chimesRung: 0, draftTime: 0, crestsFloated: 0,
+  cameraY: 2.2, cameraX: 0, cameraFov: 42,
+};
+let waveBoatX = 2.55;
+let sprayEmitAcc = 0;
+
+function sisterXAt(s, z) {
+  /* Both sister boats weave gracefully ahead across the bay, converging toward the print at the end */
+  const p = rideProgress(z);
+  const converge = 1 - sstep(0.76, 0.98, p);
+  const targetEnd = s.id === 0 ? -1.8 : 2.2;
+  const weave = s.offX + Math.sin(-z * s.freq + s.phase) * s.ampX;
+  return mix(targetEnd, clamp(weave, -5.8, 5.8), converge);
 }
 
-function setGoal(txt) {
-  const g = $('goal');
-  if (txt) { g.textContent = txt; g.classList.remove('hidden'); }
-  else g.classList.add('hidden');
+function updateSistersAndWakes(dt) {
+  let drafting = false;
+  wakeRibbonTex.offset.y -= dt * 1.65;
+  for (const s of sisters) {
+    const lead = mix(s.baseLead, 11.5, sstep(0.75, 1.0, rideProgress(boat.z)));
+    const sz = Math.max(-RIDE_LENGTH - 18, boat.z - lead);
+    const sx = sisterXAt(s, sz);
+    const sh = seaHeight(sx, sz, simTime);
+    const ssl = seaSlope(sx, sz, simTime);
+    s.curX = sx; s.curZ = sz;
+
+    if (s.mesh) {
+      s.mesh.position.set(sx, sh + 0.60, sz);
+      s.mesh.rotation.z = clamp(ssl.dx * 0.42 + Math.sin(simTime * 1.4 + s.phase) * 0.05, -0.26, 0.26);
+      s.mesh.material.opacity = shared.uBayFade.value;
+    }
+
+    /* Sculpt wake ribbon streaming 17 units behind sister boat, conforming to live seaHeight */
+    const pos = s.wake.geo.attributes.position;
+    const wakeLen = 17.0;
+    for (let row = 0; row <= WAKE_SEGS; row++) {
+      const f = row / WAKE_SEGS; /* 0 at sister stern, 1 at trailing tail */
+      const wz = sz + 1.2 + f * wakeLen;
+      const wx = sisterXAt(s, wz);
+      const halfW = 0.64 + f * 1.28;
+      const wh = seaHeight(wx, wz, simTime) + 0.14;
+      for (let col = 0; col <= 2; col++) {
+        const idx = row * 3 + col;
+        const side = col - 1; /* -1, 0, +1 */
+        pos.setXYZ(idx, wx + side * halfW, wh, wz);
+      }
+    }
+    pos.needsUpdate = true;
+    s.wake.mat.opacity = 0.86 * shared.uBayFade.value;
+
+    /* Slipstream check: is the player riding inside this sister's wake? */
+    if (boat.z > sz + 1.2 && boat.z < sz + 1.2 + wakeLen) {
+      const wakeCenterX = sisterXAt(s, boat.z);
+      if (Math.abs(boat.x - wakeCenterX) < 1.68) {
+        drafting = true;
+        /* Gentle centering pull inside the slipstream */
+        boat.x = mix(boat.x, wakeCenterX, Math.min(1, dt * 0.36));
+      }
+    }
+  }
+  return drafting;
 }
 
-function showCue(txt, secs = 4.6) {
-  $('cue').textContent = txt;
-  $('cue').classList.add('show');
-  cueTimer = secs;
-}
+function updateSprayAndChimes(dt) {
+  /* Update bursting woodblock foam droplets */
+  for (const d of burstDrops) {
+    if (d.life <= 0) continue;
+    d.life -= dt;
+    if (d.life <= 0) { d.sp.visible = false; continue; }
+    d.vy -= 5.8 * dt;
+    d.x += d.vx * dt;
+    d.y += d.vy * dt;
+    d.z += d.vz * dt;
+    const f = clamp(d.life / d.maxLife, 0, 1);
+    d.sp.position.set(d.x, d.y, d.z);
+    const sc = d.sc * (0.65 + 0.55 * (1 - f));
+    d.sp.scale.set(sc, sc, 1);
+    d.mat.opacity = f * 0.92 * shared.uBayFade.value;
+  }
 
-function setFrameMeter(show, label, pct) {
-  $('frameBox').classList.toggle('show', show);
-  if (label) $('frameLbl').textContent = label;
-  $('frameFill').style.width = `${Math.round(clamp(pct, 0, 1) * 100)}%`;
+  /* Update joyful slalom spray drops */
+  for (const cd of chimeDrops) {
+    if (cd.rung) {
+      if (cd.popT < 1) {
+        cd.popT = Math.min(1, cd.popT + dt * 3.4);
+        const sc = 0.76 * (1 + cd.popT * 1.1);
+        cd.sp.scale.set(sc, sc, 1);
+        cd.sp.position.y += dt * 1.9;
+        cd.mat.opacity = (1 - cd.popT) * 0.9;
+      } else {
+        cd.sp.visible = false;
+      }
+      continue;
+    }
+    const dz = cd.z - boat.z;
+    if (dz > 6 || dz < -58) {
+      cd.sp.visible = false;
+      continue;
+    }
+    cd.sp.visible = true;
+    const h = seaHeight(cd.x, cd.z, simTime);
+    const bob = Math.sin(simTime * 3.2 + cd.noteIdx * 0.9) * 0.14;
+    cd.sp.position.set(cd.x, h + 0.68 + bob, cd.z);
+    const pulse = 0.72 + 0.10 * Math.sin(simTime * 4.0 + cd.noteIdx);
+    cd.sp.scale.set(pulse, pulse, 1);
+    cd.mat.opacity = 0.94 * shared.uBayFade.value;
+
+    /* Generous joyful pickup — missing costs nothing */
+    if (Math.hypot(boat.x - cd.x, boat.z - cd.z) < 2.25) {
+      cd.rung = true;
+      cd.popT = 0;
+      boat.chimesRung++;
+      boat.chimeBoost = Math.min(1.0, boat.chimeBoost + 0.55);
+      SEA.sprayRing(cd.noteIdx);
+      for (let k = 0; k < 6; k++) {
+        const a = (k / 6) * Math.PI * 2 + Math.random() * 0.4;
+        spawnSpray(
+          cd.x, h + 0.65, cd.z,
+          Math.cos(a) * (1.2 + Math.random() * 1.1),
+          1.8 + Math.random() * 1.5,
+          Math.sin(a) * 1.1 - 1.5,
+          0.22 + Math.random() * 0.12, 0.65
+        );
+      }
+    }
+  }
 }
 
 function resetWorld() {
-  stage = 0;
-  stageTime = 0;
+  rideTime = 0;
+  approachT = 0;
   finaleT = 0;
-  waveTrans = 0;
-  eyeDrop = 0;
-  boat.x = 0; boat.z = 0; boat.vx = 0; boat.vz = -1.6; boat.speed = 1.6;
+  hintTimer = 4.4;
+  waveBoatX = 2.55;
+  sprayEmitAcc = 0;
+
+  /* Start right near an opening crest so she feels speed, lift & glide in the first 3 seconds */
+  boat.x = 0; boat.z = 0; boat.vx = 0; boat.vz = -4.9; boat.speed = 4.9;
   boat.yaw = 0; boat.roll = 0; boat.pitch = 0;
-  boat.oarPhase = 0; boat.crouch = 0; boat.holdProgress = 0; boat.glideBoost = 0;
-  waveBoatX = 2.45; waveBoatVx = 0;
+  boat.oarPhase = 0; boat.airLift = 0; boat.airVy = 0; boat.prevSlopeDz = 0; boat.crestCooldown = 0;
+  boat.surfBoost = 0.35; boat.draftBoost = 0; boat.chimeBoost = 0;
+  boat.chimesRung = 0; boat.draftTime = 0; boat.crestsFloated = 0;
+  boat.cameraY = 2.6; boat.cameraX = 0; boat.cameraFov = 42;
+
+  for (const cd of chimeDrops) { cd.rung = false; cd.popT = 0; cd.sp.visible = true; }
+  for (const d of burstDrops) { d.life = 0; d.sp.visible = false; }
 
   shared.uStorm.value = 0;
   shared.uBayFade.value = 1;
+  shared.uWaveGrow.value = 0.08;
   shared.uPrintFade.value = 0;
   shared.uDepthScale.value = 1;
   shared.uPrintMotion.value = 1;
@@ -846,14 +794,11 @@ function resetWorld() {
   printGroup.visible = false;
   if (plateMats.p5_hero_boat) plateMats.p5_hero_boat.uniforms.uLocalAlpha.value = 0;
   if (printBoatMesh) { printBoatMesh.visible = true; printBoatMesh.material.opacity = 1; }
-  if (printGateMesh) printGateMesh.visible = true;
 
   $('melt').classList.remove('show');
   $('plate').classList.remove('show');
   $('end').classList.add('hidden');
-  setFrameMeter(false, '', 0);
-  bLow.classList.remove('pulse');
-  updateRack();
+  $('hint').classList.remove('show');
 }
 
 function startPlay() {
@@ -862,12 +807,9 @@ function startPlay() {
   SEA.unlock();
   if (SND && SND.start) { try { SND.start(); } catch (_) {} }
   resetWorld();
-  state = 'play';
+  state = 'ride';
   $('title').classList.add('hidden');
-  $('rack').classList.remove('hidden');
-  $('bLow').classList.remove('hidden');
-  setGoal(STAGE_INFO[0].goal);
-  showCue(STAGE_INFO[0].cue, 5.5);
+  $('hint').classList.add('show');
   SEA.chime(440);
 }
 
@@ -877,204 +819,196 @@ $('again').addEventListener('click', () => {
   startPlay();
 });
 
-/* ================= Update: Open Layered Edo Bay (Stages 0..2) ================= */
-function updateBay(dt, inp) {
-  const g = BAY_GATES[Math.min(stage, BAY_GATES.length - 1)];
+/* ================= Update: The Ride — Skiing on Water ================= */
+function updateRide(dt, steer) {
+  rideTime += dt;
+  const p = rideProgress(boat.z);
 
-  /* Smooth oar-driven boat physics: rise, crest hang, silky downhill glide, lean on turns */
-  const rowPower = clamp(0.32 + Math.max(0, inp.thrust) * 0.85, 0.15, 1.15);
-  boat.crouch = mix(boat.crouch, inp.low ? 1 : 0, Math.min(1, dt * 6.5));
-  eyeDrop = mix(eyeDrop, inp.low ? 1 : 0, Math.min(1, dt * 4.2));
+  /* Responsive carving turn & generous joyful lean (like a ski edge or Starry Nightrider's bike) */
+  const targetYaw = -steer * 0.48;
+  boat.yaw = mix(boat.yaw, targetYaw, Math.min(1, dt * 6.8));
+  const targetRoll = -steer * 0.34;
+  boat.roll = mix(boat.roll, targetRoll, Math.min(1, dt * 7.2));
 
-  /* Turn smoothly & lean into the turn */
-  const targetYaw = clamp(boat.yaw - inp.steer * dt * 1.35, -0.58, 0.58);
-  boat.yaw = mix(boat.yaw, inp.steer === 0 ? boat.yaw * 0.94 : targetYaw, Math.min(1, dt * 9));
-  boat.roll = mix(boat.roll, -inp.steer * 0.24, Math.min(1, dt * 6));
-
-  /* Wave slope feeds real glide sensation: climbing slows slightly, surfing down boosts! */
+  /* Live ocean swell height and slope directly under the hull */
   const h = seaHeight(boat.x, boat.z, simTime);
   const sl = seaSlope(boat.x, boat.z, simTime);
-  const downSlope = clamp(sl.dz, -0.65, 0.65); /* positive when nose pitches downward into trough */
-  if (downSlope > 0.18) boat.glideBoost = Math.min(1.0, boat.glideBoost + dt * 1.4);
-  else boat.glideBoost = Math.max(0, boat.glideBoost - dt * 0.9);
+  const amp = swellAmpAt(boat.z);
 
-  /* Hold boat gently if waiting at Stage 1 trough until player holds low */
-  const waitLowAt1 = stage === 1 && boat.z <= g.z + 5.0 && boat.holdProgress < 1;
-  const maxSpd = waitLowAt1 ? 0.55 : (1.55 + rowPower * 1.35 + boat.glideBoost * 0.95) * (1.0 - 0.24 * boat.crouch);
-  const fwd = inp.thrust >= -0.05 ? Math.max(0.32, inp.thrust) : 0.15;
-  const targetSpd = maxSpd * (0.45 + 0.55 * fwd);
-  boat.speed = mix(boat.speed, targetSpd, Math.min(1, dt * 2.6));
+  /* Downhill face carving: sl.dz > 0 means water drops ahead (boat sliding down the swell face!) */
+  const downFace = clamp(sl.dz / Math.max(0.35, amp * 0.32), -1.0, 1.0);
+  if (downFace > 0.14) {
+    /* Carving diagonally across a downhill face builds extra exhilarating surf speed */
+    const carveBonus = Math.abs(steer) * 0.45;
+    boat.surfBoost = Math.min(1.0, boat.surfBoost + dt * (1.25 + carveBonus));
+  } else {
+    boat.surfBoost = Math.max(0, boat.surfBoost - dt * 0.72);
+  }
 
-  boat.vx = -Math.sin(boat.yaw) * boat.speed;
-  boat.vz = -Math.cos(boat.yaw) * boat.speed;
-  boat.x = clamp(boat.x + boat.vx * dt, -6.4, 6.4);
+  /* Crest lift & moment of float: crossing cleanly from climbing (sl.dz < 0) over crest to downhill (sl.dz >= 0) */
+  boat.crestCooldown = Math.max(0, boat.crestCooldown - dt);
+  if (boat.prevSlopeDz < 0 && sl.dz >= 0 && h > amp * 0.18 && boat.crestCooldown <= 0) {
+    boat.airVy = 1.85 + 0.55 * boat.surfBoost;
+    boat.crestCooldown = 1.6;
+    boat.crestsFloated++;
+    SEA.crestWhoosh();
+    /* Burst of crisp woodblock bow spray over the crest! */
+    for (let k = 0; k < 8; k++) {
+      const side = (k % 2 === 0 ? -1 : 1) * (0.65 + Math.random() * 1.15);
+      spawnSpray(
+        boat.x + side * 0.25, h + 0.45, boat.z - 1.6,
+        side * 1.4 + boat.vx * 0.3,
+        1.6 + Math.random() * 1.5,
+        boat.vz * 0.45 - 0.8,
+        0.24 + Math.random() * 0.14, 0.78
+      );
+    }
+  }
+  boat.prevSlopeDz = sl.dz;
+
+  /* Float arc physics (gentle weightless hang at crest, smooth landing onto downhill slope) */
+  if (boat.airLift > 0 || boat.airVy > 0) {
+    boat.airLift += boat.airVy * dt;
+    boat.airVy -= 5.4 * dt;
+    if (boat.airLift <= 0) { boat.airLift = 0; boat.airVy = 0; }
+  }
+  const floatNorm = clamp(boat.airLift / 0.42, 0, 1);
+
+  /* Sister boats & wake slipstreams */
+  const drafting = updateSistersAndWakes(dt);
+  if (drafting) {
+    boat.draftBoost = Math.min(1.0, boat.draftBoost + dt * 1.9);
+    boat.draftTime += dt;
+  } else {
+    boat.draftBoost = Math.max(0, boat.draftBoost - dt * 1.1);
+  }
+  boat.chimeBoost = Math.max(0, boat.chimeBoost - dt * 0.75);
+
+  /* Sea carries the boat forward continuously — never stops, surges on downhill carves & wakes */
+  const climbDrag = Math.max(0, -downFace) * 0.45;
+  const targetSpd = 4.45 + boat.surfBoost * 1.45 + boat.draftBoost * 1.35 + boat.chimeBoost * 0.85 - climbDrag;
+  boat.speed = mix(boat.speed, clamp(targetSpd, 3.6, 7.2), Math.min(1, dt * 3.0));
+
+  /* Lateral carving glides effortlessly left/right while forward progress never stalls */
+  boat.vx = mix(boat.vx, steer * (4.4 + boat.surfBoost * 1.6), Math.min(1, dt * 6.0));
+  boat.vz = -boat.speed;
+  boat.x = clamp(boat.x + boat.vx * dt, -6.8, 6.8);
   boat.z += boat.vz * dt;
-  if (waitLowAt1 && boat.z < g.z - 2.0) boat.z = g.z - 2.0;
 
-  /* Oar cadence + wooden oar-dip sound */
-  boat.oarPhase += dt * (2.6 + boat.speed * 0.72);
-  const curSin = Math.sin(boat.oarPhase);
-  if (boat.lastOarSin < 0 && curSin >= 0 && boat.crouch < 0.5) SEA.oarDip();
-  boat.lastOarSin = curSin;
+  /* Carve & slipstream chine spray droplets */
+  const carveEnergy = Math.abs(steer) * (0.5 + 0.5 * boat.surfBoost) + boat.draftBoost * 0.7;
+  sprayEmitAcc += dt * (carveEnergy * 11.0);
+  while (sprayEmitAcc >= 1.0 && boat.airLift < 0.08) {
+    sprayEmitAcc -= 1.0;
+    const outSide = steer !== 0 ? -Math.sign(steer) : (Math.random() < 0.5 ? -1 : 1);
+    spawnSpray(
+      boat.x + outSide * 0.45, h + 0.20, boat.z - 0.6 + Math.random() * 1.2,
+      outSide * (1.2 + Math.random() * 1.1),
+      1.1 + Math.random() * 0.9,
+      boat.vz * 0.35,
+      0.17 + Math.random() * 0.10, 0.52
+    );
+  }
 
-  /* Position & tilt player's oshiokuri-bune on the live swell */
-  const pitchTarget = clamp(-sl.dz * 0.52 - boat.crouch * 0.08, -0.34, 0.34);
-  boat.pitch = mix(boat.pitch, pitchTarget, Math.min(1, dt * 6));
-  playerBoat.root.position.set(boat.x, h + 0.14 - boat.crouch * 0.12, boat.z);
-  playerBoat.root.rotation.set(boat.pitch, boat.yaw, boat.roll - sl.dx * 0.35);
-  playerBoat.setMotion(boat.oarPhase, rowPower, boat.crouch, boat.speed / 6.0);
+  /* Position & orient boat on the swell + crest float */
+  boat.oarPhase += dt * (2.5 + boat.speed * 0.48);
+  const pitchTarget = clamp(-sl.dz * 0.56 + floatNorm * 0.24, -0.36, 0.40);
+  boat.pitch = mix(boat.pitch, pitchTarget, Math.min(1, dt * 7.5));
+  playerBoat.root.position.set(boat.x, h + 0.14 + boat.airLift, boat.z);
+  playerBoat.root.rotation.set(boat.pitch, boat.yaw, boat.roll - sl.dx * 0.26);
+  playerBoat.setMotion(boat.oarPhase, steer, floatNorm, (boat.speed - 3.0) / 4.2);
 
-  /* Recycle 14 layered woodblock wave curtains seamlessly ahead of the boat */
-  const zSpan = RIBBON_COUNT * RIBBON_STEP;
-  const frontZ = Math.floor(boat.z / RIBBON_STEP) * RIBBON_STEP + 3.5;
+  /* Recycle 18 layered woodblock wave curtains seamlessly ahead */
+  const frontZ = Math.floor(boat.z / RIBBON_STEP) * RIBBON_STEP + 3.0;
   for (let i = 0; i < RIBBON_COUNT; i++) {
     const r = ribbons[i];
     const wz = frontZ - i * RIBBON_STEP;
-    r.mesh.position.set(boat.x * 0.15, -1.85, wz);
+    const rx = boat.x * 0.14;
+    r.mesh.position.set(rx, -2.05, wz);
     r.mat.uniforms.uWorldZ.value = wz;
+    r.mat.uniforms.uWorldXOff.value = rx;
     r.mat.uniforms.uSwellAmp.value = swellAmpAt(wz);
   }
 
-  /* Sky, real Hokusai Mount Fuji, and emerging Great Wave silhouette on the horizon */
-  shared.uStorm.value = sstep(35, 178, -boat.z);
-  skyMesh.position.set(boat.x * 0.12, 10.2, boat.z - 56);
+  /* Sky, Hokusai's Mount Fuji & seamless growing Great Wave arch on the horizon */
+  shared.uStorm.value = sstep(0.10, 0.92, p);
+  shared.uWaveGrow.value = 0.08 + 0.92 * sstep(0.0, 0.95, p);
+  skyMesh.position.set(boat.x * 0.10, 11.0, boat.z - 64);
   if (bayFujiMesh) {
-    /* Mount Fuji stays serene on the far horizon — when player drops eyeDrop, near swells physically hide Fuji! */
-    bayFujiMesh.position.set(2.8 + boat.x * 0.22, 1.35 - eyeDrop * 0.38, boat.z - 49);
+    bayFujiMesh.position.set(2.4 + boat.x * 0.18, 2.35, boat.z - 55);
   }
-  if (bayWavePreview) {
-    const app = sstep(108, 180, -boat.z);
-    bayWavePreview.material.opacity = app * 0.95;
-    bayWavePreview.position.set(-6.8 + app * 2.4, -3.8 + app * 8.0, boat.z - 38 + app * 10);
+  const waveDist = mix(51.0, 39.0, sstep(0.15, 0.98, p));
+  greatWaveHorizon.position.set(boat.x * 0.12, 8.4 - (1 - shared.uWaveGrow.value) * 0.6, boat.z - waveDist);
+
+  updateSprayAndChimes(dt);
+
+  /* Natural low-eye chase camera: sinks low in troughs (waves hide Fuji), lifts on crests (Fuji returns!) */
+  const troughNorm = clamp(-h / Math.max(0.45, amp * 1.05), 0, 1);
+  boat.lastH = h;
+  boat.lastTrough = troughNorm;
+  const targetCamY = h + mix(2.44, 0.54, troughNorm) + boat.airLift * 0.65;
+  const targetCamX = boat.x * 0.78 - steer * 0.55;
+  const speedFov = 42 + clamp((boat.speed - 4.4) * 1.45, 0, 4.5);
+  boat.cameraY = mix(boat.cameraY, targetCamY, Math.min(1, dt * 4.6));
+  boat.cameraX = mix(boat.cameraX, targetCamX, Math.min(1, dt * 4.8));
+  boat.cameraFov = mix(boat.cameraFov, speedFov, Math.min(1, dt * 3.2));
+  if (Math.abs(camera.fov - boat.cameraFov) > 0.05) {
+    camera.fov = boat.cameraFov;
+    camera.updateProjectionMatrix();
   }
+  const camZ = boat.z + mix(7.6, 6.7, troughNorm) - boat.draftBoost * 0.45;
+  camera.position.set(boat.cameraX, boat.cameraY, camZ);
+  camera.lookAt(boat.x * 0.50 + steer * 0.9, h + mix(1.05, 1.52, troughNorm) + boat.airLift * 0.25, boat.z - 19);
 
-  /* Sister lead boat glides smoothly ahead toward the active gate */
-  const sisZ = Math.max(g.z - 3.0, boat.z - 12.5);
-  const sisX = mix(boat.x, g.x, 0.72) + Math.sin(simTime * 0.9) * 0.55;
-  const sisH = seaHeight(sisX, sisZ, simTime);
-  const sisSl = seaSlope(sisX, sisZ, simTime);
-  if (sisterBoatMesh) {
-    sisterBoatMesh.position.set(sisX, sisH + 0.52, sisZ);
-    sisterBoatMesh.rotation.z = clamp(sisSl.dx * 0.45 + Math.sin(simTime * 1.4) * 0.05, -0.26, 0.26);
-  }
+  SEA.updateSurf(clamp(amp / 1.8, 0, 1), clamp((boat.speed - 3.2) / 4.0, 0, 1), drafting);
 
-  /* Gate ring + floating spray buoy + wake foam path so player is NEVER lost */
-  const gH = seaHeight(g.x, g.z, simTime);
-  gateMesh.position.set(g.x, gH + 0.16, g.z);
-  gateMesh.rotation.z = simTime * 0.55;
-  const pulseSc = 1.0 + 0.10 * Math.sin(simTime * 3.4);
-  gateMesh.scale.set(pulseSc, pulseSc, 1);
-  buoyPuffs.forEach(bp => {
-    const a = simTime * 1.6 + bp.idx * (Math.PI * 2 / buoyPuffs.length);
-    bp.s.position.set(
-      g.x + Math.cos(a) * 1.15,
-      gH + 0.75 + Math.sin(simTime * 2.4 + bp.idx) * 0.35 + bp.idx * 0.24,
-      g.z + Math.sin(a) * 0.7
-    );
-  });
-  trailPuffs.forEach(tp => {
-    const px = mix(boat.x, g.x, tp.f) + Math.sin(simTime * 1.5 + tp.f * 5) * 0.16;
-    const pz = mix(boat.z - 2.2, g.z, tp.f);
-    const ph = seaHeight(px, pz, simTime);
-    tp.mesh.position.set(px, ph + 0.12, pz);
-    tp.mat.opacity = (0.35 + 0.4 * Math.sin(simTime * 2.5 - tp.f * 6)) * shared.uBayFade.value;
-  });
-
-  /* Low-horizon perspective camera: dropping eyeDrop drops camera right down to the waterline! */
-  const camY = h + mix(3.45, 0.78, eyeDrop);
-  const camZ = boat.z + mix(7.9, 6.2, eyeDrop);
-  const lookY = h + mix(1.05, 1.55, eyeDrop);
-  camera.position.x = mix(camera.position.x, boat.x * 0.72, Math.min(1, dt * 4.5));
-  camera.position.y = mix(camera.position.y, camY, Math.min(1, dt * 4.5));
-  camera.position.z = mix(camera.position.z, camZ, Math.min(1, dt * 5.0));
-  camera.lookAt(boat.x * 0.45 + g.x * 0.18, lookY, boat.z - 16);
-
-  /* Check Gate Progression (Stages 0, 1, 2) */
-  const dist = Math.hypot(boat.x - g.x, boat.z - g.z);
-  const passedZ = boat.z <= g.z + 1.8;
-
-  if (stage === 0 && (dist < 3.4 || passedZ)) {
-    stage = 1; stageTime = 0; boat.holdProgress = 0;
-    updateRack();
-    setGoal(STAGE_INFO[1].goal);
-    showCue(STAGE_INFO[1].cue, 5.5);
-    SEA.chime(523.25);
-  } else if (stage === 1) {
-    const inZone = dist < 6.5 || boat.z <= g.z + 6.0;
-    bLow.classList.toggle('pulse', inZone && !inp.low);
-    if (inZone) {
-      if (inp.low) boat.holdProgress = Math.min(1, boat.holdProgress + dt / 1.25);
-      setFrameMeter(true, 'Low eye · wave hides Fuji', boat.holdProgress);
-      if (boat.holdProgress >= 1) {
-        stage = 2; stageTime = 0; boat.holdProgress = 0;
-        bLow.classList.remove('pulse');
-        setFrameMeter(false, '', 0);
-        updateRack();
-        setGoal(STAGE_INFO[2].goal);
-        showCue(STAGE_INFO[2].cue, 5.5);
-        SEA.chime(587.33);
-      }
-    } else {
-      setFrameMeter(false, '', 0);
-    }
-  } else if (stage === 2 && (dist < 3.6 || passedZ)) {
-    stage = 3; stageTime = 0; boat.holdProgress = 0;
-    state = 'wave';
-    waveTrans = 0;
-    waveBoatX = 2.45;
-    waveBoatVx = 0;
+  /* Seamless handoff when the final swell becomes the Great Wave's face */
+  if (boat.z <= -RIDE_LENGTH) {
+    state = 'approach';
+    approachT = 0;
+    waveBoatX = 2.48;
     printGroup.visible = true;
     if (plateMats.p5_hero_boat) plateMats.p5_hero_boat.uniforms.uLocalAlpha.value = 0;
-    updateRack();
-    setGoal(STAGE_INFO[3].goal);
-    showCue(STAGE_INFO[3].cue, 6.0);
+    if (printBoatMesh) { printBoatMesh.visible = true; printBoatMesh.material.opacity = 1; }
     SEA.chime(659.25);
   }
-
-  SEA.updateSurf(clamp(swellAmpAt(boat.z) / 1.4, 0, 1), clamp(boat.speed / 6.0, 0, 1));
 }
 
-/* ================= Update: Inside Hokusai's 8-Plate Great Wave & Calm Finale ================= */
-function updateWaveAndCalm(dt, inp) {
-  /* Smooth cross-fade from open layered bay into the 8-plate depth-sliced Met print */
-  waveTrans = Math.min(1, waveTrans + dt * 0.85);
-  shared.uBayFade.value = 1 - sstep(0, 1, waveTrans);
-  shared.uPrintFade.value = sstep(0, 1, waveTrans);
-  if (waveTrans >= 1) bayGroup.visible = false;
+/* ================= Update: Carried Up & Under the Great Wave Into the Print (~6.5 s) ================= */
+function updateApproach(dt, steer) {
+  approachT += dt;
+  const dur = 6.5;
+  const f = clamp(approachT / dur, 0, 1);
 
-  /* Target spot: Stage 'wave' frames Fuji cleanly above #goal at y=-1.48; Stage 'calm' docks at p5_hero_boat (0.85, -1.77) */
-  const targetX = state === 'wave' ? 1.52 : 0.85;
-  const targetY = state === 'wave' ? -1.46 : -1.77;
+  /* Smooth cross-fade from open woodblock bay into the 8-plate depth-sliced Met print */
+  const fade = sstep(0.0, 0.36, f);
+  shared.uBayFade.value = 1 - fade;
+  shared.uPrintFade.value = fade;
+  if (fade >= 1) bayGroup.visible = false;
 
-  /* Intuitive boat movement: either Left OR Up/Forward rows forward-left (prow points left!) */
-  let drive = 0;
-  if (inp.steer < -0.1) drive -= Math.abs(inp.steer);
-  if (inp.thrust > 0.15) drive -= inp.thrust * 0.9;
-  if (inp.steer > 0.15) drive += inp.steer * 0.75;
+  /* Keep open-bay ribbons gently drifting during the brief 2.3 s cross-fade */
+  if (bayGroup.visible) {
+    boat.z -= dt * 3.8;
+    const h = seaHeight(boat.x, boat.z, simTime);
+    playerBoat.root.position.set(boat.x, h + 0.14 + fade * 0.4, boat.z);
+    updateSprayAndChimes(dt);
+  }
 
-  const targetVx = clamp(drive, -1.0, 0.8) * (state === 'calm' ? 0.45 : 0.72);
-  waveBoatVx = mix(waveBoatVx, targetVx, Math.min(1, dt * 4.2));
-  waveBoatX = clamp(waveBoatX + waveBoatVx * dt, 0.45, 2.55);
-
-  const bob = Math.sin(simTime * 1.55 + 2.0) * (state === 'calm' ? 0.04 : 0.085);
-  const tilt = Math.cos(simTime * 1.55 + 2.0) * (state === 'calm' ? 0.025 : 0.055) - waveBoatVx * 0.04;
-  boat.crouch = mix(boat.crouch, inp.low ? 1 : 0, Math.min(1, dt * 6));
-  eyeDrop = mix(eyeDrop, inp.low || state === 'calm' ? 1 : 0, Math.min(1, dt * 3.4));
+  /* Carry the hero boat smoothly up and under the claws into p5_hero_boat's exact place (0.85, -1.77) */
+  const tuckT = sstep(0.18, 0.96, f);
+  const autoX = mix(2.48, 0.85, tuckT);
+  const gentleNudge = steer * 0.26 * (1 - tuckT);
+  waveBoatX = mix(waveBoatX, autoX + gentleNudge, Math.min(1, dt * 4.5));
+  const autoY = mix(-1.38, -1.77, tuckT);
+  const bob = Math.sin(simTime * 1.55 + 2.0) * mix(0.08, 0.035, tuckT);
+  const tilt = Math.cos(simTime * 1.55 + 2.0) * 0.045 + mix(0.13, 0.02, tuckT);
 
   if (printBoatMesh) {
-    printBoatMesh.position.set(waveBoatX, targetY + bob - boat.crouch * 0.08, 0.54);
-    printBoatMesh.rotation.z = tilt + (state === 'calm' ? 0.04 : 0.11);
-    printBoatMesh.scale.set(1.06, 1.06 * (1 - 0.14 * boat.crouch), 1);
-  }
-  if (printGateMesh) {
-    printGateMesh.visible = true;
-    printGateMesh.position.set(targetX, targetY - 0.06 + bob * 0.5, 0.56);
-    const sc = 1 + 0.1 * Math.sin(simTime * 3.6);
-    printGateMesh.scale.set(sc, sc, 1);
-    printGateMesh.rotation.z = simTime * 0.45;
+    printBoatMesh.position.set(waveBoatX, autoY + bob, 0.54);
+    printBoatMesh.rotation.z = tilt;
   }
 
-  /* Animate snow-like woodblock spray droplets drifting across the blue hollow */
+  /* Snow-like woodblock spray drifting over the hollow */
   sprayGroup.visible = true;
   sprayDrops.forEach(d => {
     d.sp.position.x += d.vx * dt;
@@ -1083,64 +1017,43 @@ function updateWaveAndCalm(dt, inp) {
       d.sp.position.x = -2.2 + Math.random() * 2.4;
       d.sp.position.y = 1.1 + Math.random() * 1.3;
     }
-    d.sp.material.opacity = shared.uPrintFade.value * (state === 'calm' ? 0.35 : 0.78);
+    d.sp.material.opacity = shared.uPrintFade.value * 0.72;
   });
 
-  /* Real 3D perspective lesson: tight framing fills viewport edge-to-edge; eyeDrop drops camera to waterline! */
-  const cx = mix((waveBoatX - 1.5) * 0.18, 0.0, eyeDrop);
-  const cy = state === 'calm' ? 0.0 : mix(0.88, -0.32, eyeDrop);
-  const cz = state === 'calm' ? restCamD * 0.94 : mix(restCamD * 0.88, restCamD * 0.85, eyeDrop);
-  camera.position.x = mix(camera.position.x, cx, Math.min(1, dt * 3.4));
-  camera.position.y = mix(camera.position.y, cy, Math.min(1, dt * 3.4));
-  camera.position.z = mix(camera.position.z, cz, Math.min(1, dt * 3.4));
-  camera.lookAt(mix(0.08, -0.04, eyeDrop), mix(-0.18, 0.15, eyeDrop), -0.9);
+  /* Low waterline camera glides smoothly into the print's composition */
+  if (Math.abs(camera.fov - 42) > 0.05) {
+    camera.fov = mix(camera.fov, 42, Math.min(1, dt * 3.5));
+    camera.updateProjectionMatrix();
+  }
+  const cx = mix(0.45, 0.0, tuckT);
+  const cy = mix(-0.36, 0.0, tuckT);
+  const cz = mix(restCamD * 0.86, restCamD * 0.96, tuckT);
+  camera.position.set(
+    mix(camera.position.x, cx, Math.min(1, dt * 3.0)),
+    mix(camera.position.y, cy, Math.min(1, dt * 3.0)),
+    mix(camera.position.z, cz, Math.min(1, dt * 3.0))
+  );
+  camera.lookAt(0, mix(0.08, 0.0, tuckT), -0.6 * (1 - tuckT));
+  shared.uPrintMotion.value = mix(1.0, 0.42, tuckT);
+  SEA.updateSurf(mix(0.95, 0.35, tuckT), 0.3, false);
 
-  if (state === 'wave') {
-    const inHollow = Math.abs(waveBoatX - targetX) < 0.62;
-    bLow.classList.toggle('pulse', inHollow && !inp.low);
-    if (inHollow) {
-      setGoal('4 of 4 · Hold Low (Space) to frame Mount Fuji inside the wave');
-      if (inp.low) boat.holdProgress = Math.min(1, boat.holdProgress + dt / 2.4);
-      setFrameMeter(true, 'Framing Fuji in the wave', boat.holdProgress);
-      if (boat.holdProgress >= 1) {
-        stage = 4; state = 'calm'; stageTime = 0; boat.holdProgress = 0;
-        bLow.classList.remove('pulse');
-        setFrameMeter(false, '', 0);
-        updateRack();
-        setGoal('Calm water · Glide left into the golden wake mark to complete the print');
-        showCue('The storm crest rolls past — Mount Fuji rests still on the low horizon.', 5.5);
-        SEA.chime(783.99);
-      }
-    } else {
-      setFrameMeter(false, '', 0);
-    }
-    SEA.updateSurf(0.92, 0.55);
-  } else if (state === 'calm') {
-    shared.uPrintMotion.value = mix(shared.uPrintMotion.value, 0.38, Math.min(1, dt * 1.5));
-    if (Math.abs(waveBoatX - targetX) < 0.34) {
-      state = 'finale'; finaleT = 0;
-      setGoal(null);
-      $('rack').classList.add('hidden');
-      $('bLow').classList.add('hidden');
-      if (printGateMesh) printGateMesh.visible = false;
-      SEA.chime(523.25);
-    }
-    SEA.updateSurf(0.32, 0.25);
+  if (approachT >= dur) {
+    state = 'finale';
+    finaleT = 0;
+    SEA.chime(523.25);
   }
 }
 
-/* ================= Update: Finale Flattening & Dissolve Into Met JP1847 ================= */
+/* ================= Update: Finale Flattening & Dissolve Into Met JP1847 (~6.2 s) ================= */
 function updateFinale(dt) {
   finaleT += dt;
-  /* Cross-fade steerable boat seamlessly onto Hokusai's exact p5_hero_boat plate */
   const dockT = sstep(0, 0.85, finaleT);
   if (printBoatMesh) printBoatMesh.material.opacity = 1 - dockT;
   if (plateMats.p5_hero_boat) plateMats.p5_hero_boat.uniforms.uLocalAlpha.value = dockT;
 
-  /* Ease all 8 depth layers completely flat (1:1 registration with Met print) */
-  const flatT = sstep(0.4, 3.2, finaleT);
+  const flatT = sstep(0.4, 3.1, finaleT);
   shared.uDepthScale.value = 1 - flatT;
-  shared.uPrintMotion.value = 0.38 * (1 - flatT);
+  shared.uPrintMotion.value = 0.42 * (1 - flatT);
   sprayDrops.forEach(d => { d.sp.material.opacity = 0.35 * (1 - flatT); });
 
   camera.position.x = mix(camera.position.x, 0, Math.min(1, dt * 3.5));
@@ -1148,7 +1061,7 @@ function updateFinale(dt) {
   camera.position.z = mix(camera.position.z, restCamD, Math.min(1, dt * 3.5));
   camera.lookAt(0, 0, 0);
 
-  if (finaleT >= 2.8 && !$('melt').classList.contains('show')) {
+  if (finaleT >= 2.7 && !$('melt').classList.contains('show')) {
     $('melt').classList.add('show');
     $('plate').classList.add('show');
   }
@@ -1158,7 +1071,7 @@ function updateFinale(dt) {
     $('melt').classList.remove('show');
     $('end').classList.remove('hidden');
   }
-  SEA.updateSurf(0.18 * (1 - flatT), 0);
+  SEA.updateSurf(0.18 * (1 - flatT), 0, false);
 }
 
 /* ================= Main Loop & Verification Hook ================= */
@@ -1168,33 +1081,34 @@ function tick(now) {
   const dt = Math.min(0.05, (now - prevT) / 1000);
   prevT = now;
   simTime += dt;
-  stageTime += dt;
   shared.uTime.value = simTime;
 
   fpsAcc += dt; fpsFrames++;
   if (fpsAcc >= 0.5) { lastFps = fpsFrames / fpsAcc; fpsAcc = 0; fpsFrames = 0; }
 
-  if (cueTimer > 0) {
-    cueTimer -= dt;
-    if (cueTimer <= 0) $('cue').classList.remove('show');
+  if (hintTimer > 0) {
+    hintTimer -= dt;
+    if (hintTimer <= 0) $('hint').classList.remove('show');
   }
 
-  const inp = readInput();
+  const steer = readSteer();
   if (state === 'title') {
-    /* Gentle living sea preview behind title broadsheet */
     for (let i = 0; i < RIBBON_COUNT; i++) {
-      const wz = 3.5 - i * RIBBON_STEP;
-      ribbons[i].mesh.position.set(0, -1.85, wz);
+      const wz = 3.0 - i * RIBBON_STEP;
+      ribbons[i].mesh.position.set(0, -2.05, wz);
       ribbons[i].mat.uniforms.uWorldZ.value = wz;
-      ribbons[i].mat.uniforms.uSwellAmp.value = 0.38;
+      ribbons[i].mat.uniforms.uWorldXOff.value = 0;
+      ribbons[i].mat.uniforms.uSwellAmp.value = 0.58;
     }
-    if (bayFujiMesh) bayFujiMesh.position.set(2.8, 1.35, -49);
-    camera.position.set(Math.sin(simTime * 0.25) * 0.6, 3.1, 8.2);
+    shared.uWaveGrow.value = 0.14;
+    greatWaveHorizon.position.set(0, 7.9, -49);
+    if (bayFujiMesh) bayFujiMesh.position.set(2.4, 2.35, -55);
+    camera.position.set(Math.sin(simTime * 0.25) * 0.6, 2.7, 8.0);
     camera.lookAt(0.4, 1.1, -18);
-  } else if (state === 'play') {
-    updateBay(dt, inp);
-  } else if (state === 'wave' || state === 'calm') {
-    updateWaveAndCalm(dt, inp);
+  } else if (state === 'ride') {
+    updateRide(dt, steer);
+  } else if (state === 'approach') {
+    updateApproach(dt, steer);
   } else if (state === 'finale') {
     updateFinale(dt);
   }
@@ -1205,17 +1119,32 @@ requestAnimationFrame(tick);
 
 window.__hokusai = {
   getState: () => ({
-    ready, state, stage,
-    boatX: +boat.x.toFixed(2), boatZ: +boat.z.toFixed(2),
-    waveBoatX: +waveBoatX.toFixed(2),
-    eyeDrop: +eyeDrop.toFixed(2),
-    holdProgress: +boat.holdProgress.toFixed(2),
+    ready, state,
+    progress: +rideProgress(boat.z).toFixed(3),
+    rideTime: +rideTime.toFixed(1),
+    boatX: +boat.x.toFixed(2),
+    boatZ: +boat.z.toFixed(2),
+    boatH: +(boat.lastH || 0).toFixed(2),
+    troughNorm: +(boat.lastTrough || 0).toFixed(2),
+    speed: +boat.speed.toFixed(2),
+    airLift: +boat.airLift.toFixed(3),
+    waveGrow: +shared.uWaveGrow.value.toFixed(3),
+    chimesRung: boat.chimesRung,
+    draftTime: +boat.draftTime.toFixed(1),
+    crestsFloated: boat.crestsFloated,
     depthScale: +shared.uDepthScale.value.toFixed(3),
     fps: +lastFps.toFixed(1),
-    goal: $('goal').textContent,
   }),
-  setJoy: (x, y) => { joyX = clamp(x, -1, 1); joyY = clamp(y, -1, 1); },
-  setLow: v => setLowBtn(!!v),
+  setDragSteer: s => { dragSteer = clamp(s, -1, 1); },
+  getNextChime: () => {
+    let best = null, bestDz = 999;
+    for (const cd of chimeDrops) {
+      if (cd.rung) continue;
+      const dz = boat.z - cd.z;
+      if (dz > -0.5 && dz < bestDz) { bestDz = dz; best = { x: cd.x, z: cd.z, dz: +dz.toFixed(1) }; }
+    }
+    return best;
+  },
 };
 </script>
 <script type="module" src="../common/home.js"></script>

@@ -1,5 +1,5 @@
 /* Painting Rooms: offline play. The shell is stored on install; each level is stored in full the first time it is opened (or when the map asks). */
-const VERSION = 'pr-5', SHELL = 'shell-' + VERSION, LEVELS = 'levels-' + VERSION;
+const VERSION = 'pr-6', SHELL = 'shell-' + VERSION, LEVELS = 'levels-' + VERSION;
 const ROOT = new URL('./', self.location).href;
 let LIST = null;
 const list = async () => LIST || (LIST = await (await fetch(ROOT + 'offline.json', { cache: 'no-cache' }).catch(() => caches.match(ROOT + 'offline.json'))).json());
