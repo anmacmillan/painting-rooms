@@ -10,31 +10,20 @@
   #end > img { max-height:36vh; }
   #end .pair { display:flex; gap:14px; justify-content:center; align-items:flex-end; }
   #end .pair img { max-width:min(38vw, 56vh); max-height:34vh; border:8px solid #c7a24c; box-shadow:8px 12px 28px rgba(0,0,0,.55); }
-  #bubble { font-size:17px; }
-  #plate { position:fixed; left:50%; bottom:max(34px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2.5s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.9); z-index:9; width:92vw; }
+  #title .story { font-style:normal; font-size:clamp(16px,2.3vw,22px); max-width:min(620px,90vw); margin:.35em auto .25em; color:#fff8e2; line-height:1.35; }
+  #bubble { font-size:16px; }
+  #plate { position:fixed; left:50%; bottom:max(34px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2.2s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.92); z-index:9; width:92vw; }
   #plate.show { opacity:1; }
-  /* each tableau melts into the painting itself */
-  #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(16px) saturate(1.25); transition:opacity 2.4s ease, filter 2.8s ease; pointer-events:none; z-index:8; }
-  #melt.show { opacity:1; filter:none; } #cv { transition:filter 2.4s ease; } body.melting #cv { filter:brightness(.3) blur(4px); } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.85; }
-  #tip { text-shadow:0 1px 8px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.8); }
-  /* the stroke: a round button that fills as the oars come forward, and shines when they are ready to take the water */
-  #bRow { position:fixed; right:max(22px, env(safe-area-inset-right)); bottom:max(26px, env(safe-area-inset-bottom)); width:104px; height:104px; border-radius:50%; border:3px solid rgba(255,255,255,.55); background:rgba(28,40,58,.5); color:#f4efe2;
-    font:italic 600 21px "Iowan Old Style",Palatino,Georgia,serif; cursor:pointer; z-index:11; display:none; align-items:center; justify-content:center; flex-direction:column; line-height:1.05; padding:0; touch-action:none;
-    box-shadow:0 4px 16px rgba(0,0,0,.35); transition:transform .1s, background .15s, border-color .15s, box-shadow .15s; -webkit-tap-highlight-color:transparent; }
-  #bRow small { font-size:12px; font-weight:400; opacity:.8; font-style:normal; letter-spacing:.04em; }
-  #bRow.ready { background:rgba(242,200,101,.92); color:#2c2f36; border-color:#fff3c8; box-shadow:0 0 0 7px rgba(242,200,101,.28), 0 4px 18px rgba(0,0,0,.4); transform:scale(1.07); }
-  #bRow.pull { transform:scale(.9); background:rgba(255,255,255,.85); color:#2c2f36; }
-  #bRow.splash { background:rgba(150,190,230,.8); }
-  #beat { position:fixed; left:50%; top:max(64px, env(safe-area-inset-top)); transform:translateX(-50%); z-index:6; font:italic clamp(13px,1.7vw,16px) "Iowan Old Style",Palatino,Georgia,serif; color:#f4efe2; text-shadow:0 1px 6px rgba(0,0,0,.8); pointer-events:none; opacity:0; transition:opacity .4s; letter-spacing:.03em; }
-  #beat.show { opacity:.92; } #beat b { color:#f2c865; font-style:normal; letter-spacing:.2em; }
-  @media (max-width:620px) { #bRow { width:92px; height:92px; } }
-  /* the plain next step, always at the foot of the screen while she is playing */
-  #goal { position:fixed; left:50%; bottom:64px; transform:translateX(-50%); z-index:6; max-width:92vw; padding:.45em 1.1em; border-radius:999px; background:rgba(24,44,52,.84); color:#f4efe2; border:2px solid rgba(242,200,101,.7); font:600 clamp(15px,2vw,21px) "Iowan Old Style",Palatino,Georgia,serif; text-align:center; pointer-events:none; display:none; } #goal b { color:#f2c865; }
-  /* the light on the water, and the dabs she lays for it: flat, square-ended touches of separate colour */
-  #dabs { position:fixed; inset:0; pointer-events:none; z-index:5; overflow:hidden; transition:opacity 2.5s; } #dabs.fade { opacity:0; }
-  .glint { position:absolute; width:var(--s); height:var(--s); margin:calc(var(--s) / -2); border-radius:50%; pointer-events:auto; cursor:pointer; background:radial-gradient(circle, rgba(255,255,246,1) 0 14%, rgba(255,246,190,.8) 30%, rgba(255,240,170,0) 68%); animation:glint .9s ease-in-out infinite alternate; transition:opacity .35s; }
-  .glint::after { content:''; position:absolute; inset:-16px; } @keyframes glint { from { transform:scale(.78); } to { transform:scale(1.16); } }
-  .daub { position:absolute; height:var(--h); width:var(--w); margin:calc(var(--h) / -2) 0 0 calc(var(--w) / -2); border-radius:2px 3px 3px 2px; opacity:.86; box-shadow:var(--dx) var(--h) 0 0 var(--c2), calc(var(--dx) * -1.4) calc(var(--h) * -1) 0 0 var(--c3); animation:daub .18s ease-out; } @keyframes daub { from { opacity:0; } }
+  #plate i { display:block; font-size:clamp(22px,3.4vw,34px); }
+  #plate span { font-size:clamp(13px,1.8vw,16px); opacity:.88; }
+  #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(14px) saturate(1.2); transition:opacity 2.2s ease, filter 2.4s ease; pointer-events:none; z-index:8; }
+  #melt.show { opacity:1; filter:none; }
+  #cv { transition:filter 2.2s ease; }
+  body.melting #cv { filter:brightness(.3) blur(4px); }
+  #tip { bottom:max(54px, env(safe-area-inset-bottom)); padding:0 24px; text-shadow:0 1px 8px rgba(0,0,0,.95), 0 0 3px rgba(0,0,0,.8); }
+  /* slim single-line goal pill at the very foot, clear of the skiff */
+  #goal { position:fixed; left:50%; bottom:max(12px, env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:6; max-width:92vw; padding:.34em 1.05em; border-radius:999px; background:rgba(20,38,48,.78); color:#f6f1e2; border:1.5px solid rgba(242,200,101,.65); font:600 clamp(13px,1.7vw,17px) "Iowan Old Style",Palatino,Georgia,serif; text-align:center; pointer-events:none; display:none; white-space:nowrap; }
+  #goal b { color:#f6d46c; }
 </style>
 <script type="importmap">{ "imports": { "three": "../vendor/three@0.160.0/build/three.module.js", "three/addons/": "../vendor/three@0.160.0/examples/jsm/" } }</script>
 </head>
@@ -42,647 +31,508 @@
 <canvas id="cv"></canvas>
 <div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div>
 <img id="melt" src="images/grenouillere.jpg" alt="">
-<div id="plate"></div><div id="beat"></div><div id="dabs"></div><div id="goal"></div>
-<button id="bRow" aria-label="Pull the oars">Row<small>pull</small></button>
+<div id="plate"></div><div id="goal"></div>
 <button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
 <div id="title" class="screen">
   <img src="images/grenouillere.jpg" alt="La Grenouillère by Claude Monet">
-  <div class="words"><h1>La Grenouillère</h1><p>the Seine at Croissy, 1869 · after Claude Monet and Pierre-Auguste Renoir</p><button class="go" id="start">Take the oars</button></div>
+  <div class="words">
+    <h1>La Grenouillère</h1>
+    <p class="story">Drift down the Seine in a hired skiff to the floating café, where Monet and Renoir are painting the summer light.</p>
+    <p>Croissy-sur-Seine, 1869 · after Claude Monet and Pierre-Auguste Renoir</p>
+    <button class="go" id="start">Push off</button>
+  </div>
 </div>
 <div id="end" class="screen hidden">
   <div class="pair"><img src="images/grenouillere.jpg" alt="La Grenouillère, by Claude Monet"><img src="images/renoir_grenouillere.jpg" alt="La Grenouillère, by Pierre-Auguste Renoir"></div>
   <h2>La Grenouillère, twice</h2>
   <div id="endText"></div>
   <p class="small">Paintings: public domain, via Wikimedia Commons. Sources for every statement: monet/research/FINDINGS.md.</p>
-  <button class="go" id="again">Row it again</button>
+  <button class="go" id="again">Drift down again</button>
 </div>
 <div id="err">This world needs WebGL, which this browser could not start.</div>
 
 <script src="../common/sound.js"></script>
 <script type="module">
 import * as THREE from 'three';
-import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { makeFigures } from '../common/figure.js';
-import { canvasTex, strokes, rnd, clamp, sstep, mix } from '../common/world.js';
+import { canvasTex, rnd, clamp, sstep, mix } from '../common/world.js';
 import { makeScore, LEVELS } from '../common/score.js';
-const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
+import { makeSkyMat, makeWaterMat, makePostMat, WAKE_N, BLOOM_N } from './shaders.js';
+import { V3, WY, ZP, ISL, BARGE, START, ARRIVE_Z, cx, cxSlope, bankL, bankR, pick, makeBoat, setOars, buildBanksAndTrees, buildLandmarks, buildPeopleTrafficAndGlints } from './world.js';
 
-/* ================= the river =================
-   The Seine runs down -z. The island (the Île de Croissy, where La Grenouillère was moored) is the bank on +x, the right hand going downstream; the far bank is on -x.
-   The water lies at y = 0. The two painters stand on the island's bank at z = ZP and look straight across the river, along -x: so the right of their pictures is downstream.
-   Facts and their sources: research/FINDINGS.md. Every distance here is chosen for play or taken by eye from the two pictures; none is a survey. */
-const WY = 0, HW = 34, ZP = -470, BANKY = 1.0, ISY = 0.55, DECKY = 1.9;
-const cx = z => 16 * Math.sin(z / 110) * sstep(-400, -310, z);            // the middle of the stream: it winds, and straightens before La Grenouillère
-const bankR = z => cx(z) + HW, bankL = z => cx(z) - HW;
-const ISL = { x: 13, z: ZP + 1.7, r: 4.0 }, IP = (u, v) => [ISL.x - v, ISL.z - u];      // the islet; a place on it is u metres to the right in the picture and v metres further from the painters
-const BARGE = { x0: 13, x1: 21.5, z0: ZP - 4.3, z1: ZP - 28 };          // the floating café, moored along the stream, its lettered side to the painters
-const PL_A = [34.7, ZP + 15], PL_B = IP(-3.6, -1.1), PR_A = IP(3.6, 1.4), PR_B = [13.75, BARGE.z0 - 0.7], GW_A = [18.6, ZP - 15], GW_B = [34.7, ZP - 15];
-const BERTH = { x: 30.5, z: ZP + 27 }, START = { x: 30.5, z: -8 };
-// where she may walk: the landing stage and the bank by it, the long gangplank, the islet, the short plank, the deck of the café, its gangway, the bank where the painters stand
-const REG = [
-  { t: 'r', x0: 31.9, x1: 39, z0: ZP + 13.6, z1: ZP + 34, y: BANKY },
-  { t: 'c', a: PL_A, b: PL_B, w: 0.62, ya: BANKY, yb: ISY },
-  { t: 'd', x: ISL.x, z: ISL.z, r: ISL.r - 0.25, y: ISY },
-  { t: 'c', a: PR_A, b: PR_B, w: 0.55, ya: ISY, yb: DECKY },
-  { t: 'r', x0: BARGE.x0 + 0.7, x1: BARGE.x1 - 2.6, z0: BARGE.z1 + 1.2, z1: BARGE.z0 - 0.3, y: DECKY },
-  { t: 'c', a: GW_A, b: GW_B, w: 0.62, ya: DECKY, yb: BANKY },
-  { t: 'r', x0: 34.6, x1: 39, z0: ZP - 22, z1: ZP + 3.4, y: BANKY }];
-function snap(x, z) { let best = null;
-  for (const R of REG) { let px, pz, y = R.y;
-    if (R.t === 'r') { px = clamp(x, R.x0, R.x1); pz = clamp(z, R.z0, R.z1); }
-    else if (R.t === 'd') { const dx = x - R.x, dz = z - R.z, d = Math.hypot(dx, dz), k = d > R.r ? R.r / d : 1; px = R.x + dx * k; pz = R.z + dz * k; }
-    else { const ax = R.a[0], az = R.a[1], bx_ = R.b[0] - ax, bz = R.b[1] - az, t = clamp(((x - ax) * bx_ + (z - az) * bz) / (bx_ * bx_ + bz * bz), 0, 1), qx = ax + bx_ * t, qz = az + bz * t, dx = x - qx, dz = z - qz, d = Math.hypot(dx, dz), k = d > R.w ? R.w / d : 1; px = qx + dx * k; pz = qz + dz * k; y = mix(R.ya, R.yb, t); }
-    const d = Math.hypot(x - px, z - pz); if (!best || d < best.d - 1e-6) best = { x: px, z: pz, y, d }; }
-  return best; }
-const solid = (x, z) => Math.hypot(x - ISL.x, z - ISL.z) < ISL.r + 1.5 || (x > BARGE.x0 - 1.5 && x < BARGE.x1 + 1.5 && z < BARGE.z0 + 1.5 && z > BARGE.z1 - 1.5) || (x > 28 && z < ZP + 36);
-const inRiver = (x, z) => x > bankL(z) + 2.5 && x < bankR(z) - 2.5 && !solid(x, z);
-// the line: down the river by the best water, then on foot across the islet to the painters
-const ROUTE = (() => { const pts = [];
-  const lineX = z => mix(mix(START.x, cx(z) + 11 * Math.sin(z / 24 + 0.8), sstep(-4, -64, z)), BERTH.x - 0.4, sstep(BERTH.z + 110, BERTH.z + 12, z));
-  for (let z = START.z; z > BERTH.z; z -= 6) pts.push([lineX(z), z]); pts.push([BERTH.x, BERTH.z]); const nRiver = pts.length;
-  pts.push([33.4, ZP + 27], [35.4, ZP + 23], [35.3, ZP + 16], PL_A, PL_B, IP(-1.7, -2.5), IP(1.9, -2.6), IP(3.6, 0.2), PR_A, PR_B, [16.2, ZP - 10], [17.4, ZP - 14.7], GW_A, GW_B, [36.7, ZP - 13], [36.9, ZP - 2.6]);
-  const cum = [0]; for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
-  return { pts, cum, LEN: cum[cum.length - 1], S_BERTH: cum[nRiver - 1], lineX }; })();
+const $ = id => document.getElementById(id), SND = window.Sound, C = c => new THREE.Color(c);
+
+/* ================= river route for score coins ================= */
+const ROUTE = (() => {
+  const pts = [];
+  for (let z = START.z; z >= ARRIVE_Z; z -= 8) pts.push([cx(z) + 5 * Math.sin(z / 28), z]);
+  pts.push([22, ARRIVE_Z]);
+  const cum = [0];
+  for (let i = 1; i < pts.length; i++) cum.push(cum[i - 1] + Math.hypot(pts[i][0] - pts[i - 1][0], pts[i][1] - pts[i - 1][1]));
+  return { pts, cum, LEN: cum[cum.length - 1] };
+})();
 const LEN = ROUTE.LEN;
-function at(s) { const { pts, cum } = ROUTE; s = clamp(s, 0, LEN); let i = 1; while (i < pts.length - 1 && cum[i] < s) i++; const a = pts[i - 1], b = pts[i], l = cum[i] - cum[i - 1] || 1, t = (s - cum[i - 1]) / l; return { x: mix(a[0], b[0], t), z: mix(a[1], b[1], t), dx: (b[0] - a[0]) / l, dz: (b[1] - a[1]) / l }; }
-function nearest(x, z) { const { pts, cum } = ROUTE; let bs = 0, bd = 1e9; for (let i = 1; i < pts.length; i++) { const a = pts[i - 1], b = pts[i], dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz || 1), 0, 1), d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t); if (d < bd) { bd = d; bs = cum[i - 1] + (cum[i] - cum[i - 1]) * t; } } return { s: bs, d: bd }; }
+function at(s) {
+  const { pts, cum } = ROUTE; s = clamp(s, 0, LEN); let i = 1;
+  while (i < pts.length - 1 && cum[i] < s) i++;
+  const a = pts[i - 1], b = pts[i], l = cum[i] - cum[i - 1] || 1, t = (s - cum[i - 1]) / l;
+  return { x: mix(a[0], b[0], t), z: mix(a[1], b[1], t), dx: (b[0] - a[0]) / l, dz: (b[1] - a[1]) / l };
+}
+function nearest(x, z) {
+  const { pts, cum } = ROUTE; let bs = 0, bd = 1e9;
+  for (let i = 1; i < pts.length; i++) {
+    const a = pts[i - 1], b = pts[i], dx = b[0] - a[0], dz = b[1] - a[1];
+    const t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz || 1), 0, 1);
+    const d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t);
+    if (d < bd) { bd = d; bs = cum[i - 1] + (cum[i] - cum[i - 1]) * t; }
+  }
+  return { s: bs, d: bd };
+}
 
-/* ================= renderer; the picture is finished by a filter that lays it down in dabs ================= */
+/* ================= renderer, sky, lights & whole-frame Impressionist post-process ================= */
 let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
 const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR);
-const FOGC = C('#cfe0e6'), scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(FOGC.getHex(), 0.0019);
-const camera = new THREE.PerspectiveCamera(60, 1, 0.2, 5000);
+const FOGC = C('#d6e5e8'), scene = new THREE.Scene(); scene.fog = new THREE.FogExp2(FOGC.getHex(), 0.0018);
+const camera = new THREE.PerspectiveCamera(60, 1, 0.2, 4200);
 const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
-// First each pixel takes the average of whichever neighbouring patch is the most even (as in munch/street.html). Then the screen is cut into short touches, a brush-width long,
-// laid in rows like bricks and each a little askew; a touch takes one colour from its middle, and the weave of the canvas shows between touches.
-const post = new THREE.ShaderMaterial({ uniforms: { tScene: { value: target.texture }, uPx: { value: new THREE.Vector2() }, uTime: { value: 0 }, uDab: { value: 0.62 } },
-  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
-  fragmentShader: `uniform sampler2D tScene; uniform vec2 uPx; uniform float uTime, uDab; varying vec2 vUv;
-    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
-    vec3 kuw(vec2 uv, float k){ vec3 best = vec3(0.0); float bestVar = 1e9;
-      for (int q = 0; q < 4; q++) { vec2 dir = vec2(q == 0 || q == 3 ? -1.0 : 1.0, q < 2 ? -1.0 : 1.0); vec3 m = vec3(0.0), m2 = vec3(0.0);
-        for (int j = 0; j < 3; j++) for (int i = 0; i < 3; i++) { vec3 c = texture2D(tScene, uv + dir * vec2(float(i), float(j)) * uPx * k).rgb; m += c; m2 += c * c; }
-        m /= 9.0; m2 = abs(m2 / 9.0 - m * m); float v = m2.r + m2.g + m2.b; if (v < bestVar) { bestVar = v; best = m; } }
-      return best; }
-    void main(){
-      vec2 px = vUv / uPx, cell = vec2(15.0, 6.5);
-      float ang = -0.16 + 0.5 * (hash(floor(px / 90.0)) - 0.5); vec2 ca = vec2(cos(ang), sin(ang)); vec2 q = vec2(ca.x * px.x + ca.y * px.y, -ca.y * px.x + ca.x * px.y);
-      float r = floor(q.y / cell.y), ox = hash(vec2(r, 7.0)) * cell.x, c = floor((q.x + ox) / cell.x); vec2 id = vec2(c, r);
-      vec2 ctr = vec2((c + 0.5) * cell.x - ox, (r + 0.5) * cell.y) + (vec2(hash(id + 1.7), hash(id + 9.2)) - 0.5) * vec2(4.0, 1.5);
-      vec2 u = (q - ctr) / cell; float d = length(u / vec2(0.56, 0.6));
-      vec2 cpx = vec2(ca.x * ctr.x - ca.y * ctr.y, ca.y * ctr.x + ca.x * ctr.y);
-      vec3 fine = kuw(vUv, 1.3), dab = kuw(cpx * uPx, 2.2);
-      vec3 col = mix(fine, dab, uDab * (1.0 - smoothstep(0.9, 1.25, d)));
-      col *= 1.0 + 0.05 * (hash(id + 4.4) - 0.5) * uDab - 0.07 * smoothstep(0.7, 1.15, d) * uDab;                   // each touch a shade its own, and thinner at its edge
-      float l = dot(col, vec3(0.3, 0.6, 0.1)); col = mix(vec3(l), col, 1.14);
-      float grain = hash(floor(vUv / uPx / 2.0)) * 0.04 - 0.02, weave = sin(vUv.x / uPx.x * 1.6) * sin(vUv.y / uPx.y * 1.6) * 0.012;
-      col *= 1.0 + grain + weave; col *= 1.0 - 0.2 * pow(length(vUv - 0.5) * 1.25, 2.6);
-      gl_FragColor = vec4(col, 1.0);
-      #include <tonemapping_fragment>
-      #include <colorspace_fragment>
-    }`, depthTest: false, depthWrite: false });
-const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
-// the world upside down, seen from under the water: the river takes its colours from this
-const reflRT = new THREE.WebGLRenderTarget(640, 400, { type: THREE.HalfFloatType }), reflCam = new THREE.PerspectiveCamera(), reflM = new THREE.Matrix4(), clipUp = [new THREE.Plane(new V3(0, 1, 0), -0.03)], noClip = [];
+const post = makePostMat(target.texture);
+const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
 
-/* ================= light and sky: a summer afternoon, the sun high and a little downstream ================= */
-const hemi = new THREE.HemisphereLight(0xe4f0ff, 0x7c8a4e, 1.5), sunL = new THREE.DirectionalLight(0xfff1cf, 1.9); scene.add(hemi, sunL, sunL.target);
-const SUN = new V3(0.34, 0.62, -0.71).normalize(), uni = { uTime: { value: 0 }, uFog: { value: FOGC }, uSun: { value: SUN }, uDen: { value: 0.0019 } };
-const GLSL_NOISE = `float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1, 0)), f.x), mix(hash(i + vec2(0, 1)), hash(i + vec2(1, 1)), f.x), f.y); }
-    float fbm(vec2 p){ float a = 0.5, s = 0.0; for (int i = 0; i < 5; i++) { s += a * noise(p); p = p * 2.03 + 7.1; a *= 0.5; } return s; }
-    vec3 lin(vec3 c){ return pow(c, vec3(2.2)); }`;
-const skyMat = new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: uni,
-  vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-  fragmentShader: `uniform float uTime; uniform vec3 uFog, uSun; varying vec3 vDir; ${GLSL_NOISE}
-    void main(){
-      vec3 d = normalize(vDir); float el = max(d.y, 0.0), t = uTime * 0.006;
-      vec3 zen = lin(vec3(0.33, 0.55, 0.86)), mid = lin(vec3(0.60, 0.76, 0.92)), hor = lin(vec3(0.86, 0.91, 0.93));
-      vec3 col = mix(hor, mid, smoothstep(0.0, 0.3, el)); col = mix(col, zen, smoothstep(0.25, 0.9, el));
-      vec2 p = d.xz / (d.y * 0.8 + 0.3) * 1.4; float n = fbm(p + vec2(t * 3.0, t)), n2 = fbm(p * 2.6 + 5.0 - vec2(t * 4.0, 0.0));
-      float cl = smoothstep(0.50, 0.68, n + n2 * 0.22);                                                    // heaped white cloud, greyer underneath
-      col = mix(col, mix(lin(vec3(0.80, 0.83, 0.88)), lin(vec3(1.0, 0.99, 0.95)), smoothstep(0.35, 0.75, n2)), cl * 0.92 * smoothstep(0.02, 0.2, el));
-      float sd = max(dot(d, uSun), 0.0); col += lin(vec3(1.0, 0.95, 0.8)) * (pow(sd, 8.0) * 0.12 + pow(sd, 300.0) * 1.5);
-      col = mix(uFog, col, smoothstep(-0.02, 0.1, d.y));
-      gl_FragColor = vec4(col, 1.0);
-    }` });
-const sky = new THREE.Mesh(new THREE.SphereGeometry(3500, 48, 24), skyMat); sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
+const reflRT = new THREE.WebGLRenderTarget(512, 320, { type: THREE.HalfFloatType }), reflCam = new THREE.PerspectiveCamera(), reflM = new THREE.Matrix4();
+const clipUp = [new THREE.Plane(new V3(0, 1, 0), -0.02)], noClip = [];
 
-/* ================= helpers ================= */
-const lam = o => new THREE.MeshLambertMaterial(o);
-const bx = (w, h, d, x, y, z) => new THREE.BoxGeometry(w, h, d).translate(x, y, z);
-const cyl = (r0, r1, h, seg, x, y, z, axis) => { const g = new THREE.CylinderGeometry(r0, r1, h, seg); if (axis === 'z') g.rotateX(Math.PI / 2); else if (axis === 'x') g.rotateZ(Math.PI / 2); return g.translate(x, y, z); };
-const merged = (geos, mat) => new THREE.Mesh(mergeGeometries(geos.map(g => g.index ? g.toNonIndexed() : g)), mat);
-// a beam between two points
-const beam = (a, b, w, h) => { const d = new V3().subVectors(b, a), g = new THREE.BoxGeometry(w, h, d.length()); g.lookAt(d.normalize()); return g.translate((a.x + b.x) / 2, (a.y + b.y) / 2, (a.z + b.z) / 2); };
-const daub = (base, cols, n = 160, wid = 9, size = 256) => canvasTex(size, size, (g, w, h) => { g.fillStyle = base; g.fillRect(0, 0, w, h); strokes(g, w, h, cols, n, wid, 8); }, true);
-// short separate touches, lighter and darker, for everything that is multiplied by a colour of its own
-const touchTex = (base, cols, n, len, wid, size = 512) => canvasTex(size, size, (g, w, h) => { g.fillStyle = base; g.fillRect(0, 0, w, h);
-  for (let i = 0; i < n; i++) { g.strokeStyle = cols[i % cols.length]; g.lineWidth = rnd(wid * 0.6, wid * 1.3); g.globalAlpha = rnd(0.6, 1); const x = rnd(0, w), y = rnd(0, h), a = rnd(-0.5, 0.5), l = rnd(len * 0.5, len * 1.4);
-    for (const ox of [-w, 0, w]) for (const oy of [-h, 0, h]) { g.beginPath(); g.moveTo(x + ox, y + oy); g.lineTo(x + ox + Math.cos(a) * l, y + oy + Math.sin(a) * l); g.stroke(); } } g.globalAlpha = 1; }, true);
-const greyTex = touchTex('#c6c6c6', ['#ececec', '#a2a2a2', '#dadada', '#8e8e8e', '#f6f6f6', '#b6b6b6'], 520, 26, 9);
-const leafTex = touchTex('#b9bcae', ['#ffffff', '#f6f4d2', '#e6e8c4', '#7f9488', '#96a892', '#6c8478', '#d8dcc0', '#a6b49e'], 900, 20, 9);
-const sph = new THREE.SphereGeometry(1, 14, 10);
-const lump = (g, k0) => { const p = g.attributes.position; for (let i = 0; i < p.count; i++) { const v = new V3().fromBufferAttribute(p, i), k = 1 + k0 * Math.sin(v.x * 4.1 + v.y * 2.3) * Math.cos(v.z * 3.7) + k0 * 0.5 * Math.sin(v.y * 9.0 + v.x * 5.0); p.setXYZ(i, v.x * k, v.y * k * 0.92, v.z * k); } g.computeVertexNormals(); return g; };
-const blobLo = lump(new THREE.SphereGeometry(1, 9, 7), 0.16), blobHi = lump(new THREE.SphereGeometry(1, 20, 14), 0.17);
+const hemi = new THREE.HemisphereLight(0xebf4ff, 0x86964e, 1.55), sunL = new THREE.DirectionalLight(0xfff2ce, 2.0);
+scene.add(hemi, sunL, sunL.target);
+const SUN = new V3(0.34, 0.62, -0.71).normalize();
+const uni = { uTime: { value: 0 }, uFog: { value: FOGC }, uSun: { value: SUN }, uDen: { value: 0.0018 } };
+const sky = new THREE.Mesh(new THREE.SphereGeometry(3200, 40, 20), makeSkyMat(uni));
+sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position);
+scene.add(sky);
 
-/* ================= the banks, and their trees ================= */
-const bankTex = touchTex('#8ea24e', ['#a6b85a', '#7c9444', '#b8c468', '#6c8640', '#98ac52', '#c4cc78', '#5f7a3c'], 700, 22, 8);
-{ const pos = [], col = [], uv = [], idx = [], c = new THREE.Color(), c2 = new THREE.Color(), SEC = [[-1.4, -1.6], [-0.3, -0.15], [0.25, 0.55], [1.1, BANKY], [9, BANKY + 0.1], [60, BANKY + 0.6], [420, BANKY + 3]], NS = SEC.length;
-  const zs = []; for (let z = 150; z >= -1100; z -= 6) zs.push(z);
-  for (const side of [1, -1]) { const base = pos.length / 3;
-    for (const z of zs) { const e = side > 0 ? bankR(z) : bankL(z); SEC.forEach(([d, y], k) => { const x = e + side * d; pos.push(x, y, z); uv.push(x / 9, z / 9);
-      const worn = side > 0 && k >= 3 && k <= 4 && ((z < ZP + 40 && z > ZP - 30) || (z < 26 && z > -22)) ? 1 : 0;                           // trodden earth at the two landings
-      c.set('#ffffff').lerp(c2.set('#6f7a52'), k <= 2 ? 0.75 : 0).lerp(c2.set('#e0cfa6'), worn * 0.7).lerp(c2.set('#dfe6a8'), k >= 5 ? 0.25 : 0); col.push(c.r, c.g, c.b); }); }
-    for (let j = 0; j < zs.length - 1; j++) for (let k = 0; k < NS - 1; k++) { const a = base + j * NS + k, b = a + 1, d = a + NS, e = d + 1; side > 0 ? idx.push(a, b, d, b, e, d) : idx.push(a, d, b, b, d, e); } }
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('color', new THREE.Float32BufferAttribute(col, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals();
-  scene.add(new THREE.Mesh(g, lam({ map: bankTex, vertexColors: true }))); }
-// foliage: every mass of leaves is one lumpy ball, coloured on its own; trunks likewise. Far trees are coarse, the trees of the pictures are finer.
-const fol = { lo: [], hi: [] }, trunks = [];
-const SUNLIT = ['#d6d268', '#c8c85a', '#bcc452', '#e0d87a', '#aebc4c', '#d0cc62', '#e2dc88', '#c2c864'], MIDG = ['#7f9a44', '#6f8c40', '#8aa64a', '#62803c'], SHADE = ['#34503c', '#2c463a', '#3e5c40', '#274036', '#466844'];
-const pick = a => a[Math.floor(Math.random() * a.length)];
-function leaf(q, x, y, z, sx, sy, sz, col) { fol[q].push({ x, y, z, sx, sy, sz, ry: rnd(0, 6), col }); }
-function tree(x, z, k, kind, pal, q = 'lo') { const y = BANKY;
-  if (kind === 'poplar') { trunks.push({ x, y, z, r: 0.2 * k, h: 5 * k, lean: 0 }); leaf(q, x, y + 9 * k, z, 1.7 * k, 7.2 * k, 1.7 * k, pick(pal)); leaf(q, x + 0.3 * k, y + 5 * k, z, 1.5 * k, 3.4 * k, 1.5 * k, pick(pal)); }
-  else if (kind === 'willow') { trunks.push({ x, y, z, r: 0.34 * k, h: 3.4 * k, lean: 0 }); for (const [dx, dy, dz, s, f] of [[0, 4.6, 0, 3.6, 0.8], [2.2, 3.4, 0.6, 2.4, 0.95], [-2.1, 3.5, -0.7, 2.5, 0.95], [0.4, 3.2, 2.2, 2.3, 1.0], [-0.3, 3.3, -2.2, 2.3, 1.0]]) leaf(q, x + dx * k, y + dy * k, z + dz * k, s * k, s * k * f, s * k, pick(pal)); }
-  else { trunks.push({ x, y, z, r: 0.3 * k, h: 4.2 * k, lean: 0 }); for (const [dx, dy, dz, s] of [[0, 6.0, 0, 3.7], [1.7, 7.3, 0.9, 2.6], [-1.6, 5.4, -0.8, 2.8], [0.3, 8.6, -0.6, 2.2], [-0.4, 6.4, 1.9, 2.4]]) leaf(q, x + dx * k, y + dy * k, z + dz * k, s * k, s * k * 0.86, s * k, pick(pal)); } }
-{ // the far bank is a wall of sunlit trees with poplars standing out of it; the island's bank is leafier and breaks for the landings
-  for (let z = 130; z > -1000; z -= 4.6) { const near = Math.abs(z - ZP) < 90;
-    const e = bankL(z); tree(e - rnd(2.5, 7), z + rnd(-2, 2), rnd(0.8, 1.15), Math.random() < 0.4 ? 'willow' : 'round', Math.random() < 0.8 ? SUNLIT : MIDG, near ? 'hi' : 'lo');
-    tree(e - rnd(10, 22), z + rnd(-2, 2), rnd(1.0, 1.5), Math.random() < 0.38 ? 'poplar' : 'round', Math.random() < 0.85 ? SUNLIT : MIDG); if (Math.random() < 0.6) tree(e - rnd(26, 60), z + rnd(-2, 2), rnd(1.3, 1.9), Math.random() < 0.5 ? 'poplar' : 'round', SUNLIT);
-    leaf(near ? 'hi' : 'lo', e - rnd(0.6, 2.2), BANKY + rnd(0.6, 1.4), z + rnd(-1.5, 1.5), rnd(2.6, 3.8), rnd(1.5, 2.6), rnd(2.2, 3.2), pick(Math.random() < 0.6 ? SUNLIT : MIDG));
-    const f = bankR(z), open = (z < 30 && z > -26) || (z < ZP + 42 && z > ZP - 36);
-    if (!open && Math.random() < 0.85) tree(f + rnd(2.5, 7), z + rnd(-2, 2), rnd(0.8, 1.2), Math.random() < 0.45 ? 'willow' : 'round', Math.random() < 0.5 ? SUNLIT : MIDG);
-    if (!open || Math.random() < 0.5) tree(f + rnd(open ? 16 : 10, 30), z + rnd(-2, 2), rnd(1.0, 1.6), Math.random() < 0.3 ? 'poplar' : 'round', Math.random() < 0.6 ? SUNLIT : MIDG); }
-  // the trees of the pictures. On the islet: one tall thin trunk, its leaves starting high. On the bank at the painters' left hand: a big tree whose boughs hang into the top of both pictures.
-  const [tx, tz] = IP(0.2, 0.35); trunks.push({ x: tx, y: ISY, z: tz, r: 0.2, h: 6.2, lean: 0.05, hero: true });
-  for (const [u, v, y, s, sy] of [[0.2, 0.3, 8.4, 3.4, 2.5], [-2.6, 0.8, 8.0, 2.9, 2.2], [2.8, 0.2, 8.6, 2.8, 2.0], [0.6, 2.6, 9.4, 3.2, 2.6], [-0.8, -2.2, 8.8, 2.6, 1.9], [-4.6, 0.0, 7.4, 2.0, 1.5], [4.6, 1.4, 9.2, 2.2, 1.8], [0.0, 0.6, 11.4, 3.0, 2.4], [-2.4, 0.4, 6.4, 1.5, 1.2], [-3.4, 1.0, 5.6, 1.1, 1.0], [-1.5, 1.2, 6.9, 1.3, 0.9], [1.6, 0.9, 7.0, 1.4, 0.9], [-3.0, 0.2, 4.7, 0.9, 0.8], [-2.0, 1.3, 5.3, 1.0, 0.8]]) { const [x, z] = IP(u, v); leaf('hi', x, y, z, s, sy, s, pick(SHADE)); }
-  trunks.push({ x: 36.6, y: BANKY, z: ZP + 8.2, r: 0.42, h: 5.2, lean: -0.1, hero: true });
-  for (const [x, y, z, s, sy] of [[35.5, 7.2, ZP + 8, 3.6, 2.4], [32.4, 6.6, ZP + 6.4, 2.6, 1.7], [30.4, 5.9, ZP + 5.2, 1.9, 1.15], [33.0, 7.6, ZP + 2.6, 2.6, 1.6], [36.4, 8.2, ZP + 1.5, 3.2, 2.0], [36.8, 8.4, ZP - 4.5, 3.4, 2.0], [29.6, 5.3, ZP + 7.6, 1.5, 1.0], [31.6, 5.2, ZP + 9.2, 1.3, 0.9],
-    [34.4, 2.4, ZP + 9.0, 1.9, 1.5], [35.4, 2.2, ZP + 6.2, 1.6, 1.3], [36.8, 2.3, ZP + 11.0, 2.0, 1.5], [38.6, 2.2, ZP + 8.0, 2.0, 1.4]]) leaf('hi', x, y, z, s, sy, s, pick(SHADE));
-  for (const [x, z, k, kd] of [[40.5, ZP - 8, 1.25, 'round'], [41.5, ZP - 20, 1.2, 'round'], [42, ZP + 20, 1.3, 'round'], [41, ZP + 32, 1.1, 'willow'], [43, ZP - 32, 1.2, 'round'], [44, ZP + 2, 1.5, 'poplar'], [45, 10, 1.3, 'round'], [47, -16, 1.2, 'poplar'], [58, -2, 1.5, 'poplar']]) tree(x, z, k, kd, kd === 'poplar' ? MIDG : SHADE.concat(MIDG), 'hi');
-  const D = new THREE.Object3D(), col = new THREE.Color();
-  for (const [q, geo] of [['lo', blobLo], ['hi', blobHi]]) { const m = new THREE.InstancedMesh(geo, lam({ map: leafTex }), fol[q].length); fol[q].forEach((f, i) => { D.position.set(f.x, f.y, f.z); D.scale.set(f.sx, f.sy, f.sz); D.rotation.set(0, f.ry, 0); D.updateMatrix(); m.setMatrixAt(i, D.matrix); m.setColorAt(i, col.set(f.col).multiplyScalar(rnd(0.9, 1.12))); }); m.frustumCulled = false; scene.add(m); }
-  const tm = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.72, 1, 1, 7).translate(0, 0.5, 0), lam({ map: greyTex }), trunks.length); trunks.forEach((t, i) => { D.position.set(t.x, t.y - 0.2, t.z); D.scale.set(t.r, t.h + 0.2, t.r); D.rotation.set(t.lean, 0, t.lean * 0.6); D.updateMatrix(); tm.setMatrixAt(i, D.matrix); tm.setColorAt(i, col.set(t.hero ? '#4c4a44' : '#6a5a48')); }); tm.frustumCulled = false; scene.add(tm);
-  // rushes at the water's edge
-  const reed = new THREE.InstancedMesh(new THREE.ConeGeometry(0.5, 1, 5).translate(0, 0.5, 0), lam({ map: leafTex }), 900); let n = 0;
-  for (let z = 120; z > -900 && n < 900; z -= rnd(0.8, 3.4)) for (const side of [1, -1]) { if (side > 0 && ((z < 24 && z > -20) || (z < ZP + 40 && z > ZP - 34)) || n >= 900 || Math.random() < 0.3) continue; const e = side > 0 ? bankR(z) : bankL(z);
-    D.position.set(e - side * rnd(0.1, 1.1), -0.1, z); D.scale.set(rnd(0.5, 1.1), rnd(0.9, 2.1), rnd(0.5, 1.1)); D.rotation.set(rnd(-0.12, 0.12), rnd(0, 6), rnd(-0.12, 0.12)); D.updateMatrix(); reed.setMatrixAt(n, D.matrix); reed.setColorAt(n++, col.set(pick(['#8fa646', '#a6b454', '#7a9440', '#b9be62']))); }
-  reed.count = n; reed.frustumCulled = false; scene.add(reed);
-}
+/* ================= world assembly ================= */
+const { frondMeshes, shades } = buildBanksAndTrees(scene);
+const wake = [...Array(WAKE_N)].map(() => new THREE.Vector4(0, 0, -99, 1)); let wakeI = 0, lastWakeT = -9;
+const blooms = [...Array(BLOOM_N)].map(() => new THREE.Vector4(0, 0, -99, 0)); let bloomI = 0;
+const dropWake = (x, z, w = 1) => { wake[wakeI++ % WAKE_N].set(x, z, uni.uTime.value, w); };
+const dropBloom = (x, z) => { blooms[bloomI++ % BLOOM_N].set(x, z, uni.uTime.value, rnd(1, 99)); };
+const waterMat = makeWaterMat({ uni, reflRT, reflM, ZP, wake, blooms, shades });
+const water = new THREE.Mesh(new THREE.PlaneGeometry(2400, 2400), waterMat);
+water.rotation.x = -Math.PI / 2; water.position.set(0, WY, -340); scene.add(water);
 
-/* ================= the water =================
-   Nothing is drawn: the river is laid down in separate flat touches. Each touch is one facet of a small wave. It takes a single colour: what that facet reflects
-   (fetched from the upside-down world at the touch's own middle, a little nearer or further off as the facet tilts, which is what breaks a reflection into pieces),
-   or the blue of the sky overhead, or the black-green of the depth, or the gold and white of the sun. Touches lie across the line of sight, as he laid them;
-   they are sized on the screen, not on the river, so far water is drawn in as few strokes as near water. */
-const RIP = 12, rip = [...Array(RIP)].map(() => new THREE.Vector4(0, 0, -99, 0)); let ripI = 0;
-const ripple = (x, z, k = 1) => { rip[ripI++ % RIP].set(x, z, uni.uTime.value, k); };
-const waterMat = new THREE.ShaderMaterial({ fog: false, uniforms: { uTime: uni.uTime, uFog: uni.uFog, uSun: uni.uSun, uDen: uni.uDen, tRefl: { value: reflRT.texture }, uReflM: { value: reflM }, uG: { value: new V3(10, ZP, 0) }, uRip: { value: rip }, uShade: { value: 1 }, uAx: { value: 1 } },
-  vertexShader: 'varying vec3 vW; void main(){ vec4 w = modelMatrix * vec4(position, 1.0); vW = w.xyz; gl_Position = projectionMatrix * viewMatrix * w; }',
-  fragmentShader: `uniform float uTime, uDen, uShade, uAx; uniform vec3 uFog, uSun, uG; uniform sampler2D tRefl; uniform mat4 uReflM; uniform vec4 uRip[${RIP}]; varying vec3 vW; ${GLSL_NOISE}
-    void main(){
-      vec2 p = vW.xz;
-      // which way the touches lie: across the line of sight. When she turns far enough round, the river is repainted patch by patch the other way
-      bool alongX = uAx + (noise(p * 0.21) - 0.5) * 0.9 > 0.5;
-      vec2 q = alongX ? p : vec2(p.y, -p.x);
-      float fx = length(vec2(dFdx(q.x), dFdy(q.x))), fy = length(vec2(dFdx(q.y), dFdy(q.y)));
-      float lx = log2(max(fx * 34.0 / 0.95, 0.5)), ly = log2(max(fy * 7.5 / 0.21, 0.5)), sx0 = exp2(floor(lx)), sy0 = exp2(floor(ly));
-      vec2 coarse = floor(q / (vec2(0.95, 0.21) * vec2(sx0, sy0) * 2.0));
-      float sx = hash(coarse + 11.0) < fract(lx) ? sx0 * 2.0 : sx0, sy = hash(coarse + 37.0) < fract(ly) ? sy0 * 2.0 : sy0;
-      vec2 cell = vec2(0.95 * sx, 0.21 * sy);
-      float r = floor(q.y / cell.y), ox = hash(vec2(r, sy * 3.7)) * cell.x, c = floor((q.x + ox) / cell.x);
-      vec2 id = vec2(c, r) + vec2(sx * 13.0, sy * 7.0);
-      vec2 ctr = vec2((c + 0.5) * cell.x - ox, (r + 0.5) * cell.y);
-      vec2 u = (q - ctr) / cell - (vec2(hash(id + 3.1), hash(id + 7.7)) - 0.5) * vec2(0.2, 0.18);
-      float d = length(u / vec2(0.42 + 0.12 * hash(id + 1.3), 0.40 + 0.14 * hash(id + 5.9))), mask = 1.0 - smoothstep(0.84, 1.0, d);
-      vec2 Wc = alongX ? ctr : vec2(-ctr.y, ctr.x);
-      // the facet: two sets of small waves crossing, and a share of chance
-      float w1 = sin(dot(Wc, vec2(0.9, 1.7)) * 0.55 + uTime * 1.5 + 5.0 * noise(Wc * 0.13 + vec2(uTime * 0.07, 0.0)));
-      float w2 = noise(Wc * 0.45 + vec2(-uTime * 0.25, uTime * 0.31)) * 2.0 - 1.0;
-      float sl = 0.55 * w1 + 0.55 * w2 + (hash(id) - 0.5) * 0.6;
-      vec3 P = vec3(Wc.x, 0.0, Wc.y), toC = cameraPosition - P; float dC = length(toC); vec3 Vc = toC / dC; vec2 away = -normalize(toC.xz + 1e-4);
-      vec3 Pr = P + vec3(away.x, 0.0, away.y) * sl * (0.5 + dC * 0.16);
-      vec4 cl = uReflM * vec4(Pr, 1.0); vec3 refl = texture2D(tRefl, clamp(cl.xy / cl.w, 0.004, 0.996)).rgb;
-      float fres = pow(1.0 - max(Vc.y, 0.0), 2.2);
-      vec3 deep = lin(vec3(0.05, 0.15, 0.16)), skyB = lin(vec3(0.30, 0.52, 0.84)), skyW = lin(vec3(0.88, 0.93, 0.97));
-      float sh = uShade * smoothstep(13.0, 24.0, Wc.x) * (1.0 - smoothstep(26.0, 44.0, abs(Wc.y - uG.y)));          // under the island's trees the near water is dark, and what it mirrors is leaves
-      refl = mix(refl, mix(lin(vec3(0.07, 0.17, 0.13)), lin(vec3(0.42, 0.47, 0.20)), smoothstep(0.1, 0.8, hash(id + 6.6)) * 0.55), sh * (0.45 + 0.4 * step(0.45, hash(id + 12.4))));
-      sl -= sh * 0.28;
-      vec3 col = mix(deep, refl * vec3(0.9, 0.97, 1.05), 0.5 + 0.5 * fres);
-      float open = smoothstep(0.25, 0.7, dot(refl, vec3(0.2, 0.5, 0.3)));                                  // where it is the sky that is mirrored, the water is bluer than the sky
-      col = mix(col, skyB, open * 0.5 * (1.0 - sh));
-      col = mix(col, skyB, smoothstep(0.38, 0.62, sl) * 0.9);
-      col = mix(col, skyW, smoothstep(0.86, 1.02, sl));
-      col = mix(col, deep * 0.5, smoothstep(-0.5, -0.9, sl) * 0.85);
-      vec3 n = normalize(vec3(w2 * 0.2 + (hash(id + 2.2) - 0.5) * 0.16, 1.0, w1 * 0.2 + (hash(id + 8.8) - 0.5) * 0.16)), rr = reflect(-Vc, n); float g = pow(max(dot(rr, uSun), 0.0), 70.0);
-      col = mix(col, lin(vec3(1.0, 0.84, 0.42)) * 1.5, smoothstep(0.12, 0.42, g)); col = mix(col, vec3(2.0, 1.9, 1.6), smoothstep(0.55, 0.85, g));
-      for (int i = 0; i < ${RIP}; i++) { vec4 rp = uRip[i]; float age = uTime - rp.z; if (age > 0.0 && age < 3.2) { float dd = abs(distance(Wc, rp.xy) - (0.3 + age * 1.5)); col = mix(col, skyW, smoothstep(0.42, 0.0, dd) * rp.w * (1.0 - age / 3.2)); } }
-      col *= 0.9 + 0.2 * hash(id + 9.1);
-      col = mix(mix(deep, col, 0.5) * 0.85, col, mask);
-      float dist = distance(vW, cameraPosition), f = 1.0 - exp(-uDen * uDen * dist * dist); gl_FragColor = vec4(mix(col, uFog, f), 1.0);
-    }` });
-const water = new THREE.Mesh(new THREE.PlaneGeometry(2600, 2600), waterMat); water.rotation.x = -Math.PI / 2; water.position.set(0, WY, -420); scene.add(water);
-
-/* ================= boats ================= */
-function hullGeo(L, B, D) { const N = 16, M = 8, pos = [], idx = [], gun = [[], []];
-  for (let i = 0; i <= N; i++) { const t = i / N * 2 - 1, z = t * L / 2, b = B * (t < 0 ? Math.pow(1 - Math.pow(-t, 2.2), 0.6) : Math.pow(1 - Math.pow(t, 3.4), 0.55)) + 0.012, gy = D + (t < 0 ? 0.16 : 0.08) * t * t, ky = 0.1 * Math.pow(Math.abs(t), 3);
-    for (let j = 0; j <= M; j++) { const a = j / M * Math.PI; pos.push(-b * Math.cos(a), gy - (gy - ky) * Math.pow(Math.sin(a), 0.75), z); } gun[0].push(new V3(-b, gy, z)); gun[1].push(new V3(b, gy, z)); }
-  for (let i = 0; i < N; i++) for (let j = 0; j < M; j++) { const a = i * (M + 1) + j, b = a + 1, c = a + M + 1, d = c + 1; idx.push(a, c, b, b, c, d); }
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setIndex(idx); g.computeVertexNormals(); return { g, gun }; }
-const HULL = hullGeo(4.5, 0.64, 0.44), gunGeo = mergeGeometries(HULL.gun.map(l => new THREE.TubeGeometry(new THREE.CatmullRomCurve3(l), 26, 0.03, 5)));
-const fitGeo = mergeGeometries([bx(1.16, 0.045, 0.24, 0, 0.33, 0), bx(0.98, 0.045, 0.22, 0, 0.33, -1.05), bx(0.96, 0.045, 0.36, 0, 0.33, 1.3), bx(0.8, 0.02, 3.2, 0, 0.09, 0)].map(g => g.toNonIndexed()));
-const oarGeo = sg => mergeGeometries([cyl(0.024, 0.02, 2.5, 6, sg * 0.65, 0, 0, 'x'), bx(0.6, 0.02, 0.15, sg * 2.1, 0, 0)].map(g => g.toNonIndexed()));
-const OARG = { 1: oarGeo(1), '-1': oarGeo(-1) }, oarM = lam({ color: '#c9b48a', map: greyTex });
-const woodT = daub('#b98a52', ['#c99a5e', '#a87a46', '#d2a86a', '#96693c'], 120, 8);
-function makeBoat(o = {}) { const g = new THREE.Group(), inner = lam({ map: o.inside ? greyTex : woodT, color: o.inside || '#ffffff' });
-  g.add(new THREE.Mesh(HULL.g, inner), new THREE.Mesh(HULL.g, lam({ color: o.hull || '#3f6a4c', map: greyTex, side: THREE.BackSide })), new THREE.Mesh(gunGeo, lam({ color: o.stripe || '#c8643a' })), new THREE.Mesh(fitGeo, inner));
-  const oars = [1, -1].map(sg => { const m = new THREE.Mesh(OARG[sg], oarM); m.position.set(sg * 0.63, 0.5, 0.36); m.rotation.order = 'YZX'; m.visible = o.oars !== false; g.add(m); return m; });
-  g.userData = { oars, draft: -0.17 }; g.position.y = -0.17; return g; }
-// the oars: a is how far the blades are swung towards the bow, dip how far they are sunk; side: +1 pulls the right-hand oar alone, -1 the left
-function setOars(b, a, dip, aL = a, dipL = dip) { const [R, Lf] = b.userData.oars; R.rotation.y = a; R.rotation.z = -dip; Lf.rotation.y = -aL; Lf.rotation.z = dipL; }
-const bladeAt = (b, sg, out = new V3()) => { const m = b.userData.oars[sg > 0 ? 0 : 1]; return out.set(sg * 2.1, 0, 0).applyMatrix4(m.matrixWorld); };
-// a sailing boat: Renoir put two white sails at the left of his picture
-function makeSail() { const g = new THREE.Group(), h = makeBoat({ hull: '#ece6d6', stripe: '#3a342c', oars: false }); h.scale.set(1.5, 1.4, 1.5); h.position.y = -0.22; g.add(h);
-  g.add(merged([cyl(0.05, 0.07, 6.6, 6, 0, 3.6, -0.5), beam(new V3(0, 0.95, -0.5), new V3(0, 1.15, 2.7), 0.06, 0.06)], lam({ color: '#6a5236' })));
-  const tri = (a, b, c) => { const t = new THREE.BufferGeometry(); t.setAttribute('position', new THREE.Float32BufferAttribute([...a, ...b, ...c], 3)); t.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 0, 1], 2)); t.computeVertexNormals(); return t; };
-  const sail = new THREE.Mesh(mergeGeometries([tri([0.06, 1.2, -0.42], [0.3, 1.25, 2.6], [0.06, 6.7, -0.42]), tri([0, 0.75, -3.1], [0.16, 1.0, -0.62], [0, 6.0, -0.56])]), new THREE.MeshLambertMaterial({ color: '#fbf8ee', side: THREE.DoubleSide, emissive: '#55524a', map: greyTex })); g.add(sail); return g; }
-
-/* ================= La Grenouillère ================= */
-const gren = new THREE.Group(); scene.add(gren);
-const plankT = daub('#8a7458', ['#9a8466', '#7a6448', '#a69274', '#6c583e', '#b29e80'], 150, 9), darkWoodM = lam({ color: '#5c4f40', map: greyTex }), postM = lam({ color: '#4a4034', map: greyTex });
-{ // the islet: a round of earth held by a ring of boards, with a bench under the tree
-  const top = new THREE.Mesh(new THREE.CylinderGeometry(ISL.r, ISL.r, 0.1, 40), lam({ map: touchTex('#b39c7c', ['#c4ae8c', '#a08a6c', '#d2be9e', '#8c7860', '#bca88a', '#e6d6b4'], 420, 30, 12) })); top.position.set(ISL.x, ISY - 0.05, ISL.z); gren.add(top);
-  const wallT = canvasTex(512, 64, (g, w, h) => { for (let x = 0; x < w; x += 16) { g.fillStyle = ['#5c4c3c', '#4c3e30', '#6a5846', '#54463a'][(x / 16 * 7) % 4 | 0]; g.fillRect(x, 0, 15, h); g.fillStyle = '#2a2420'; g.fillRect(x + 15, 0, 1, h); } g.globalAlpha = 0.3; strokes(g, w, h, ['#8a7a66', '#3a3028'], 30, 8, 3); g.globalAlpha = 1; }, true); wallT.repeat.set(5, 1);
-  const wall = new THREE.Mesh(new THREE.CylinderGeometry(ISL.r + 0.05, ISL.r + 0.02, 1.5, 40, 1, true), lam({ map: wallT })); wall.position.set(ISL.x, ISY - 0.8, ISL.z); gren.add(wall);
-  const [bx0, bz0] = IP(0.2, -0.5); const bench = merged([bx(0.42, 0.06, 2.6, 0, 0.45, 0), ...[-1.1, 0, 1.1].flatMap(z => [bx(0.06, 0.45, 0.06, -0.16, 0.225, z), bx(0.06, 0.45, 0.06, 0.16, 0.225, z)])], lam({ color: '#3f7a4e', map: greyTex })); bench.position.set(bx0, ISY, bz0); gren.add(bench);
-  // the gangplanks, on trestles standing in the water
-  const walk = (A, B, ya, yb, w, legs) => { const a = new V3(A[0], ya - 0.05, A[1]), b = new V3(B[0], yb - 0.05, B[1]), gs = [beam(a, b, w, 0.09)], d = new V3().subVectors(b, a), n = Math.max(1, Math.round(d.length() / legs)), side = new V3(-d.z, 0, d.x).normalize();
-    for (let k = 0; k <= n; k++) { const p = a.clone().addScaledVector(d, k / n); for (const s of [-1, 1]) gs.push(cyl(0.05, 0.06, p.y + 1.4, 5, p.x + side.x * s * (w / 2 - 0.08), (p.y - 1.4) / 2, p.z + side.z * s * (w / 2 - 0.08))); }
-    gren.add(merged(gs, lam({ map: plankT, color: '#b9aa94' }))); };
-  walk(PL_A, PL_B, BANKY, ISY, 1.15, 3.4); walk(PR_A, PR_B, ISY, DECKY, 1.0, 1.4); walk([BARGE.x1 - 0.2, GW_A[1]], GW_B, DECKY, BANKY, 1.2, 3.4);
-  gren.add(merged([cyl(0.09, 0.1, 2.4, 6, PR_A[0] + 0.75, 0.4, PR_A[1] - 0.55), cyl(0.08, 0.09, 2.0, 6, PL_B[0] + 0.3, 0.2, PL_B[1] + 1.0)], postM));           // the posts that stand by the plank ends in both pictures
-}
-{ // the floating café: a dark hull, a pale wall lettered for the hire of boats, a roof on posts
-  const B = BARGE, L = B.z0 - B.z1, W = B.x1 - B.x0, zc = (B.z0 + B.z1) / 2, xc = (B.x0 + B.x1) / 2;
-  const hull = merged([bx(W, 2.3, L, xc, 0.55, zc), bx(W + 0.3, 0.12, L + 0.3, xc, 1.7, zc)], lam({ color: '#39423c', map: greyTex })); gren.add(hull);
-  gren.add(merged([bx(W - 0.3, 0.1, L - 0.3, xc, DECKY - 0.05, zc)], lam({ map: plankT })));
-  // what can be read in Monet's picture is LOCATI, then a white cloth over the rail, then CANOT: the hire of boats. The letters hidden by the cloth are supplied.
-  const sign = canvasTex(2048, 250, (g, w, h) => { g.fillStyle = '#d6d3c8'; g.fillRect(0, 0, w, h); strokes(g, w, h, ['#e4e1d6', '#c4c2b8', '#eceadf', '#b8b8b0', '#cfd4d2'], 150, 16, 6);
-    g.fillStyle = 'rgba(44,50,62,.95)'; g.font = '700 136px Georgia, "Times New Roman", serif'; g.textBaseline = 'middle'; g.fillText('LOCATION  DE  CANOTS', 60, h / 2 + 6); g.globalAlpha = 0.25; strokes(g, w, h, ['#e4e1d6', '#d6d3c8'], 50, 10, 5); g.globalAlpha = 1; });
-  const wallM = lam({ color: '#c2c2ba', map: greyTex }), wy = 1.72, wh = DECKY + 0.74 - wy;
-  gren.add(merged([bx(0.1, wh, L, B.x0 + 0.05, wy + wh / 2, zc), bx(W, wh, 0.1, xc, wy + wh / 2, B.z1 + 0.05), bx(W - 2.2, wh, 0.1, xc + 1.1, wy + wh / 2, B.z0 - 0.05)], wallM));
-  const front = new THREE.Mesh(new THREE.PlaneGeometry(7.6, wh), lam({ map: sign })); front.rotation.y = Math.PI / 2; front.position.set(B.x1 + 0.02, wy + wh / 2, B.z0 - 3.8); gren.add(front);
-  gren.add(merged([bx(0.1, wh, B.z0 - GW_A[1] - 0.75, B.x1 - 0.05, wy + wh / 2, (B.z0 + GW_A[1] + 0.75) / 2), bx(0.1, wh, GW_A[1] - 0.75 - B.z1, B.x1 - 0.05, wy + wh / 2, (GW_A[1] - 0.75 + B.z1) / 2), bx(0.12, 0.08, L, B.x1, wy + wh + 0.04, zc), bx(0.12, 0.08, L, B.x0, wy + wh + 0.04, zc)], wallM));
-  const cloth = new THREE.Mesh(new THREE.PlaneGeometry(1.25, 1.2), new THREE.MeshLambertMaterial({ color: '#fbf9f2', emissive: '#4a4844', map: greyTex, side: THREE.DoubleSide })); cloth.rotation.y = Math.PI / 2; cloth.position.set(B.x1 + 0.07, wy + wh - 0.42, B.z0 - 3.5); gren.add(cloth);
-  // roof: posts, a low pitched roof in grey-blue boards, a red-brown fascia with a scalloped edge, a finial at the end
-  const eave = 4.3, ridge = 5.5, posts = []; for (let z = B.z0 - 0.25; z > B.z1; z -= 3.3) for (const x of [B.x0 + 0.2, B.x1 - 0.2]) posts.push(bx(0.13, eave - DECKY, 0.13, x, (eave + DECKY) / 2, z)); gren.add(merged(posts, lam({ color: '#7a4a38', map: greyTex })));
-  const roofT = canvasTex(256, 256, (g, w, h) => { g.fillStyle = '#7f8c98'; g.fillRect(0, 0, w, h); for (let x = 0; x < w; x += 32) { g.fillStyle = ['#8a97a2', '#74828e', '#93a0aa', '#6c7a88'][(x / 32) % 4]; g.fillRect(x, 0, 27, h); g.fillStyle = '#3c4650'; g.fillRect(x + 27, 0, 5, h); } g.globalAlpha = 0.3; strokes(g, w, h, ['#b4c0c8', '#56626e'], 40, 9, 5, true); g.globalAlpha = 1; }, true); roofT.repeat.set(7, 1);
-  const roofM = lam({ map: roofT, side: THREE.DoubleSide });
-  { const x0 = B.x0 - 0.7, x1 = B.x1 + 0.7, za = B.z0 + 0.7, zb = B.z1 - 0.7, rg = new THREE.BufferGeometry();
-    rg.setAttribute('position', new THREE.Float32BufferAttribute([x1, eave, za, x1, eave, zb, xc, ridge, zb, xc, ridge, za, x0, eave, za, x0, eave, zb, xc, ridge, zb, xc, ridge, za], 3));
-    rg.setAttribute('uv', new THREE.Float32BufferAttribute([0, 0, 1, 0, 1, 1, 0, 1, 0, 0, 1, 0, 1, 1, 0, 1], 2)); rg.setIndex([0, 1, 2, 0, 2, 3, 4, 6, 5, 4, 7, 6]); rg.computeVertexNormals(); gren.add(new THREE.Mesh(rg, roofM)); }
-  const scal = canvasTex(512, 64, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = '#8a4a34'; g.fillRect(0, 0, w, 26); for (let x = 16; x < w; x += 32) { g.beginPath(); g.arc(x, 26, 16, 0, Math.PI); g.fill(); } g.fillStyle = '#5c2e22'; g.fillRect(0, 0, w, 7); }, true); scal.repeat.set(9, 1);
-  const scalM = new THREE.MeshLambertMaterial({ map: scal, transparent: true, alphaTest: 0.5, side: THREE.DoubleSide });
-  for (const x of [B.x1 + 0.72, B.x0 - 0.72]) { const v = new THREE.Mesh(new THREE.PlaneGeometry(L + 1.4, 0.55), scalM); v.rotation.y = Math.PI / 2; v.position.set(x, eave - 0.2, zc); gren.add(v); }
-  for (const z of [B.z0 + 0.7, B.z1 - 0.7]) { const sh = new THREE.Shape([new THREE.Vector2(-W / 2 - 0.7, 0), new THREE.Vector2(W / 2 + 0.7, 0), new THREE.Vector2(0, ridge - eave)]), gb = new THREE.Mesh(new THREE.ShapeGeometry(sh), lam({ color: '#8a4a34', map: greyTex, side: THREE.DoubleSide })); gb.position.set(xc, eave, z); gren.add(gb);
-    const v = new THREE.Mesh(new THREE.PlaneGeometry(W + 1.4, 0.55), scalM); v.position.set(xc, eave - 0.2, z); gren.add(v); }
-  gren.add(merged([cyl(0.03, 0.05, 1.3, 5, xc, ridge + 0.6, B.z0 + 0.7), cyl(0.03, 0.05, 1.3, 5, xc, ridge + 0.6, B.z1 - 0.7)], lam({ color: '#3a342c' })));
-  // tables and stools down the middle, out of her way
-  const fur = []; for (let z = B.z0 - 4; z > B.z1 + 2; z -= 3.6) { if (Math.abs(z - GW_A[1]) < 1.7) continue; fur.push(cyl(0.45, 0.45, 0.04, 12, B.x1 - 1.3, DECKY + 0.72, z), cyl(0.04, 0.05, 0.72, 6, B.x1 - 1.3, DECKY + 0.36, z)); } gren.add(merged(fur, lam({ color: '#5a7a5a', map: greyTex })));
-}
-{ // the landing stage where she ties up, with its posts, and a berth marked by a ring of gold on the water
-  const S = { x0: 31.3, x1: 34.9, z0: ZP + 34.5, z1: ZP + 19.5 }, gs = [bx(S.x1 - S.x0, 0.1, S.z0 - S.z1, (S.x0 + S.x1) / 2, BANKY - 0.05, (S.z0 + S.z1) / 2)];
-  for (let z = S.z1 + 0.3; z < S.z0; z += 2.35) gs.push(cyl(0.09, 0.1, 2.6, 6, S.x0 + 0.1, -0.1, z)); gren.add(merged(gs, lam({ map: plankT, color: '#c2b49c' })));
-  gren.add(merged([cyl(0.08, 0.09, 2.9, 6, S.x0 - 0.05, 0.4, BERTH.z - 2.6), cyl(0.08, 0.09, 2.9, 6, S.x0 - 0.05, 0.4, BERTH.z + 2.6)], lam({ color: '#b8432b' })));
-}
-const ringM = new THREE.MeshBasicMaterial({ color: '#ffd76a', transparent: true, opacity: 0.85, depthWrite: false }), berthRing = new THREE.Mesh(new THREE.TorusGeometry(2.6, 0.09, 6, 40).rotateX(Math.PI / 2), ringM); berthRing.position.set(BERTH.x, 0.12, BERTH.z); berthRing.scale.set(0.62, 1, 1); gren.add(berthRing);
-// boats lying at the stage, and in the foreground of both pictures with their bows to the islet
-const moored = [];
-function moor(x, z, ry, o) { const b = makeBoat(o); b.position.x = x; b.position.z = z; b.rotation.y = ry; setOars(b, -1.45, -0.12); for (const m of b.userData.oars) { m.position.x *= 0.5; m.position.y = 0.42; } gren.add(b); moored.push({ b, ph: rnd(0, 6), ry }); return b; }
-moor(30.5, ZP + 32.2, 0.04, { hull: '#7a3a2c', stripe: '#e6d6b0' }); moor(30.5, ZP + 21.9, -0.05, { hull: '#2f4a5a', stripe: '#d9c07a' });
-const fgA = [[25.2, ZP + 5.2, 1.12, { hull: '#3f6a4c', stripe: '#c8643a', inside: '#8a9a7a' }], [26.6, ZP - 1.0, 1.5, { hull: '#2c3a34', stripe: '#3a5a48', inside: '#5a6a5a' }], [19.4, ZP - 7.6, 2.75, { hull: '#35523f', stripe: '#c8643a', inside: '#6a7a5c' }]].map(a => moor(...a));
-const fgB = [[20.6, ZP + 1.9, 1.45, { hull: '#a8743c', stripe: '#6a4a2a' }], [23.4, ZP - 0.1, 1.15, { hull: '#2f4a38', stripe: '#1c2c22', inside: '#7a8a6a' }], [23.8, ZP - 2.0, 1.95, { hull: '#33503c', stripe: '#1c2c22', inside: '#6a7a5c' }], [22.6, ZP - 5.4, 1.62, { hull: '#3f7a4c', stripe: '#c8643a', inside: '#c87a5a' }]].map(a => moor(...a));
-
-/* ---- two easels on the bank. What stands on them is each man's own picture. ---- */
-const easels = [];
-{ const tl = new THREE.TextureLoader(), legM = lam({ color: '#6a5236' });
-  for (const [z, img, w, h] of [[ZP + 0.75, 'images/grenouillere.jpg', 1.0, 0.75], [ZP - 0.95, 'images/renoir_grenouillere.jpg', 0.81, 0.66]]) { const g = new THREE.Group(), t = tl.load(img); t.colorSpace = THREE.SRGBColorSpace;
-    g.add(merged([beam(new V3(0.12, 0, -0.42), new V3(0.0, 1.75, -0.1), 0.045, 0.045), beam(new V3(0.12, 0, 0.42), new V3(0.0, 1.75, 0.1), 0.045, 0.045), beam(new V3(-0.75, 0, 0), new V3(0.0, 1.7, 0), 0.045, 0.045), bx(0.07, 0.04, 0.9, 0.09, 0.82, 0)], legM));
-    const cv = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshLambertMaterial({ map: t, emissive: '#3a3a3a', emissiveMap: t })); cv.rotation.y = Math.PI / 2; cv.rotation.z = 0; cv.position.set(0.1, 0.86 + h / 2, 0); const back = new THREE.Mesh(new THREE.PlaneGeometry(w, h), lam({ color: '#b9a888' })); back.rotation.y = -Math.PI / 2; back.position.copy(cv.position).x -= 0.012; g.add(cv, back);
-    g.position.set(35.15, BANKY, z); gren.add(g); easels.push(g); } }
-
-/* ================= the start: a boat-hirer's landing upstream ================= */
-const startG = new THREE.Group(); scene.add(startG);
-{ const wallM = lam({ color: '#e6dcc4', map: greyTex }), tileM = lam({ color: '#a8583a', map: greyTex }), hx = 44, hz = 6;
-  startG.add(merged([bx(9, 6.4, 13, hx, BANKY + 3.2, hz)], wallM)); const sh = new THREE.Shape([new THREE.Vector2(-5, 0), new THREE.Vector2(5, 0), new THREE.Vector2(0, 2.6)]), roof = new THREE.Mesh(new THREE.ExtrudeGeometry(sh, { depth: 14, bevelEnabled: false }), tileM); roof.position.set(hx, BANKY + 6.4, hz - 7); startG.add(roof);
-  const win = []; for (const z of [-4, 0, 4]) for (const y of [1.9, 4.7]) win.push(bx(0.06, 1.5, 1.0, hx - 4.52, BANKY + y, hz + z)); startG.add(merged(win, lam({ color: '#5a6a72' })));
-  // a balcony over the water side, under an awning striped orange and white: the awning is the one in Renoir's Luncheon of the Boating Party, painted here twelve years on
-  const awnT = canvasTex(256, 64, (g, w, h) => { for (let x = 0; x < w; x += 32) { g.fillStyle = x / 32 % 2 ? '#f4ecd8' : '#d9763a'; g.fillRect(x, 0, 32, h); } g.globalAlpha = 0.25; strokes(g, w, h, ['#fff6e0', '#b85a2a'], 24, 7, 3, true); g.globalAlpha = 1; }, true); awnT.repeat.set(4, 1);
-  const awn = new THREE.Mesh(new THREE.PlaneGeometry(12, 3.4), new THREE.MeshLambertMaterial({ map: awnT, side: THREE.DoubleSide, emissive: '#3a2a1a' })); awn.rotation.order = 'YXZ'; awn.rotation.y = -Math.PI / 2; awn.rotation.x = -Math.PI / 2 + 0.32; awn.position.set(hx - 6.0, BANKY + 6.0, hz); startG.add(awn);
-  const bal = [bx(3.2, 0.14, 12.4, hx - 6.0, BANKY + 3.0, hz), bx(0.06, 0.9, 12.4, hx - 7.55, BANKY + 3.5, hz)]; for (let z = -6; z <= 6; z += 3) bal.push(bx(0.12, 6.4, 0.12, hx - 7.5, BANKY + 3.2, hz + z)); startG.add(merged(bal, lam({ color: '#7a8a8a', map: greyTex })));
-  const gs = [bx(4.4, 0.1, 15, 33.7, BANKY - 0.05, 2)]; for (let z = -5; z <= 9; z += 2.3) gs.push(cyl(0.09, 0.1, 2.6, 6, 31.6, -0.1, z)); startG.add(merged(gs, lam({ map: plankT, color: '#c2b49c' })));
-  for (const [z, o] of [[4.6, { hull: '#7a3a2c', stripe: '#e6d6b0' }], [9.2, { hull: '#2f4a5a', stripe: '#d9c07a' }], [13.6, { hull: '#3f6a4c', stripe: '#c8643a' }]]) { const b = makeBoat(o); b.position.x = 30.6; b.position.z = z; b.rotation.y = 0.05; setOars(b, -1.45, -0.12); for (const m of b.userData.oars) { m.position.x *= 0.5; m.position.y = 0.42; } startG.add(b); moored.push({ b, ph: rnd(0, 6), ry: 0.05 }); }
-}
-
-/* ================= people ================= */
+const { gren, startG, moored, fgA, fgB, easels } = buildLandmarks(scene);
 const shadowM = new THREE.MeshBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.2, depthWrite: false });
-const FIG = makeFigures({ THREE, scene, shadowM }); await FIG.load('models/', ['child', 'monet', 'renoir', 'lady_white', 'lady_dark', 'lady_pink', 'lady_ochre', 'gent_dark', 'gent_blue', 'bather_m', 'bather_w', 'rower']);
-const meG = FIG.spawn('child', { size: 0.9 });
-function sit(g, seatY, legs = 84) { const u = g.userData, k = g.scale.y; for (const S of ['L', 'R']) { FIG.turn(u, 'thigh' + S, -legs, 0, 0); FIG.turn(u, 'shin' + S, legs, 0, 0); FIG.turn(u, 'upperarm' + S, -24, 0, 0); FIG.turn(u, 'forearm' + S, -50, 0, 0); } g.position.y = seatY - 0.77 * k; u.sh.visible = false; return g; }
-const person = (name, par, o = {}) => { const g = FIG.spawn(name, { size: o.size || 1.1, adult: true, tint: o.tint }); FIG.pose(g, 0, 0); par.add(g); return g; };
-// put a figure somewhere: [x, y, z, facing, pose]. Facing 0 looks upstream (+z, the left of the pictures), 90 at the painters, 180 downstream, -90 across the river.
-function place(g, p) { if (!p) { g.visible = false; return; } const [x, y, z, face, pose] = p, u = g.userData; g.visible = true; FIG.pose(g, 0, 0); u.sh.visible = true; g.position.set(x, y, z); g.rotation.set(0, face * Math.PI / 180, 0);
-  if (pose === 'sit') sit(g, y + 0.47); else if (pose === 'bend') FIG.turn(u, 'spine', 42, 0, 0); else if (pose === 'lean') FIG.turn(u, 'spine', 14, 0, 0);
-  else if (pose === 'parasol') { u.aR.rotation.x = -1.5; u.aR.rotation.z = 0.2; } else if (pose === 'arm') { u.aR.rotation.x = -1.1; } }
-const I = (u, v, face, pose) => { const [x, z] = IP(u, v); return [x, ISY, z, face, pose]; };
-const onPlank = (t, face, pose) => [mix(PR_A[0], PR_B[0], t), mix(ISY, DECKY, t), mix(PR_A[1], PR_B[1], t), face, pose];
-// The company on the islet, three times over: as she finds them (the way across left clear), as Monet has them, as Renoir has them.
-const cast = [
-  ['bather_w', { play: I(-2.9, 0.5, 170), A: I(-2.9, 0.4, 170, 'lean'), B: null }],
-  ['bather_w', { play: I(-2.0, 0.9, 20), A: I(-2.0, 0.6, 20), B: null, tint: '#3a3a44' }],
-  ['gent_blue', { play: I(-0.45, -0.5, 150, 'sit'), A: I(-0.45, -0.5, 150, 'sit'), B: I(-2.2, 0.5, 60) }],
-  ['lady_dark', { play: I(0.75, -0.5, -70, 'sit'), A: I(0.75, -0.5, -70, 'sit'), B: I(-1.5, 1.3, 100) }],
-  ['lady_dark', { play: I(-1.2, 0.9, 80), A: I(-1.3, 0.6, 80), B: I(-0.5, 1.2, 60), tint: '#4a4038' }],
-  ['lady_dark', { play: I(1.5, 1.0, -90), A: I(1.45, 0.75, -90), B: I(-2.9, 1.4, 120), tint: '#30302e' }],
-  ['gent_dark', { play: I(2.1, 1.5, 10), A: I(2.05, 0.5, 10), B: I(-2.7, -0.1, 130) }],
-  ['gent_dark', { play: I(0.4, 2.0, 100), A: I(2.6, 0.15, 100), B: I(2.35, -1.05, 30), tint: '#2a3a34' }],
-  ['gent_dark', { play: I(-0.6, 2.4, 60), A: I(2.25, 1.0, -20), B: I(-1.9, -0.5, 100), tint: '#1c1c22' }],
-  ['rower', { play: I(2.9, -1.6, 60, 'bend'), A: I(3.05, 0.3, 60, 'bend'), B: I(0.25, -0.5, 170, 'sit') }],
-  ['lady_ochre', { play: null, A: null, B: I(1.0, -0.35, 100, 'sit') }],
-  ['lady_white', { play: null, A: null, B: I(1.55, -1.35, -30) }],
-  ['lady_white', { play: null, A: null, B: I(-3.3, 0.3, 90), tint: '#d8d4c8' }],
-  ['gent_dark', { play: [PR_A[0] + 1.3, ISY, PR_A[1] + 0.9, 200], A: onPlank(0.55, 185), B: null, hat: true }],                    // the man in the tall hat on the short plank: in play he steps off it to let her by
-  ['lady_pink', { play: [BARGE.x0 + 2.2, DECKY, BARGE.z0 - 2.6, 20], A: null, B: onPlank(0.35, 150, 'parasol'), parasol: true }],
-  ['bather_m', { play: null, A: null, B: onPlank(1.0, 100), size: 0.8 }],
-].map(([name, o]) => { const g = person(name, gren, o); if (o.parasol) { const p = merged([cyl(0.012, 0.012, 1.0, 5, 0, 0.3, 0), new THREE.ConeGeometry(0.62, 0.22, 12, 1, true).translate(0, 0.86, 0)], new THREE.MeshLambertMaterial({ color: '#f6f2e8', emissive: '#4a4844', side: THREE.DoubleSide })); g.userData.aR.add(p); } return { g, ...o }; });
-// in the café, at the rail; and people on the banks
-const fixed = [];
-{ const B = BARGE; for (const [n, z, face, tint] of [['lady_white', -2.4, 80, null], ['gent_dark', -4.0, 110, null], ['lady_white', -6.3, 60, '#e6e2d8'], ['lady_dark', -8.4, 100, '#3f6a9a'], ['gent_dark', -12.9, 70, '#2a2a30'], ['lady_ochre', -15.9, 100, null], ['gent_blue', -18.2, 90, null]]) { const g = person(n, gren, { tint }); place(g, [B.x1 - 0.75, DECKY, B.z0 + z, face, z > -9 ? 'lean' : 'sit']); fixed.push(g); }
-  for (const [n, x, z, face, pose] of [['lady_pink', 37.4, ZP + 30, -100, 'parasol'], ['gent_blue', 37.9, ZP + 28.8, -80], ['lady_dark', 37.6, ZP - 18, -60], ['rower', 33.2, ZP + 21.2, 150]]) { const g = person(n, gren); place(g, [x, BANKY, z, face, pose]); fixed.push(g); if (pose === 'parasol') { const p = merged([cyl(0.012, 0.012, 1.0, 5, 0, 0.3, 0), new THREE.ConeGeometry(0.62, 0.22, 12, 1, true).translate(0, 0.86, 0)], new THREE.MeshLambertMaterial({ color: '#f1d9d2', emissive: '#4a4040', side: THREE.DoubleSide })); g.userData.aR.add(p); } }
-  for (const [n, x, z, face] of [['gent_blue', 34.2, 6.5, -80], ['lady_white', 34.6, 8.0, -100]]) { const g = person(n, startG); place(g, [x, BANKY, z, face]); } }
-const monet = person('monet', gren), renoir = person('renoir', gren); place(monet, [35.95, BANKY, ZP + 0.75, -90]); place(renoir, [35.95, BANKY, ZP - 0.95, -90]);
-for (const [g, r] of [[monet, 0.02], [renoir, 0.018]]) { const br = merged([cyl(0.008, 0.012, 0.34, 5, 0, 0.17, 0)], lam({ color: '#3a2a1a' })); g.userData.aR.add(br); }
-// bathers: a head, shoulders and two arms each. They swim where the pictures have them, to the left of the islet, and out in the stream where she must steer round them.
-const skinM = lam({ color: '#e8c4a0' }), suitM = lam({ color: '#242a36' }), hairMs = ['#4a3424', '#2a2018', '#8a5a34', '#c9a86a'].map(c => lam({ color: c }));
-function swimmer() { const g = new THREE.Group(), h = new THREE.Mesh(sph, skinM); h.scale.set(0.11, 0.13, 0.12); h.position.y = 0.2; const hr = new THREE.Mesh(sph, pick(hairMs)); hr.scale.set(0.118, 0.1, 0.128); hr.position.set(0, 0.25, -0.015); const b = new THREE.Mesh(sph, suitM); b.scale.set(0.2, 0.12, 0.17); b.position.y = 0.02;
-  const arms = [-1, 1].map(s => { const a = new THREE.Mesh(cyl(0.035, 0.03, 0.5, 5, 0, 0.25, 0), skinM); a.position.set(s * 0.2, 0.04, 0); g.add(a); return a; }); g.add(h, hr, b); g.userData = { arms, ph: rnd(0, 6) }; return g; }
-const bathers = [...Array(8)].map((_, i) => { const g = swimmer(); gren.add(g); const [x, z] = IP(-5.2 - (i % 4) * 0.95 - rnd(0, 0.5), 0.6 + Math.floor(i / 4) * 1.5 + rnd(-0.4, 0.6)); g.position.set(x, 0, z); g.rotation.y = rnd(0, 6); g.userData.B = i >= 4; return g; });
-const dog = new THREE.Group(); { const m = lam({ color: '#efe9da', map: greyTex }); for (const [sx, sy, sz, x, y, z] of [[0.3, 0.13, 0.16, 0, 0.1, 0], [0.11, 0.09, 0.1, 0.34, 0.1, 0.05], [0.16, 0.04, 0.05, -0.3, 0.05, 0.1]]) { const p = new THREE.Mesh(sph, m); p.scale.set(sx, sy, sz); p.position.set(x, y, z); dog.add(p); } const [x, z] = IP(0.1, -2.75); dog.position.set(x, ISY, z); dog.rotation.y = 1.3; gren.add(dog); }
-// far water behind the islet: skiffs, and Renoir's sails
-const farBoats = []; for (const [u, v, ry, o, rider] of [[-9, 26, 0.4, { hull: '#b8643a', stripe: '#f1e6c8' }, 'rower'], [5, 34, -0.5, { hull: '#f1ecde', stripe: '#b8432b' }, 'gent_blue'], [10, 19, 2.6, { hull: '#c8643a', stripe: '#f1e6c8' }, 'rower']]) { const b = makeBoat(o), [x, z] = IP(u, v); b.position.x = x; b.position.z = z; b.rotation.y = ry; const r = person(rider, b, { size: 1.05 }); sit(r, 0.36); setOars(b, 0.2, 0.1); gren.add(b); farBoats.push({ b, ph: rnd(0, 6), ry, x, z }); }
-const sailB = makeSail(); { const [x, z] = IP(-12.5, 7.5); sailB.position.set(x, 0, z); sailB.rotation.y = 2.0; gren.add(sailB); }
+const FIG = makeFigures({ THREE, scene, shadowM });
+await FIG.load('models/', ['child', 'monet', 'renoir', 'lady_white', 'lady_dark', 'lady_pink', 'lady_ochre', 'gent_dark', 'gent_blue', 'bather_m', 'bather_w', 'rower']);
+const { cast, place, sit, monet, renoir, bathers, dog, farBoats, sailB, traffic, riverGlints } = buildPeopleTrafficAndGlints(scene, FIG, gren, startG);
+const meG = FIG.spawn('child', { size: 0.92 });
+const boatG = makeBoat({ hull: '#386446', stripe: '#ce5d36', floor: '#cfa064' }); scene.add(boatG);
+
 let mode = '';
-function setMode(m) { if (m === mode) return; mode = m; for (const c of cast) { c.g.scale.setScalar((c.size || 1.1) * (m === 'B' ? 1.26 : 1)); place(c.g, c[m]); } for (const b of fgA) b.visible = m !== 'B'; for (const b of fgB) b.visible = m === 'B'; for (const b of bathers) b.visible = m === 'B' || !b.userData.B; dog.visible = m === 'B'; sailB.visible = m === 'B';
-  wobst.length = 0; if (m === 'play') { for (const c of cast) if (c.play) wobst.push({ x: c.play[0], z: c.play[2], r: 0.36 }); const [tx, tz] = IP(0.2, 0.35); wobst.push({ x: tx, z: tz, r: 0.42 }); for (const g of fixed) wobst.push({ x: g.position.x, z: g.position.z, r: 0.38 }); wobst.push({ x: monet.position.x, z: monet.position.z, r: 0.4 }, { x: renoir.position.x, z: renoir.position.z, r: 0.4 }, { x: 35.15, z: ZP + 0.75, r: 0.5 }, { x: 35.15, z: ZP - 0.95, r: 0.5 }); } }
-const wobst = [];
+function setMode(m) {
+  if (m === mode) return; mode = m;
+  for (const c of cast) { c.g.scale.setScalar((c.size || 1.1) * (m === 'B' ? 1.26 : 1)); place(c.g, c[m]); }
+  for (const b of fgA) b.visible = m !== 'B';
+  for (const b of fgB) b.visible = m === 'B';
+  for (const b of bathers) b.visible = m === 'B' || !b.userData.B;
+  dog.visible = m === 'B'; sailB.visible = m === 'B';
+}
 
-/* ================= on the river: what she must steer round =================
-   Each goes slowly round a small circuit of its own. r is how near she may come before they touch. */
-const traffic = [];
-function addSkiff(z, off, rx, rz, T, o, passenger) { const b = makeBoat(o), r = person('rower', b, { size: 1.05 }); sit(r, 0.36, 70); r.position.z = 0; if (passenger) { const p = person(passenger, b, { size: 1.0 }); sit(p, 0.36); p.position.z = 1.3; p.rotation.y = Math.PI; } scene.add(b); traffic.push({ kind: 'skiff', g: b, x0: cx(z) + off, z0: z, rx, rz, T, ph: rnd(0, 6), r: 1.9, rower: r, cool: 0, x: 0, z: 0 }); }
-function addSwim(z, off, n) { for (let i = 0; i < n; i++) { const g = swimmer(); scene.add(g); traffic.push({ kind: 'swim', g, x0: cx(z) + off + i * 2.3, z0: z + (i % 2) * 2.6, rx: 2.2, rz: 1.5, T: rnd(15, 22), ph: rnd(0, 6), r: 0.75, cool: 0, x: 0, z: 0 }); } }
-addSkiff(-62, 6, 6, 9, 46, { hull: '#b8643a', stripe: '#f1e6c8' }, 'lady_white'); addSwim(-104, 8, 3);
-{ const s = makeSail(), m = person('gent_blue', s, { size: 1.0 }); sit(m, 0.5); m.position.z = 1.5; scene.add(s); traffic.push({ kind: 'sail', g: s, x0: cx(-136) - 8, z0: -136, rx: 13, rz: 5, T: 60, ph: 1, r: 3.0, cool: 0, x: 0, z: 0 }); }
-addSwim(-176, 9, 3); addSkiff(-210, 5, 5, 8, 40, { hull: '#f1ecde', stripe: '#b8432b' }); addSkiff(-226, 16, 4, 10, 52, { hull: '#2f4a5a', stripe: '#d9c07a' }, 'lady_pink');
-addSkiff(-256, -6, 17, 5, 38, { hull: '#c9a23c', stripe: '#3a342c' }); addSkiff(-290, -6, 5, 7, 44, { hull: '#7a3a2c', stripe: '#e6d6b0' }, 'lady_dark'); addSwim(-322, -14, 3); addSkiff(-352, -4, 6, 8, 48, { hull: '#3f6a4c', stripe: '#c8643a' }); addSkiff(-398, 4, 5, 9, 42, { hull: '#b8643a', stripe: '#f1e6c8' }, 'lady_white');
-// spray where a blade or a bow strikes
-const sprayT = canvasTex(64, 64, (g, w, h) => { const r = g.createRadialGradient(32, 32, 1, 32, 32, 32); r.addColorStop(0, 'rgba(255,255,255,1)'); r.addColorStop(0.5, 'rgba(235,245,255,.7)'); r.addColorStop(1, 'rgba(220,235,255,0)'); g.fillStyle = r; g.fillRect(0, 0, w, h); });
-const sprays = [...Array(28)].map(() => { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sprayT, depthWrite: false, transparent: true })); s.visible = false; scene.add(s); return { s, t: 9, v: new V3() }; }); let sprayI = 0;
-function splash(x, z, n = 5, k = 1) { for (let i = 0; i < n; i++) { const p = sprays[sprayI++ % sprays.length]; p.t = 0; p.s.visible = true; p.s.position.set(x + rnd(-0.2, 0.2), 0.1, z + rnd(-0.2, 0.2)); p.v.set(rnd(-1.4, 1.4) * k, rnd(1.8, 3.6) * k, rnd(-1.4, 1.4) * k); p.s.scale.setScalar(rnd(0.14, 0.3) * k); } }
+/* spray & floating paint-dab sparks when steering or catching sun-glints */
+const sprayT = canvasTex(64, 64, (g, w, h) => {
+  const r = g.createRadialGradient(32, 32, 2, 32, 32, 30);
+  r.addColorStop(0, 'rgba(255,253,240,1)'); r.addColorStop(0.55, 'rgba(235,245,255,.78)'); r.addColorStop(1, 'rgba(220,235,255,0)');
+  g.fillStyle = r; g.fillRect(0, 0, w, h);
+});
+const sprays = [...Array(44)].map(() => {
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: sprayT, depthWrite: false, transparent: true }));
+  s.visible = false; scene.add(s); return { s, t: 9, life: 0.8, v: new V3() };
+});
+let sprayI = 0;
+function splash(x, z, n = 5, k = 1, cols = null) {
+  for (let i = 0; i < n; i++) {
+    const p = sprays[sprayI++ % sprays.length];
+    p.t = 0; p.life = cols ? 1.15 : 0.72; p.s.visible = true;
+    p.s.position.set(x + rnd(-0.4, 0.4), 0.14, z + rnd(-0.4, 0.4));
+    p.v.set(rnd(-1.8, 1.8) * k, rnd(1.8, 3.8) * k, rnd(-1.8, 1.8) * k);
+    p.s.scale.set(rnd(0.22, 0.46) * k, rnd(0.14, 0.28) * k, 1);
+    p.s.material.color.set(cols ? cols[i % cols.length] : '#f4f8ff');
+  }
+}
+/* ================= play state & effortless river physics ================= */
+let state = 'title', time = 0, muted = false, tT = 0, swoopT = 0, glintsCaught = 0, bumps = 0, saidCafe = false, bubbleG = null, bubbleT = 0;
+const GLINT_GOAL = 8, DAB_PAL = ['#f8e05c', '#5ca2dc', '#4c8e58', '#faf6e6', '#284a68'];
+const keys = new Set(), touch = { id: null, x0: 0, dx: 0, side: 0 };
+const boat = { x: START.x, z: START.z, yaw: -0.18, v: 4.8, lat: 0, yr: 0, camYaw: -0.18, roll: 0, bumpT: -9 };
+const CAMM = { pos: [34.3, 3.3, ZP + 0.6], look: [-65.7, -11.1, ZP + 0.6], fov: 40 };
+const CAMR = { pos: [34.3, 3.3, ZP - 1.0], look: [-65.7, -8.3, ZP + 6.2], fov: 25 };
 
-/* ================= play ================= */
-let state = 'title', time = 0, muted = false, tT = 0, bubbleG = null, bubbleT = 0, nag = 0, moorT = 0, strokes_ = 0, clean = 0, run = 0, bestRun = 0, bumps = 0, said = false, said2 = false;
-const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
-// the boat: where it is, where it points (0 is downstream), how fast it runs through the water and slips sideways, and where the oars are in the stroke
-const boatG = makeBoat({ hull: '#3f6a4c', stripe: '#c8643a' }); scene.add(boatG);
-const boat = { x: START.x, z: START.z, yaw: 0, v: 0, lat: 0, yr: 0, camYaw: 0, t: 9, last: -9, kind: 'rest', want: false, heldT: 0, surge: 0, roll: 0, bumpT: -9 };
-const DRIVE = 0.42, RECOVER = 0.5, CYCLE = DRIVE + RECOVER, CURRENT = 0.55;
 const plate = (id, title, line) => { SC.award(id, null, title); $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
-const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); }
+const bubble = $('bubble');
+function say(g, text, secs = 3.2) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + secs; }
 const tip = (t, secs = 6) => { const e = $('tip'); e.textContent = t; e.classList.remove('hidden'); clearTimeout(tip.h); tip.h = setTimeout(() => e.classList.add('hidden'), secs * 1000); };
-const blocked = (x, z) => !(snap(x, z).d < 0.05 || inRiver(x, z));
-const groundY = (x, z) => { const s = snap(x, z); return s.d < 0.3 ? s.y : WY; };
-// points (common/score.js). Its coins are laid every 19 units of its own measure; one and a half of its units to the metre here puts a franc about every 13 m down the best water.
-const K = 1.5, SC = makeScore({ THREE, scene, key: 'monet', at: s => at(s / K), nearest: (x, z) => { const n = nearest(x, z); return { s: n.s * K, d: n.d }; }, LEN: LEN * K, groundY, blocked, paintings: 2,
-  thing: 'franc', things: 'francs', washing: false, ditches: [], hurdles: [], powerups: false, avoid: [ROUTE.S_BERTH * K], half: 1.3, par: 185 });
-for (const g of SC.picks) { const u = g.userData; u.river = groundY(u.x, u.z) === WY; if (u.river) { u.y = 0.95; g.position.y = 0.95; } }      // on the water every franc hangs where the boat can take it
+
+const K = 1.25, SC = makeScore({
+  THREE, scene, key: 'monet',
+  at: s => at(s / K),
+  nearest: (x, z) => { const n = nearest(x, z); return { s: n.s * K, d: n.d }; },
+  LEN: LEN * K, groundY: () => WY, blocked: () => false, paintings: 2,
+  thing: 'franc', things: 'francs', washing: false, ditches: [], hurdles: [], powerups: false, avoid: [], half: 1.5, par: 105
+});
+for (const g of SC.picks) { g.userData.y = 0.85; g.position.y = 0.85; g.scale.setScalar(1.35); }
 const proxy = { x: 0, z: 0, y: 0, air: false, speed: 0, yaw: 0 };
-const CAMM = { pos: [34.3, 3.3, ZP + 0.6], look: [-65.7, -11.1, ZP + 0.6], fov: 40 }, CAMR = { pos: [34.3, 3.3, ZP - 1.0], look: [-65.7, -8.3, ZP + 6.2], fov: 25 };          // the two standpoints, side by side
-/* ---- catching the light (what the level teaches: research/FINDINGS.md, 'What the level teaches') ----
-   At the easels the view is plain and Monet's water is not yet painted. Glints of sunlight come and go on the river; each must be caught with one dab before it moves on
-   (a click or a tap on it, or space for the oldest one shining). Every dab stays where she laid it, a flat square-ended touch of one colour beside others, and the view turns
-   from drawing to dabs with them. Ten, and the picture can be made. A glint missed costs nothing: another comes. */
-const DABN = 10, dabsEl = $('dabs'), glints = [], daubs = [], dab = { n: 0, t: 0, next: 0, missed: 0, nag: 0 }, DABC = ['#f6f4e6', '#3e6ea6', '#2e6b52', '#18242e', '#a9cbd8', '#e9dfae'];
-const dabSpeaker = new THREE.Object3D(); dabSpeaker.position.set(CAMM.pos[0] - 9, 1.6, CAMM.pos[2] - 2.6);          /* Monet is behind the view now: his words are hung in it */
-function dabReset() { dabsEl.textContent = ''; dabsEl.classList.remove('fade'); glints.length = 0; daubs.length = 0; Object.assign(dab, { n: 0, t: 0, next: 0, missed: 0, nag: 0 }); }
-function spawnGlint() { for (let k = 0; k < 40; k++) { const x = rnd(-30, 26), z = ZP + rnd(-24, 24); if (!inRiver(x, z)) continue; const v = new V3(x, 0.05, z).project(camera); if (v.z > 1 || Math.abs(v.x) > 0.84 || v.y > 0.12 || v.y < -0.7) continue; if (glints.some(g => Math.hypot(g.x - x, g.z - z) < 5) || daubs.some(g => Math.hypot(g.x - x, g.z - z) < 2.5)) continue;
-    const el = document.createElement('div'); el.className = 'glint'; const g = { x, z, el, born: time, life: 2.8 }; el.addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); layDab(g); }); dabsEl.appendChild(el); glints.push(g); return; } }
-function layDab(g) { if (state !== 'dab' || !g || g.dead) return; g.dead = true; g.el.remove(); glints.splice(glints.indexOf(g), 1); const el = document.createElement('div'), c = i => DABC[(dab.n + i) % DABC.length]; el.className = 'daub'; el.style.background = c(0); el.style.setProperty('--c2', c(1)); el.style.setProperty('--c3', c(3)); el.style.transform = `rotate(${rnd(-3, 3).toFixed(1)}deg)`; dabsEl.appendChild(el); daubs.push({ x: g.x, z: g.z, el });
-  dab.n++; dab.nag = time + 9; if (dab.n === 1) SC.keep('dab', { title: 'Dabs of paint, one for each glint of light on the water', emoji: '🖌️' }); SC.gain(5, 'A dab of light!', 0); SND.bell([4, 6, 7, 9, 11][dab.n % 5], 0.07); placeDabs();
-  if (dab.n >= DABN) { for (const q of glints) q.el.remove(); glints.length = 0; state = 'monet'; tT = 0; say(dabSpeaker, 'There! The light is caught. Now look.', 3); [2, 4, 5, 7, 9, 10].forEach((n, k) => SND.bell(n, 0.07, 0.4 + k * 0.28)); } }
-function placeDabs() { const put = (g, glint) => { const v = new V3(g.x, 0.05, g.z), d = v.distanceTo(camera.position); v.project(camera); const s = clamp(1500 / d, 28, 84); g.el.style.left = (v.x * 0.5 + 0.5) * innerWidth + 'px'; g.el.style.top = (-v.y * 0.5 + 0.5) * innerHeight + 'px';
-    if (glint) g.el.style.setProperty('--s', s.toFixed(0) + 'px'); else { g.el.style.setProperty('--w', (s * 1.5).toFixed(0) + 'px'); g.el.style.setProperty('--h', Math.max(7, s * 0.24).toFixed(0) + 'px'); g.el.style.setProperty('--dx', (s * 0.4).toFixed(0) + 'px'); } };
-  for (const g of glints) put(g, true); for (const g of daubs) put(g, false); }
+
 function reset() {
-  dabReset();
-  Object.assign(boat, { x: START.x, z: START.z, yaw: 0, v: 0, lat: 0, yr: 0, camYaw: 0, t: 9, last: -9, kind: 'rest', want: false, heldT: 0, surge: 0, roll: 0, bumpT: -9 });
-  Object.assign(me, { x: boat.x, z: boat.z, y: 0, yaw: 0, vy: 0, air: false, speed: 0 }); tT = 0; moorT = 0; strokes_ = 0; clean = 0; run = 0; bestRun = 0; bumps = 0; said = false; said2 = false; nag = 0;
-  setMode('play'); post.uniforms.uDab.value = 0.62;
-  $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('melt').src = 'images/grenouillere.jpg'; $('plate').classList.remove('show'); $('beat').classList.remove('show');
-  camera.position.set(boat.x + 1, 3.2, boat.z + 7); camera.fov = 60;
+  Object.assign(boat, { x: START.x, z: START.z, yaw: -0.18, v: 4.75, lat: 0, yr: 0, camYaw: -0.18, roll: 0, bumpT: -9 });
+  tT = 0; swoopT = 0; glintsCaught = 0; bumps = 0; saidCafe = false; bubbleG = null; lastWakeT = -9;
+  for (const w of wake) w.set(0, 0, -99, 1);
+  for (const b of blooms) b.set(0, 0, -99, 0);
+  for (const gl of riverGlints) { gl.caught = false; gl.pop = 0; gl.grp.visible = true; gl.grp.scale.setScalar(1); gl.disc.material.opacity = 0.92; }
+  setMode('A');
+  post.uniforms.uDab.value = 0.82; post.uniforms.uShimmer.value = 0.35;
+  waterMat.uniforms.uAx.value = 1.0; waterMat.uniforms.uBoatCut.value = 1.0; waterMat.uniforms.uLiveliness.value = 0.15;
+  $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('melt').src = 'images/grenouillere.jpg';
+  $('plate').classList.remove('show'); bubble.classList.remove('show');
+  camera.position.set(START.x - 16, 13, START.z + 18); camera.lookAt(START.x - 6, 1.5, START.z - 42); camera.fov = 58; camera.updateProjectionMatrix();
+  lerpTo.fresh = true;
 }
+
 function begin() {
-  SND.start({ chords: [[43, 59, 62, 67, 71], [48, 55, 60, 64, 67], [50, 57, 62, 66, 69], [45, 57, 60, 64, 69]], scale: [62, 64, 67, 69, 71, 74, 76, 79, 81, 83, 86] }); SND.setMuted(muted); reset(); SC.start(); state = 'row';
-  for (const g of SC.picks) if (g.userData.river) g.scale.setScalar(1.6);
-  $('title').classList.add('hidden'); $('end').classList.add('hidden'); $('bRow').style.display = 'flex';
-  tip(matchMedia('(pointer: coarse)').matches ? 'Tap Row for each pull of the oars, in an easy rhythm · drag to steer' : 'Press the up arrow for each pull of the oars, in an easy rhythm · left and right steer', 10);
+  SND.start({ chords: [[43, 59, 62, 67, 71], [48, 55, 60, 64, 67], [50, 57, 62, 66, 69], [45, 57, 60, 64, 69]], scale: [62, 64, 67, 69, 71, 74, 76, 79, 81, 83, 86] });
+  SND.setMuted(muted); reset(); SC.start(); state = 'glide';
+  for (const g of SC.picks) g.scale.setScalar(1.35);
+  $('title').classList.add('hidden'); $('end').classList.add('hidden');
+  tip(matchMedia('(pointer: coarse)').matches ? 'The current carries you · slide left or right to steer' : 'The current carries you · left and right arrows steer', 7);
 }
-// one pull. Taken as the blades come forward, and in time with the last, it is a clean catch; snatched too soon, it only throws water about.
-function stroke(auto) {
-  if (state !== 'row') return; const since = time - boat.last;
-  if (boat.kind !== 'rest' && boat.t < CYCLE * 0.78) { if (auto || boat.kind === 'splash') return; boat.kind = 'splash'; boat.t = 0; boat.last = time; run = 0; boat.v += 0.25; SND.whoosh(0.09);
-    for (const sg of [1, -1]) { const p = bladeAt(boatG, sg); splash(p.x, p.z, 6, 1.2); ripple(p.x, p.z, 0.6); } flashRow('splash'); beat('Too soon: wait for the oars to come forward'); return; }
-  const rhythm = !auto && since > 0.72 && since < 1.75; boat.kind = 'drive'; boat.t = 0; boat.last = time; strokes_++;
-  run = rhythm ? run + 1 : auto ? 0 : 1; bestRun = Math.max(bestRun, run); boat.power = auto ? 1.25 : 1.7 + Math.min(0.5, run * 0.06);
-  SND.puff(0.05); SND.whoosh(0.035 + Math.min(0.03, run * 0.004)); for (const sg of [1, -1]) { const p = bladeAt(boatG, sg); splash(p.x, p.z, 2, 0.7); ripple(p.x, p.z, 0.9); }
-  if (rhythm && run >= 2) { clean++; SC.gain(1, run >= 8 ? 'A clean catch! In the swing' : 'A clean catch!', 0.2); }
-  flashRow('pull'); if (!auto) beat(run >= 2 ? `<b>${'●'.repeat(Math.min(run, 12))}</b>` : 'and again, as the oars come forward…');
-}
-function flashRow(c) { const b = $('bRow'); b.classList.remove('pull', 'splash'); void b.offsetWidth; b.classList.add(c); setTimeout(() => b.classList.remove(c), 220); }
-function beat(html) { const e = $('beat'); e.innerHTML = html; e.classList.add('show'); clearTimeout(beat.h); beat.h = setTimeout(() => e.classList.remove('show'), 2600); }
-function bump(o, what) { if (time - boat.bumpT < 1.2) return; boat.bumpT = time; bumps++; run = 0; SC.lose(5, what); SND.puff(0.14); splash(boat.x, boat.z, 8, 1.3); ripple(boat.x, boat.z, 1); }
 
 function update(dt) {
   time += dt; uni.uTime.value = time; post.uniforms.uTime.value = time;
-  const playing = state === 'row' || state === 'walk';
-  // ---- everything that floats rides the water
-  for (const m of moored) { m.b.position.y = m.b.userData.draft + Math.sin(time * 1.3 + m.ph) * 0.025; m.b.rotation.z = Math.sin(time * 0.9 + m.ph) * 0.035; }
-  for (const f of farBoats) { f.b.position.y = f.b.userData.draft + Math.sin(time * 1.2 + f.ph) * 0.03; f.b.position.x = f.x + Math.sin(time * 0.05 + f.ph) * 3; const a = Math.sin(time * 1.5 + f.ph); setOars(f.b, a * 0.5, a > 0 ? -0.06 : 0.16); }
+
+  /* swaying willow curtains, moored boats, far skiffs, bathers & river traffic */
+  for (const f of frondMeshes) { const u = f.userData; f.rotation.z = Math.sin(time * 1.15 + u.ph) * 0.08; f.rotation.x = Math.cos(time * 0.85 + u.ph) * 0.04; }
+  for (const m of moored) { m.b.position.y = m.b.userData.draft + Math.sin(time * 1.3 + m.ph) * 0.02; m.b.rotation.z = Math.sin(time * 0.9 + m.ph) * 0.03; }
+  for (const f of farBoats) { f.b.position.y = f.b.userData.draft + Math.sin(time * 1.2 + f.ph) * 0.025; f.b.position.x = f.x + Math.sin(time * 0.05 + f.ph) * 3; const a = Math.sin(time * 1.5 + f.ph); setOars(f.b, a * 0.5, a > 0 ? -0.06 : 0.16); }
   for (const b of bathers) { const u = b.userData; b.position.y = Math.sin(time * 1.6 + u.ph) * 0.05 - 0.02; u.arms[0].rotation.x = Math.sin(time * 2.2 + u.ph) * 1.2; u.arms[1].rotation.x = Math.sin(time * 2.2 + u.ph + 3.1) * 1.2; }
   sailB.rotation.z = Math.sin(time * 0.7) * 0.03;
-  for (const o of traffic) { const a = o.ph + time * 6.283 / o.T, vx = -Math.sin(a) * o.rx, vz = Math.cos(a) * o.rz; o.x = o.x0 + Math.cos(a) * o.rx; o.z = o.z0 + Math.sin(a) * o.rz; o.g.position.x = o.x; o.g.position.z = o.z; o.g.visible = Math.abs(o.z - camera.position.z) < 260;
-    if (o.kind === 'swim') { const u = o.g.userData; o.g.position.y = Math.sin(time * 1.6 + u.ph) * 0.05 - 0.02; o.g.rotation.y = Math.atan2(vx, vz); u.arms[0].rotation.x = Math.sin(time * 3 + u.ph) * 1.3 - 0.3; u.arms[1].rotation.x = Math.sin(time * 3 + u.ph + 3.1) * 1.3 - 0.3; }
-    else { o.g.rotation.y = Math.atan2(-vx, -vz); o.g.position.y = (o.kind === 'sail' ? 0 : o.g.userData.draft) + Math.sin(time * 1.2 + o.ph) * 0.03; o.g.rotation.z = Math.sin(time * 0.8 + o.ph) * (o.kind === 'sail' ? 0.06 : 0.03);
-      if (o.kind === 'skiff') { const s = Math.sin(time * 2.6 + o.ph), c = Math.cos(time * 2.6 + o.ph); setOars(o.g, s * 0.55, c > 0 ? 0.17 : -0.08); const u = o.rower.userData; FIG.turn(u, 'spine', 10 + s * 16, 0, 0); for (const S of ['L', 'R']) { FIG.turn(u, 'upperarm' + S, -52 + s * 26, 0, 0); FIG.turn(u, 'forearm' + S, -40 - s * 36, 0, 0); } } } }
-  for (const p of sprays) if (p.s.visible) { p.t += dt; if (p.t > 0.7) { p.s.visible = false; continue; } p.v.y -= 9 * dt; p.s.position.addScaledVector(p.v, dt); p.s.material.opacity = 1 - p.t / 0.7; }
-  berthRing.material.opacity = state === 'row' ? 0.55 + 0.35 * Math.sin(time * 3) : 0; berthRing.position.y = 0.1 + Math.sin(time * 1.4) * 0.03;
-  gren.visible = camera.position.z < ZP + 330; startG.visible = camera.position.z > -260;
 
-  let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.5 : 0) - stick.dy;
-  turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); if (!playing) { turn = 0; go = 0; }
+  for (const o of traffic) {
+    const a = o.ph + time * 6.283 / o.T, vx = -Math.sin(a) * o.rx, vz = Math.cos(a) * o.rz;
+    o.x = o.x0 + Math.cos(a) * o.rx; o.z = o.z0 + Math.sin(a) * o.rz;
+    o.g.position.x = o.x; o.g.position.z = o.z; o.g.visible = Math.abs(o.z - camera.position.z) < 250;
+    if (o.kind === 'swim') {
+      const u = o.g.userData; o.g.position.y = Math.sin(time * 1.6 + u.ph) * 0.05 - 0.02; o.g.rotation.y = Math.atan2(vx, vz);
+      u.arms[0].rotation.x = Math.sin(time * 3 + u.ph) * 1.3 - 0.3; u.arms[1].rotation.x = Math.sin(time * 3 + u.ph + 3.1) * 1.3 - 0.3;
+    } else {
+      o.g.rotation.y = Math.atan2(-vx, -vz);
+      o.g.position.y = (o.kind === 'sail' ? 0 : o.g.userData.draft) + Math.sin(time * 1.2 + o.ph) * 0.025;
+      o.g.rotation.z = Math.sin(time * 0.8 + o.ph) * (o.kind === 'sail' ? 0.06 : 0.03);
+      if (o.kind === 'skiff') {
+        const s = Math.sin(time * 2.5 + o.ph), c = Math.cos(time * 2.5 + o.ph);
+        setOars(o.g, s * 0.52, c > 0 ? 0.16 : -0.07);
+        const u = o.rower.userData; FIG.turn(u, 'spine', 10 + s * 15, 0, 0);
+        for (const S of ['L', 'R']) { FIG.turn(u, 'upperarm' + S, -50 + s * 24, 0, 0); FIG.turn(u, 'forearm' + S, -38 - s * 34, 0, 0); }
+      }
+    }
+  }
+  for (const p of sprays) if (p.s.visible) {
+    p.t += dt; if (p.t > p.life) { p.s.visible = false; continue; }
+    p.v.y -= 7.2 * dt; p.s.position.addScaledVector(p.v, dt); p.s.material.opacity = 1 - p.t / p.life;
+  }
+  for (const gl of riverGlints) if (gl.grp.visible) {
+    if (gl.caught) {
+      gl.pop += dt * 2.2; gl.grp.scale.setScalar(1 + gl.pop * 1.6); gl.disc.material.opacity = Math.max(0, 0.9 - gl.pop);
+      if (gl.pop >= 1) gl.grp.visible = false;
+    } else {
+      gl.disc.rotation.z = time * 0.4 + gl.ph;
+      const pulse = 0.92 + 0.12 * Math.sin(time * 2.6 + gl.ph);
+      gl.disc.scale.setScalar(pulse);
+      gl.motes.forEach((m, k) => {
+        const ang = time * 1.1 + gl.ph + k * 1.57;
+        m.position.set(Math.cos(ang) * 1.4, 0.25 + 0.16 * Math.sin(time * 2.8 + k + gl.ph), Math.sin(ang) * 1.1);
+        m.lookAt(camera.position);
+      });
+    }
+  }
+  gren.visible = camera.position.z < ZP + 320; startG.visible = camera.position.z > -220;
 
-  // ---- in the boat
-  if (state === 'title' || state === 'row' || state === 'moor') {
-    const fx = Math.sin(boat.yaw), fz = -Math.cos(boat.yaw);
-    if (state === 'row') {
-      // a key or a finger held down rows on at an easy pace, with no reward: she can always get there
-      if (go > 0.5) { boat.heldT += dt; if (boat.heldT > 0.5 && boat.t >= CYCLE + 0.45) stroke(true); } else boat.heldT = 0;
-      if (boat.want) { boat.want = false; stroke(false); }
-      boat.t += dt;
-      if (boat.kind === 'drive' && boat.t < DRIVE) boat.v += boat.power / DRIVE * dt * (1 - boat.v / 9);
-      if (boat.kind !== 'rest' && boat.t >= CYCLE) boat.kind = 'rest';
-      if (go < -0.2) boat.v -= 2.2 * dt * Math.sign(boat.v + 0.6);                                                                        // backing water
-      boat.v -= boat.v * (0.2 + 0.034 * Math.abs(boat.v)) * dt; boat.lat -= boat.lat * 2.6 * dt;
-      boat.yr += (turn * (0.52 + 0.075 * Math.abs(boat.v)) - boat.yr) * Math.min(1, dt * 2.6); boat.yaw += boat.yr * dt; boat.lat -= boat.yr * boat.v * 0.16 * dt;      // she carries her way on a little when she turns
-      let nx = boat.x + (fx * boat.v + fz * -boat.lat) * dt, nz = boat.z + (fz * boat.v + fx * boat.lat) * dt - CURRENT * dt;
-      // the banks: she slides along them
-      const lo = bankL(nz) + 2.2, hi = Math.min(bankR(nz) - 2.2, nz < ZP + 40 || nz > -8 ? 30.6 : 99); if (nx < lo || nx > hi) { nx = clamp(nx, lo, hi); boat.v *= 1 - 1.5 * dt; }
-      nz = Math.min(nz, 12); if (nz < ZP + 17.5) { nz = ZP + 17.5; boat.v *= 0.5; if (time > nag) { nag = time + 5; tip('The landing is on the right bank: row into the gold ring', 5); } }
-      for (const o of traffic) { const dx = nx - o.x, dz = nz - o.z, d = Math.hypot(dx, dz), R = o.r + 1.0; if (d < R) { const k = R / (d || 1); nx = o.x + dx * k; nz = o.z + dz * k; boat.v *= 0.35; boat.lat = 0; bump(o, o.kind === 'swim' ? 'Mind the bathers!' : o.kind === 'sail' ? 'Mind the sail!' : 'Bump! Mind the boats'); } }
+  let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0);
+  if (touch.id !== null) turn += Math.abs(touch.dx) > 0.08 ? touch.dx : touch.side * 0.8;
+  turn = clamp(turn, -1, 1);
+  const trim = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1.25 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 1.1 : 0);
+
+  /* ---- effortless river glide ---- */
+  if (state === 'title' || state === 'glide' || state === 'arrive') {
+    if (state === 'glide') {
+      swoopT = Math.min(1, swoopT + dt / 1.85);
+      const flowYaw = Math.atan2(cxSlope(boat.z), 1);
+      const centerPull = clamp((cx(boat.z) - boat.x) * 0.015, -0.26, 0.26);
+      const targetYaw = flowYaw + turn * 0.62 + (Math.abs(turn) < 0.05 ? centerPull : 0);
+      const dYaw = Math.atan2(Math.sin(targetYaw - boat.yaw), Math.cos(targetYaw - boat.yaw));
+      boat.yr += (dYaw * 2.8 - boat.yr) * Math.min(1, dt * 5.2);
+      boat.yaw += boat.yr * dt;
+      const targetV = 4.75 + trim - Math.abs(turn) * 0.25;
+      boat.v += (targetV - boat.v) * Math.min(1, dt * 2.8);
+      boat.lat += (-boat.yr * boat.v * 0.22 - boat.lat) * Math.min(1, dt * 3.8);
+
+      const fx = Math.sin(boat.yaw), fz = -Math.cos(boat.yaw);
+      let nx = boat.x + (fx * boat.v + fz * -boat.lat) * dt;
+      let nz = boat.z + (fz * boat.v + fx * boat.lat) * dt;
+      /* soft water cushion off the banks so nobody ever sticks */
+      const lo = bankL(nz) + 3.4, hi = bankR(nz) - 3.4;
+      if (nx < lo) { nx = lo; boat.yaw += 0.45 * dt; } else if (nx > hi) { nx = hi; boat.yaw -= 0.45 * dt; }
+      /* gentle bump off traffic & bathers: zero penalty, cheerful splash */
+      for (const o of traffic) {
+        const dx = nx - o.x, dz = nz - o.z, d = Math.hypot(dx, dz), R = o.r + 1.15;
+        if (d < R && d > 1e-4) {
+          const k = R / d; nx = o.x + dx * k; nz = o.z + dz * k;
+          if (time - boat.bumpT > 1.4) {
+            boat.bumpT = time; bumps++; splash(nx, nz, 7, 1.1); dropWake(nx, nz, 1.3); SND.whoosh(0.05);
+            if (o.kind !== 'swim') say(o.g, pick(['Lovely afternoon!', 'Pardon!', 'Mind our wake!']), 2.4);
+          }
+        }
+      }
       boat.x = nx; boat.z = nz;
-      // the wake, and the stroke itself
-      if (boat.v > 1.6 && Math.floor(time * 2.6) !== Math.floor((time - dt) * 2.6)) ripple(boat.x - fx * 2.3, boat.z - fz * 2.3, 0.45);
-      if (time > nag && boat.z > -30 && strokes_ < 2 && time > 6) { nag = time + 8; tip('Pull! One press for each stroke', 4); }
-      if (boat.z < BERTH.z + 70 && !said) { said = true; tip('La Grenouillère! Tie up at the gold ring, on the right bank', 7); }
-      if (Math.hypot(boat.x - BERTH.x, boat.z - BERTH.z) < 4.2 || (boat.z < BERTH.z - 3 && boat.x > 24)) { state = 'moor'; moorT = 0; SC.gain(30, 'Tied up!', 2); SND.bell(6, 0.08); SND.bell(9, 0.07, 0.15); $('bRow').style.display = 'none'; $('beat').classList.remove('show'); }
+
+      /* wake trail breaking reflections behind the stern */
+      if (time - lastWakeT > 0.095) {
+        lastWakeT = time;
+        dropWake(boat.x - fx * 1.9, boat.z - fz * 1.9, 0.92 + Math.abs(turn) * 0.5);
+        if (Math.abs(turn) > 0.35) splash(boat.x - fx * 0.4 + Math.sign(turn) * 0.85, boat.z - fz * 0.4, 2, 0.65);
+      }
+
+      /* steering through sun-glints lays vibrant paint dabs on the water! */
+      for (const gl of riverGlints) if (!gl.caught && Math.hypot(boat.x - gl.x, boat.z - gl.z) < 4.1) {
+        gl.caught = true; glintsCaught++;
+        dropBloom(gl.x, gl.z); splash(gl.x, gl.z, 12, 1.25, DAB_PAL);
+        SC.gain(10, glintsCaught === 1 ? 'Light caught in dabs!' : 'A burst of colour!', 1);
+        SC.keep('dab', { title: 'Separate flat dabs of colour, catching the moving light', emoji: '🎨' });
+        SND.bell([4, 6, 7, 9, 11][glintsCaught % 5], 0.075);
+        const prog = clamp(glintsCaught / GLINT_GOAL, 0, 1);
+        waterMat.uniforms.uLiveliness.value = 0.15 + prog * 0.85;
+        post.uniforms.uShimmer.value = 0.35 + prog * 0.65;
+        post.uniforms.uDab.value = 0.82 + prog * 0.12;
+      }
+
+      if (boat.z < ZP + 95 && !saidCafe) { saidCafe = true; tip('La Grenouillère ahead! Drift right in beside the floating café', 6); }
+      if (boat.z <= ARRIVE_Z) {
+        state = 'arrive'; tT = 0; setMode('A');
+        for (const g of SC.picks) g.visible = false;
+        $('tip').classList.add('hidden'); SND.bell(7, 0.08); SND.bell(11, 0.07, 0.16);
+      }
     }
-    if (state === 'moor') { moorT += dt; const k = Math.min(1, dt * 2.4); boat.x += (BERTH.x - boat.x) * k; boat.z += (BERTH.z - boat.z) * k; boat.yaw += (0 - boat.yaw) * k; boat.v *= 0.9; boat.kind = 'rest'; boat.t = 9;
-      if (moorT > 2.3) { state = 'walk'; Object.assign(me, { x: 32.7, z: BERTH.z, y: BANKY, yaw: -0.3, speed: 0, vy: 0, air: false }); tip(matchMedia('(pointer: coarse)').matches ? 'On foot now: drag to walk · over the gangplank to the little round island' : 'On foot now: arrow keys · over the gangplank to the little round island', 8); } }
-    // oars and rower
-    const ph = boat.kind === 'drive' ? Math.min(1, boat.t / DRIVE) : -1, rec = boat.kind !== 'rest' && boat.t >= DRIVE ? Math.min(1, (boat.t - DRIVE) / RECOVER) : boat.kind === 'rest' ? 1 : 0;
-    let a, dip, lean;
-    if (state === 'moor') { a = mix(0.6, -1.45, Math.min(1, moorT / 1.0)); dip = -0.12; lean = 0; }
-    else if (boat.kind === 'splash') { a = 0.3 * Math.sin(boat.t * 14); dip = 0.2; lean = 0.2; }
-    else if (ph >= 0) { const e = ph * ph * (3 - 2 * ph); a = mix(0.62, -0.56, e); dip = 0.2 * Math.sin(Math.min(1, ph * 1.15) * Math.PI) + 0.05; lean = mix(1, -1, e); }
-    else { const e = rec * rec * (3 - 2 * rec); a = mix(-0.56, 0.62, e); dip = -0.1 * Math.sin(rec * Math.PI) - 0.02; lean = mix(-1, 1, e); }
-    const tr = state === 'row' ? turn : 0; setOars(boatG, a - Math.max(0, tr) * 0.5 * (ph < 0 ? 1 : 0), dip + Math.max(0, tr) * 0.16, a - Math.max(0, -tr) * 0.5 * (ph < 0 ? 1 : 0), dip + Math.max(0, -tr) * 0.16);
-    boat.surge += ((ph >= 0 ? 1 : 0) - boat.surge) * Math.min(1, dt * 6); boat.roll += (-boat.yr * 0.22 - boat.roll) * Math.min(1, dt * 4);
-    boatG.position.set(boat.x, boatG.userData.draft + Math.sin(time * 1.7) * 0.02, boat.z); boatG.rotation.set(-boat.surge * 0.035 + Math.sin(time * 1.1) * 0.008, -boat.yaw, boat.roll + Math.sin(time * 1.3) * 0.015, 'YXZ'); boatG.updateMatrixWorld(true);
-    $('bRow').classList.toggle('ready', state === 'row' && (boat.kind === 'rest' || boat.t >= CYCLE * 0.78));
-    // the child sits on the middle thwart with her back to the bow, as rowers do, and swings with the oars
-    const hop = state === 'moor' ? clamp((moorT - 1.2) / 0.9, 0, 1) : 0, u = meG.userData; meG.visible = state !== 'title' || true;
-    if (hop <= 0) { FIG.pose(meG, 0, 0); sit(meG, 0, 68); meG.position.set(0, 0.36 - 0.77 * meG.scale.y, 0.02).applyMatrix4(boatG.matrixWorld); meG.rotation.set(0, -boat.yaw, boat.roll); u.sh.visible = false;
-      FIG.turn(u, 'spine', 6 + lean * 17, 0, 0); for (const S of ['L', 'R']) { FIG.turn(u, 'upperarm' + S, -50 - lean * 26, 0, S === 'L' ? 12 : -12); FIG.turn(u, 'forearm' + S, -52 + lean * 40, 0, 0); } u.hd.rotation.x = -lean * 0.12; }
-    else { const e = hop * hop * (3 - 2 * hop); FIG.pose(meG, 0, 0.3, hop < 1); meG.position.set(mix(boat.x, 32.7, e), mix(0.2, BANKY, e) + Math.sin(e * Math.PI) * 0.7, BERTH.z); meG.rotation.set(0, Math.PI / 2, 0); }
-    me.x = boat.x; me.z = boat.z; me.y = WY; me.yaw = boat.yaw; me.speed = boat.v; me.air = false;
-    // the francs: any that the hull passes over are hers
-    let bestP = null, bd = 1.75; for (const g of SC.picks) if (g.visible && !g.userData.pop && g.userData.river) { const px = g.userData.x - boat.x, pz = g.userData.z - boat.z, al = clamp(px * fx + pz * fz, -2.1, 2.1), d = Math.hypot(px - fx * al, pz - fz * al); if (d < bd) { bd = d; bestP = g; } }
-    proxy.x = bestP ? bestP.userData.x : boat.x; proxy.z = bestP ? bestP.userData.z : boat.z; proxy.y = 0; proxy.speed = boat.v; proxy.yaw = boat.yaw; SC.update(dt, proxy, state === 'row', time);
-    // camera: astern and above, swinging round a little after the boat does
-    let dy = boat.yaw - boat.camYaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); boat.camYaw += dy * Math.min(1, dt * 2.2);
-    const cfx = Math.sin(boat.camYaw), cfz = -Math.cos(boat.camYaw), dist = 6.4 + boat.v * 0.22, k = Math.min(1, dt * 5);
-    if (state === 'title') { camera.position.set(boat.x - 9, 2.4, boat.z + 9); camera.lookAt(boat.x - 4, 0.6, boat.z - 30); }
-    else { camera.position.x += (boat.x - cfx * dist - camera.position.x) * k; camera.position.z += (boat.z - cfz * dist - camera.position.z) * k; camera.position.y += (3.0 + boat.v * 0.07 - camera.position.y) * k;
-      camera.lookAt(boat.x + cfx * 7, 0.7, boat.z + cfz * 7); camera.rotation.z += boat.roll * 0.3; camera.fov += (57 + boat.v * 1.5 + boat.surge * 1.6 - camera.fov) * k; camera.updateProjectionMatrix(); }
-  }
-  // ---- on foot
-  else {
-    me.yaw += turn * 2.4 * dt * (me.air ? 0.6 : 1); const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
-    me.speed += (go * 5.4 - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 4));
-    let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
-    for (const o of wobst) { const dx = nx - o.x, dz = nz - o.z, d = Math.hypot(dx, dz), R = o.r + 0.26; if (d < R && d > 1e-4) { nx = o.x + dx / d * R; nz = o.z + dz / d * R; } }
-    const s = snap(nx, nz); me.x = s.x; me.z = s.z; const f = s.y, jump = (keys.has('Space') || held.jump) && state === 'walk';
-    if (jump && !me.air) { me.vy = 5.6; me.air = true; SND.whoosh(0.04); }
-    if (me.air) { me.vy -= (jump && me.vy < 0 ? 7 : 16) * dt; me.y += me.vy * dt; if (me.y <= f && me.vy <= 0) { me.y = f; me.air = false; SND.puff(0.05); } } else me.y += (f - me.y) * Math.min(1, dt * 14);
-    const pace = Math.abs(me.speed) / 5.2, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 1.25); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
-    me.lean += (turn * 0.2 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
-    meG.position.set(me.x, me.y, me.z); meG.rotation.set(0, Math.PI - me.yaw, -me.lean); FIG.pose(meG, me.ph, me.air ? 0.4 : pace, me.air);
-    SC.update(dt, me, state === 'walk', time);
-    setOars(boatG, -1.45, -0.12); boatG.position.y = boatG.userData.draft + Math.sin(time * 1.7) * 0.02; boatG.rotation.z = Math.sin(time * 1.3) * 0.02;
-    if (state === 'walk') {
-      const dP = Math.hypot(me.x - 36.6, me.z - ZP);
-      if (dP < 9 && !said2 && me.z < ZP + 4) { said2 = true; say(renoir, 'Hush! Stand here, and look where we are looking.', 4.5); }
-      if (dP < 2.6 && !me.air) { state = 'dab'; dabReset(); dab.nag = time + 1.2; for (const g of SC.picks) g.visible = false; me.speed = 0; bubble.classList.remove('show'); bubbleG = null; SND.bell(4, 0.08); $('tip').classList.add('hidden'); }
-      if (time > nag) { nag = time + 14; const n = nearest(me.x, me.z).s; if (n < ROUTE.S_BERTH + 30) tip('Over the gangplank to the little round island', 4); else if (n > LEN - 60) tip('The two painters are along the bank', 4); }
+
+    if (state === 'arrive') {
+      tT += dt;
+      const k = Math.min(1, dt * 2.2);
+      boat.x += (25.4 - boat.x) * k; boat.z += (ZP + 6.8 - boat.z) * k;
+      boat.yaw += (1.05 - boat.yaw) * k; boat.yr *= 0.9; boat.v *= 0.92;
+      waterMat.uniforms.uAx.value = Math.max(0, 1 - tT / 2.2);
+      if (tT > 2.4) { state = 'monet'; tT = 0; waterMat.uniforms.uAx.value = 0; waterMat.uniforms.uBoatCut.value = 0; boatG.visible = false; meG.visible = false; }
     }
-    if (state === 'dab') { dab.t += dt; setMode('A'); post.uniforms.uDab.value += (0.08 + 0.6 * dab.n / DABN - post.uniforms.uDab.value) * Math.min(1, dt * 2);
-      if (dab.t > 2.4 && time > dab.next && glints.length < 3) { spawnGlint(); dab.next = time + rnd(0.55, 1.0); }
-      for (const g of [...glints]) if (time - g.born > g.life) { g.dead = true; glints.splice(glints.indexOf(g), 1); g.el.style.opacity = 0; setTimeout(() => g.el.remove(), 380); dab.missed++; if (dab.missed % 4 === 0 && time > bubbleT) say(dabSpeaker, 'Gone! The light will not wait. Dab it while it shines.', 3.2); }
-      if (time > dab.nag) { dab.nag = time + 9; say(dabSpeaker, 'Quick, the sun is on the water! One dab of paint for every glint, before it moves.', 4.5); } }
-    if (state === 'dab' || state === 'monet') { placeDabs(); dabsEl.classList.toggle('fade', state === 'monet' && tT > 5.2); }
-    // ---- the same view twice: first as Monet has it, then, a step to the right, as Renoir has it
-    if (state === 'monet' || state === 'renoir') { tT += dt; const hold = window.__road.dbg.hold;
-      if (state === 'monet') { if (hold) tT = Math.min(tT, 4.5); setMode('A'); post.uniforms.uDab.value += (0.5 - post.uniforms.uDab.value) * dt;
-        if (tT > 3.0 && tT < 3.1) plate('Monet: La Grenouillère', 'La Grenouillère', PLATE_A);
-        if (tT > 5.6 && tT < 10.4) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
-        if (tT > 10.4) { state = 'renoir'; tT = 0; setMode('B'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); SND.whoosh(0.08); lerpTo.fresh = true; camera.position.set(...CAMR.pos); } }
-      else { if (hold) tT = Math.min(tT, 6.6); if (tT > 2.8 && tT < 2.9) $('melt').src = 'images/renoir_grenouillere.jpg';
-        if (tT > 5.2 && tT < 5.3) plate('Renoir: La Grenouillère', 'La Grenouillère', PLATE_B);
-        if (tT > 7.8) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
-        if (tT > 14.5) { state = 'done'; SC.finish(); card(); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); } } }
-    meG.visible = state === 'walk';
-    const lerpToCam = (c, k) => lerpTo(c.pos, c.look, c.fov, k);
-    if (state === 'monet' || state === 'dab') lerpToCam(CAMM, Math.min(1, dt * 1.3)); else if (state === 'renoir' || state === 'done') lerpToCam(CAMR, 1);
-    else { const dist = 3.7, cxp = me.x - fx * dist, czp = me.z - fz * dist, k = Math.min(1, dt * 5.5);
-      camera.position.x += (cxp - camera.position.x) * k; camera.position.z += (czp - camera.position.z) * k; camera.position.y += (me.y + 2.0 - camera.position.y) * k;
-      const lk = [me.x + fx * 7, me.y + 1.0, me.z + fz * 7]; (lerpTo.q || (lerpTo.q = new V3())).set(...lk); camera.lookAt(...lk); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 - camera.fov) * k; camera.updateProjectionMatrix(); }
+
+    /* lively boat lean, gentle swell & feathered steering oars */
+    boat.roll += (-boat.yr * 0.34 - boat.roll) * Math.min(1, dt * 5.2);
+    const waveBob = Math.sin(time * 1.9 + boat.z * 0.08) * 0.03;
+    boatG.visible = state !== 'monet' && state !== 'renoir' && state !== 'done';
+    boatG.position.set(boat.x, boatG.userData.draft + waveBob, boat.z);
+    boatG.rotation.set(Math.sin(time * 1.3) * 0.012 - (boat.v - 4.75) * 0.012, -boat.yaw, boat.roll + Math.sin(time * 1.4) * 0.018, 'YXZ');
+    boatG.updateMatrixWorld(true);
+    waterMat.uniforms.uBoatPos.value.set(boat.x, boat.z);
+    waterMat.uniforms.uBoatDir.value.set(Math.sin(boat.yaw), -Math.cos(boat.yaw));
+
+    /* oars trail lightly and dip on the inside of turns to carve smoothly */
+    const oarR = -1.18 + Math.max(0, turn) * 0.42 + Math.sin(time * 1.5) * 0.04;
+    const oarL = -1.18 + Math.max(0, -turn) * 0.42 + Math.sin(time * 1.5 + 0.8) * 0.04;
+    setOars(boatG, oarR, -0.06 + Math.max(0, turn) * 0.16, oarL, -0.06 + Math.max(0, -turn) * 0.16);
+
+    /* the girl sits facing forward on the thwart, leaning happily into every carve */
+    const u = meG.userData; meG.visible = boatG.visible;
+    FIG.pose(meG, 0, 0); sit(meG, 0, 74);
+    meG.position.set(0, 0.37 - 0.77 * meG.scale.y, 0.25).applyMatrix4(boatG.matrixWorld);
+    meG.rotation.set(0, Math.PI - boat.yaw, -boat.roll * 1.15);
+    u.sh.visible = false;
+    FIG.turn(u, 'spine', 8, -turn * 14, -boat.roll * 26);
+    for (const S of ['L', 'R']) { FIG.turn(u, 'upperarm' + S, -34, 0, S === 'L' ? 18 : -18); FIG.turn(u, 'forearm' + S, -46, 0, 0); }
+    u.hd.rotation.y = -turn * 0.32; u.hd.rotation.x = -0.06;
+
+    /* francs along the river */
+    const fx = Math.sin(boat.yaw), fz = -Math.cos(boat.yaw);
+    let bestP = null, bd = 2.6;
+    for (const g of SC.picks) if (g.visible && !g.userData.pop) {
+      const px = g.userData.x - boat.x, pz = g.userData.z - boat.z;
+      const al = clamp(px * fx + pz * fz, -2.2, 2.2), d = Math.hypot(px - fx * al, pz - fz * al);
+      if (d < bd) { bd = d; bestP = g; }
+    }
+    proxy.x = bestP ? bestP.userData.x : boat.x; proxy.z = bestP ? bestP.userData.z : boat.z;
+    proxy.y = 0; proxy.speed = boat.v; proxy.yaw = boat.yaw;
+    SC.update(dt, proxy, state === 'glide', time);
+
+    /* swooping camera behind the skiff */
+    if (state === 'title') {
+      camera.position.set(START.x - 14 + Math.sin(time * 0.25) * 2.5, 11.5, START.z + 16);
+      camera.lookAt(START.x - 6, 1.4, START.z - 45);
+    } else if (state === 'glide') {
+      const dy = Math.atan2(Math.sin(boat.yaw - boat.camYaw), Math.cos(boat.yaw - boat.camYaw));
+      boat.camYaw += dy * Math.min(1, dt * 3.0);
+      const cfx = Math.sin(boat.camYaw), cfz = -Math.cos(boat.camYaw), dist = 6.2 + (boat.v - 4.5) * 0.25;
+      const se = swoopT * swoopT * (3 - 2 * swoopT);
+      const tx = boat.x - cfx * dist, ty = 2.85 + (1 - se) * 7.5, tz = boat.z - cfz * dist + (1 - se) * 8;
+      const k = Math.min(1, dt * (2.8 + se * 3.4));
+      camera.position.x += (tx - camera.position.x) * k;
+      camera.position.y += (ty - camera.position.y) * k;
+      camera.position.z += (tz - camera.position.z) * k;
+      camera.lookAt(boat.x + cfx * 11, 0.95, boat.z + cfz * 11);
+      camera.rotation.z += boat.roll * 0.34;
+      camera.fov += (60 + Math.abs(turn) * 2.2 + (boat.v - 4.75) * 1.6 - camera.fov) * k;
+      camera.updateProjectionMatrix();
+    } else if (state === 'arrive') {
+      lerpTo(CAMM.pos, CAMM.look, CAMM.fov, Math.min(1, dt * 1.8));
+    }
+  } else {
+    /* ---- the same view twice: Monet's easel, then Renoir's ---- */
+    tT += dt; const hold = window.__road.dbg.hold;
+    if (state === 'monet') {
+      if (hold) tT = Math.min(tT, 3.0);
+      setMode('A'); lerpTo(CAMM.pos, CAMM.look, CAMM.fov, 1);
+      if (tT > 1.0 && tT < 1.15) plate('Monet: La Grenouillère', 'La Grenouillère', PLATE_A);
+      if (tT > 3.2 && tT < 7.6) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (tT > 7.6) {
+        state = 'renoir'; tT = 0; setMode('B');
+        $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show');
+        SND.whoosh(0.08); lerpTo.fresh = true; camera.position.set(...CAMR.pos);
+      }
+    } else if (state === 'renoir') {
+      if (hold) tT = Math.min(tT, 3.6);
+      lerpTo(CAMR.pos, CAMR.look, CAMR.fov, 1);
+      if (tT > 1.4 && tT < 1.55) $('melt').src = 'images/renoir_grenouillere.jpg';
+      if (tT > 2.2 && tT < 2.35) plate('Renoir: La Grenouillère', 'La Grenouillère', PLATE_B);
+      if (tT > 4.0) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
+      if (tT > 8.6) {
+        state = 'done'; SC.finish(); card();
+        $('plate').classList.remove('show'); $('end').classList.remove('hidden');
+        $('melt').classList.remove('show'); document.body.classList.remove('melting');
+      }
+    }
   }
-  // the painters work: a hand lifts to the canvas and comes away
-  for (const [g, p] of [[monet, 0], [renoir, 1.9]]) { FIG.pose(g, 0, 0); g.userData.aR.rotation.x = -1.15 + Math.sin(time * 2.1 + p) * 0.16 + Math.sin(time * 0.37 + p) * 0.25; g.userData.aL.rotation.x = -0.5; g.userData.hd.rotation.y = Math.sin(time * 0.31 + p) > 0.55 ? 0 : 0; g.userData.hd.rotation.x = Math.sin(time * 0.43 + p) > 0.3 ? -0.12 : 0.1; g.visible = !(state === 'monet' && tT > 0.6 || state === 'dab' && dab.t > 0.6 || state === 'renoir' || state === 'done'); }
+
+  /* painters at work on the bank until the camera takes their viewpoint */
+  for (const [g, p] of [[monet, 0], [renoir, 1.9]]) {
+    FIG.pose(g, 0, 0);
+    g.userData.aR.rotation.x = -1.15 + Math.sin(time * 2.1 + p) * 0.16 + Math.sin(time * 0.37 + p) * 0.25;
+    g.userData.aL.rotation.x = -0.5;
+    g.userData.hd.rotation.x = Math.sin(time * 0.43 + p) > 0.3 ? -0.12 : 0.1;
+    g.visible = state === 'title' || state === 'glide' || (state === 'arrive' && tT < 1.5);
+  }
   for (const e of easels) e.visible = monet.visible;
-  if (window.__road.dbg.cam) { const c = window.__road.dbg.cam; camera.position.set(...c.pos); camera.lookAt(...c.look); camera.fov = c.fov || 50; camera.updateProjectionMatrix(); }      // a fixed camera for test shots
-  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.getWorldPosition(new V3()); v.y += 2.3; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 130, innerWidth - 130) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1); } }
-  sunL.position.copy(camera.position).addScaledVector(SUN, 400); sunL.target.position.copy(camera.position);
-  SND.update(0.3 + 0.5 * Math.min(1, Math.abs(boat.v) / 6), clamp(0.12 + (state === 'row' ? Math.abs(boat.v) / 6 * 0.4 : 0.1), 0, 1));
-  { const touch = matchMedia('(pointer: coarse)').matches; let g = null;
-    if (state === 'row') g = 'Row down the river to the floating café, and tie up at the shining ring';
-    else if (state === 'walk') g = 'On foot: over the gangplank, across the little round island, and along the bank to the two painters';
-    else if (state === 'dab') g = `The light will not wait: ${touch ? 'tap' : 'click'} each glint on the water to lay a dab of paint${touch ? '' : ' (or press space)'} · <b>${dab.n} of ${DABN}</b>`;
-    const e = $('goal'); e.style.display = g ? 'block' : 'none'; if (g && e.dataset.g !== g) { e.dataset.g = g; e.innerHTML = '➜ ' + g; } }
+  if (window.__road.dbg.cam) { const c = window.__road.dbg.cam; camera.position.set(...c.pos); camera.lookAt(...c.look); camera.fov = c.fov || 50; camera.updateProjectionMatrix(); }
+
+  if (bubbleG) {
+    if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; }
+    else {
+      const v = bubbleG.getWorldPosition(new V3()); v.y += 2.2; v.project(camera);
+      bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 130, innerWidth - 130) + 'px';
+      bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px';
+      bubble.classList.toggle('show', v.z < 1);
+    }
+  }
+  sunL.position.copy(camera.position).addScaledVector(SUN, 380); sunL.target.position.copy(camera.position);
+  SND.update(0.35 + 0.45 * Math.min(1, boat.v / 6), clamp(0.14 + (state === 'glide' ? 0.32 : 0.08), 0, 1));
+
+  /* single plain next-step line at the foot of the screen */
+  {
+    let g = null;
+    if (state === 'glide') {
+      g = glintsCaught < GLINT_GOAL
+        ? `Steer through the sun-glints to the floating café · <b>${glintsCaught} of ${GLINT_GOAL}</b>`
+        : `Drift on to the floating café ahead · <b>${glintsCaught} glints caught</b>`;
+    }
+    const e = $('goal'); e.style.display = g ? 'block' : 'none';
+    if (g && e.dataset.g !== g) { e.dataset.g = g; e.innerHTML = '➜ ' + g; }
+  }
 }
-function lerpTo(p, look, fov, k) { camera.position.x += (p[0] - camera.position.x) * k; camera.position.y += (p[1] - camera.position.y) * k; camera.position.z += (p[2] - camera.position.z) * k; const q = lerpTo.q || (lerpTo.q = new V3(...look)); q.lerp(new V3(...look), lerpTo.fresh ? 1 : Math.min(1, k * 1.5)); lerpTo.fresh = false; camera.lookAt(q); camera.fov += (fov - camera.fov) * (k >= 1 ? 1 : k); camera.updateProjectionMatrix(); }
-// what is written under each picture, and on the last card: filled in from research/FINDINGS.md
+
+function lerpTo(p, look, fov, k) {
+  camera.position.x += (p[0] - camera.position.x) * k; camera.position.y += (p[1] - camera.position.y) * k; camera.position.z += (p[2] - camera.position.z) * k;
+  const q = lerpTo.q || (lerpTo.q = new V3(...look));
+  q.lerp(new V3(...look), lerpTo.fresh ? 1 : Math.min(1, k * 1.6)); lerpTo.fresh = false;
+  camera.lookAt(q); camera.fov += (fov - camera.fov) * (k >= 1 ? 1 : k); camera.updateProjectionMatrix();
+}
+
 const PLATE_A = 'Claude Monet, 1869 · The Metropolitan Museum of Art, New York', PLATE_B = 'Pierre-Auguste Renoir, 1869 · Nationalmuseum, Stockholm';
 $('endText').innerHTML = `<p>In the summer of 1869 Claude Monet and Pierre-Auguste Renoir, both twenty-eight and both poor, set up their easels side by side at La Grenouillère, “the frog pond”: a floating café and bathing place moored at the island of Croissy on the Seine, about twelve kilometres west of Paris. They painted the same view from almost the same spot. Monet's picture is in the Metropolitan Museum of Art, New York; Renoir's is in the Nationalmuseum, Stockholm.</p>
-  <p><b>Real:</b> the little round island with its one tree, which people called the Camembert and the Flowerpot; the gangplanks joining it to the bank and to the café; the café's wall, lettered for the hire of boats; the rowing boats moored in front; the bathers, the women in long black bathing dress; the sailing boats; the black coats, white trousers and tall hats. The Maison Fournaise at Chatou, where boats were hired from 1857, lies upstream: about a kilometre and a half by water, which this river shortens to under a third. That September Monet wrote to his friend Bazille: “I do have a dream, a painting, the baths of La Grenouillère, for which I have made some bad sketches, but it is only a dream. Renoir, who has just spent two months here, also wants to do this painting.” Those are his words, in the Metropolitan Museum's translation from the French.</p>
-  <p><b>What you did:</b> you caught the light on the water with one dab of paint for each glint, before it moved. That is how these pictures were made. The National Gallery says of Monet's sketches here that they were “painted quickly”, on the spot, to “capture a moment of light”, and that the water is “filled with horizontal, square-ended, overlapping strokes, in greens and blues”, which “capture the ripples of the water”; the Metropolitan Museum calls the strokes in its picture “Morse-code-like dashes of blue, green, and black”. The glints you could click, and Monet's asking for your help, are the game's.</p>
-  <p><b>Imagined:</b> you, your boat and your hiring it at Chatou; the look of the landing there, whose striped awning is borrowed from a picture Renoir painted at the Maison Fournaise twelve years later; the width and windings of the river and where everyone on it happens to be; the landing stage, the gold ring and the café's gangway; the painters' hats, and everything either of them says. Their faces and coats follow portraits of 1867. The letters of the sign that Monet hid behind a white cloth are a guess. Which arm of the Seine the café lay in, the sources do not agree, so the far bank here has no name.</p>`;
-// The level list lives in common/score.js. Until this level is entered there, the shared card would call it "Level 0" and offer Florence next: say nothing false instead.
-function card() { const c = $('scCard'), n = $('scNext'); if (c) c.innerHTML = c.innerHTML.replace(/\d+ clean leaps?/, `${clean} clean catch${clean === 1 ? '' : 'es'} · best run of ${bestRun}`);
-  if (LEVELS.some(l => l.key === 'monet')) return; if (c && c.firstChild && c.firstChild.tagName === 'I') { const br = c.firstChild.nextSibling; c.firstChild.remove(); if (br && br.tagName === 'BR') br.remove(); } if (n) { n.href = '../index.html'; n.textContent = 'Back to the gallery'; } }
+  <p><b>Real:</b> the little round island with its one tree, which people called the Camembert and the Flowerpot; the gangplanks joining it to the bank and to the café; the café's wall, lettered for the hire of boats; the rowing boats moored in front; the bathers, the women in long black bathing dress; the sailing boats; the black coats, white trousers and tall hats. The Maison Fournaise at Chatou, where boats were hired from 1857, lies upstream: about a kilometre and a half by water, shortened here for a brief summer drift. That September Monet wrote to his friend Bazille: “I do have a dream, a painting, the baths of La Grenouillère, for which I have made some bad sketches, but it is only a dream. Renoir, who has just spent two months here, also wants to do this painting.” Those are his words, in the Metropolitan Museum's translation from the French.</p>
+  <p><b>What you saw:</b> this was the summer the two of them broke the river into separate touches of unmixed colour to catch a passing moment of light. The National Gallery says of Monet's sketches here that they were “painted quickly”, on the spot, to “capture a moment of light”, and that the water is “filled with horizontal, square-ended, overlapping strokes, in greens and blues”, which “capture the ripples of the water”; the Metropolitan Museum calls the strokes in its picture “Morse-code-like dashes of blue, green, and black”.</p>
+  <p><b>Imagined:</b> you, your hired skiff and your drift downstream from Chatou; the look of the landing there, whose striped awning is borrowed from Renoir's Luncheon of the Boating Party, painted twelve years later; the width, overhanging willows and windings of the river and where everyone on it happens to be; the sunlit glints bursting into dabs as your hull touches them; the painters' hats. Their faces and coats follow portraits of 1867. The letters hidden by the white cloth on the café wall are supplied. Which arm of the Seine the café lay in, the sources do not agree, so the far bank here has no name.</p>`;
+
+function card() {
+  const c = $('scCard'), n = $('scNext');
+  if (c) c.innerHTML = c.innerHTML.replace(/\d+ clean leaps?/, `${glintsCaught} sun-glint${glintsCaught === 1 ? '' : 's'} caught`);
+  if (LEVELS.some(l => l.key === 'monet')) return;
+  if (c && c.firstChild && c.firstChild.tagName === 'I') { const br = c.firstChild.nextSibling; c.firstChild.remove(); if (br && br.tagName === 'BR') br.remove(); }
+  if (n) { n.href = '../index.html'; n.textContent = 'Back to the gallery'; }
+}
+
 function draw() {
   const w = innerWidth, h = innerHeight;
-  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); target.setSize(Math.round(w * PR), Math.round(h * PR)); post.uniforms.uPx.value.set(1 / (w * PR), 1 / (h * PR)); camera.aspect = w / h; camera.updateProjectionMatrix(); }
-  // the world mirrored in the river: the same camera, sunk as far under the water as it stands above it and looking up
-  camera.updateMatrixWorld(); const p = camera.position, dir = camera.getWorldDirection(new V3()), up = new V3(0, 1, 0).applyQuaternion(camera.quaternion);
-  { const U = waterMat.uniforms.uAx, ax = Math.abs(dir.x), az = Math.abs(dir.z); if (az > ax * 1.3) draw.ax = 1; else if (ax > az * 1.3) draw.ax = 0; U.value = clamp(U.value + ((draw.ax ?? 1) > U.value ? 1 : -1) * 0.04, 0, 1); }
-  reflCam.fov = camera.fov; reflCam.aspect = camera.aspect; reflCam.near = 0.2; reflCam.far = 5000; reflCam.updateProjectionMatrix(); reflCam.position.set(p.x, 2 * WY - p.y, p.z); reflCam.up.set(up.x, -up.y, up.z); reflCam.lookAt(p.x + dir.x, 2 * WY - p.y - dir.y, p.z + dir.z); reflCam.updateMatrixWorld();
+  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) {
+    renderer.setSize(w, h, false); target.setSize(Math.round(w * PR), Math.round(h * PR));
+    post.uniforms.uPx.value.set(1 / (w * PR), 1 / (h * PR)); camera.aspect = w / h; camera.updateProjectionMatrix();
+  }
+  camera.updateMatrixWorld();
+  const p = camera.position, dir = camera.getWorldDirection(new V3()), up = new V3(0, 1, 0).applyQuaternion(camera.quaternion);
+  reflCam.fov = camera.fov; reflCam.aspect = camera.aspect; reflCam.near = 0.2; reflCam.far = 4200; reflCam.updateProjectionMatrix();
+  reflCam.position.set(p.x, 2 * WY - p.y, p.z); reflCam.up.set(up.x, -up.y, up.z);
+  reflCam.lookAt(p.x + dir.x, 2 * WY - p.y - dir.y, p.z + dir.z); reflCam.updateMatrixWorld();
   reflM.set(0.5, 0, 0, 0.5, 0, 0.5, 0, 0.5, 0, 0, 0.5, 0.5, 0, 0, 0, 1).multiply(reflCam.projectionMatrix).multiply(reflCam.matrixWorldInverse);
-  water.visible = false; renderer.clippingPlanes = clipUp; renderer.setRenderTarget(reflRT); renderer.render(scene, reflCam); renderer.clippingPlanes = noClip; water.visible = true;
-  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); renderer.render(postScene, postCam);
+
+  water.visible = false; renderer.clippingPlanes = clipUp; renderer.setRenderTarget(reflRT); renderer.render(scene, reflCam);
+  renderer.clippingPlanes = noClip; water.visible = true;
+  renderer.setRenderTarget(target); renderer.render(scene, camera);
+  renderer.setRenderTarget(null); renderer.render(postScene, postCam);
 }
+
 let last = 0; function frame(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(frame); }
 
-/* ================= input ================= */
-const FWD = ['ArrowUp', 'KeyW', 'KeyZ'];
-addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); if (FWD.includes(e.code) && !e.repeat && !keys.has(e.code) && state === 'row') boat.want = true; keys.add(e.code); if (e.code === 'Space' && !e.repeat && state === 'dab') layDab(glints[0]); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
-addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
+/* ================= input: left/right keys, or slide / hold left or right on touch ================= */
+addEventListener('keydown', e => {
+  if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault();
+  keys.add(e.code);
+  if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin();
+});
+addEventListener('keyup', e => keys.delete(e.code));
+addEventListener('blur', () => { keys.clear(); touch.id = null; touch.dx = 0; touch.side = 0; $('stick').style.display = 'none'; });
+
 const cv = $('cv'), sk = $('stick');
-cv.addEventListener('pointerdown', e => { if (state !== 'row' && state !== 'walk') return; if (stick.id !== null) { if (state === 'row') boat.want = true; else { held.jump = true; held.id = e.pointerId; } return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
-cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
-const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === held.id) held.jump = false; };
+cv.addEventListener('pointerdown', e => {
+  if (state !== 'glide') return;
+  touch.id = e.pointerId; touch.x0 = e.clientX; touch.dx = 0;
+  touch.side = e.clientX < innerWidth * 0.45 ? -1 : e.clientX > innerWidth * 0.55 ? 1 : 0;
+  try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+  sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = '';
+});
+cv.addEventListener('pointermove', e => {
+  if (e.pointerId !== touch.id) return;
+  touch.dx = clamp((e.clientX - touch.x0) / 56, -1, 1);
+  sk.firstElementChild.style.transform = `translate(${touch.dx * 34}px, 0px)`;
+});
+const lift = e => { if (e.pointerId === touch.id) { touch.id = null; touch.dx = 0; touch.side = 0; sk.style.display = 'none'; } };
 cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
-$('bRow').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); if (state === 'row') boat.want = true; });
+
 $('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
-$('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
-/* test hooks, as in turner/street.html. go(x, z) puts the boat there if the place is water, otherwise sets her on foot at the nearest place she may stand. */
-window.__road = { dabs: { get n() { return dab.n; }, get t() { return dab.t; }, glints, lay: layDab }, dbg: { camera, THREE, CAMM, CAMR, scene, traffic, wobst, post, waterMat, gren, cast, hold: false, cam: null }, get state() { return state; }, get mode() { return mode; }, me, boat, begin, stroke: () => { boat.want = true; },
-  get ready() { return state === 'row' && (boat.kind === 'rest' || boat.t >= CYCLE * 0.78); }, get run() { return run; }, get clean() { return clean; }, get bumps() { return bumps; },
-  go(x, z) { if (inRiver(x, z)) { state = 'row'; boat.x = x; boat.z = z; boat.v = 0; boat.lat = 0; $('bRow').style.display = 'flex'; } else { const s = snap(x, z); state = 'walk'; Object.assign(me, { x: s.x, z: s.z, y: s.y, speed: 0, air: false, vy: 0 }); $('bRow').style.display = 'none'; camera.position.set(s.x, s.y + 2.5, s.z + 4); } }, face(a) { if (state === 'row') { boat.yaw = boat.camYaw = a; } else me.yaw = a; },
-  route: s => at(s), nearest, LEN, S_BERTH: ROUTE.S_BERTH, lineX: ROUTE.lineX, BERTH, ZP, ISL, BARGE, snap, bankL, bankR, cx,
-  places: { start: [START.x, START.z], mid: [ROUTE.lineX(-200), -200], berth: [BERTH.x - 6, BERTH.z + 30], stage: [33, ZP + 27], plank: PL_A, islet: IP(-2, -2.4), cafe: [16.2, ZP - 10], gangway: [30, ZP - 15], painters: [36.8, ZP - 6] },
-  jump: { monet() { window.__road.go(36.7, ZP - 1.5); me.yaw = Math.PI; }, renoir() { window.__road.go(36.7, ZP - 3.2); state = 'monet'; tT = 10.5; setMode('A'); } } };
+$('start').addEventListener('click', begin); $('again').addEventListener('click', begin);
+document.addEventListener('gesturestart', e => e.preventDefault());
+
+window.__road = {
+  dbg: { camera, THREE, CAMM, CAMR, scene, traffic, post, waterMat, gren, cast, riverGlints, hold: false, cam: null },
+  get state() { return state; }, get mode() { return mode; }, get glints() { return glintsCaught; }, get bumps() { return bumps; },
+  boat, begin, ZP, ARRIVE_Z, ISL, BARGE, bankL, bankR, cx,
+  go(x, z) { state = 'glide'; boat.x = x; boat.z = z; boat.yaw = Math.atan2(cxSlope(z), 1); boat.camYaw = boat.yaw; swoopT = 1; },
+  jump: {
+    arrive() { state = 'glide'; boat.x = 22; boat.z = ARRIVE_Z + 2; swoopT = 1; },
+    monet() { $('tip').classList.add('hidden'); state = 'monet'; tT = 1.5; setMode('A'); waterMat.uniforms.uAx.value = 0; waterMat.uniforms.uBoatCut.value = 0; boatG.visible = false; meG.visible = false; },
+    renoir() { $('tip').classList.add('hidden'); state = 'renoir'; tT = 2.6; setMode('B'); waterMat.uniforms.uAx.value = 0; waterMat.uniforms.uBoatCut.value = 0; boatG.visible = false; meG.visible = false; }
+  }
+};
 reset(); requestAnimationFrame(frame);
 </script>
 </body>
