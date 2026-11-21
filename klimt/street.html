@@ -4,350 +4,652 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<title>Gold for Herr Klimt: Vienna, 1908</title>
+<title>Gold for Herr Klimt: Into the Gold (Vienna, 1908)</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="../common/world.css">
 <style>
-  :root { --go:#b8861c; } html, body { background:#1c160c; } #title { background:#1c160c; } #title > img, #end > img { background:#1c160c; } #end { background:#2a2114; } #end > img { max-height:46vh; border-color:#e8b830; }
-  #bubble { font-size:17px; }
-  #plate { position:fixed; left:50%; bottom:max(34px, env(safe-area-inset-bottom)); transform:translateX(-50%); text-align:center; opacity:0; transition:opacity 2.5s; pointer-events:none; text-shadow:0 2px 10px rgba(0,0,0,.95); z-index:9; white-space:nowrap; color:#fff6d8; }
-  #plate.show { opacity:1; } #plate i { display:block; font-size:clamp(22px,3.4vw,34px); } #plate span { font-size:clamp(12px,1.7vw,16px); opacity:.9; }
-  #melt { position:fixed; inset:0; margin:auto; height:100vh; max-width:100vw; object-fit:contain; opacity:0; filter:blur(16px) saturate(1.2); transition:opacity 2.4s ease, filter 2.8s ease; pointer-events:none; z-index:8; }
-  #melt.show { opacity:1; filter:none; } #cv { transition:filter 2.6s ease; } body.melting #cv { filter:brightness(.25) blur(4px); }
-  #goal { position:fixed; left:50%; bottom:max(14px, env(safe-area-inset-bottom)); transform:translateX(-50%); z-index:7; font:italic clamp(14px,2vw,18px) "Iowan Old Style",Palatino,Georgia,serif; color:#fff3c8; background:rgba(30,24,12,.62); border-radius:999px; padding:.3em 1.1em; pointer-events:none; white-space:nowrap; transition:opacity .6s; } #goal.hidden { opacity:0; }
-  #kit { position:fixed; top:max(100px, calc(env(safe-area-inset-top) + 88px)); left:50%; transform:translateX(-50%); z-index:7; display:flex; gap:.9em; align-items:center; font:600 clamp(15px,2vw,19px) "Iowan Old Style",Palatino,Georgia,serif; color:#fff3c8; background:rgba(30,24,12,.62); border:1px solid rgba(232,184,48,.5); border-radius:999px; padding:.25em .9em; pointer-events:none; transition:opacity .6s; } #kit.hidden { opacity:0; }
-  #kit span { display:flex; align-items:center; gap:.35em; } #kit i { display:inline-block; width:1em; height:1em; } #kit .lf { background:linear-gradient(135deg,#ffe98a,#e0a820 60%,#fff0a0); transform:rotate(8deg); } #kit .rc { width:.72em; background:linear-gradient(#111 0 34%,#f4f0e4 34% 62%,#111 62% 80%,#b8b8c0 80%); border:1px solid #e8b830; } #kit .rd { border-radius:50%; background:radial-gradient(circle,#e8b830 0 22%,#5a3aa8 22% 46%,#e04a3a 46% 68%,#3a6ad8 68%); }
-  #kit b.pop { animation:kitPop .35s ease-out; } @keyframes kitPop { 40% { transform:scale(1.6); color:#fff; } }
-  @media (max-width:620px) { #kit { top:auto; bottom:max(52px, calc(env(safe-area-inset-bottom) + 44px)); } }
+  :root { --go: #c99220; --gold: #f0ca56; }
+  html, body { background: #1a1408; color: #fbf3dc; }
+  canvas#cv { touch-action: none; }
+
+  #title {
+    background: radial-gradient(circle at 50% 35%, #3d2e10, #191307 78%);
+    justify-content: flex-end;
+    padding: 0;
+    transition: opacity 0.9s ease;
+  }
+  #title > img {
+    position: absolute;
+    top: 3vh;
+    left: 50%;
+    transform: translateX(-50%);
+    width: auto;
+    height: auto;
+    max-width: min(88vw, 60vh);
+    max-height: 58vh;
+    object-fit: contain;
+    border: 4px solid #e5b83b;
+    box-shadow: 0 12px 42px rgba(0, 0, 0, 0.72), 0 0 28px rgba(232, 184, 56, 0.25);
+    background: #1a1408;
+  }
+  #title .words {
+    position: relative;
+    background: linear-gradient(rgba(25, 19, 7, 0), rgba(25, 19, 7, 0.94) 28%, #191307 70%);
+    padding: 44px 24px max(4.2vh, env(safe-area-inset-bottom));
+    width: 100%;
+    box-sizing: border-box;
+  }
+  #title h1 { color: #fae08c; font-size: clamp(28px, 5.4vw, 58px); margin-bottom: 0.14em; }
+  #title p.story {
+    color: #fff6dc;
+    opacity: 1;
+    font-style: normal;
+    font-size: clamp(15px, 2vw, 19px);
+    max-width: min(680px, 92vw);
+    margin: 0.18em auto 0.25em;
+    line-height: 1.42;
+  }
+  #title p.sub { color: #dec47a; font-size: clamp(12px, 1.5vw, 15px); opacity: 0.9; }
+  #title button.go, #end button.go, #end a.go {
+    background: linear-gradient(#f5cf5b, #c58c18);
+    color: #1c1406;
+    font-weight: 600;
+    border: 2px solid #fff0b4;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.55);
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 999px;
+    padding: 0.58em 1.7em;
+    font-size: clamp(17px, 2.3vw, 22px);
+    cursor: pointer;
+  }
+
+  #end {
+    background: radial-gradient(circle at 50% 15%, #34270e, #181207 75%);
+    padding-bottom: max(5vh, env(safe-area-inset-bottom));
+  }
+  #end > img { max-height: 42vh; border: 6px solid #e6b83a; background: #1a1408; }
+  #end h2 { color: #fae08c; }
+  #end h3 { font-weight: 600; font-size: clamp(14px, 1.9vw, 17px); color: #f4d678; margin: 0.7em 0 0.15em; }
+  #end .actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; margin-top: 0.8em; }
+  #end a.mapbtn {
+    background: transparent;
+    color: #f8e9be;
+    border: 1.5px solid rgba(240, 202, 86, 0.65);
+    box-shadow: none;
+    font-weight: 400;
+  }
+
+  #goal {
+    position: fixed;
+    left: 50%;
+    top: max(14px, env(safe-area-inset-top));
+    transform: translateX(-50%);
+    z-index: 7;
+    font: italic clamp(14px, 1.9vw, 18px) "Iowan Old Style", Palatino, Georgia, serif;
+    color: #fff4ce;
+    background: rgba(24, 18, 8, 0.72);
+    border: 1px solid rgba(240, 202, 86, 0.52);
+    border-radius: 999px;
+    padding: 0.34em 1.25em;
+    pointer-events: none;
+    white-space: nowrap;
+    max-width: 90vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    transition: opacity 0.6s ease;
+  }
+  #goal.hidden { opacity: 0; }
+
+  #plate {
+    position: fixed;
+    left: 50%;
+    bottom: max(30px, env(safe-area-inset-bottom));
+    transform: translateX(-50%);
+    text-align: center;
+    opacity: 0;
+    transition: opacity 1.4s ease;
+    pointer-events: none;
+    z-index: 9;
+    color: #fff5d4;
+    background: rgba(24, 18, 8, 0.76);
+    border-top: 1.5px solid #e8bc40;
+    border-bottom: 1.5px solid #e8bc40;
+    padding: 0.45em 1.4em 0.52em;
+    max-width: 90vw;
+  }
+  #plate.show { opacity: 1; }
+  #plate i { display: block; font-size: clamp(20px, 3vw, 32px); color: #fce18b; }
+  #plate span { display: block; font-size: clamp(13px, 1.7vw, 16px); opacity: 0.94; margin-top: 0.15em; }
+
+  #melt {
+    position: fixed;
+    inset: 0;
+    margin: auto;
+    height: 100vh;
+    max-width: 100vw;
+    object-fit: contain;
+    opacity: 0;
+    filter: blur(12px) saturate(1.12);
+    transition: opacity 1.8s ease, filter 2.1s ease;
+    pointer-events: none;
+    z-index: 8;
+  }
+  #melt.show { opacity: 1; filter: none; }
+  #cv { transition: filter 1.8s ease; }
+  body.melting #cv { filter: brightness(0.28) blur(4px); }
+
+  #tip {
+    color: #ffeeb8;
+    bottom: max(18px, env(safe-area-inset-bottom));
+    padding: 0 24px;
+  }
 </style>
 <script type="importmap">{ "imports": { "three": "../vendor/three@0.160.0/build/three.module.js", "three/addons/": "../vendor/three@0.160.0/examples/jsm/" } }</script>
 </head>
 <body>
 <canvas id="cv"></canvas>
-<div id="bubble"></div><div id="stick"><i></i></div><div id="tip" class="hidden"></div><div id="goal" class="hidden"></div>
-<div id="kit" class="hidden"><span><i class="lf"></i><b id="kLeaf">0</b></span><span><i class="rc"></i><b id="kRect">0</b></span><span><i class="rd"></i><b id="kRound">0</b></span></div>
-<img id="melt" src="images/adele.jpg" alt=""><div id="plate"></div>
+<div id="stick"><i></i></div>
+<div id="goal" class="hidden"></div>
+<div id="tip" class="hidden"></div>
+<img id="melt" src="images/adele.jpg" alt="">
+<div id="plate"></div>
 <button id="bMute" aria-label="Sound"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 7.5h3.2L11 3.5v13l-4.8-4H3z"/><path id="waves" d="M13.5 6.5c1.6 1.9 1.6 5.1 0 7M15.8 4.3c2.9 3.2 2.9 8.2 0 11.4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></button>
+
 <div id="title" class="screen">
-  <img src="images/kiss.jpg" alt="The Kiss by Gustav Klimt, 1908">
-  <div class="words"><h1>Gold for Herr Klimt</h1><p>Vienna, 1908 · after Gustav Klimt</p><button class="go" id="start">Catch the gold</button></div>
+  <img src="images/kiss.jpg" alt="The Kiss by Gustav Klimt, 1908–09, Belvedere, Vienna">
+  <div class="words">
+    <h1>Gold for Herr Klimt</h1>
+    <p class="story">You are gliding through Gustav Klimt’s world of flat gold: steer through his curling spirals, gather the flowers and circles for your cloak while rectangles dress your partner, and meet on the flowered cliff.</p>
+    <p class="sub">Vienna, 1908 · after Gustav Klimt</p>
+    <button class="go" id="start">Glide into the gold</button>
+  </div>
 </div>
+
 <div id="end" class="screen hidden">
-  <img src="images/kiss.jpg" alt="The Kiss by Gustav Klimt, 1908">
-  <h2>What was there, and what is still there</h2>
-  <p>What is real. Gustav Klimt was born near Vienna in 1862, the son of a gold engraver. In December 1903 he went to Ravenna and saw the gold mosaics of San Vitale, which a friend who was with him said made an immense impression on him. In the pictures of his golden years he laid real gold and silver leaf on the canvas, and kept ordinary oil paint for the faces and hands: in the Portrait of Adele Bloch-Bauer I (finished 1907, 138 cm square) her hair, face, shoulders and hands are painted in oil and make up less than a twelfth of the picture. The Kiss (180 cm square; oil with gold leaf, silver and platinum) was shown in 1908 under the title Lovers. Its man wears rectangles and its woman rounds and flowers; one historian, Werner Hofmann, read that contrast of square and round patterns as the picture's real subject. Both pictures hung at the Kunstschau, the exhibition Klimt and his friends held from 1 June to 16 November 1908 in a wooden building by Josef Hoffmann with 54 rooms, on the empty plot where the Konzerthaus now stands. The state bought The Kiss there for 25,000 Kronen, before it was finished: Klimt completed it in 1909. It hangs in the Belvedere in Vienna; Adele is in the Neue Galerie in New York.</p>
-  <p>What you ran past. The Secession was built in 1897–98 by Joseph Maria Olbrich; its dome is a ball of gilded iron leaves that the Viennese called the cabbage head, and its front says “To every age its art, to every art its freedom”. Karlsplatz got its name in 1899, when the river Wien had been roofed over (1894–1900). Otto Wagner's two Stadtbahn pavilions, green iron and white marble with gilded sunflowers, were finished in 1898 and opened in 1899. The market had been moving on to the roofed-over river beside the Secession since 1902. Vienna's trams were electric by then (the last horse tram ran on 26 June 1903) and the Viennese call a tram a Bim. The Musikverein and the Karlskirche stand as they stood.</p>
-  <p>What has changed. The Konzerthaus (1913) covers the Kunstschau's ground. The pavilions were taken down when the underground was built and put up again two metres higher. The underground entrances and the newer buildings on the square are left out here, and the stone market stalls date only from 1910 onwards. Klimt himself had left the Secession some years before 1908: the sources read here put the split in 1905.</p>
-  <p>What is not checked. The street names are today's. The tram lines cross where today's rails cross, and the trams wear today's red and white. The gardens follow today's outlines. How the Kunstschau looked outside and how its rooms lay was not found in a source read for this level: the white front, the open roof and the single room are the game's. So are the size of the pictures (they are shown several times larger than life), and the outlines that decide which part of each picture is “his”, “hers” and “flesh”, which were drawn by eye. The coin's silver colour was not checked either.</p>
-  <p>What is the game's own. The girl and her errand; the wind; every word spoken, Klimt's included; the notion that the pictures were gilded and dressed at the exhibition (they were painted in his studio) and that patterns come in pieces; the cabbages, the waiters' collisions, the runaway hat and the nameless coffee house. Nobody chased gold leaf down Karlsplatz.</p>
-  <p class="small">Paintings: Gustav Klimt (died 1918), public domain, via Wikimedia Commons (The Kiss: Google Art Project; Adele Bloch-Bauer I: The Yorck Project). Every texture in this level was painted by a script for it; nothing is photographed. Street plan © <a href="https://www.openstreetmap.org/copyright" style="color:inherit">OpenStreetMap</a> contributors. Sources for every statement, and what could not be checked: <a href="research/FINDINGS.md" style="color:inherit">research/FINDINGS.md</a>.</p>
-  <button class="go" id="again">Run it again</button>
+  <img src="images/kiss.jpg" alt="The Kiss by Gustav Klimt, 1908–09, Belvedere, Vienna">
+  <h2>The Kiss (1908–09) — Flat Gold and Living Faces</h2>
+  <h3>Why flat gold?</h3>
+  <p>In his Golden Period, Gustav Klimt (1862–1918) used real gold leaf, silver, platinum, gold dust and fine gold powder bound in oil. As the Belvedere notes, real gold does not fake deep space: it reflects light and celebrates the flatness of the picture plane, making the canvas feel like a precious decorative object. Against those flat metal patterns, Klimt painted faces and hands naturally in oil.</p>
+  <h3>Two kinds of pattern</h3>
+  <p>In <i>The Kiss</i> (Belvedere, Vienna, 1908–09), the couple stand in a flowering meadow against a dark, gold-speckled ground. The woman’s dress and golden mantle are covered in concentric circles, spirals and floral forms; by contrast, the man’s robe is built from strong upright rectangles in black, white, silver and gold.</p>
+  <h3>What you glided through</h3>
+  <p>The curling spiral branches, black-and-white oval eyes and stylised black bird come from Klimt’s nine full-scale working drawings for the <i>Stoclet Frieze</i> (<i>Tree of Life</i>, 1908–11, MAK, Vienna). The all-seeing eyes set inside golden triangles, spiral sun halo and black-and-white Wiener Werkstätte checker trim come from <i>Portrait of Adele Bloch-Bauer I</i> (1907, Neue Galerie New York), painted after Klimt’s December 1903 visit to the sixth-century Byzantine mosaics of San Vitale in Ravenna. The dark ground studded with bold colourful mosaic patches echoes <i>Death and Life</i> (1910–11, reworked to 1916, Leopold Museum, Vienna).</p>
+  <h3>What is partly verified, and what is ours</h3>
+  <p>Encyclopaedia entries (Wikipedia, English and German) record that <i>The Kiss</i> and <i>Adele Bloch-Bauer I</i> were shown together at the 1908 Kunstschau in Vienna and that the state bought <i>The Kiss</i> there for 25,000 Kronen; Belvedere’s collection record could not be fetched directly. Gliding down a golden ribbon, trailing pattern behind your feet, and gathering ornaments onto cloaks in motion are the game’s own way of letting you feel how Klimt built a painting.</p>
+  <p class="small">Paintings: Gustav Klimt (died 1918), public domain via Wikimedia Commons (<i>The Kiss</i>: Google Art Project / Belvedere; <i>Adele Bloch-Bauer I</i>: The Yorck Project / Neue Galerie New York). All ornament textures are drawn in code from museum references. Sources and verification notes: <a href="research/FINDINGS.md" style="color:inherit">research/FINDINGS.md</a>.</p>
+  <div class="actions">
+    <button class="go" id="again">Glide again</button>
+    <a class="go mapbtn" href="../index.html">Back to the map</a>
+  </div>
 </div>
 <div id="err">This world needs WebGL, which this browser could not start.</div>
 
 <script src="../common/sound.js"></script>
 <script type="module">
 import * as THREE from 'three';
-import { rnd, clamp, sstep, mix } from '../common/world.js';
-import { makeGuide } from '../common/guide.js';
-import { makeScore } from '../common/score.js';
-import { makeFigures } from '../common/figure.js';
-import { makeTown } from './town.js';
-import { makeLife } from './life.js';
-import { PLAN } from './plan.js';
-const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3, C = c => new THREE.Color(c);
-const map = await (await fetch('map.json')).json();
+import '../common/home.js';
+import { clamp, sstep, mix } from '../common/world.js';
+import { makePatterns } from './patterns.js';
+import { makeKlimtSky, makeKlimtFX } from './shader.js';
+import { TRACK_LEN, HALF_W, makeTrack, makeKlimtFigure, buildKlimtWorld, makeOrnaments, makeTrail, makeSparks } from './world.js';
 
-/* ================= the route (plan.js) ================= */
-const ROUTE = PLAN.route; const cum = [0]; for (let i = 1; i < ROUTE.length; i++) cum.push(cum[i - 1] + Math.hypot(ROUTE[i][0] - ROUTE[i - 1][0], ROUTE[i][1] - ROUTE[i - 1][1]));
-const LEN = cum[cum.length - 1];
-function at(s) { s = clamp(s, 0, LEN - 0.01); let i = 1; while (cum[i] < s) i++; const t = (s - cum[i - 1]) / (cum[i] - cum[i - 1]), a = ROUTE[i - 1], b = ROUTE[i], L = Math.hypot(b[0] - a[0], b[1] - a[1]); return { x: mix(a[0], b[0], t), z: mix(a[1], b[1], t), dx: (b[0] - a[0]) / L, dz: (b[1] - a[1]) / L }; }
-function nearest(x, z) { let best = 1e9, s = 0; for (let i = 1; i < ROUTE.length; i++) { const a = ROUTE[i - 1], b = ROUTE[i], dx = b[0] - a[0], dz = b[1] - a[1], t = clamp(((x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz), 0, 1), d = Math.hypot(x - a[0] - dx * t, z - a[1] - dz * t); if (d < best) { best = d; s = cum[i - 1] + t * (cum[i] - cum[i - 1]); } } return { s, d: best }; }
-const side = (p, u, v) => [p.x + p.dx * u - p.dz * v, p.z + p.dz * u + p.dx * v];
-const S_START = 3, CORR = 15, LAND = 0;
-/* a stage is set out from the painter's eye: r metres to his right, d metres away from him */
-const frame = (ox, oz, dx, dz) => { const L = Math.hypot(dx, dz); dx /= L; dz /= L; const rx = -dz, rz = dx; return { ox, oz, dx, dz, rx, rz, P: (r, d) => [ox + r * rx + d * dx, oz + r * rz + d * dz], face: Math.atan2(dx, dz) }; };
-const F_AD = frame(...PLAN.adele.eye, ...PLAN.adele.dir), F_KS = frame(...PLAN.kiss.eye, ...PLAN.kiss.dir), S_AD = nearest(PLAN.adele.c[0], -72).s, RM = PLAN.room;
+const $ = id => document.getElementById(id), SND = window.Sound, V3 = THREE.Vector3;
 
-/* ================= renderer, and the rule of this world: gold, and pattern instead of depth =================
-   The picture is rendered once and laid again as small square tesserae, each one flat colour, as in the mosaics of Ravenna that Klimt saw in 1903;
-   and whatever is golden glints. */
-let renderer; try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); } catch (e) { $('err').style.display = 'flex'; throw e; }
-const PR = Math.min(devicePixelRatio || 1, 1.5); renderer.setPixelRatio(PR);
-const scene = new THREE.Scene(); scene.fog = new THREE.Fog(0xd8dcd6, 120, 1300);
-const camera = new THREE.PerspectiveCamera(58, 1, 0.2, 4000);
+/* ================= renderer & Klimt post-process ================= */
+let renderer;
+try { renderer = new THREE.WebGLRenderer({ canvas: $('cv'), antialias: false }); }
+catch (e) { $('err').style.display = 'flex'; throw e; }
+const PR = Math.min(devicePixelRatio || 1, 1.5);
+renderer.setPixelRatio(PR);
+renderer.setClearColor(0x1a1408, 1);
+
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(60, 1, 0.2, 1200);
 const target = new THREE.WebGLRenderTarget(4, 4, { type: THREE.HalfFloatType });
-const post = new THREE.ShaderMaterial({ uniforms: { tScene: { value: target.texture }, uPx: { value: new THREE.Vector2() }, uScale: { value: 1 }, uTime: { value: 0 }, uFlat: { value: 0.4 } },
-  vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
-  fragmentShader: `uniform sampler2D tScene; uniform vec2 uPx; uniform float uScale, uTime, uFlat; varying vec2 vUv;
-    float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
-    vec3 S(vec2 uv){ return texture2D(tScene, uv).rgb; }
-    void main(){
-      vec2 px = uPx * uScale; float T = 4.0; vec2 q = vUv / px / T, cell = floor(q), f = fract(q); float h = hash(cell);
-      vec3 tess = S((cell + 0.5) * T * px) * (0.92 + 0.16 * h);
-      float grout = smoothstep(0.0, 0.16, f.x) * smoothstep(0.0, 0.16, f.y);
-      vec3 col = mix(S(vUv), tess * mix(0.78, 1.0, grout), uFlat);
-      float L = dot(col, vec3(0.3, 0.59, 0.11)); col = mix(vec3(L), col, 1.14);
-      float gold = smoothstep(0.42, 0.62, col.r - col.b) * smoothstep(0.2, 0.55, col.g);
-      col += vec3(1.0, 0.82, 0.35) * gold * pow(hash(cell + floor(uTime * 3.0)), 14.0) * 0.55;
-      col *= vec3(1.03, 1.0, 0.94);
-      col *= 1.0 - 0.3 * pow(length(vUv - 0.5) * 1.25, 2.6);
-      gl_FragColor = vec4(col, 1.0);
-      #include <tonemapping_fragment>
-      #include <colorspace_fragment>
-    }`, depthTest: false, depthWrite: false });
-const postScene = new THREE.Scene(), postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1); postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), post));
+target.depthTexture = new THREE.DepthTexture(4, 4, THREE.FloatType);
+const FX = makeKlimtFX(THREE, { sceneTex: target.texture, depthTex: target.depthTexture });
+const postScene = new THREE.Scene();
+const postCam = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+postScene.add(new THREE.Mesh(new THREE.PlaneGeometry(2, 2), FX.material));
 
-/* ================= light and sky: a bright windy day in June ================= */
-const hemi = new THREE.HemisphereLight(C('#dfe8f4'), C('#a89878'), 2.4), sun = new THREE.DirectionalLight(C('#fff0cc'), 3.0); sun.position.set(-60, 120, 80); scene.add(hemi, sun, sun.target);
-const uni = { uTime: { value: 0 }, uSun: { value: new V3(-60, 120, 80).normalize() } };
-const sky = new THREE.Mesh(new THREE.SphereGeometry(3000, 40, 20), new THREE.ShaderMaterial({ side: THREE.BackSide, depthWrite: false, fog: false, uniforms: uni,
-  vertexShader: 'varying vec3 vDir; void main(){ vDir = position; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-  fragmentShader: `uniform float uTime; uniform vec3 uSun; varying vec3 vDir;
-    float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453); }
-    float noise(vec2 p){ vec2 i = floor(p), f = fract(p); f = f * f * (3.0 - 2.0 * f); return mix(mix(hash(i), hash(i + vec2(1.0, 0.0)), f.x), mix(hash(i + vec2(0.0, 1.0)), hash(i + vec2(1.0, 1.0)), f.x), f.y); }
-    float fbm(vec2 p){ float v = 0.0, a = 0.5; for (int i = 0; i < 5; i++) { v += a * noise(p); p = p * 2.03 + 7.1; a *= 0.5; } return v; }
-    void main(){ vec3 d = normalize(vDir); float el = d.y;
-      vec3 base = mix(vec3(0.84, 0.88, 0.88), vec3(0.30, 0.52, 0.82), smoothstep(-0.02, 0.6, el));
-      vec2 p = d.xz / (max(el, 0.0) + 0.16) * 0.85 + uTime * vec2(0.03, 0.012);
-      float c = fbm(p), cs = fbm(p + uSun.xz * 0.16), cover = smoothstep(0.50, 0.72, c), lit = clamp(0.5 + (c - cs) * 5.0, 0.0, 1.0);
-      vec3 cl = mix(vec3(0.62, 0.64, 0.70), vec3(1.0, 0.97, 0.90), lit);
-      vec3 col = mix(base, cl, cover * smoothstep(-0.03, 0.10, el));
-      gl_FragColor = vec4(col, 1.0); }` }));
-sky.frustumCulled = false; sky.renderOrder = -10; sky.onBeforeRender = (r, s, cam) => sky.position.copy(cam.position); scene.add(sky);
+/* Warm soft lighting reserved for naturally painted faces & hands (ornament planes are flat-lit) */
+const hemi = new THREE.HemisphereLight('#fff4d8', '#684c18', 1.45);
+const sun = new THREE.DirectionalLight('#fff2cc', 1.15);
+sun.position.set(25, 60, 40);
+scene.add(hemi, sun);
 
-/* ================= the town (town.js) ================= */
-const TOWN = makeTown({ THREE, scene }), TX = TOWN.tex, inPoly = TOWN.inPoly, lam = TOWN.lam, basic = TOWN.basic, box = TOWN.box;
-const shadowM = basic({ color: 0x2a2010, transparent: true, opacity: 0.28, depthWrite: false });
-const OWN = ['secession', 'pavilion', 'karlskirche'], KEYED = {}; for (const b of map.buildings) if (b.k) (KEYED[b.k] = KEYED[b.k] || []).push(b);
-const TW = TOWN.houses(map, (x, z) => nearest(x, z), b => OWN.includes(b.k)), blocks = TW.blocks;
-{ const g = new THREE.PlaneGeometry(2600, 1700), u = g.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, u.getX(i) * 700, u.getY(i) * 460); const m = new THREE.Mesh(g, lam({ map: TX.setts })); m.rotation.x = -Math.PI / 2; m.position.set(100, LAND, 0); scene.add(m); }
-/* the gardens of the square (today's outlines: not checked for 1908) and their trees */
-const greens = map.green.filter(g => g.p.length > 3 && !(g.p.every(q => q[0] > 520 && q[1] < 0)));
-{ const gm = lam({ map: TX.grass }); const spots = [];
-  for (const gr of greens) { const sh = new THREE.Shape(gr.p.map(([x, z]) => new THREE.Vector2(x, -z))), g = new THREE.ShapeGeometry(sh), u = g.attributes.uv; for (let i = 0; i < u.count; i++) u.setXY(i, u.getX(i) / 5, u.getY(i) / 5); const m = new THREE.Mesh(g, gm); m.rotation.x = -Math.PI / 2; m.position.y = 0.03; scene.add(m);
-    let x0 = 1e9, x1 = -1e9, z0 = 1e9, z1 = -1e9; for (const q of gr.p) { x0 = Math.min(x0, q[0]); x1 = Math.max(x1, q[0]); z0 = Math.min(z0, q[1]); z1 = Math.max(z1, q[1]); }
-    for (let x = x0 + 5; x < x1; x += 15) for (let z = z0 + 5; z < z1; z += 15) { const tx = x + Math.sin(x * 1.3 + z) * 4, tz = z + Math.cos(z * 1.7 + x) * 4, n = nearest(tx, tz); if (inPoly(gr.p, tx, tz) && n.d > 8 && n.d < 150 && spots.length < 120) spots.push([tx, tz]); } }
-  const trunk = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.22, 0.3, 4, 7), lam({ color: '#5a4636' }), spots.length), crown = new THREE.InstancedMesh(new THREE.IcosahedronGeometry(3.2, 1), lam({ color: '#ffffff' }), spots.length * 2), M4 = new THREE.Matrix4();
-  spots.forEach(([x, z], i) => { const k = 0.8 + ((i * 37) % 10) / 20; M4.makeScale(1, k, 1).setPosition(x, 2 * k, z); trunk.setMatrixAt(i, M4); M4.makeScale(k, k * 0.9, k).setPosition(x, 5.6 * k, z); crown.setMatrixAt(i * 2, M4); M4.makeScale(k * 0.7, k * 0.7, k * 0.7).setPosition(x + 1.2, 7.6 * k, z + 0.8); crown.setMatrixAt(i * 2 + 1, M4); crown.setColorAt(i * 2, C(['#7fa860', '#8ab46a', '#76a05a'][i % 3])); crown.setColorAt(i * 2 + 1, C(['#9cc47a', '#8ab46a'][i % 2])); });
-  scene.add(trunk, crown); }
-/* the roadway itself, laid over the gardens: a ribbon of setts along the walk */
-{ const pos = [], uv = [], idx = []; let n = 0; for (let q = 0; q <= LEN - 52; q += 4) { const p = at(q), [ax, az] = side(p, 0, -CORR + 0.6), [bx, bz] = side(p, 0, CORR - 0.6); pos.push(ax, 0.05, az, bx, 0.05, bz); uv.push(0, q / 3.7, 8, q / 3.7); if (n) idx.push(n * 2 - 2, n * 2 - 1, n * 2, n * 2 - 1, n * 2 + 1, n * 2); n++; }
-  const g = new THREE.BufferGeometry(); g.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3)); g.setAttribute('uv', new THREE.Float32BufferAttribute(uv, 2)); g.setIndex(idx); g.computeVertexNormals(); const m = new THREE.Mesh(g, lam({ map: TX.setts, side: THREE.DoubleSide })); scene.add(m); }
-/* the named buildings */
-const solids = [], rounds = [];
-const SEC = PLAN.secession, secO = [SEC.front[0] - SEC.n[0] * 12, SEC.front[1] - SEC.n[1] * 12], SECB = TOWN.secession(secO[0], secO[1], SEC.n[0], SEC.n[1]);
-for (const pv of PLAN.pavilions) { TOWN.pavilion(pv.c[0], pv.c[1], pv.n[0], pv.n[1]); solids.push({ x: pv.c[0], z: pv.c[1], w: 4.6, d: 7.9, c: pv.n[0], s: pv.n[1] }); }
-TOWN.karlskirche(PLAN.karlskirche.c[0], PLAN.karlskirche.c[1], PLAN.karlskirche.n[0], PLAN.karlskirche.n[1]);
-/* the Kunstschau: a white front on the Lothringerstrasse and one tall room open to the sky (the level's own plan: see the end card) */
-{ const W = lam({ color: '#eef1f4' }), h = RM.h, cx = (RM.x0 + RM.x1) / 2, cz = (RM.z0 + RM.z1) / 2, floor = new THREE.Mesh(new THREE.PlaneGeometry(RM.x1 - RM.x0, RM.z1 - RM.z0), lam({ color: '#8f8a84' })); floor.rotation.x = -Math.PI / 2; floor.position.set(cx, 0.04, cz); scene.add(floor);
-  box(scene, RM.x1 - RM.x0 + 1.2, h, 0.6, W, cx, h / 2, RM.z0 - 0.3); box(scene, RM.x1 - RM.x0 + 1.2, h, 0.6, W, cx, h / 2, RM.z1 + 0.3); box(scene, 0.6, h, RM.z1 - RM.z0, W, RM.x1 + 0.3, h / 2, cz);
-  solids.push({ x: cx, z: RM.z0 - 0.3, w: 31, d: 0.7, c: 1, s: 0 }, { x: cx, z: RM.z1 + 0.3, w: 31, d: 0.7, c: 1, s: 0 }, { x: RM.x1 + 0.3, z: cz, w: 0.7, d: 13, c: 1, s: 0 });
-  const [d0, d1] = RM.door, fx = RM.x0 - 0.5; for (const [a, b] of [[-112, d0], [d1, -8]]) { box(scene, 1.0, 6.4, b - a, W, fx, 3.2, (a + b) / 2); solids.push({ x: fx, z: (a + b) / 2, w: 0.8, d: (b - a) / 2, c: 1, s: 0 }); box(scene, 1.3, 0.3, b - a, lam({ color: '#1c1c20' }), fx, 6.5, (a + b) / 2); }
-  box(scene, 1.6, 5.2, d1 - d0 + 8, W, fx, 7.4, (d0 + d1) / 2); for (const e of [d0 - 2.2, d1 + 2.2]) { box(scene, 2.2, 11, 2.2, W, fx, 5.5, e); for (let k = 0; k < 4; k++) box(scene, 0.5, 0.5, 0.5, TOWN.goldM, fx - 1.0, 8.6 - k * 0.9, e + (k % 2 ? 0.4 : -0.4)); }
-  const sign = new THREE.Mesh(new THREE.PlaneGeometry(9, 1.5), basic({ map: TOWN.lettered(['KUNSTSCHAU WIEN 1908'], 512, 86, { ink: '#1c1c20' }), transparent: true })); sign.position.set(fx - 0.82, 7.6, (d0 + d1) / 2); sign.rotation.y = -Math.PI / 2; scene.add(sign);
-  /* a chequer of black and white squares round the door */
-  const chk = TOWN.canvasTex(64, 64, (g) => { g.fillStyle = '#f4f0e6'; g.fillRect(0, 0, 64, 64); g.fillStyle = '#16161a'; g.fillRect(0, 0, 32, 32); g.fillRect(32, 32, 32, 32); }); chk.repeat.set(1, 8); for (const e of [d0 - 0.3, d1 + 0.3]) { const st = new THREE.Mesh(new THREE.PlaneGeometry(0.5, 4.8), basic({ map: chk })); st.position.set(fx - 0.52, 2.4, e); st.rotation.y = -Math.PI / 2; scene.add(st); } }
-const inBlock = (x, z) => blocks.some(b => x > b.x0 && x < b.x1 && z > b.z0 && z < b.z1 && inPoly(b.p, x, z)), secP = KEYED.secession[0].p;
-const inHouse = (x, z) => inBlock(x, z) || inPoly(secP, x, z) || solids.some(h => { const dx = x - h.x, dz = z - h.z, u = dx * h.c + dz * h.s, v = -dx * h.s + dz * h.c; return Math.abs(u) < h.w && Math.abs(v) < h.d; }) || rounds.some(h => Math.hypot(x - h.x, z - h.z) < h.r);
-const floorAt = (x, z) => nearest(x, z).d > CORR ? null : LAND, blocked = (x, z) => inHouse(x, z) || floorAt(x, z) === null, hAt = () => LAND;
-const TRAM_S = PLAN.trams.map(t => nearest(t[0], t[1]).s);
-/* iron posts and a chain along every open edge of the way */
-{ const postM = lam({ color: '#3f5a46' }), chainM = lam({ color: '#2a2a2e' }), pg = new THREE.CylinderGeometry(0.07, 0.09, 1.0, 6), cg = new THREE.BoxGeometry(2.6, 0.04, 0.04), spots = [];
-  for (const sd of [-1, 1]) for (let q = 2; q < LEN - 56; q += 2.6) { if (TRAM_S.some(t => Math.abs(t - q) < 5)) continue; const p = at(q), [x, z] = side(p, 0, (CORR - 1) * sd); if (inHouse(x, z) || nearest(x, z).d < CORR - 1.8) continue; spots.push([x, z, -Math.atan2(p.dz, p.dx), p]); solids.push({ x, z, w: 1.5, d: 0.3, c: p.dx, s: p.dz }); }
-  const posts = new THREE.InstancedMesh(pg, postM, spots.length * 2), chains = new THREE.InstancedMesh(cg, chainM, spots.length), M4 = new THREE.Matrix4(), Q = new THREE.Quaternion(), one = new V3(1, 1, 1);
-  spots.forEach(([x, z, ry, p], i) => { Q.setFromAxisAngle(new V3(0, 1, 0), ry); M4.compose(new V3(x, 0.78, z), Q, one); chains.setMatrixAt(i, M4); for (const e of [-1.3, 1.3]) { M4.makeTranslation(x + p.dx * e, 0.5, z + p.dz * e); posts.setMatrixAt(i * 2 + (e > 0 ? 1 : 0), M4); } }); scene.add(posts, chains); }
+const SKY = makeKlimtSky(THREE);
+SKY.mesh.onBeforeRender = (_r, _s, cam) => SKY.mesh.position.copy(cam.position);
+scene.add(SKY.mesh);
 
-/* gas lamps along the way (candelabra of the Ringstrasse kind: an impression, their places the level's own) */
-{ const spots = []; for (let q = 14; q < LEN - 60; q += 27) for (const sd of [-1, 1]) { const p = at(q), [x, z] = side(p, 0, sd * (CORR - 2.2)); if (!inHouse(x, z) && nearest(x, z).d > CORR - 4) spots.push([x, z]); }
-  const pole = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.06, 0.11, 4.2, 7), lam({ color: '#2f4a3a' }), spots.length), head = new THREE.InstancedMesh(new THREE.CylinderGeometry(0.26, 0.16, 0.5, 6), basic({ color: '#fff4d0' }), spots.length), cap = new THREE.InstancedMesh(new THREE.ConeGeometry(0.32, 0.25, 6), lam({ color: '#2f4a3a' }), spots.length), M4 = new THREE.Matrix4();
-  spots.forEach(([x, z], i) => { M4.makeTranslation(x, 2.1, z); pole.setMatrixAt(i, M4); M4.makeTranslation(x, 4.45, z); head.setMatrixAt(i, M4); M4.makeTranslation(x, 4.82, z); cap.setMatrixAt(i, M4); rounds.push({ x, z, r: 0.25 }); }); scene.add(pole, head, cap); }
+/* ================= textures, world, figures & trails ================= */
+const PAT = makePatterns(THREE);
+const TL = new THREE.TextureLoader();
+const adeleTex = await TL.loadAsync('images/adele.jpg');
+adeleTex.colorSpace = THREE.SRGBColorSpace;
 
-/* ================= the two pictures: canvases that are finished as she plays =================
-   Each is its real painting seen through a mask (tex/*_mask.png): what Klimt painted naturally (blue in the mask) is there from the start; the gold ground
-   comes in square leaves, column by column; the man's robe comes in rectangles (red) and the woman's in rounds (green), a band at a time. Until then the
-   canvas shows the picture as a pale drawing. prog is a tiny texture of progress values the game writes. */
-const loader = new THREE.TextureLoader(), loadT = (u, srgb = true) => new Promise(res => loader.load(u, t => { if (srgb) t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; res(t); }));
-async function makeCanvas(name, P, F) { const [tp, tm, ts] = await Promise.all([loadT(`images/${name}.jpg`), loadT(`tex/${name}_mask.png`, false), loadT(`tex/${name}_sketch.jpg`)]);
-  const data = new Uint8Array(16 * 2 * 4), prog = new THREE.DataTexture(data, 16, 2, THREE.RGBAFormat); prog.magFilter = prog.minFilter = THREE.NearestFilter; prog.needsUpdate = true;
-  const mat = new THREE.ShaderMaterial({ uniforms: { tPaint: { value: tp }, tMask: { value: tm }, tSketch: { value: ts }, tProg: { value: prog }, uTime: uni.uTime, uShake: { value: 0 } },
-    vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
-    fragmentShader: `uniform sampler2D tPaint, tMask, tSketch, tProg; uniform float uTime, uShake; varying vec2 vUv;
-      float hash(vec2 p){ p = fract(p * vec2(123.34, 456.21)); p += dot(p, p + 45.32); return fract(p.x * p.y); }
-      void main(){ vec2 uv = vUv; float v = 1.0 - uv.y; vec3 m = texture2D(tMask, uv).rgb, paint = texture2D(tPaint, uv).rgb, sk = texture2D(tSketch, uv).rgb;
-        /* the ground: sixteen leaves across, rising from the foot of each column */
-        vec2 gc = floor(vec2(uv.x, v) * 16.0); float cp = texture2D(tProg, vec2((gc.x + 0.5) / 16.0, 0.25)).r;
-        float gk = step(0.004, cp) * step((15.0 - gc.y + hash(gc) * 2.0) / 17.0, cp * 1.03);
-        /* his robe: rectangles, a band at a time */
-        vec2 hc = floor(vec2(uv.x * 26.0, v * 15.0)); float hb = clamp(floor((v - 0.06) / 0.1875 + 0.22 * sin(uv.x * 37.0)), 0.0, 3.0), hp = texture2D(tProg, vec2((hb + 0.5) / 16.0, 0.75)).r;
-        float hk = step(0.004, hp) * step(hash(hc + 3.1), hp * 1.02);
-        /* her dress: rounds that grow */
-        vec2 q = vec2(uv.x, v) * 15.0; q.x += 0.5 * mod(floor(q.y), 2.0); vec2 f = fract(q) - 0.5; float wb = clamp(floor((v - 0.205) / 0.1425 + 0.22 * sin(uv.x * 31.0)), 0.0, 3.0), wp = texture2D(tProg, vec2((wb + 0.5) / 16.0, 0.75)).g;
-        float wk = step(0.004, wp) * step(length(f), wp * 1.0 - 0.3 * hash(floor(q)) * (1.0 - wp));
-        float ground = 1.0 - clamp(m.r + m.g + m.b, 0.0, 1.0), show = clamp(m.b + m.r * hk + m.g * wk + ground * gk, 0.0, 1.0);
-        vec3 col = mix(sk, paint, show);
-        float goldish = smoothstep(0.06, 0.25, paint.r - paint.b) * show * (1.0 - m.b);
-        col += vec3(1.0, 0.85, 0.4) * pow(hash(floor(uv * 240.0) + floor(uTime * 4.0)), 26.0) * goldish * 0.9;
-        col = mix(col, vec3(0.9, 0.3, 0.2), uShake * 0.25 * (m.r + m.g));
-        gl_FragColor = vec4(col * 0.92, 1.0); }` });
-  const mesh = new THREE.Mesh(new THREE.PlaneGeometry(P.size, P.size), mat); mesh.position.set(P.c[0], P.y0 + P.size / 2, P.c[1]); mesh.rotation.y = Math.atan2(-F.dx, -F.dz); scene.add(mesh);
-  const fr = lam({ color: '#8a6a22', emissive: '#2a1e06' }), g = new THREE.Group(); for (const [w, h, x, y] of [[P.size + 0.5, 0.25, 0, P.size / 2 + 0.12], [P.size + 0.5, 0.25, 0, -P.size / 2 - 0.12], [0.25, P.size, P.size / 2 + 0.12, 0], [0.25, P.size, -P.size / 2 - 0.12, 0]]) box(g, w, h, 0.16, fr, x, y, 0); g.position.copy(mesh.position); g.rotation.y = mesh.rotation.y; scene.add(g);
-  const api = { mesh, mat, data, P, F, set(row, i, ch, v) { data[(row * 16 + i) * 4 + ch] = Math.round(clamp(v, 0, 1) * 255); prog.needsUpdate = true; }, get(row, i, ch) { return data[(row * 16 + i) * 4 + ch] / 255; },
-    clear() { data.fill(0); prog.needsUpdate = true; }, all() { for (let i = 0; i < 16; i++) { api.set(0, i, 0, 1); api.set(1, i, 0, 1); api.set(1, i, 1, 1); } },
-    /* a point of the picture (u across, v down) in the world */
-    at(u, v) { return new V3(P.c[0] + F.rx * (u - 0.5) * P.size - F.dx * 0.1, P.y0 + (1 - v) * P.size, P.c[1] + F.rz * (u - 0.5) * P.size - F.dz * 0.1); } };
-  return api; }
-const CAN_A = await makeCanvas('adele', PLAN.adele, F_AD), CAN_K = await makeCanvas('kiss', PLAN.kiss, F_KS);
-/* before The Kiss: a mound of flowers that runs on out of the picture, and two rings on the floor, one before each figure */
-const meadow = new THREE.Group(); { const PK = PLAN.kiss, [mx, mz] = F_KS.P(-0.6, 14.6), hill = new THREE.Mesh(new THREE.SphereGeometry(1, 24, 10, 0, 6.3, 0, 1.57), lam({ color: '#6a9a48' })); hill.scale.set(2.6, 0.5, 4.6); hill.position.set(mx, 0.03, mz); meadow.add(hill);
-  const fl = new THREE.InstancedMesh(new THREE.CircleGeometry(0.11, 8), basic({ color: 0xffffff, side: THREE.DoubleSide }), 320), M4 = new THREE.Matrix4(), cols = ['#9a6ad8', '#e8d048', '#4a6ad8', '#f0f0e0', '#d85a8a', '#7a4ac8']; for (let i = 0; i < 320; i++) { const a = rnd(0, 6.28), r = Math.sqrt(Math.random()), x = Math.cos(a) * r * 2.5, z = Math.sin(a) * r * 4.5, y = 0.5 * Math.sqrt(Math.max(0, 1 - r * r)) + 0.06; M4.makeRotationX(-Math.PI / 2 + rnd(-0.5, 0.5)).setPosition(mx + x, y, mz + z); fl.setMatrixAt(i, M4); fl.setColorAt(i, C(cols[i % cols.length])); } meadow.add(fl); scene.add(meadow); }
-const marks = PLAN.kiss.marks.map((r, i) => { const [x, z] = F_KS.P(r, PLAN.kiss.kid[1]), m = new THREE.Mesh(new THREE.RingGeometry(0.55, 0.8, 28), basic({ color: '#ffe08a', transparent: true, opacity: 0.0, side: THREE.DoubleSide, depthWrite: false })); m.rotation.x = -Math.PI / 2; m.position.set(x, 0.07, z); scene.add(m); return m; });
+const track = makeTrack();
+const WORLD = buildKlimtWorld(THREE, scene, track, PAT, adeleTex);
+const ORN = makeOrnaments(THREE, scene, track, PAT);
+const TRAIL = makeTrail(THREE, scene, 54);
+const SPARKS = makeSparks(THREE, scene);
 
-/* ================= what the wind took: gold leaf, and the two kinds of pattern ================= */
-const pieceTex = { rect: TOWN.canvasTex(96, 128, (g, w, h) => { g.fillStyle = '#e0aa28'; g.fillRect(0, 0, w, h); const cs = ['#111114', '#f4f0e4', '#111114', '#b8b8c0', '#f4f0e4', '#111114']; let k = 0; for (let y = 6; y < h - 10; y += 30) for (let x = 6; x < w - 10; x += 30) { const ww = 14 + ((k * 7) % 12), hh = 18 + ((k * 5) % 10); g.fillStyle = cs[k % cs.length]; g.fillRect(x, y, ww, hh); if (k % 3 === 1) { g.strokeStyle = '#111114'; g.lineWidth = 3; g.strokeRect(x, y, ww, hh); } k++; } }, false),
-  round: TOWN.canvasTex(128, 128, (g, w, h) => { g.clearRect(0, 0, w, h); g.fillStyle = '#e8b830'; g.beginPath(); g.arc(64, 64, 62, 0, 7); g.fill(); for (const [x, y, r, c] of [[44, 46, 24, '#5a3aa8'], [86, 52, 20, '#e04a3a'], [58, 92, 20, '#3a6ad8'], [94, 92, 14, '#d85a8a']]) { g.fillStyle = c; g.beginPath(); g.arc(x, y, r, 0, 7); g.fill(); g.fillStyle = '#f4e9c0'; g.beginPath(); g.arc(x, y, r * 0.55, 0, 7); g.fill(); g.fillStyle = c; g.beginPath(); g.arc(x, y, r * 0.25, 0, 7); g.fill(); } }, false) };
-const pieceMesh = kind => { if (kind === 'leaf') { const m = new THREE.Mesh(new THREE.PlaneGeometry(0.46, 0.46), basic({ color: '#ffd84a', side: THREE.DoubleSide })); const b = new THREE.Mesh(new THREE.PlaneGeometry(0.46, 0.46), basic({ color: '#fff2a8', side: THREE.DoubleSide })); b.rotation.y = 0.5; b.scale.setScalar(0.7); m.add(b); return m; }
-  if (kind === 'rect') return new THREE.Mesh(new THREE.BoxGeometry(0.54, 0.72, 0.05), basic({ map: pieceTex.rect }));
-  const m = new THREE.Mesh(new THREE.CircleGeometry(0.4, 26), basic({ map: pieceTex.round, side: THREE.DoubleSide, transparent: true })); return m; };
-const haloT = (() => { const c = document.createElement('canvas'); c.width = c.height = 96; const g = c.getContext('2d'), r = g.createRadialGradient(48, 48, 2, 48, 48, 48); r.addColorStop(0, 'rgba(255,236,170,.9)'); r.addColorStop(0.35, 'rgba(255,214,120,.35)'); r.addColorStop(1, 'rgba(255,200,90,0)'); g.fillStyle = r; g.fillRect(0, 0, 96, 96); return new THREE.CanvasTexture(c); })();
-const bits = []; { const S0 = 40, S1 = LEN - 120, N = 24, ORDER = 'LLRLLOLLRLLOLLRLLOLLRLLO'; for (let i = 0; i < N; i++) { let s = S0 + (S1 - S0) * i / (N - 1); const kind = { L: 'leaf', R: 'rect', O: 'round' }[ORDER[i]]; if (TRAM_S.some(t => Math.abs(t - s) < 7)) s += 9; const p = at(s), off = [2.2, -1.8, 0.6, -2.6, 1.4, -0.4][i % 6], [x, z] = side(p, 0, off); if (blocked(x, z)) continue;
-    const m = pieceMesh(kind), h = new THREE.Sprite(new THREE.SpriteMaterial({ map: haloT, blending: THREE.AdditiveBlending, depthWrite: false, transparent: true })); h.scale.setScalar(kind === 'leaf' ? 1.5 : 2.3); m.add(h); m.position.set(x, 1.1, z); scene.add(m); bits.push({ kind, m, x, z, s, got: false, ph: i * 1.3, y: kind === 'leaf' ? 1.0 + (i % 3) * 0.35 : 1.15 }); } }
-const kit = { leaf: 0, rect: 0, round: 0 }, kitEl = { leaf: $('kLeaf'), rect: $('kRect'), round: $('kRound') }, KEEP = { leaf: ['Gold leaf', '🟨'], rect: ['Squares for his robe', '⬛'], round: ['Rounds for her dress', '🌼'] };
-const showKit = k => { for (const n in kit) kitEl[n].textContent = kit[n]; if (k) { kitEl[k].classList.remove('pop'); void kitEl[k].offsetWidth; kitEl[k].classList.add('pop'); } };
-/* things in flight: a leaf or a piece going from her hands to the canvas */
-const flights = []; function fly(kind, from, to, secs, done, back) { const m = pieceMesh(kind); m.position.copy(from); scene.add(m); flights.push({ m, from: from.clone(), to: to.clone(), t: 0, secs, done, back }); }
-/* flakes of gold in the air of the room, when a picture is finished */
-const FLK = 260, flakeG = new THREE.BufferGeometry(), flakeP = new Float32Array(FLK * 3), flakeS = Array.from({ length: FLK }, () => [rnd(-9, 9), rnd(0, 9), rnd(-9, 9), rnd(0.5, 1.4), rnd(0, 6)]); flakeG.setAttribute('position', new THREE.BufferAttribute(flakeP, 3));
-const flakes = new THREE.Points(flakeG, new THREE.PointsMaterial({ color: '#ffd84a', size: 0.13, transparent: true, opacity: 0, depthWrite: false })); flakes.frustumCulled = false; scene.add(flakes); let flakeK = 0, flakeAt = [0, 0];
-
-/* ================= people: figures modelled in Blender (tools/blender/figure.py, world 'klimt') ================= */
-const FIG = makeFigures({ THREE, scene, shadowM });
-await FIG.load('models/', ['girl', 'klimt', 'lady_white', 'lady_mauve', 'lady_green', 'gent_grey', 'gent_black', 'waiter', 'market', 'conductor']);
-const T = (g, bone, x, y, z) => FIG.turn(g.userData, bone, x || 0, y || 0, z || 0);
-const faceTo = (g, x, z, k) => { let d = Math.atan2(x - g.position.x, z - g.position.z) - g.rotation.y; d = Math.atan2(Math.sin(d), Math.cos(d)); g.rotation.y += d * k; };
-const meG = FIG.spawn('girl', { size: 0.98 }), painter = FIG.spawn('klimt', { size: 1.2, adult: true }), gilder = FIG.spawn('gent_grey', { size: 1.14, adult: true });
-{ const [x, z] = [SEC.front[0] + SEC.n[0] * 7 + 3, SEC.front[1] + SEC.n[1] * 7 - 3]; gilder.position.set(x, 0, z); FIG.pose(gilder, 0, 0); }
-/* the book of gold leaf in her hand */
-{ const bk = new THREE.Group(), b = new THREE.Mesh(new THREE.BoxGeometry(0.2, 0.03, 0.2), lam({ color: '#7a3a2a' })), l = new THREE.Mesh(new THREE.BoxGeometry(0.17, 0.012, 0.17), basic({ color: '#ffd84a' })); l.position.y = 0.022; bk.add(b, l); meG.userData.aR.add(bk); }
-
-/* ================= play ================= */
-const guide = makeGuide({ posts: false, THREE, scene, map, nearest, at, LEN, blocked, groundY: hAt, bounds: map.bounds, places: PLAN.places.map(p => ({ ...p, s: nearest(p.x, p.z).s })),
-  style: { board: '#f4f0e6', ink: '#1c1c20', post: '#3f5a46', land: '#b8b0a0', water: '#5a7a84', house: '#7a7468', street: '#f2ead8', route: '#e8b830' } });
-let state = 'title', time = 0, muted = false, progS = S_START, seen = {}, bubbleG = null, bubbleT = 0, stT = 0, stR = 0, K = null;
-const me = { x: 0, z: 0, y: 0, vy: 0, yaw: 0, air: false, ph: 0, speed: 0, lean: 0 }, keys = new Set(), stick = { id: null, x0: 0, y0: 0, dx: 0, dy: 0 }, held = { jump: false };
-const plate = (title, line) => { SC.award(title, null, title); $('plate').innerHTML = `<i>${title}</i><span>${line}</span>`; $('plate').classList.add('show'); };
-const bubble = $('bubble'); function say(g, text, secs) { bubble.textContent = text; bubble.classList.add('show'); bubbleG = g; bubbleT = time + (secs || 3.5); } say.free = () => time > bubbleT;
-const goal = t => { const e = $('goal'); if (t) { e.textContent = t; e.classList.remove('hidden'); } else e.classList.add('hidden'); };
-const SC = makeScore({ THREE, scene, key: 'klimt', at, nearest, LEN, groundY: hAt, blocked, isHouse: inBlock, paintings: 2, thing: 'krone', things: 'Kronen', ditches: [], washing: false, slops: false, avoid: [S_AD, LEN - 6, ...TRAM_S, nearest(...PLAN.market[1]).s + 6, nearest(...PLAN.cafe[0]).s + 20], half: 2.6, hurdles: [0.2, 0.44, 0.7], barrelColor: '#8a6a3a' });
-const LIFE = makeLife({ THREE, scene, FIG, T, at, side, nearest, LEN, SC, SND, say, rnd, PLAN, blocked });
-const W = PLAN.words, STG = { adele: { ...PLAN.adele, F: F_AD, can: CAN_A }, kiss: { ...PLAN.kiss, F: F_KS, can: CAN_K } };
-const placeMan = (S, k) => { const [x, z] = S.F.P(...S.man), [lx, lz] = S.F.P(0, S.kid[1]); painter.position.x += (x - painter.position.x) * k; painter.position.z += (z - painter.position.z) * k; painter.position.y = 0; faceTo(painter, lx, lz, Math.min(1, k * 2)); };
-function reset() { const p = at(S_START); Object.assign(me, { x: p.x, z: p.z, yaw: Math.atan2(p.dx, -p.dz), vy: 0, air: false, speed: 0, y: LAND }); seen = {}; progS = S_START; stT = 0; K = null; for (const k in STG) { STG[k].fin = 0; STG[k].plated = false; } CAN_A.clear(); CAN_K.clear(); kit.leaf = kit.rect = kit.round = 0; showKit(); for (const b of bits) { b.got = false; b.m.visible = true; b.m.scale.setScalar(1); } for (const f of flights) scene.remove(f.m); flights.length = 0; flakeK = 0; marks.forEach(m => (m.material.opacity = 0)); LIFE.reset();
-  placeMan(STG.adele, 1); camera.position.set(me.x - p.dx * 6, me.y + 3, me.z - p.dz * 6); $('plate').classList.remove('show'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); goal(null); }
-function begin() {
-  SND.start({ chords: [[43, 50, 55, 59, 62], [45, 52, 57, 60, 64], [38, 50, 54, 57, 62], [43, 50, 55, 59, 66]], scale: [62, 64, 66, 67, 69, 71, 72, 74, 76, 78, 79, 81] }); SND.setMuted(muted); reset(); SC.start(); state = 'play';
-  $('title').classList.add('hidden'); $('end').classList.add('hidden'); $('kit').classList.remove('hidden'); const t = $('tip'); t.textContent = matchMedia('(pointer: coarse)').matches ? 'drag to run and turn · second finger to leap' : 'arrow keys to run and turn · space to leap'; t.classList.remove('hidden'); setTimeout(() => t.classList.add('hidden'), 7000);
-  setTimeout(() => { if (state === 'play') { say(gilder, W.start, 5.5); T(gilder, 'upperarmR', -150, 0, -24); } }, 400); setTimeout(() => { if (state === 'play') goal(W.goals.run); }, 6500);
+/* Drifting gold-dust field around the rider for effortless kinetic speed feel */
+const DUST_N = 260;
+const dustPos = new Float32Array(DUST_N * 3);
+const dustOff = [];
+for (let i = 0; i < DUST_N; i++) {
+  dustOff.push([(Math.random() - 0.5) * 38, 0.4 + Math.random() * 14, (Math.random() - 0.5) * 65]);
 }
-const hand = () => new V3(me.x, 1.2, me.z);
-/* the first picture: she runs to and fro before it and the gold goes up behind her, a column of leaves at a time */
-function gild(dt, lat) { const S = STG.adele, can = S.can; stT += dt; stR = clamp(stR + lat * 5.2 * dt, -S.range, S.range); let done = 0;
-  if (stT > 1.2) { const c0 = Math.floor((stR + S.size / 2) / S.size * 16); for (let c = c0 - 1; c <= c0 + 1; c++) { if (c < 0 || c > 15) continue; const v = can.get(0, c, 0); if (v < 1) { if (v === 0) { fly('leaf', hand(), can.at((c + 0.5) / 16, 0.9), 0.45); if (SND.bell) SND.bell(4 + c % 8, 0.045); if (kit.leaf > 0) { kit.leaf--; showKit('leaf'); SC.gain(5, 'Gold leaf laid'); } } can.set(0, c, 0, Math.max(0.02, v) + dt * 1.5); } } }
-  if (stT > 26) for (let c = 0; c < 16; c++) can.set(0, c, 0, can.get(0, c, 0) + dt * 0.8);      /* nobody is left stuck: the master lays what she has not */
-  for (let c = 0; c < 16; c++) if (can.get(0, c, 0) >= 0.99) done++; return done === 16; }
-/* the second: each piece in turn hangs over her head; she carries it to one figure or the other. The right kind stays; the wrong kind falls off again */
-const QUEUE = ['rect', 'round', 'round', 'rect', 'round', 'rect', 'rect', 'round'];
-function dress(dt, lat) { const S = STG.kiss, can = S.can; stT += dt; if (!K) { K = { i: 0, st: 'gold', t: 0, n: { rect: 0, round: 0 }, armed: true, icon: null, wrong: 0, here: 0, anim: [] }; stR = 0; }
-  K.t += dt; for (const a of K.anim) { a.v = Math.min(1, a.v + dt * 1.1); can.set(1, a.b, a.ch, a.v); } K.anim = K.anim.filter(a => a.v < 1);
-  can.mat.uniforms.uShake.value = Math.max(0, can.mat.uniforms.uShake.value - dt * 2.5);
-  if (K.st === 'gold') { for (let c = 0; c < 16; c++) can.set(0, c, 0, clamp((K.t - 0.4 - Math.abs(c - 7.5) * 0.09) * 0.9, 0, 1)); if (K.t > 0.5 && K.t < 0.6 && kit.leaf > 0) { for (let k = 0; k < Math.min(8, kit.leaf); k++) fly('leaf', hand(), can.at(0.1 + 0.8 * Math.random(), 0.2 + 0.4 * Math.random()), 0.5 + k * 0.08); SC.gain(5 * kit.leaf, 'Gold leaf laid'); kit.leaf = 0; showKit('leaf'); } if (K.t > 2.6) { K.st = 'offer'; K.t = 0; goal(W.goals.kiss); say(painter, W.klimtKiss, 3.2); } return false; }
-  stR = clamp(stR + lat * 5.4 * dt, -S.range, S.range);
-  const kind = QUEUE[K.i]; if (K.st === 'offer') { if (!K.icon) { K.icon = pieceMesh(kind); K.icon.scale.setScalar(1.5); scene.add(K.icon); K.t = 0; } K.icon.position.set(me.x - S.F.dx * 0.2, 2.5 + 0.12 * Math.sin(time * 3), me.z - S.F.dz * 0.2); K.icon.rotation.y = S.F.face + Math.PI + 0.3 * Math.sin(time * 1.6);
-    marks.forEach((m, i) => { const hint = (K.t > 14 || K.here >= 2) && (i === 0) === (kind === 'rect'); m.material.opacity = hint ? 0.75 + 0.25 * Math.sin(time * 9) : (K.here >= 2 ? 0.12 : 0.45 + 0.3 * Math.sin(time * 4 + i * 3.14)); m.scale.setScalar(hint ? 1.35 : 1); });      /* after two wrong tries the right ring is shown */
-    if (Math.abs(stR) < 1.0) K.armed = true; const hit = K.armed ? S.marks.findIndex(r => Math.abs(stR - r) < 0.75) : -1;
-    if (hit >= 0) { K.armed = false; const who = hit === 0 ? 'rect' : 'round', ok = who === kind, n = K.n[who], band = 3 - Math.min(3, n), to = can.at(hit === 0 ? 0.37 : 0.60, hit === 0 ? 0.06 + 0.1875 * (band + 0.5) : 0.205 + 0.1425 * (band + 0.5)), from = K.icon.position.clone(); scene.remove(K.icon); K.icon = null; K.st = 'fly'; K.t = 0;
-      fly(kind, from, to, 0.5, () => { if (ok) { K.anim.push({ b: band, ch: hit, v: 0.02 }); K.n[who]++; const mine = kit[kind] > 0; if (mine) { kit[kind]--; showKit(kind); } SC.gain(mine ? 25 : 10, kind === 'rect' ? 'Squares for him' : 'Rounds for her', 2); if (SND.bell) [6, 9, 13].forEach((k, j) => SND.bell(k, 0.07, j * 0.08)); say(painter, W.yes[K.i % W.yes.length], 1.4); K.i++; K.here = 0; K.st = K.i >= QUEUE.length ? 'last' : 'wait'; K.t = 0; }
-        else { can.mat.uniforms.uShake.value = 1; if (SND.puff) SND.puff(0.16); say(painter, W.no[Math.min(K.wrong, W.no.length - 1)], 2.4); K.wrong++; K.here++; T(painter, 'head', 0, 0, 24); K.st = 'bounce'; K.t = 0; fly(kind, to, new V3(me.x, 2.5, me.z), 0.55, () => { K.st = 'offer'; K.t = 0; }, true); } }); } }
-  else marks.forEach(m => (m.material.opacity *= 0.9));
-  if (K.st === 'wait' && K.t > 0.9) { K.st = 'offer'; K.t = 0; }
-  return K.st === 'last' && K.t > 1.4; }
+const dustGeo = new THREE.BufferGeometry();
+dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPos, 3));
+const dustMesh = new THREE.Points(dustGeo, new THREE.PointsMaterial({
+  color: '#ffe078', size: 0.24, transparent: true, opacity: 0.78, depthWrite: false,
+}));
+dustMesh.frustumCulled = false;
+scene.add(dustMesh);
+
+/* The two figures with live-updating Klimt cloaks */
+const womanRobe = PAT.makeWomanRobe();
+const manRobe = PAT.makeManRobe();
+const woman = makeKlimtFigure(THREE, { isMan: false, robeTex: womanRobe.tex, goldTex: PAT.goldLeaf });
+const man = makeKlimtFigure(THREE, { isMan: true, robeTex: manRobe.tex, goldTex: PAT.goldLeaf });
+scene.add(woman.root, man.root);
+
+/* ================= state & progression ================= */
+let state = 'title', time = 0, muted = false;
+let adeleSeen = false, adeleTimer = 0, embraceTimer = 0, platedKiss = false, trailTick = 0;
+const ride = {
+  s: 6, u: 0, vu: 0, speed: 12.6, lean: 0,
+  goldAmt: 0, circleAmt: 0, rectAmt: 0.14,
+  manS: 490, manU: -2.6,
+  picked: 0,
+};
+const keys = new Set();
+const touch = { id: null, x0: 0, dx: 0 };
+
+const setGoal = (txt) => {
+  const el = $('goal');
+  if (!txt) { el.classList.add('hidden'); return; }
+  if (el.textContent !== txt) el.textContent = txt;
+  el.classList.remove('hidden');
+};
+const showPlate = (title, sub) => {
+  $('plate').innerHTML = `<i>${title}</i><span>${sub}</span>`;
+  $('plate').classList.add('show');
+};
+const hidePlate = () => $('plate').classList.remove('show');
+
+function recordComplete() {
+  try {
+    const key = 'paintingRooms.v1';
+    const data = JSON.parse(localStorage.getItem(key)) || {};
+    const prev = data.klimt || {};
+    data.klimt = { best: Math.max(prev.best || 0, 500), paintings: 2, done: true };
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (_) {}
+}
+
+function reset() {
+  Object.assign(ride, {
+    s: 6, u: 0, vu: 0, speed: 12.6, lean: 0,
+    goldAmt: 0.04, circleAmt: 0, rectAmt: 0.14,
+    manS: 486, manU: -2.6, picked: 0,
+  });
+  adeleSeen = false; adeleTimer = 0; embraceTimer = 0; platedKiss = false; trailTick = 0;
+  womanRobe.paint(0.04, 0);
+  manRobe.paint(0.14);
+  ORN.reset();
+  TRAIL.reset();
+  SPARKS.clear();
+  man.root.visible = false;
+  $('melt').classList.remove('show');
+  document.body.classList.remove('melting');
+  hidePlate();
+  setGoal(null);
+}
+
+function begin() {
+  SND.start({
+    chords: [[43, 50, 55, 59, 62], [45, 52, 57, 60, 64], [38, 50, 54, 57, 62], [43, 50, 55, 59, 66]],
+    scale: [62, 64, 66, 67, 69, 71, 72, 74, 76, 78, 79, 81],
+  });
+  SND.setMuted(muted);
+  reset();
+  state = 'play';
+  $('title').classList.add('hidden');
+  $('end').classList.add('hidden');
+  const tip = $('tip');
+  tip.textContent = matchMedia('(pointer: coarse)').matches
+    ? 'drag left or right to carve through the gold'
+    : 'left and right arrows to steer · glides by itself';
+  tip.classList.remove('hidden');
+  setTimeout(() => tip.classList.add('hidden'), 5200);
+}
 
 function update(dt) {
-  time += dt; uni.uTime.value = time; post.uniforms.uTime.value = time;
-  if (state === 'title') { meG.visible = false; const [c, l] = PLAN.titleCam; camera.position.set(...c); camera.lookAt(...l); camera.fov = 58; camera.updateProjectionMatrix(); }
-  else {
-    meG.visible = true; const staged = state === 'adele' || state === 'kiss';
-    let turn = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) - (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0) + stick.dx, go = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) - (keys.has('ArrowDown') || keys.has('KeyS') ? 0.5 : 0) - stick.dy;
-    turn = clamp(turn, -1, 1); go = clamp(go, -0.5, 1); const lat = staged ? turn : 0; if (state !== 'play') { turn = 0; go = 0; }
-    me.yaw += turn * 2.3 * dt * (me.air ? 0.6 : 1); const fx = Math.sin(me.yaw), fz = -Math.cos(me.yaw);
-    me.speed += (go * 10 - me.speed) * Math.min(1, dt * (me.air ? 0.8 : 3.2)); let nx = me.x + fx * me.speed * dt, nz = me.z + fz * me.speed * dt;
-    if (state === 'play' && blocked(nx, nz)) { const mx = nx - me.x, mz = nz - me.z; let ok = false;      /* slide along whatever is in the way */
-      for (const a of [0.45, -0.45, 0.9, -0.9, 1.3, -1.3]) { const c = Math.cos(a), sn = Math.sin(a), tx = me.x + (mx * c - mz * sn) * c, tz = me.z + (mx * sn + mz * c) * c; if (!blocked(tx, tz)) { nx = tx; nz = tz; ok = true; break; } }
-      if (!ok) { nx = me.x; nz = me.z; me.speed *= 0.5; } }
-    if (state === 'play') { me.x = nx; me.z = nz; } const jump = (keys.has('Space') || held.jump) && state === 'play';
-    if (jump && !me.air) { me.vy = 6.0 + Math.abs(me.speed) * 0.2; me.air = true; SND.whoosh(0.04); }
-    if (me.air) { me.vy -= (jump && me.vy < 0 ? 5 : 15) * dt; me.y += me.vy * dt; if (me.y <= LAND) { me.y = LAND; me.air = false; SND.puff(0.06); } }
-    const pace = Math.abs(me.speed) / 6.5, before = Math.floor(me.ph / Math.PI); me.ph += dt * (2 + Math.abs(me.speed) * 0.9); if (!me.air && pace > 0.2 && Math.floor(me.ph / Math.PI) !== before) SND.puff(0.02);
-    me.lean += (turn * 0.2 * Math.min(1, pace) - me.lean) * Math.min(1, dt * 6);
-    if (state === 'play') { meG.position.set(me.x, me.y, me.z); meG.rotation.y = Math.PI - me.yaw; meG.rotation.z = -me.lean; FIG.pose(meG, me.ph, me.air ? 0.4 : pace, me.air, 0.08 * Math.min(1, pace)); if (SC.update(dt, me, true, time)) me.speed *= 0.2; }
-    const lf = LIFE.update(dt, me, state === 'play', time, camera.position); if (lf.slow) me.speed *= 0.5; if (lf.slide && state === 'play') { me.speed = 13; me.yaw += Math.sin(time * 20) * 0.06; }
-    const prog = nearest(me.x, me.z); progS = prog.s;
-    /* what the wind took */
-    for (const b of bits) { if (!b.m.visible) continue; if (b.got) { b.m.position.y += dt * 4; b.m.scale.multiplyScalar(1 - dt * 3.5); if (b.m.scale.x < 0.08) b.m.visible = false; continue; }
-      b.m.position.y = b.y + 0.14 * Math.sin(time * 2.2 + b.ph); if (b.kind === 'leaf') { b.m.rotation.y += dt * 2.6; b.m.rotation.x = 0.7 * Math.sin(time * 1.9 + b.ph); b.m.position.x = b.x + 0.25 * Math.sin(time * 1.1 + b.ph); } else b.m.rotation.y = 0.9 * Math.sin(time * 1.3 + b.ph) + Math.atan2(camera.position.x - b.x, camera.position.z - b.z);
-      if (state === 'play' && Math.abs(me.x - b.x) < 1.25 && Math.abs(me.z - b.z) < 1.25 && me.y < 2.2) { b.got = true; kit[b.kind]++; showKit(b.kind); SC.gain(b.kind === 'leaf' ? 5 : 10, KEEP[b.kind][0]); SC.keep && SC.keep(b.kind, { title: KEEP[b.kind][0], emoji: KEEP[b.kind][1] }); } }
-    for (const f of flights) { f.t += dt / f.secs; const k = Math.min(1, f.t), e = k * k * (3 - 2 * k); f.m.position.lerpVectors(f.from, f.to, e); f.m.position.y += Math.sin(k * Math.PI) * (f.back ? 1.6 : 1.0); f.m.rotation.z += dt * 9; f.m.rotation.y = camera.rotation.y; if (f.t >= 1) { scene.remove(f.m); f.dead = true; if (f.done) f.done(); } } for (let i = flights.length - 1; i >= 0; i--) if (flights[i].dead) flights.splice(i, 1);
+  time += dt;
+  SKY.uniforms.uTime.value = time;
+  FX.uniforms.uTime.value = time;
 
-    /* the first picture */
-    if (state === 'play' && !seen.adele && prog.s > S_AD - 5) { state = 'adele'; seen.adele = true; stT = 0; stR = clamp((me.x - PLAN.adele.c[0]), -3, 3); me.speed = 0; $('melt').src = PLAN.adele.img; goal(W.goals.adele); say(painter, W.klimtAdele, 4); SND.whoosh(0.07); }
-    if (state === 'play' && !seen.hello && prog.s > S_AD - 22) { seen.hello = true; goal(null); }
-    if (state === 'play' && seen.adele && !seen.kiss && me.x > PLAN.kiss.eye[0] + 2.5) { state = 'kiss'; seen.kiss = true; stT = 0; K = null; me.speed = 0; $('melt').src = PLAN.kiss.img; bubble.classList.remove('show'); SND.whoosh(0.07); }
-    if (staged) { const S = STG[state], [x, z] = S.F.P(stR, S.kid[1]), k = Math.min(1, dt * 5); meG.position.x += (x - meG.position.x) * k; meG.position.z += (z - meG.position.z) * k; meG.position.y = 0; me.x = meG.position.x; me.z = meG.position.z; me.y = 0; me.air = false; let d = S.F.face - meG.rotation.y + lat * 0.5; d = Math.atan2(Math.sin(d), Math.cos(d)); meG.rotation.y += d * Math.min(1, dt * 6); meG.rotation.z = 0; FIG.pose(meG, time * 9, Math.abs(lat) > 0.1 && Math.abs(stR) < S.range - 0.02 ? 0.8 : 0); placeMan(S, Math.min(1, dt * 2)); FIG.pose(painter, 0, 0);
-      if (!S.fin) { if (window.__road.auto) { const tg = window.__road.auto(state, stR, K); if (tg != null) stR = clamp(stR + clamp(tg - stR, -1, 1) * 5.3 * dt, -S.range, S.range); } if (state === 'adele' ? gild(dt, lat) : dress(dt, lat)) { S.fin = time; goal(null); flakeK = 1; flakeAt = S.F.P(0, S.kid[1] + 1); marks.forEach(m => (m.material.opacity = 0)); if (state === 'kiss') say(painter, W.done, 3); [0, 4, 7, 11, 14].forEach((n, j) => SND.bell(n + 2, 0.08, j * 0.14)); } }
-      else { const t = time - S.fin, hold = window.__road.holdStage; if (t > 1.6 && !S.plated) { S.plated = true; plate(S.title, S.line); } if (t > 3.4 && !hold) { $('melt').classList.add('show'); document.body.classList.add('melting'); }
-        if (state === 'adele' && t > 9.5 && !hold) { $('melt').classList.remove('show'); document.body.classList.remove('melting'); $('plate').classList.remove('show'); }
-        if (state === 'adele' && t > 11.2 && !hold) { state = 'play'; S.fin = 0; S.plated = false; me.yaw = Math.PI / 2; flakeK = 0; say(painter, W.klimtAfterAdele, 5); }
-        if (state === 'kiss' && t > 12.5 && !hold) { state = 'done'; S.fin = 0; S.plated = false; SC.finish(); $('kit').classList.add('hidden'); $('plate').classList.remove('show'); $('end').classList.remove('hidden'); $('melt').classList.remove('show'); document.body.classList.remove('melting'); } } }
-    else if (state === 'play') { placeMan(seen.adele ? STG.kiss : STG.adele, Math.min(1, dt * 1.2)); FIG.pose(painter, time * 5, Math.hypot(painter.position.x - STG[seen.adele ? 'kiss' : 'adele'].F.P(...STG[seen.adele ? 'kiss' : 'adele'].man)[0], 0) > 0.5 ? 0.6 : 0); }
-
-    /* camera */
-    const st = staged || state === 'done' ? STG[state === 'done' ? 'kiss' : state] : null;
-    if (st) { const [cp, cl, fov] = st.cam, [x, z] = st.F.P(cp[0], cp[1]), [lx, lz] = st.F.P(cl[0], cl[1]), k = Math.min(1, dt * 1.8); camera.position.lerp(new V3(x, cp[2], z), k); camera.lookAt(lx, cl[2], lz); camera.fov += (fov - camera.fov) * k; camera.updateProjectionMatrix(); }
-    else { const alt = Math.max(0, me.y - LAND); let dist = 5.4 + Math.abs(me.speed) * 0.2 + alt * 0.5, cx, cz; for (let k = 0; k < 5; k++) { cx = me.x - fx * dist; cz = me.z - fz * dist; if (!inHouse(cx, cz)) break; dist *= 0.6; }
-      const k = Math.min(1, dt * 5.5); camera.position.x += (cx - camera.position.x) * k; camera.position.z += (cz - camera.position.z) * k; camera.position.y += (me.y + 2.5 + alt * 0.25 - camera.position.y) * k;
-      camera.lookAt(me.x + fx * 6, me.y + 1.7, me.z + fz * 6); camera.rotation.z += -me.lean * 0.25; camera.fov += (58 + Math.abs(me.speed) * 1.4 - camera.fov) * k; camera.updateProjectionMatrix(); }
+  /* animate world panels (swaying Tree of Life boughs, spinning Adele sun halos) */
+  for (const a of WORLD.anim) {
+    if (a.kind === 'spin') a.m.rotation.z += a.speed * dt;
+    else if (a.kind === 'sway') a.m.rotation.z = a.baseZ + Math.sin(time * 0.9 + a.ph) * 0.045;
   }
-  /* the dome turns its leaves to the light; the flakes fall */
-  SECB.dome.rotation.y = time * 0.03;
-  flakes.material.opacity += ((flakeK ? 0.95 : 0) - flakes.material.opacity) * Math.min(1, dt * 2); if (flakes.material.opacity > 0.02) { for (let i = 0; i < FLK; i++) { const r = flakeS[i]; r[1] -= r[3] * dt; if (r[1] < 0) r[1] += 9; flakeP[i * 3] = flakeAt[0] + r[0] + 0.3 * Math.sin(time * 1.3 + r[4]); flakeP[i * 3 + 1] = r[1]; flakeP[i * 3 + 2] = flakeAt[1] + r[2]; } flakeG.attributes.position.needsUpdate = true; }
-  post.uniforms.uFlat.value += (((state === 'adele' || state === 'kiss' || state === 'done') ? 0.2 : 0.4) - post.uniforms.uFlat.value) * Math.min(1, dt * 2);
-  if (bubbleG) { if (time > bubbleT) { bubble.classList.remove('show'); bubbleG = null; } else { const v = bubbleG.position.clone(); v.y += 2.4; v.project(camera); bubble.style.left = clamp((v.x * 0.5 + 0.5) * innerWidth, 150, innerWidth - 150) + 'px'; bubble.style.top = Math.max(70, (-v.y * 0.5 + 0.5) * innerHeight) + 'px'; bubble.classList.toggle('show', v.z < 1);
-    if ((bubbleG === gilder || bubbleG === painter) && (v.z > 1 || Math.abs(v.x) > 0.9 || Math.abs(v.y) > 0.9)) { bubble.style.left = innerWidth / 2 + 'px'; bubble.style.top = innerHeight * 0.2 + 'px'; bubble.classList.add('show'); } } }
-  guide.update(me, painter.position, state === 'play');
-  SND.update(0.25 + 0.4 * Math.min(1, Math.abs(me.speed) / 12), clamp(Math.max(0, Math.abs(me.speed) - 10) * 0.06 + (me.air ? 0.2 : 0), 0, 1));
+
+  /* Title camera: serene swoop gazing down the Tree of Life golden spiral slide */
+  if (state === 'title') {
+    woman.root.visible = false;
+    man.root.visible = false;
+    SKY.uniforms.uDark.value = 0.0;
+    const f0 = track.frame(14 + Math.sin(time * 0.35) * 4);
+    const f1 = track.frame(52);
+    const p0 = f0.at(Math.sin(time * 0.4) * 3.5, 5.4);
+    const p1 = f1.at(0, 4.2);
+    camera.position.set(p0.x, p0.y, p0.z);
+    camera.lookAt(p1.x, p1.y, p1.z);
+    return;
+  }
+
+  woman.root.visible = true;
+  const steerKey = (keys.has('ArrowRight') || keys.has('KeyD') ? 1 : 0) -
+                   (keys.has('ArrowLeft') || keys.has('KeyA') || keys.has('KeyQ') ? 1 : 0);
+  const steer = clamp(steerKey + touch.dx, -1, 1);
+  const boost = (keys.has('ArrowUp') || keys.has('KeyW') || keys.has('KeyZ') ? 1 : 0) -
+                (keys.has('ArrowDown') || keys.has('KeyS') ? 1 : 0);
+
+  if (state === 'play') {
+    /* Seamless brief slow-glide showcase as she glides underneath Adele Bloch-Bauer I (s = 426) */
+    if (!adeleSeen && ride.s >= 426) {
+      adeleSeen = true;
+      adeleTimer = 4.2;
+      $('melt').src = 'images/adele.jpg';
+      $('melt').classList.add('show');
+      document.body.classList.add('melting');
+      showPlate('Portrait of Adele Bloch-Bauer I (1907)', 'Real oil for face and hands · flat gold and eyes for all the rest');
+      if (SND.bell) [2, 5, 7, 10].forEach((n, j) => SND.bell(n, 0.06, j * 0.12));
+    }
+    if (adeleTimer > 0) {
+      adeleTimer -= dt;
+      if (adeleTimer <= 0) {
+        $('melt').classList.remove('show');
+        document.body.classList.remove('melting');
+        hidePlate();
+      }
+    }
+
+    const slowK = adeleTimer > 0.8 ? 0.52 : 1.0;
+    const targetSpd = (12.6 + boost * 3.2) * slowK;
+    ride.speed += (targetSpd - ride.speed) * Math.min(1, dt * 4.0);
+    ride.s = Math.min(TRACK_LEN - 12, ride.s + ride.speed * dt);
+    FX.uniforms.uMotion.value = ride.s;
+
+    /* Joyful ski-carve steering: responsive lateral glide with soft magnetic edge cushion */
+    const targetVu = steer * 10.2;
+    ride.vu += (targetVu - ride.vu) * Math.min(1, dt * 6.5);
+    ride.u += ride.vu * dt;
+    /* Soft bank keeps her effortlessly inside the Wiener Werkstaette rails — never stuck */
+    const maxU = HALF_W - 1.1;
+    if (ride.u > maxU) { ride.u = maxU; ride.vu = Math.min(0, ride.vu); }
+    if (ride.u < -maxU) { ride.u = -maxU; ride.vu = Math.max(0, ride.vu); }
+    ride.lean += (clamp(ride.vu * 0.045, -0.42, 0.42) - ride.lean) * Math.min(1, dt * 8.0);
+
+    /* Act goals & atmospheric sky shift (warm bronze-gold -> deep speckled Kiss ground) */
+    const darkTarget = sstep(465, 585, ride.s);
+    SKY.uniforms.uDark.value += (darkTarget - SKY.uniforms.uDark.value) * Math.min(1, dt * 2.5);
+    if (ride.s < 250) setGoal('Steer through the curling gold of the Tree of Life');
+    else if (ride.s < 465) setGoal('Glide into Adele’s hall of eyes and gold');
+    else if (ride.s < 855) setGoal('Circles and flowers dress you · rectangles dress him');
+    else setGoal('Meet him on the flowered cliff');
+
+    /* Steady baseline progression ensures even a hands-off ride arrives richly dressed */
+    ride.goldAmt = Math.max(ride.goldAmt, sstep(25, 360, ride.s) * 0.92);
+    if (ride.s > 470) {
+      ride.circleAmt = Math.max(ride.circleAmt, sstep(470, 960, ride.s) * 0.85);
+      ride.rectAmt = Math.max(ride.rectAmt, 0.14 + sstep(470, 960, ride.s) * 0.80);
+    }
+
+    /* Partner glides gracefully ahead on the left stream from Act 3 onward */
+    if (ride.s > 465) {
+      man.root.visible = true;
+      const leadDist = mix(10.5, 0.7, sstep(860, 1010, ride.s));
+      ride.manS = Math.min(1015, ride.s + leadDist);
+      const waveU = -2.6 + Math.cos(ride.manS * 0.032) * 2.4;
+      const targetManU = mix(waveU, -0.52, sstep(900, 1005, ride.s));
+      ride.manU += (targetManU - ride.manU) * Math.min(1, dt * 3.5);
+      const mf = track.frame(ride.manS);
+      const mp = mf.at(ride.manU, 0);
+      man.root.position.set(mp.x, mp.y, mp.z);
+      man.root.rotation.order = 'YXZ';
+      man.root.rotation.y = mf.yaw;
+      man.root.rotation.z = mf.bank - Math.sin(ride.manS * 0.032) * 0.14;
+      man.body.position.y = Math.sin(time * 3.2) * 0.12;
+      man.armL.rotation.x = Math.sin(time * 2.8) * 0.14;
+      man.armR.rotation.x = -Math.sin(time * 2.8) * 0.14;
+    }
+
+    /* Check ornament skims — zero wrong answers, pure visual reward */
+    const wf = track.frame(ride.s);
+    const wp = wf.at(ride.u, 0);
+    for (const it of ORN.items) {
+      if (!it.mesh.visible) continue;
+      if (it.got) {
+        it.pop += dt * 3.2;
+        it.mesh.position.y += dt * 3.2;
+        it.mesh.scale.setScalar(Math.max(0.05, 1 - it.pop));
+        if (it.pop >= 1) it.mesh.visible = false;
+        continue;
+      }
+      /* gentle hover & face camera */
+      it.mesh.position.y = it.basePos.y + Math.sin(time * 2.4 + it.ph) * 0.28;
+      it.mesh.lookAt(camera.position);
+
+      /* Partner auto-gathers rectangles along his stream */
+      if (man.root.visible && it.kind === 'rect' && Math.abs(it.s - ride.manS) < 2.2 && Math.abs(it.u - ride.manU) < 2.6) {
+        it.got = true;
+        ride.rectAmt = Math.min(1, ride.rectAmt + 0.08);
+        SPARKS.burst(it.mesh.position, 'rect');
+        continue;
+      }
+      /* Player glides through any ornament within a generous joyous radius */
+      if (Math.abs(it.s - ride.s) < 2.6 && Math.abs(it.u - ride.u) < 2.75) {
+        it.got = true;
+        ride.picked++;
+        SPARKS.burst(it.mesh.position, it.kind);
+        if (it.kind === 'rect' && man.root.visible) {
+          /* Rectangles gracefully arc across to dress her partner's robe! */
+          ride.rectAmt = Math.min(1, ride.rectAmt + 0.09);
+          SPARKS.comet(it.mesh.position, () => new V3(man.root.position.x, man.root.position.y + 1.3, man.root.position.z), '#f4efe2');
+          if (SND.bell) SND.bell(3 + (ride.picked % 5), 0.06);
+        } else if (it.kind === 'circle' || it.kind === 'flower') {
+          ride.circleAmt = Math.min(1, ride.circleAmt + 0.085);
+          if (SND.bell) SND.bell(6 + (ride.picked % 6), 0.065);
+        } else {
+          ride.goldAmt = Math.min(1, ride.goldAmt + 0.075);
+          if (SND.bell) SND.bell(4 + (ride.picked % 7), 0.055);
+        }
+      }
+    }
+
+    womanRobe.paint(ride.goldAmt, ride.circleAmt);
+    manRobe.paint(ride.rectAmt);
+
+    /* Position & animate the gliding woman */
+    woman.root.position.set(wp.x, wp.y, wp.z);
+    woman.root.rotation.order = 'YXZ';
+    woman.root.rotation.y = wf.yaw - ride.lean * 0.45;
+    woman.root.rotation.z = wf.bank - ride.lean;
+    woman.body.position.y = Math.sin(time * 3.8) * 0.1 + 0.05;
+    woman.armL.rotation.z = 0.18 + ride.lean * 0.4;
+    woman.armR.rotation.z = -0.18 + ride.lean * 0.4;
+    if (woman.cape) woman.cape.rotation.x = 0.18 + Math.sin(time * 5.0) * 0.06;
+
+    /* Paint glowing golden/floral pattern trail on the floor behind her */
+    trailTick += dt;
+    if (trailTick > 0.055) {
+      trailTick = 0;
+      TRAIL.push(wf, ride.u, ride.s > 475);
+    }
+
+    /* Swooping ski-style camera that banks into curves and widens FOV slightly with speed */
+    const camDist = 6.2 + (ride.speed - 12.6) * 0.16;
+    const camFr = track.frame(Math.max(0, ride.s - camDist));
+    const camU = ride.u * 0.72;
+    const cp = camFr.at(camU, 3.05);
+    const lookFr = track.frame(Math.min(TRACK_LEN, ride.s + 14));
+    const lp = lookFr.at(ride.u * 0.45, 1.85);
+    const k = Math.min(1, dt * 6.5);
+    camera.position.lerp(new V3(cp.x, cp.y, cp.z), k);
+    camera.lookAt(lp.x, lp.y, lp.z);
+    camera.rotation.z += -ride.lean * 0.22 + wf.bank * 0.28;
+    const targetFov = 58 + (ride.speed - 12.0) * 0.85;
+    camera.fov += (targetFov - camera.fov) * Math.min(1, dt * 4);
+    camera.updateProjectionMatrix();
+
+    /* Transition smoothly into the embrace on the flowered cliff at s >= 1012 */
+    if (ride.s >= 1012) {
+      state = 'embrace';
+      embraceTimer = 0;
+      ride.goldAmt = 1; ride.circleAmt = 1; ride.rectAmt = 1;
+      womanRobe.paint(1, 1);
+      manRobe.paint(1);
+      setGoal(null);
+      $('melt').src = 'images/kiss.jpg';
+      if (SND.bell) [0, 4, 7, 9, 11].forEach((n, j) => SND.bell(n, 0.075, j * 0.16));
+    }
+  } else if (state === 'embrace') {
+    embraceTimer += dt;
+    SKY.uniforms.uDark.value = 1.0;
+    const cf = track.frame(1015);
+    /* Man on left (rectangles), woman on right (circles & flowers), leaning tenderly inward as in The Kiss */
+    const pHer = cf.at(0.36, 0), pHim = cf.at(-0.34, 0);
+    const k = Math.min(1, dt * 3.5);
+    woman.root.position.lerp(new V3(pHer.x, pHer.y, pHer.z), k);
+    man.root.position.lerp(new V3(pHim.x, pHim.y, pHim.z), k);
+    woman.root.rotation.order = 'YXZ';
+    man.root.rotation.order = 'YXZ';
+    woman.root.rotation.y = cf.yaw + Math.PI * 0.82;
+    woman.root.rotation.z = -0.14;
+    woman.armL.rotation.z = 0.85; woman.armL.rotation.y = 0.7;
+    woman.armR.rotation.z = -0.95; woman.armR.rotation.y = -0.6;
+    man.root.rotation.y = cf.yaw - Math.PI * 0.82;
+    man.root.rotation.z = 0.12;
+    man.armL.rotation.z = 0.9; man.armL.rotation.y = 0.65;
+    man.armR.rotation.z = -0.85; man.armR.rotation.y = -0.7;
+    /* Camera glides cleanly in front of them, looking forward into the golden spiral wings & dark Kiss sky */
+    const orbit = Math.min(1, embraceTimer / 2.2);
+    const camFr = track.frame(mix(1009.5, 1010.2, orbit));
+    const cp = camFr.at(mix(1.2, 0.0, orbit), mix(2.2, 1.85, orbit));
+    camera.position.lerp(new V3(cp.x, cp.y, cp.z), Math.min(1, dt * 2.8));
+    const mid = cf.at(0, 1.38);
+    camera.lookAt(mid.x, mid.y, mid.z);
+
+    if (embraceTimer > 1.7 && !platedKiss) {
+      platedKiss = true;
+      showPlate('The Kiss (Lovers), 1908–09', 'Gustav Klimt · Belvedere, Vienna');
+    }
+    if (embraceTimer > 2.6) {
+      $('melt').classList.add('show');
+      document.body.classList.add('melting');
+    }
+    if (embraceTimer > 6.4) {
+      state = 'done';
+      recordComplete();
+      hidePlate();
+      $('melt').classList.remove('show');
+      document.body.classList.remove('melting');
+      $('end').classList.remove('hidden');
+    }
+  }
+
+  /* Update drifting gold dust around camera & bursts/comets */
+  for (let i = 0; i < DUST_N; i++) {
+    const o = dustOff[i];
+    const x = camera.position.x + ((o[0] + Math.sin(time * 0.4 + i) * 1.2) % 38);
+    const y = camera.position.y - 3 + ((o[1] - time * 0.55 + 140) % 14);
+    const z = camera.position.z - 25 + (((o[2] + ride.s * 0.9) % 65 + 65) % 65 - 32.5);
+    dustPos[i * 3] = x; dustPos[i * 3 + 1] = y; dustPos[i * 3 + 2] = z;
+  }
+  dustGeo.attributes.position.needsUpdate = true;
+  SPARKS.update(dt);
+  SND.update(0.35 + (state === 'play' ? 0.3 : 0), state === 'play' ? 0.25 : 0.05);
 }
+
 function draw() {
   const w = innerWidth, h = innerHeight;
-  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) { renderer.setSize(w, h, false); target.setSize(Math.round(w * PR), Math.round(h * PR)); post.uniforms.uPx.value.set(1 / (w * PR), 1 / (h * PR)); post.uniforms.uScale.value = Math.max(1, h * PR / 740); camera.aspect = w / h; camera.updateProjectionMatrix(); }
-  if (camHold) camHold(camera);
-  renderer.setRenderTarget(target); renderer.render(scene, camera); renderer.setRenderTarget(null); renderer.render(postScene, postCam);
+  if (renderer.domElement.width !== Math.round(w * PR) || renderer.domElement.height !== Math.round(h * PR)) {
+    renderer.setSize(w, h, false);
+    target.setSize(Math.round(w * PR), Math.round(h * PR));
+    FX.uniforms.uPx.value.set(1 / (w * PR), 1 / (h * PR));
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  renderer.setRenderTarget(target);
+  renderer.render(scene, camera);
+  renderer.setRenderTarget(null);
+  renderer.render(postScene, postCam);
 }
-let camHold = null;      /* a test hook: a still camera for looking at a front */
-let last = 0; function loop(ms) { const dt = Math.min(0.05, (ms - last) / 1000 || 0); last = ms; update(dt); draw(); requestAnimationFrame(loop); }
-reset(); requestAnimationFrame(loop);
 
-/* ================= input ================= */
-addEventListener('keydown', e => { if (['Space', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.code)) e.preventDefault(); keys.add(e.code); if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin(); });
-addEventListener('keyup', e => keys.delete(e.code)); addEventListener('blur', () => { keys.clear(); stick.id = null; stick.dx = stick.dy = 0; held.jump = false; });
+let last = 0;
+function loop(ms) {
+  const dt = Math.min(0.05, (ms - last) / 1000 || 0);
+  last = ms;
+  update(dt);
+  draw();
+  requestAnimationFrame(loop);
+}
+reset();
+requestAnimationFrame(loop);
+
+/* ================= input: arrows/WASD or one-thumb drag anywhere ================= */
+addEventListener('keydown', e => {
+  if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) e.preventDefault();
+  keys.add(e.code);
+  if (e.code === 'Enter' && (state === 'title' || state === 'done')) begin();
+});
+addEventListener('keyup', e => keys.delete(e.code));
+addEventListener('blur', () => { keys.clear(); touch.id = null; touch.dx = 0; });
+
 const cv = $('cv'), sk = $('stick');
-cv.addEventListener('pointerdown', e => { if (state !== 'play' && state !== 'adele' && state !== 'kiss') return; if (stick.id !== null) { held.jump = true; held.id = e.pointerId; return; } stick.id = e.pointerId; stick.x0 = e.clientX; stick.y0 = e.clientY; stick.dx = stick.dy = 0; try { cv.setPointerCapture(e.pointerId); } catch (_) {} sk.style.display = 'block'; sk.style.left = e.clientX + 'px'; sk.style.top = e.clientY + 'px'; sk.firstElementChild.style.transform = ''; });
-cv.addEventListener('pointermove', e => { if (e.pointerId !== stick.id) return; let dx = (e.clientX - stick.x0) / 48, dy = (e.clientY - stick.y0) / 48; const m = Math.hypot(dx, dy); if (m > 1) { dx /= m; dy /= m; } stick.dx = dx; stick.dy = dy; sk.firstElementChild.style.transform = `translate(${dx * 34}px,${dy * 34}px)`; });
-const lift = e => { if (e.pointerId === stick.id) { stick.id = null; stick.dx = stick.dy = 0; sk.style.display = 'none'; } if (e.pointerId === held.id) held.jump = false; };
-cv.addEventListener('pointerup', lift); cv.addEventListener('pointercancel', lift);
-$('bMute').addEventListener('click', () => { muted = !muted; $('waves').style.display = muted ? 'none' : ''; SND.setMuted(muted); });
-$('start').addEventListener('click', begin); $('again').addEventListener('click', begin); document.addEventListener('gesturestart', e => e.preventDefault());
-window.__road = { get state() { return state; }, get s() { return progS; }, get K() { return K; }, get stR() { return stR; }, me, begin, freeze(f) { camHold = f; }, go(x, z) { me.x = x; me.z = z; me.speed = 0; meG.position.set(x, 0, z); }, face(a) { me.yaw = a; }, see(k) { seen[k] = true; }, route: s => at(s), nearest, LEN, PLAN, S: { adele: S_AD, trams: TRAM_S, life: LIFE.S }, STG, CAN_A, CAN_K, kit, bits, LIFE, holdStage: false, auto: null, blocked,
-  dbg: { camera, painter, meG, post, THREE, scene, renderer }, probe: (x, z) => ({ house: inHouse(x, z), f: floorAt(x, z), d: +nearest(x, z).d.toFixed(1), s: +nearest(x, z).s.toFixed(1) }) };
+cv.addEventListener('pointerdown', e => {
+  if (state !== 'play') return;
+  touch.id = e.pointerId; touch.x0 = e.clientX; touch.dx = 0;
+  try { cv.setPointerCapture(e.pointerId); } catch (_) {}
+  sk.style.display = 'block';
+  sk.style.left = e.clientX + 'px';
+  sk.style.top = e.clientY + 'px';
+  sk.firstElementChild.style.transform = '';
+});
+cv.addEventListener('pointermove', e => {
+  if (e.pointerId !== touch.id) return;
+  const dx = clamp((e.clientX - touch.x0) / 56, -1, 1);
+  touch.dx = dx;
+  sk.firstElementChild.style.transform = `translate(${dx * 34}px, 0px)`;
+});
+const lift = e => {
+  if (e.pointerId === touch.id) { touch.id = null; touch.dx = 0; sk.style.display = 'none'; }
+};
+cv.addEventListener('pointerup', lift);
+cv.addEventListener('pointercancel', lift);
+
+$('bMute').addEventListener('click', () => {
+  muted = !muted;
+  $('waves').style.display = muted ? 'none' : '';
+  SND.setMuted(muted);
+});
+$('start').addEventListener('click', begin);
+$('again').addEventListener('click', begin);
+document.addEventListener('gesturestart', e => e.preventDefault());
+
+window.__klimt = {
+  get state() { return state; },
+  ride, begin, reset,
+  jumpTo(s, u = 0) { ride.s = s; ride.u = u; ride.vu = 0; },
+};
 </script>
 </body>
 </html>
+
+

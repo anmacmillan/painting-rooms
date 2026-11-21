@@ -1,4 +1,34 @@
-# Gold for Herr Klimt: Vienna, 1908. Sources and what is not verified
+# Gold for Herr Klimt: Into the Gold (rebuilt 21 Nov 2026). Sources and verification
+
+Rebuilt 21 Nov 2026 as a 90-second ride through Klimt's Golden Period surface (replacing the earlier 908 m Vienna street walk). All core artistic claims in the rebuilt level were checked directly against primary museum online collections and essays, plus Encyclopaedia Britannica; saved extracts live in `klimt/research/src_*.txt`.
+
+## Museum-verified claims (rebuilt level, 21 Nov 2026)
+
+| Claim | Status | Primary / Reference Source |
+|---|---|---|
+| Klimt used real gold leaf, silver, platinum, gold dust and fine gold powder bound in oil; real gold emphasizes the flatness of the picture plane rather than creating an illusion of depth | **VERIFIED (museum)** | Belvedere, Vienna (`src_belvedere_gold.txt`, `https://www.belvedere.at/en/stories/why-did-gustav-klimt-use-gold`) |
+| The Golden Period peaked with *Adele Bloch-Bauer I* and *The Kiss*; Byzantine mosaics, medieval gold grounds and East Asian lacquer work influenced his use of gold | **VERIFIED (museum)** | Belvedere (`src_belvedere_gold.txt`) |
+| In *The Kiss*, the couple stand in a flowering meadow against a dark, gold-speckled background, enveloped in sweeping robes that almost merge into a shared ornamental form | **VERIFIED (museum)** | Belvedere (`src_belvedere_gold.txt`) |
+| *The Kiss (Lovers)*, 1908–09, oil on canvas with silver, gold and platinum leaf, Belvedere Museum, Vienna; the woman's dress is decorated with circular biomorphic/floral forms, while by contrast the man's robe is decorated with strong rectangular shapes | **VERIFIED (encyclopaedic reference; Belvedere collection catalogue page returned HTTP 403)** | Encyclopaedia Britannica (`src_britannica_kiss.txt`, `https://www.britannica.com/topic/The-Kiss-painting-by-Klimt`) |
+| *Portrait of Adele Bloch-Bauer I* (1907, begun 1903), Neue Galerie New York; inspired by Klimt's December 1903 visit to Ravenna (6th-century Church of San Vitale, mosaics of Empress Theodora, which he called of "unprecedented splendor") | **VERIFIED (museum)** | Neue Galerie New York (`src_neue_galerie_adele.txt`, `https://www.neuegalerie.org/womaningold`) |
+| *Adele Bloch-Bauer I* features an armchair of sinuous spirals, a golden ornamented halo around her naturally painted face (flushed cheeks, vivid red lips, clasped hands), a form-fitting sheath adorned with all-seeing eye motifs inside golden triangles, and Wiener Werkstätte black-and-white checker trim at the lower left | **VERIFIED (museum)** | Neue Galerie New York (`src_neue_galerie_adele.txt`) |
+| *Stoclet Frieze*: *9 Working Drawings of the Execution of a Mosaic Frieze for the Dining Hall of Stoclet House in Brussels* (1908–1911, MAK Inv. nr. MAL 226, 200 × 735 cm; paper, coloured pencil, gold, pastel, platinum, silver, bronze, appliqué, gouache; Parts 1, 3, 4, 5, 7: *Tree of Life*; Part 2: *Expectation*; Part 6: *Rosebush*; Part 8: *Fulfillment*) | **VERIFIED (museum)** | MAK — Museum of Applied Arts, Vienna (`src_mak_stoclet.txt`, `https://sammlung.mak.at/en/collect/9-working-drawings-of-the-execution-of-a-mosaic-frieze-for-the-dining-hall-of-stoclet-house-in-brussels_206343`) |
+| *Death and Life*, 1910/11 (reworked 1912/13 and 1915/16), oil on canvas, 180.8 × 200.6 cm, Leopold Museum, Vienna; dark ground with richly ornamented oval of figures and mosaic patterns | **VERIFIED (museum)** | Leopold Museum, Vienna (`src_leopold_death.txt`, `https://onlinecollection.leopoldmuseum.org/en/object/629/`) |
+| *The Kiss* and *Adele Bloch-Bauer I* were shown at the 1908 Kunstschau in Vienna; the Austrian state bought *The Kiss* there for 25,000 Kronen | **partly verified (Wikipedia only; Belvedere catalogue page returned HTTP 403)** | `wp_de_kuss.txt`, `wp_en_kiss.txt`, `wp_de_kunstschau.txt`, `wp_en_adele.txt` |
+| Gliding down a golden ribbon, trailing pattern behind feet, and gathering ornaments onto robes in motion | **the game's own** | Design device for teaching Klimt's visual language through play |
+
+## Public-domain images used and referenced (Gustav Klimt, died 1918)
+
+| File | Provenance & Licence |
+|---|---|
+| `klimt/images/kiss.jpg` (loaded by level) | Gustav Klimt, *The Kiss* (1908–09, Belvedere, Vienna), Google Art Project via Wikimedia Commons (`File:The_Kiss_-_Gustav_Klimt_-_Google_Cultural_Institute.jpg`), Public Domain |
+| `klimt/images/adele.jpg` (loaded by level) | Gustav Klimt, *Portrait of Adele Bloch-Bauer I* (1907, Neue Galerie New York), The Yorck Project via Wikimedia Commons (`File:Gustav_Klimt_046.jpg`), Public Domain |
+| `klimt/research/ref/stoclet_tree.jpg` (reference only, gitignored) | Gustav Klimt, *Nine Cartoons for the Stoclet Frieze: Part 4, Tree of Life* (1908–11, MAK, Vienna), Google Arts & Culture via Wikimedia Commons (`commons_extra.json`), Public Domain |
+| `klimt/research/ref/death_and_life.jpg` (reference only, gitignored) | Gustav Klimt, *Death and Life* (1910–11/1915–16, Leopold Museum, Vienna), Google Art Project via Wikimedia Commons (`commons_extra.json`), Public Domain |
+
+---
+
+## Archive: earlier Vienna 1908 street notes (17 Nov 2026)
 
 Built 17 Nov 2026. Every statement in the level or on its end card rests on a file in this folder, read in that session. All the text sources are Wikipedia
 articles (English and German), saved as plain-text extracts with their URLs in the first line: they are tertiary. The museums' own pages were tried and could
